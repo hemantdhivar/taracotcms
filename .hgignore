@@ -1,0 +1,6 @@
+tmp/sessions/.*\.yml$
+tmp/sessions/.*\.stor$
+views/.*\.cache$
+views/layouts/.*\.cache$
+public/files/images/*
+data/.*\.html$

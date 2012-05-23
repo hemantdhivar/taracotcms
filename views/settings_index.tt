@@ -1,0 +1,535 @@
+<script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="/js/hashtable.js"></script>
+
+<h1>[== $lang->{module_name_long} =]</h1>
+<br />
+
+<!-- 
+ Data table 
+-->
+
+<div id="data_overview">
+	<div class="btn-toolbar">
+		<div class="btn-group">
+			<span id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i>&nbsp;[== $lang->{btn_add} =]</span>
+			<span id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i>&nbsp;[== $lang->{btn_del} =]</span>
+		</div>
+		<div class="btn-group">
+			<span id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');"><i class="icon-ok-circle"></i>&nbsp;[== $lang->{btn_select_all} =]</span>
+			<span id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i>&nbsp;[== $lang->{btn_select_none} =]</span>
+		</div>
+	</div>
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="data_table">
+	<thead>
+	<tr>
+		<th style="width:40px">[== $lang->{id} =]</th>
+		<th style="width:100px">[== $lang->{s_name} =]</th>
+		<th>[== $lang->{s_value} =]</th>
+		<th style="width:100px;text-align:center">[== $lang->{language} =]</th>
+		<th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+	</tr>
+	</thead>
+	<tbody>
+	</tbody>
+	</table>
+</div>
+<!-- data_overview -->
+
+<!-- 
+ "Delete" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="delete_confirmation">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{delete_confirmation_title} =]</h3>
+ </div>
+ <div class="modal-body">
+  <p>[== $lang->{delete_confirmation_msg1} =]<br /><br /><span id="delete_row_list">none</span><br /><br />[== $lang->{delete_confirmation_msg2} =]</p>
+ </div>
+  <div class="modal-footer">
+     <a class="btn" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</a>
+     <a class="btn btn-danger" id="btn_delete">[== $lang->{delete} =]</a>
+ </div>
+</div>
+
+<!-- 
+ "None selected" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="none_selected">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{delete_none_selected_title} =]</h3>
+ </div>
+ <div class="modal-body">
+  <p>[== $lang->{delete_none_selected_msg} =]</p>
+ </div>
+  <div class="modal-footer">
+    <a class="btn" id="btn_none_selected_close">[== $lang->{btn_close} =]</a>
+ </div>
+</div>
+
+<!-- 
+ Language select modal dialog 
+-->
+
+<div class="modal" style="display:none" id="language_select">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{language_select_title} =]</h3>
+ </div>
+ <div class="modal-body">
+  <div class="well">
+    <div id="language_select_s_name"></div>
+  </div>
+  <span class="form-horizontal">
+    <div class="control-group" style="padding-top:6px">
+     <label class="control-label" for="language_select_lang">[== $lang->{language} =]</label>
+     <div class="controls">
+     <select class="input-xlarge" id="language_select_lang">
+      [== $list_langs =]
+     </select>
+     </div>
+    </div>
+  </span>
+ </div>
+  <div class="modal-footer">
+    <a class="btn" id="btn_language_select_close">[== $lang->{edit_cancel} =]</a>
+    <a class="btn btn-success" id="btn_language_select_save">[== $lang->{edit_save} =]</a>
+ </div>
+</div>
+
+<!-- 
+ "Error" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="error_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{error} =]</h3>
+ </div>
+ <div class="modal-body">
+  <span id="error_dialog_msg"></span>
+ </div>
+  <div class="modal-footer">
+    <a class="btn" id="btn_error_dialog_close">[== $lang->{btn_close} =]</a>
+ </div>
+</div>
+
+<!-- 
+ Data edit form 
+-->
+<div id="data_edit" style="display:none">
+	<h2 id="h_data_actions">[== $lang->{edit_option} =]</h2>
+  
+	<div id="data_edit_form">
+		<div id="form_notice">
+		</div>
+		<br />
+		<div class="alert alert-block alert-error" id="form_error_msg">
+			<span id="form_error_msg_text"></span>
+		</div>
+		<br />
+		
+		<span class="form-horizontal">
+		  <span id="form_controls">
+        
+        <div class="control-group" id="cg_s_name">
+    			<label class="control-label" for="s_name">[== $lang->{s_name} =]&nbsp;<span class="required_field">*</span></label>
+    			<div class="controls">
+    				<input type="text" class="input-xlarge" id="s_name">
+    			</div>
+    		</div>
+        
+        <div class="control-group" id="cg_s_value">
+    			<label class="control-label" for="s_value">[== $lang->{s_value} =]</label>
+    			<div class="controls">
+    				<input type="text" class="input-xlarge" id="s_value">
+    			</div>
+    		</div>
+    		
+     		<div class="control-group" id="cg_lang">
+     			<label class="control-label" for="lang">[== $lang->{language} =]&nbsp;<span class="required_field">*</span></label>
+     			<div class="controls">
+     				<select class="input-xlarge" id="lang">
+    				 [== $list_langs =]
+     				</select>
+     			</div>
+     		</div>
+    		
+  		</span> <!-- form_controls -->
+  		
+  	</div>
+  	<!-- data_edit_form -->
+  	<div class="form-actions">
+  		<div id="ajax_loading" style="display:none">
+  			<img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
+  		</div>
+  		<div id="data_edit_form_buttons">
+  			<span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>
+  			<span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
+  		</div>
+  		<span class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</span>
+  		<!-- data_edit_form_buttons -->
+  	</div>
+	</span> <!-- form_horizontal -->                              
+</div>
+<!-- data_edit -->
+<script type="text/javascript">
+
+// Init variables
+var edit_id=0;
+var delete_data = new Array();
+var dtable;
+var langs = new HashTable({[== $hash_langs =]});
+
+// Bind Enter key 
+
+$('#language_select_lang').bind('keypress', function(e) {
+  if(e.keyCode == 13){
+   $('#btn_language_select_save').click();
+  }
+});                        
+
+$('#layout_select_layout').bind('keypress', function(e) {
+  if(e.keyCode == 13){
+   $('#btn_layout_select_save').click();
+  }
+});
+
+$('input:radio[name="status_select_status"]').bind('keypress', function(e) {
+  if(e.keyCode == 13){
+   $('#btn_status_select_save').click();
+  }
+});
+
+// Check all, uncheck all functions
+jQuery.fn.checkAll = function(name){
+ var selector = ':checkbox'+(name?'[@name='+name+']':'');
+ $(selector,this).attr('checked',true);
+}
+jQuery.fn.uncheckAll = function(name){
+ var selector = ':checkbox'+(name?'[@name='+name+']':'');
+ $(selector,this).removeAttr('checked');
+}
+
+$(document).ready(function() {
+  $().dropdown();
+  var row_id=0;
+  // Init data table
+  dtable=$('#data_table').dataTable( {
+    "sDom": "frtip",
+    "bLengthChange": false,
+    "bServerSide": true,
+    "bProcessing": true,
+    "sPaginationType": "bootstrap",
+    "iDisplayLength": 10,
+    "bAutoWidth": true,
+    "sAjaxSource": "/admin/settings/data/list",
+    "sLengthMenu": "[== $lang->{sLengthMenu} =]",
+		"sZeroRecords": "[== $lang->{sZeroRecords} =]",
+		"sInfo": "[== $lang->{sInfo} =]",
+		"sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
+		"sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
+    "aoColumnDefs": [
+     { "bSortable": false, "aTargets": [ 4 ] },
+     { "fnRender": function ( oObj, sVal ) {
+         return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+       },
+       "aTargets": [ 4 ]
+     },
+     { "fnRender": function ( oObj, sVal ) {
+         return '<div style="text-align:center;cursor:pointer" onclick="selectLanguage('+row_id+')" id="lang_'+row_id+'"><span style="display:none" id="langv_'+row_id+'">'+sVal+'</span><img src="/images/flags/'+sVal+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem(sVal)+'</div>';
+       },
+       "aTargets": [ 3 ]
+     },
+     { "fnRender": function ( oObj, sVal ) {
+         row_id=sVal;
+         return '<input type="checkbox" style="float:left" name="cbx_'+sVal+'" id="cbx_'+sVal+'">&nbsp;'+sVal;
+       },
+       "aTargets": [ 0 ]
+     },     
+     { "fnRender": function ( oObj, sVal ) {
+         return '<div id="s_name-'+row_id+'" class="editable_text">'+sVal+'</div';
+       },
+       "aTargets": [ 1 ]
+     },
+     { "fnRender": function ( oObj, sVal ) {
+         return '<div id="s_value-'+row_id+'" class="editable_text">'+sVal+'</div';
+       },
+       "aTargets": [ 2 ]
+     }
+    ],
+    "fnDrawCallback": function() {
+      $('.editable_text').editable( submitEdit, {
+         placeholder : '–',
+         tooltip     : ''
+      });
+    }
+  } );
+} );
+
+function selectLanguage(row_id) {
+ $('#language_select_s_name').html($('#s_name_'+row_id).html());
+ $('#language_select').modal({keyboard: true});
+ edit_id = row_id;
+ $('#language_select_lang').val($('#langv_'+edit_id).html());
+ $('#language_select_lang').focus();
+}
+
+function submitEdit(value, settings) { 
+ var value_old = this.revert;
+ var edit_id = this.id;
+ if (value_old == value) {
+  return(value);
+ }
+ value=value.replace(/\</g, '&lt;');
+ value=value.replace(/\>/g, '&gt;');
+ value=value.replace(/\"/g, '&quot;');
+ var arr = this.id.split('-');
+ $.post("/admin/settings/data/save/field", { field_name: arr[0], field_id: arr[1], field_value: value },
+  function(data){
+   if (data.result != '1') {
+    $('#'+edit_id).html(value_old);
+    if (data.error) {
+     $('#error_dialog_msg').html(data.error);
+     $('#error_dialog').modal({keyboard: true});
+    }
+   } else {
+    if (data.value) {
+     $('#'+edit_id).html(data.value);    
+    }
+   }
+ });
+ return(value);
+}
+
+// "Add" button handler (form mode)
+$('#btn_add').click( function () {
+   edit_id=0;
+   $('#form_error_msg').hide();
+   $('#data_overview').hide();
+   resetFormState();
+   $('#data_edit').show();
+   $('#h_data_actions').html('[== $lang->{add_option} =]');
+   $('#form_notice').html("[== $lang->{form_notice_add} =]");
+   $('#s_name').val('');
+   $('#s_value').val('');
+   $("#lang").val($("#lang option:first").val());
+   $('#s_name').focus();
+});
+
+// "Cancel" button handler (form mode)
+$('#btn_edit_cancel').click( function () {
+   $('#data_overview').show();
+   $('#data_edit').hide();
+});
+
+// "Save" button handler (language select dialog mode)
+
+$('#btn_language_select_save').click( function () {
+ $.post("/admin/settings/data/save/field", { field_name: "lang", field_id: edit_id, field_value: $('#language_select_lang').val() },
+  function(data){
+   if (data.result != '1') {
+    if (data.error) {
+     $('#error_dialog_msg').html(data.error);
+     $('#error_dialog').modal({keyboard: true});
+    }
+   } else {
+    $('#lang_'+edit_id).html('<span style="display:none" id="langv_'+edit_id+'">'+$('#language_select_lang').val()+'</span><img src="/images/flags/'+$('#language_select_lang').val()+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem($('#language_select_lang').val()));
+   }
+ });
+ $('#language_select').modal('hide');
+});
+   
+// "Save" button handler (form mode)
+$('#btn_edit_save').click( function () {
+   $('#form_error_msg').hide();
+   resetFormState();
+   var errors=false;
+   if (!$('#s_name').val().match(/^[A-Za-z0-9_\-]{1,254}$/)) { 
+    $('#cg_s_name').addClass('error');
+    errors=true;   
+   }
+   if (!$('#s_value').val().match(/^.{0,254}$/)) {
+    $('#cg_s_value').addClass('error');
+    errors=true;   
+   }
+   if (errors) {
+    $('#form_error_msg_text').html("[== $lang->{form_errors} =]");
+    $('#form_error_msg').fadeIn(400);
+    $('#form_error_msg').alert();
+    $("html, body").animate({ scrollTop: 0 }, "fast");
+   } else {
+    $('#data_edit_form').hide();
+    $('#data_edit_form_buttons').hide();
+    $('#ajax_loading_msg').html("[== $lang->{ajax_saving} =]");
+    $('#ajax_loading').show();
+    $.post("/admin/settings/data/save", { id: edit_id, s_name: $('#s_name').val(), s_value: $('#s_value').val(), lang: $('#lang').val() },
+     function(data){
+       if (data.result == '0') {
+        if (data.error) { // ERROR
+         $('#form_error_msg_text').html(data.error);
+         $('#form_error_msg').fadeIn(400);
+         $('#form_error_msg').alert();
+        }
+        $('#data_edit_form').show();
+        $('#data_edit_form_buttons').show();
+        $('#ajax_loading').hide();
+        if (data.field) {
+         $('#cg_'+data.field).addClass('error');
+         $('#'+data.field).focus();
+        }
+        $("html, body").animate({ scrollTop: 0 }, "fast");
+       } else { // OK
+        $('#data_edit_form').show();
+        $('#data_edit_form_buttons').show();
+        $('#ajax_loading').hide();
+        resetFormState();
+        $('#data_edit').hide();
+        $('#data_overview').show();
+        if (edit_id == 0) {
+         $.jmessage('[== $lang->{success} =]', "[== $lang->{add_success_notify} =]", 2500, 'jm_message_success');
+        } else {
+         $.jmessage('[== $lang->{success} =]', "[== $lang->{edit_success_notify} =]", 2500, 'jm_message_success');
+        }
+        dtable.fnReloadAjax();
+       }
+     }
+    );  
+   }
+});
+
+// "Abort" button handler
+$('#btn_abort').click( function() {
+   $('#btn_abort').hide();
+   $('#data_edit_form').show();
+   $('#data_edit_form_buttons').show();
+   $('#ajax_loading').hide();
+   $('#form_controls').show();
+   resetFormState();
+   $('#data_edit').hide();
+   $('#data_overview').show();
+} );
+
+// Edit record
+function editData(id) {
+   edit_id=id;
+   $('#form_error_msg').hide();
+   $('#data_overview').hide();
+   resetFormState();
+   $('#data_edit').show();
+   $('#h_data_actions').html('[== $lang->{edit_option} =]');
+   $('#form_notice').html("[== $lang->{form_notice_edit} =]");
+   $('#s_name').val('');
+   $('#s_value').val('');
+   $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
+   $('#data_edit_form').hide();
+   $('#data_edit_form_buttons').hide();
+   $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
+   $('#ajax_loading').show();
+   $.post("/admin/settings/data/load", { id: edit_id },
+     function(data){
+       if (data.result == '0') {
+         $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
+         $('#form_error_msg').fadeIn(400);
+         $('#form_error_msg').alert();
+         $('#ajax_loading').hide();
+         $('#data_edit_form').show();
+         $('#form_controls').hide();
+         $('#btn_abort').show();
+       } else { // OK
+         $('#ajax_loading').hide();
+         $('#data_edit_form').show();
+         $('#form_controls').show();
+         $('#data_edit_form_buttons').show();
+         if (data.s_name) {
+          $('#s_name').val(data.s_name);
+         }
+         if (data.s_value) {
+          $('#s_value').val(data.s_value);
+         }
+         if (data.lang) {
+          $('#lang').val(data.lang);
+         }
+         $('#s_name').focus();
+       }
+     }
+    ); 
+}
+
+// Button "Cancel" handler (Dialog: "Delete")
+$('#btn_delete_cancel').click( function() {
+   $('#delete_confirmation').modal('hide'); 
+});
+
+// Button "Close" handler (Dialog: "Error")
+$('#btn_error_dialog_close').click( function () {
+   $('#error_dialog').modal('hide');
+});
+                       
+// Button "Delete" handler (Dialog: "Delete")
+$('#btn_delete').click( function() {
+  $('#delete_confirmation').modal('hide');
+  $.post("/admin/settings/data/delete", { 'delete_data': delete_data },
+     function(data){
+       if (data.result == '0') {
+         $('#error_dialog_msg').html("[== $lang->{delete_error_notify} =]");
+         $('#error_dialog').modal({keyboard: true});
+       } else { // OK
+         $.jmessage('[== $lang->{success} =]', "[== $lang->{delete_success_notify} =]", 2500, 'jm_message_success');
+       }
+       dtable.fnReloadAjax();
+     }
+    ); 
+});
+
+// Button "Delete selected" handler
+$('#btn_delete_all').click( function() {
+  delete_data=[];
+  $('#data_table input:checked').each(function() {
+    var cbx=$(this).attr('name');
+    cbx=cbx.replace('cbx_', '');
+    delete_data.push(cbx);
+  });
+  if (delete_data.length == 0) {
+   $('#none_selected').modal({keyboard: false});
+   return;
+  }
+  var setting_names = new Array();
+  for (var key in delete_data) {
+    var val = delete_data[key];
+    setting_names.push($('#s_name-'+val).html())
+  }    
+  $('#delete_row_list').html(setting_names.join(', '));
+  $('#delete_confirmation').modal({keyboard: false});
+});
+
+// Button "Close" in "None selected" dialog
+$('#btn_none_selected_close').click( function() {
+  $('#none_selected').modal('hide'); 
+});
+// Button "Close" in "Language select" dialog
+$('#btn_language_select_close').click( function() {
+  $('#language_select').modal('hide'); 
+});
+
+// Open "Delete" dialog window
+function deleteData(id) {
+   delete_data=[id];
+   var s_name=$('#s_name-'+id).html();
+   $('#delete_row_list').html(s_name);
+   $('#delete_confirmation').modal({keyboard: false});
+}
+
+// Remove all "error" notification classes from form items
+function resetFormState() {
+   $('#cg_s_name').removeClass('error');
+   $('#cg_s_value').removeClass('error');
+}
+
+</script>
+<script type="text/javascript">$('#nav_settings').addClass('active')</script>

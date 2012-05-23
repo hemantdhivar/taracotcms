@@ -1,0 +1,27 @@
+body {
+ height:100%;
+}          
+#taracot_auth { 
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ width: 300px;
+ margin-left: -155px;
+ margin-top: -105px;
+ height: 155px;
+ background: #e5e5e5; 
+ text-align: left;
+ padding: 10px;
+ -moz-box-shadow: 0px 0px 3px #999;
+ -webkit-box-shadow: 0px 0px 3px #999;
+ box-shadow: 0px 0px 3px #999;
+ border: 1px solid #fff;
+}
+#taracot_auth_img {
+ position: relative;
+ left: 136px;
+ top: 62px;
+}
+label {
+ text-align: left;
+}

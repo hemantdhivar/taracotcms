@@ -1,0 +1,38 @@
+pagetitle: Image Browser
+loading_folder: Loading folder data, please wait...
+upload: Upload
+select: Select
+up: Up
+chdir: ChDir
+cut: Cut
+copy: Copy
+paste: Paste
+rename: Rename
+delete: Delete
+image_files: Image files
+current_dir: Current directory
+file_upload: Upload files
+file_uploading: Files uploading now, please be patient...
+file_upload_hint: Please choose some files to upload. When supported by your browser, you can also select multiple files and drag/drop files to the area below.
+upload_add: Select files
+upload_start: Start upload
+upload_clear: Clear list
+upload_back: Back to the browser
+error: Error
+bad_mode: Internal request error
+no_files: No files to copy/move
+dir_syntax_error: Directory syntax error
+file_syntax_error: File syntax error
+not_exists: File doesn't exists
+file_error: File system error
+newdir: New dir
+newdir_title: Create new directory
+newdir_name: Directory name
+save: Save
+cancel: Cancel
+rename_title: Rename
+rename_new: New name
+newdir_error: Error while creating new directory
+rename_error: Error while renaming the file
+delete_error: Error while deleting the file
+delete_confirm: Are you sure you wish to delete the following file(s)/dir(s)?

@@ -1,0 +1,49 @@
+module_name: Settings
+module_name_long: Settings management
+id: ID
+s_name: Option
+s_name_hint: Option name, latin characters, "_" and "-" symbols
+s_value: Value
+language: Language
+actions: Actions
+btn_add: New option
+btn_del: Delete selected
+btn_select_all: Select all
+btn_select_none: Select none
+edit_option: Edit page
+add_option: Add option
+form_notice_add: Please fill in the following form to add new option to the database. The required fields are marked with an asterisk.
+edit_option: Edit option
+form_notice_edit: Please fill in the following form to change option data. The required fields are marked with an asterisk.
+edit_save: Save changes
+edit_cancel: Cancel
+form_errors: Form contain errors, please check and try again
+ajax_saving: Saving data, please wait...
+ajax_loading: Loading data, please wait...
+form_error_invalid_s_name: Invalid option syntax
+form_error_duplicate_s_name: Duplicate option name (such option already exists)   
+form_error_invalid_s_value: Invalid value syntax
+form_error_invalid_lang: Invalid language
+add_success_notify: New option has been added
+edit_success_notify: Option data has been changed
+data_loading_error: Error while loading data from server. Please check your connection and try again.
+abort: Abort
+delete_confirmation_title: Delete confirmation
+delete_confirmation_msg1: The following option(s) will be deleted pemanently from system database&#058;
+delete_confirmation_msg2: Are you sure you wish to continue?                    
+delete: Delete                                                  
+delete_cancel: Cancel
+delete_success_notify: Option(s) has been deleted
+delete_error_notify: Error while deleting option(s)
+delete_none_selected_title: None selected
+delete_none_selected_msg: No items selected to delete. Please select some items in the table using checkboxes first.
+btn_close: Close
+field_edit_error_unknown: Unknown error while saving field
+error: Error
+success: Success
+language_select_title: Select language
+sLengthMenu: Display _MENU_ records per page
+sZeroRecords: Nothing found - sorry
+sInfo: Showing _START_ to _END_ of _TOTAL_ records
+sInfoEmpty: Showing 0 to 0 of 0 records
+sInfoFiltered: (filtered from _MAX_ total records)        

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>[== $page_data->{pagetitle} =] | [== $site_title =]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="[== $page_data->{keywords} =]">
+    <meta name="description" content="[== $page_data->{description} =]">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/taracot/main.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="/js/html5.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="/images/favicon.ico">
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row-fluid">
+        <div class="row-fluid">
+            <div class="span4" style="height:120px;padding-top:10px;">
+              <a href="/"><img src="/taracot/logo_white_235.png" width="235" height="51" alt="Taracot" style="padding-top:23px" /></a>
+            </div>
+            <div class="span8" style="height:140px;vertical-align: middle">
+              [% menu %]
+            </div>
+          </div>   
+        <div class="row-fluid">  
+          <div class="span12">
+            [== $content =]
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <footer>
+        <p>&copy; 2003-2012 Michael A. Matveev</p>
+      </footer>
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    
+    <script type="text/javascript">$('.carousel').carousel({interval: 7000,pause:'hover'})</script>
+
+  </body>
+</html>

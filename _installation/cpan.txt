@@ -1,0 +1,14 @@
+Additionally installed:
+
+Dancer::Plugin::Database
+Dancer::Template::Tenjin
+Dancer::Session::Storable 
+Time::Duration::Parse
+YAML::XS
+Module::Load
+Digest::MD5
+File::Slurp
+JSON::XS
+Text::Unidecode
+Imager
+File::Basename

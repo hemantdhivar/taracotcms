@@ -1,0 +1,45 @@
+body{
+background-image:url(/taracot/bg.png);background-position:top;background-repeat:repeat-x
+}
+.nav-pills{text-align:right;float:right;padding-top:43px;text-decoration:underline;}
+.nav-pills a {background-color:#444;text-decoration:underline;color:#fff}
+.nav-pills a:hover {color:#000}
+h1 {padding-bottom: 10px}
+.nav-tabs .dropdown-toggle .caret,
+.nav-pills .dropdown-toggle .caret {
+  margin-top: 6px;
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+} 
+.nav-tabs .dropdown-toggle:hover .caret,
+.nav-pills .dropdown-toggle:hover .caret {
+  border-top-color: #000;
+  border-bottom-color: #000;
+}
+div.container hr{color:444}
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 4px 0;
+  margin: 1px 0 0;
+  list-style: none;
+  background-color: #444;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  *border-right-width: 2px;
+  *border-bottom-width: 2px;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}

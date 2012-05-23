@@ -1,0 +1,40 @@
+appname: 'taracot'
+server: '0.0.0.0'
+port: '2999'
+daemon: 'false'
+layout: 'taracot'
+layouts_available: 'taracot'
+charset: 'UTF-8'
+template: 'tenjin'
+environment: 'development'
+root_dir: 'c:/xtreme/taracot/'
+data_dir: 'data'
+files_dir: 'c:/xtreme/taracot/public/files/'
+files_url: '/files'
+session_dir: 'c:/xtreme/taracot/tmp/sessions/'
+session: 'Storable'
+session_name: 'taracot_session'
+session_expires: '1 week'
+load_modules_admin: 'users, pages, sitemap, settings'
+load_modules_frontend: 'pages, imgbrowser'
+load_blocks_frontend: 'menu'
+lang_available: 'en, ru'
+lang_available_long: 'English, Русский'
+lang_default: 'en'
+db_table_prefix: 'taracot'
+salt: 'zuwrezathutebruhap6a558efane7asethe87caC44spa6upebrajaDrasares6u'
+
+plugins:
+ Database:
+  driver: 'mysql'
+  database: 'taracot'
+  host: 'localhost'
+  port: 3306
+  username: 'root'
+  password: ""
+  connection_check_threshold: 10
+  dbi_params:
+   RaiseError: 1
+   AutoCommit: 1
+  on_connect_do: ["SET NAMES 'utf8'", "SET CHARACTER SET 'utf8'" ]
+  log_queries: 1

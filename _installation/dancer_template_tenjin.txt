@@ -1,0 +1,18 @@
+Add:
+
+$template=~s/\\/\//gm;
+
+after:
+
+# Dancer seems to be sending the full filename (i.e. including full path)
+# of the template, while we only need the relative path, so let's
+# strip the base path from the template filename
+
+Add:
+
+$basepath=~s/\\/\//gm; 
+
+After:
+
+foreach (@{$self->{engine}->{path}}) {
+		my $basepath = $_;

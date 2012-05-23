@@ -1,0 +1,21 @@
+<div class="row">
+<div class="span2" style="text-align:center">
+<img src="/images/logo.png" width="90" height="90" alt="Taracot CMS" />
+</div>
+<div class="span10">
+<h1>Taracot CMS</h1>
+<br/>
+Open source content management system<br/>
+&copy; 2003-2012 Michael A. Matveev
+<br/><br/>
+Components license:
+<br/><br/>
+&ndash;&nbsp;<a href="http://perl.org/" target="_blank">Perl</a> and <a href="http://perldancer.org/" target="_blank">Perl Dancer</a>. Code licensed under <a href="http://dev.perl.org/licenses/gpl1.html" target="_blank">GNU General Public License (GPL)</a>.<br/>
+&ndash;&nbsp;<a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>. Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.<br/>
+&ndash;&nbsp;<a href="http://jquery.org/" target="_blank">jQuery</a> core and plugins. Code licensed under the <a href="http://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt" target="_blank">MIT License</a> or <a href="http://www.opensource.org/licenses/gpl-license.php" target="_blank">GPL License</a>.<br/>
+&ndash;&nbsp;<a href="http://jqueryui.com/" target="_blank">jQuery UI</a>. Code licensed under the <a href="http://jqueryui.com/latest/MIT-LICENSE.txt" target="_blank">MIT License</a>.<br/>
+<br/>
+All other components are licensed under GPL/MIT/Apache open source licenses, information is available in corresponding files.
+<br/><br/>
+Taracot logo by <a href="http://www.iconsmaster.com/" target="_blank">Iconsmaster</a>, license: free for commercial use (include link to authors website) 
+</div>

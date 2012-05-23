@@ -1,0 +1,68 @@
+module_name: Pages
+module_name_long: Pages management
+id: ID
+pagetitle: Page title
+pagetitle_hint: Displayed in browser title
+keywords: Keywords
+keywords_hint: List of site keywords separated by comma
+description: Description
+description_hint: Website descriptions
+filename: URL
+status: Status
+status0: Inactive page (disabled for several reasons)
+status1: Visible page
+status2: Under construction
+language: Language
+layout: Layout
+actions: Actions
+btn_add: New page
+btn_del: Delete selected
+btn_select_all: Select all
+btn_select_none: Select none
+edit_page: Edit page
+add_page: Add page
+form_notice_add: Please fill in the following form to add new page to the database. The required fields are marked with an asterisk.
+edit_page: Edit page
+form_notice_edit: Please fill in the following form to change page data. The required fields are marked with an asterisk.
+edit_save: Save changes
+edit_cancel: Cancel
+form_errors: Form contain errors, please check and try again
+ajax_saving: Saving data, please wait...
+ajax_loading: Loading data, please wait...
+form_error_invalid_pagetitle: Invalid page title syntax
+form_error_duplicate_filename: Duplicate page URL (such URL already exists)   
+form_error_invalid_filename: Invalid URL syntax
+form_error_invalid_keywords: Invalid keywords syntax
+form_error_invalid_description: Invalid description syntax
+form_error_invalid_status: Invalid status
+form_error_invalid_lang: Invalid language
+form_error_invalid_layout: Invalid layout
+add_success_notify: New page has been added
+edit_success_notify: Pages data has been changed
+data_loading_error: Error while loading data from server. Please check your connection and try again.
+abort: Abort
+delete_confirmation_title: Delete confirmation
+delete_confirmation_msg1: The following page(s) will be deleted pemanently from system database&#058;
+delete_confirmation_msg2: Are you sure you wish to continue?                    
+delete: Delete                                                  
+delete_cancel: Cancel
+delete_success_notify: Page(s) has been deleted
+delete_error_notify: Error while deleting page(s)
+delete_none_selected_title: None selected
+delete_none_selected_msg: No items selected to delete. Please select some pages in the table using checkboxes first.
+btn_close: Close
+field_edit_error_unknown: Unknown error while saving field
+error: Error
+success: Success
+language_select_title: Select language
+layout_select_title: Select layout
+status_select_title: Select page status
+sLengthMenu: Display _MENU_ records per page
+sZeroRecords: Nothing found - sorry
+sInfo: Showing _START_ to _END_ of _TOTAL_ records
+sInfoEmpty: Showing 0 to 0 of 0 records
+sInfoFiltered: (filtered from _MAX_ total records)        
+imgbrowser: Image browser
+html: HTML
+wysiwyg: WYSIWYG
+switch_mode_question: Switching the mode will reset the current changes in editor. Continue?
