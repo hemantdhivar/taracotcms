@@ -59,11 +59,11 @@ sub _load_lang {
      $lng=$lang;
     }                 
   }
-  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/settings/lang/'.$lng.'.lng');
-  my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng');
-  if (defined $lang_adm && defined $lang_mod) {
-   $lang = { %$lang_adm, %$lang_mod };
-  }
+  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/settings/lang/en.lng') || {};
+  my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/settings/lang/'.$lng.'.lng') || {};
+  my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
+  my $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
+  $lang = { %$lang_adm, %$lang_mod, %$lang_adm_cnt, %$lang_mod_cnt };
   return $lng;
 }
 

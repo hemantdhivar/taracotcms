@@ -19,10 +19,9 @@ my $lang;
 
 sub _load_lang {
   my $lng=shift;
-  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/blocks/menu/lang/'.$lng.'.lng');
-  if (defined $lang_adm) {
-   $lang = \%$lang_adm;
-  }
+  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/blocks/menu/lang/en.lng') || {};
+  my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/blocks/menu/lang/'.$lng.'.lng') || {};
+  $lang = { %$lang_adm, %$lang_adm_cnt };
 }
 
 sub data() {

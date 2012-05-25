@@ -1,1 +1,12 @@
-
+auth_title: Авторизация
+auth_username: Имя пользователя
+auth_password: Пароль
+auth_login: Вход
+auth_close: Закрыть
+auth_error_title: Ошибка авторизации
+auth_error_text: Ошибка авторизации пользователя. Пожалуйста, проверьте данные и повторите попытку.
+admin_taracot: Taracot CMS
+admin_logout: Выход
+admin_loggedas: Пользователь
+error_404_title: Не найдено
+error_404_desc: Запрошенный документ не найден.<br/>Пожалуйста, проверьте URL и попобуйте снова.  

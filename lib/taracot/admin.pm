@@ -5,7 +5,26 @@ use Module::Load;
 use Dancer::Plugin::Database;
 use Digest::MD5 qw(md5_hex);
 
-my $lang = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.config->{lang_default}.'.lng');
+my $lang = {};
+
+sub _load_lang {
+  my $lng = config->{lang_default};;
+  if (defined request) {
+    my $_uribase=request->uri_base();
+    $_uribase=~s/http(s)?\:\/\///im;
+    my ($lang)=split(/\./, $_uribase);
+    my $lang_avail=lc config->{lang_available};
+    $lang_avail=~s/ //gm;
+    my (@langs)=split(/,/, $lang_avail);
+    if (exists {map { $_ => 1 } @langs}->{$lang}) {
+     $lng=$lang;
+    }                 
+  }
+  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
+  my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
+  $lang = { %$lang_adm, %$lang_adm_cnt };
+  return $lng;
+}
 
 my $navdata;
 my $authdata;

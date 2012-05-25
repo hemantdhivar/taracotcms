@@ -15,9 +15,11 @@ my @columns_ft = ('username','realname','email');
 my $navdata;
 my $authdata;
 prefix $defroute;
-my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/users/lang/'.config->{lang_default}.'.lng');
-my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.config->{lang_default}.'.lng');
-my $lang = { %$lang_adm, %$lang_mod };
+my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/users/lang/en.lng');
+my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/users/lang/'.config->{lang_default}.'.lng');
+my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng');
+my $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.config->{lang_default}.'.lng');
+my $lang = { %$lang_adm, %$lang_mod, %$lang_adm_cnt, %$lang_mod_cnt };
 sub _name() {
   return $lang->{module_name};
 }           
