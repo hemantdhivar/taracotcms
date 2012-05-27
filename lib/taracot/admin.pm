@@ -70,8 +70,9 @@ foreach my $mod (@modules) {
 prefix "/admin";
 
 get '/' => sub {
+  _load_lang();
   if (_auth()) {
-	  return template 'admin_index', { lang => $lang, navdata => $navdata, authdata => $authdata }, { layout => 'admin' };
+	  return template 'admin_index', { lang => $lang, navdata => $navdata, authdata => $authdata, config => config, taracot_current_version => $taracot::taracot_current_version }, { layout => 'admin' };
   }
   return template 'admin_login_raw', { lang => $lang }, { layout => undef };
 };

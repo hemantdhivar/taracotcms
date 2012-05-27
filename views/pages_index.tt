@@ -347,10 +347,6 @@ $('input:radio[name="status_select_status"]').bind('keypress', function(e) {
   }
 });
 
-// Init CkEditor
-
-$('#wysiwyg_editor').ckeditor({filebrowserBrowseUrl:'/admin/imgbrowser'});
-
 // Check all, uncheck all functions
 jQuery.fn.checkAll = function(name){
  var selector = ':checkbox'+(name?'[@name='+name+']':'');
@@ -362,9 +358,12 @@ jQuery.fn.uncheckAll = function(name){
 }
 
 $(document).ready(function() {
+  // Init CkEditor
+  $('#wysiwyg_editor').ckeditor({filebrowserBrowseUrl:'/admin/imgbrowser'});
+  // Init dropdown
   $().dropdown();
-  var row_id=0;
   // Init data table
+  var row_id=0;
   dtable=$('#data_table').dataTable( {
     "sDom": "frtip",
     "bLengthChange": false,

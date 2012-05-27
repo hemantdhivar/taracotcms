@@ -373,7 +373,7 @@ post '/data/delete' => sub {
   
   if ($del_sql) {
     my $sth = database->prepare(
-     'DELETE FROM '.config->{db_table_prefix}.'_users WHERE '.$del_sql
+     'DELETE FROM '.config->{db_table_prefix}.'_users WHERE '.$del_sql.' AND username != '.database->quote($authdata->{username})
     );
     my $res;
     if ($sth->execute()) {
