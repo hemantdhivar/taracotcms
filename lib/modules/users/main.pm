@@ -190,6 +190,10 @@ post '/data/save' => sub {
    $dupesql=' AND id != '.$id;
   }
   
+  if ($authdata->{username} eq $username && $authdata->{status} eq 2) {
+   $status=2;
+  }
+  
   my $sth = database->prepare(
    'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE username='.database->quote($username).$dupesql
   );
@@ -309,6 +313,9 @@ post '/data/save/field' => sub {
   if ($field_name eq 'status') {
    my $status=int($field_value);
    if ($status < 0 || $status > 2) {
+    return qq~{"result":"0","error":"~.$lang->{form_error_invalid_status}.qq~"}~;
+   }
+   if ($authdata->{id} eq $field_id && $authdata->{status} eq 2) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_status}.qq~"}~;
    }
    database->quick_update(config->{db_table_prefix}.'_users', { id => $field_id }, { status => $status, lastchanged => time });
