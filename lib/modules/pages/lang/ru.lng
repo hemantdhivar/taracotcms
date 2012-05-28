@@ -1,1 +1,71 @@
-
+module_name: Страницы
+module_name_long: Управление страницами
+id: ID
+pagetitle: Заголовок страницы
+pagetitle_hint: Отображается в заголовке браузера
+keywords: Ключевые слова
+keywords_hint: Список ключевых слов, разделенных запятой
+description: Описание
+description_hint: Описание сайта
+filename: URL  (ссылка)
+status: Статус
+status0: Неактивная в данный момент страница
+status1: Видимая страница
+status2: Страница в разработке
+language: Язык
+layout: Шаблон
+actions: Действия
+btn_add: Новая страница
+btn_del: Удалить выбранные
+btn_select_all: Выбрать все
+btn_select_none: Не выбирать ничего
+edit_page: Редактирование страницы
+add_page: Добавить страницу
+form_notice_add: Пожалуйста, заполните следующую форму для добавления в базу данных. Обязательные поля отмечены &laquo;звездочкой&raquo;.
+edit_page: Редактировать страницу
+form_notice_edit: Пожалуйста, заполните следующую форму для редактирования страницы. Обязательные поля отмечены &laquo;звездочкой&raquo;.
+edit_save: Сохранить изменения
+edit_cancel: Отмена
+form_errors: Форма содержит ошибки, пожалуйста, проверьте и исправьте их
+ajax_saving: Сохранение данных, пожалуйста, подождите...
+ajax_loading: Загрузка данных, пожалуйста, подождите...
+form_error_invalid_pagetitle: Ошибка в заголовке страницы
+form_error_duplicate_filename: Указанный URL уже существует для данного языка   
+form_error_invalid_filename: Ошибка в синтаксисе URL
+form_error_invalid_keywords: Ошибка в синтаксисе ключевых слов
+form_error_invalid_description: Ошибка в синтаксисе описания
+form_error_invalid_status: Неверный статус
+form_error_invalid_lang: Неверный язык
+form_error_invalid_layout: Неверный шаблон
+add_success_notify: Новая страница успешно добавлена
+edit_success_notify: Страница успешно изменена
+data_loading_error: Ошибка во время загрузки страницы с сервера. Пожалуйста, проверьте соединение и повторите попытку.
+abort: Отмена
+delete_confirmation_title: Подтверждение удаления
+delete_confirmation_msg1: Следующая страница(ы) будет навсегда удалена из базы данных&#058;
+delete_confirmation_msg2: Вы уверены, что хотите продолжить?                    
+delete: Удалить                                                  
+delete_cancel: Отмена
+delete_success_notify: Страница(ы) была успешно удалена
+delete_error_notify: Ошибка во время удаления страницы(страниц)
+delete_none_selected_title: Ничего не выбрано
+delete_none_selected_msg: Нет выбранных элементов. Предварительно требуется отметить необходимые элементы &laquo;галочкой&raquo;.
+btn_close: Закрыть
+field_edit_error_unknown: Ошибка во время сохранения поля
+error: Ошибка
+success: Успешно
+language_select_title: Выберите язык
+layout_select_title: Выберите шаблон
+status_select_title: Выберите статус страницы
+sLengthMenu: Отображение записей на страницу&#058; _MENU_
+sZeroRecords: Записи не найдены
+sInfo: Отображаются записи с _START_ по _END_ из _TOTAL_
+sInfoEmpty: Записи не отображаются
+sInfoFiltered: (всего записей&#058; _MAX_)  
+sPrevious: Пред. страница
+sNext: След. страница   
+sSearch: Поиск   
+imgbrowser: Изображения
+html: HTML
+wysiwyg: WYSIWYG
+switch_mode_question: Переключение режима редактора приведет к сбросу несохраненных изменений. Продолжить?

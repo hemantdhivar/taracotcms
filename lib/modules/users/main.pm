@@ -12,61 +12,38 @@ my @columns_ft = ('username','realname','email');
 
 # Module core settings 
 
-my $navdata;
-my $authdata;
+my $lang;
 prefix $defroute;
-my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/users/lang/en.lng');
-my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/users/lang/'.config->{lang_default}.'.lng');
-my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng');
-my $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.config->{lang_default}.'.lng');
-my $lang = { %$lang_adm, %$lang_mod, %$lang_adm_cnt, %$lang_mod_cnt };
+
 sub _name() {
+ &_load_lang();
   return $lang->{module_name};
 }           
 sub _defroute() {
   return $defroute;
 }
-sub _navdata() {
-  $navdata=$_[1];
+sub _load_lang {
+  my $lng = &taracot::_detect_lang() || config->{lang_default};
+  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/users/lang/en.lng') || {};
+  my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/users/lang/'.$lng.'.lng') || {};
+  my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
+  my $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
+  $lang = { %$lang_adm, %$lang_mod, %$lang_adm_cnt, %$lang_mod_cnt };
+  return $lng;
 }
-sub _auth() {
-  if (session('user')) { 
-   my $id = session('user');
-   $authdata  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
-  } else {
-   $authdata->{id} = 0;
-   $authdata->{status} = 0;
-   $authdata->{username} = '';
-   $authdata->{password} = '';
-  }                                                                    
-  if ($authdata->{status}) {
-   if ($authdata->{status} == 2) {
-    return true;
-   }
-  }
-  redirect '/admin';
-  return false;
-};
-
 # Routes
 
 get '/' => sub {
-
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
-  return template 'users_index', { lang => $lang, navdata => $navdata, authdata => $authdata }, { layout => 'admin' };
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
+  my $navdata=&taracot::admin::_navdata();
+  return template 'users_index', { lang => $lang, navdata => $navdata }, { layout => 'admin' };
 };
 
 get '/data/list' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
-  
   my $sEcho = param('sEcho') || 0;
   $sEcho=int($sEcho);
   my $iDisplayStart = param('iDisplayStart') || 0;
@@ -144,17 +121,12 @@ get '/data/list' => sub {
   "iTotalDisplayRecords": "$total_filtered",
   "aaData": $json   
 }~;
-   # End: return JSON data
-
 };
 
 post '/data/save' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();  
   content_type 'application/json';
-  
   my $username=param('username') || '';
   my $password=param('password') || '';
   my $email=param('email') || '';
@@ -190,7 +162,7 @@ post '/data/save' => sub {
    $dupesql=' AND id != '.$id;
   }
   
-  if ($authdata->{username} eq $username && $authdata->{status} eq 2) {
+  if ($taracot::admin::authdata->{username} eq $username && $taracot::admin::authdata->{status} eq 2) {
    $status=2;
   }
   
@@ -233,10 +205,8 @@ post '/data/save' => sub {
 };
 
 post '/data/save/field' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
 
   my $field_name=param('field_name') || '';
@@ -315,7 +285,7 @@ post '/data/save/field' => sub {
    if ($status < 0 || $status > 2) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_status}.qq~"}~;
    }
-   if ($authdata->{id} eq $field_id && $authdata->{status} eq 2) {
+   if ($taracot::admin::authdata->{id} eq $field_id && $taracot::admin::authdata->{status} eq 2) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_status}.qq~"}~;
    }
    database->quick_update(config->{db_table_prefix}.'_users', { id => $field_id }, { status => $status, lastchanged => time });
@@ -326,15 +296,11 @@ post '/data/save/field' => sub {
 };
 
 post '/data/load' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
-  
   my $id=param('id') || 0;
   $id=int($id);
-  
   if ($id <= 0) {
    return qq~{"result":"0"}~;
   }
@@ -353,10 +319,8 @@ post '/data/load' => sub {
 };  
 
 post '/data/delete' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   
   my $id=param('delete_data[]') || '';
@@ -369,7 +333,7 @@ post '/data/delete' => sub {
   if(ref($id) eq 'ARRAY'){
    foreach my $item (@$id) {
     $item=int($item);
-    if ($item ne $authdata->{id}) {
+    if ($item ne $$taracot::admin::authdata->{id}) {
      $del_sql.=' OR id='.$item;
     }
    }
@@ -377,7 +341,7 @@ post '/data/delete' => sub {
     $del_sql=~s/ OR //;
    }
   } else {
-    if ($id ne $authdata->{id}) {
+    if ($id ne $taracot::admin::authdata->{id}) {
      $del_sql='id='.int($id);
     }
   }

@@ -8,18 +8,7 @@ use Digest::MD5 qw(md5_hex);
 my $lang = {};
 
 sub _load_lang {
-  my $lng = config->{lang_default};;
-  if (defined request) {
-    my $_uribase=request->uri_base();
-    $_uribase=~s/http(s)?\:\/\///im;
-    my ($lang)=split(/\./, $_uribase);
-    my $lang_avail=lc config->{lang_available};
-    $lang_avail=~s/ //gm;
-    my (@langs)=split(/,/, $lang_avail);
-    if (exists {map { $_ => 1 } @langs}->{$lang}) {
-     $lng=$lang;
-    }                 
-  }
+  my $lng = &taracot::_detect_lang() || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
   my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
   $lang = { %$lang_adm, %$lang_adm_cnt };
@@ -27,7 +16,7 @@ sub _load_lang {
 }
 
 my $navdata;
-my $authdata;
+our $authdata;
 
 sub _auth() {
   if (session('user')) { 
@@ -47,7 +36,24 @@ sub _auth() {
   return false;
 };
 
-# Load modules and navigation data
+# Load navigation data
+
+sub _navdata() {
+ my $navdata;
+ my $load_modules = config->{load_modules_admin};
+ $load_modules=~s/ //gm;
+ my @modules = split(/,/, $load_modules);
+ foreach my $module (@modules) {
+  my $taracot_module_load="modules::".lc($module)."::main";
+  my $name = $taracot_module_load->_name() || lc($module);
+  my $defroute = $taracot_module_load->_defroute(); 
+  $navdata.=qq~<li id="nav_$module"><a href="$defroute">$name</a></li>~; 
+ }
+ $navdata.=qq~\n~;
+ return $navdata;
+}
+
+# Load modules
 
 my $load_modules = config->{load_modules_admin};
 $load_modules=~s/ //gm;
@@ -55,14 +61,6 @@ my @modules = split(/,/, $load_modules);
 foreach my $module (@modules) {
  my $taracot_module_load="modules::".lc($module)."::main";
  load $taracot_module_load;
- my $name = $taracot_module_load->_name() || lc($module);
- my $defroute = $taracot_module_load->_defroute(); 
- $navdata.=qq~<li id="nav_$module"><a href="$defroute">$name</a></li>~; 
-}
-$navdata.=qq~\n~;
-foreach my $mod (@modules) {
- my $module="modules::".lc($mod)."::main";
- $module->_navdata($navdata);
 }
 
 # Process admin routes
@@ -72,6 +70,7 @@ prefix "/admin";
 get '/' => sub {
   _load_lang();
   if (_auth()) {
+    my $navdata=_navdata();
 	  return template 'admin_index', { lang => $lang, navdata => $navdata, authdata => $authdata, config => config, taracot_current_version => $taracot::taracot_current_version }, { layout => 'admin' };
   }
   return template 'admin_login_raw', { lang => $lang }, { layout => undef };

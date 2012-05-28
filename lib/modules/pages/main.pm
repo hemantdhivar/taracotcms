@@ -2,6 +2,7 @@ package modules::pages::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use JSON::XS();
+use Digest::MD5 qw(md5_hex);
 use taracot::loadpm;
 
 # Configuration
@@ -12,7 +13,6 @@ my @columns_ft = ('pagetitle','filename');
 
 # Module core settings 
 
-my $navdata;
 my $lang;
 
 sub _name() {
@@ -22,42 +22,9 @@ sub _name() {
 sub _defroute() {
   return $defroute;
 }
-sub _navdata() {
-  $navdata=$_[1];
-}
-sub _auth() {
-  _load_lang();
-  if (session('user')) { 
-   my $id = session('user');
-   $taracot::taracout_auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
-  } else {
-   $taracot::taracout_auth_data->{id} = 0;
-   $taracot::taracout_auth_data->{status} = 0;
-   $taracot::taracout_auth_data->{username} = '';
-   $taracot::taracout_auth_data->{password} = '';
-  }                                                                    
-  if ($taracot::taracout_auth_data->{status}) {
-   if ($taracot::taracout_auth_data->{status} == 2) {
-    return true;
-   }
-  }
-  redirect '/admin';
-  return false;
-};
 
 sub _load_lang {
-  my $lng = config->{lang_default};;
-  if (defined request) {
-    my $_uribase=request->uri_base();
-    $_uribase=~s/http(s)?\:\/\///im;
-    my ($lang)=split(/\./, $_uribase);
-    my $lang_avail=lc config->{lang_available};
-    $lang_avail=~s/ //gm;
-    my (@langs)=split(/,/, $lang_avail);
-    if (exists {map { $_ => 1 } @langs}->{$lang}) {
-     $lng=$lang;
-    }                 
-  }
+  my $lng = &taracot::_detect_lang() || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/en.lng') || {};
   my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/'.$lng.'.lng') || {};
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
@@ -97,7 +64,7 @@ get qr{(.*)} => sub {
   }
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { filename => $url, lang => $_current_lang });
   if (defined $db_data && $db_data->{id}) {
-   $taracot::taracot_render_template = template 'index_'.$db_data->{lang}, { current_lang => $_current_lang,lang => $lang, navdata => $navdata, authdata => \$taracot::taracout_auth_data, site_title => $stitle->{s_value}, page_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+   $taracot::taracot_render_template = template 'index_'.$db_data->{lang}, { current_lang => $_current_lang,lang => $lang, authdata => \$taracot::taracout_auth_data, site_title => $stitle->{s_value}, page_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
   }
   pass();
 };
@@ -107,11 +74,9 @@ get qr{(.*)} => sub {
 prefix $defroute;
 
 get '/' => sub {
-
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
+  my $navdata=&taracot::admin::_navdata();
   my $layouts=config->{layouts_available};
   $layouts=~s/ //gm;
   my @a_layouts=split(/,/, $layouts);
@@ -140,12 +105,9 @@ get '/' => sub {
 };
 
 get '/data/list' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
-  
   my $sEcho = param('sEcho') || 0;
   $sEcho=int($sEcho);
   my $iDisplayStart = param('iDisplayStart') || 0;
@@ -228,12 +190,9 @@ get '/data/list' => sub {
 };
 
 post '/data/save' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
-  
   my $pagetitle=param('pagetitle') || '';
   my $filename=param('filename') || '';
   my $keywords=param('keywords') || '';
@@ -328,12 +287,9 @@ post '/data/save' => sub {
 };
 
 post '/data/save/field' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
-
   my $field_name=param('field_name') || '';
   my $field_id=param('field_id') || 0;
   $field_id=int($field_id);
@@ -453,12 +409,9 @@ post '/data/save/field' => sub {
 };
 
 post '/data/load' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  # Importantif (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
-  
   my $id=param('id') || 0;
   $id=int($id);
   
@@ -480,12 +433,9 @@ post '/data/load' => sub {
 };  
 
 post '/data/delete' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
-  
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
-  
   my $id=param('delete_data[]') || '';
   
   if (length($id) == 0) {

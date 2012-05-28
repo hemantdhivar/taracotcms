@@ -10,7 +10,7 @@ btn_add: New option
 btn_del: Delete selected
 btn_select_all: Select all
 btn_select_none: Select none
-edit_option: Edit page
+edit_option: Edit option
 add_option: Add option
 form_notice_add: Please fill in the following form to add new option to the database. The required fields are marked with an asterisk.
 edit_option: Edit option

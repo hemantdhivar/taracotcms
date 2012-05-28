@@ -23,9 +23,9 @@ prefix "/";
 
 my $lang;
 
-sub _load_lang {
-  my $lng = config->{lang_default};;
-  if (defined request) {
+sub _detect_lang() {
+ my $lng;
+ if (defined request) {
     my $_uribase=request->uri_base();
     $_uribase=~s/http(s)?\:\/\///im;
     my ($lang)=split(/\./, $_uribase);
@@ -36,31 +36,16 @@ sub _load_lang {
      $lng=$lang;
     }                 
   }
+ return $lng; 
+}
+
+sub _load_lang {          
+  my $lng = _detect_lang() || config->{lang_default};
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
   my $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
   $lang = { %$lang_mod, %$lang_mod_cnt };
   return $lng;
 } 
-
-sub _auth() {
-  _load_lang();
-  if (session('user')) { 
-   my $id = session('user');
-   $taracot::taracout_auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
-  } else {
-   $taracot::taracout_auth_data->{id} = 0;
-   $taracot::taracout_auth_data->{status} = 0;
-   $taracot::taracout_auth_data->{username} = '';
-   $taracot::taracout_auth_data->{password} = '';
-  }                                                                    
-  if ($taracot::taracout_auth_data->{status}) {
-   if ($taracot::taracout_auth_data->{status} == 2) {
-    return true;
-   }
-  }
-  redirect '/admin';
-  return false;
-};
 
 any qr{.*} => sub {
  my $_current_lang=_load_lang();

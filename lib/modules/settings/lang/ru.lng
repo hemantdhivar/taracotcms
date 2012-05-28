@@ -1,1 +1,52 @@
-
+module_name: Настройки
+module_name_long: Управление настройками
+id: ID
+s_name: Опация
+s_name_hint: Название опции, лат. символы, "_" и "-"
+s_value: Значение
+language: Язык
+actions: Действия
+btn_add: Новая опция
+btn_del: Удалить выбранные
+btn_select_all: Выбрать все
+btn_select_none: Ничего не выбирать
+edit_option: Редактировать опцию
+add_option: Добавить опцию
+form_notice_add: Пожалуйста, заполните следующую форму для добавления в базу данных. Обязательные поля отмечены &laquo;звездочкой&raquo;.
+edit_option: Редактировать опцию
+form_notice_edit: Пожалуйста, заполните следующую форму для редактирования опции. Обязательные поля отмечены &laquo;звездочкой&raquo;.
+edit_save: Сохранить изменения
+edit_cancel: Отмена
+form_errors: Форма содержит ошибки, пожалуйста, проверьте и исправьте их
+ajax_saving: Сохранение данных, пожалуйста, подождите...
+ajax_loading: Загрузка данных, пожалуйста, подождите...
+form_error_invalid_s_name: Неверный синтаксис опции
+form_error_duplicate_s_name: Создаваемая опция уже существует для данного языка   
+form_error_invalid_s_value: Неверный ситаксис значения
+form_error_invalid_lang: Неверный язык
+add_success_notify: Новая опция добавлена
+edit_success_notify: Опция успешно изменена
+data_loading_error: Ошибка во время загрузки данных с сервера. Пожалуйста, проверьте соединение и повторите попытку.
+abort: Отмена
+delete_confirmation_title: Подтверждение удаления
+delete_confirmation_msg1: Следующая опция(и) будет навсегда удалена из базы данных&#058;
+delete_confirmation_msg2: Вы уверены, что хотите продолжить?                    
+delete: Удалить                                                  
+delete_cancel: Отмена
+delete_success_notify: Опция(и) была успешно удалена
+delete_error_notify: Ошибка во время удаления опции(й)
+delete_none_selected_title: Ничего не выбрано
+delete_none_selected_msg: Нет выбранных элементов. Предварительно требуется отметить необходимые элементы &laquo;галочкой&raquo;.
+btn_close: Закрыть
+field_edit_error_unknown: Ошибка во время сохранения поля
+error: Ошибка
+success: Успешно
+language_select_title: Выберите язык
+sLengthMenu: Отображение записей на страницу&#058; _MENU_
+sZeroRecords: Записи не найдены
+sInfo: Отображаются записи с _START_ по _END_ из _TOTAL_
+sInfoEmpty: Записи не отображаются
+sInfoFiltered: (всего записей&#058; _MAX_)  
+sPrevious: Пред. страница
+sNext: След. страница   
+sSearch: Поиск        

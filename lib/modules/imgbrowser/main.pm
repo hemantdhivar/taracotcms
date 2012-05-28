@@ -8,6 +8,7 @@ use JSON::XS();
 use Text::Unidecode;
 use Imager;
 use taracot::fs;
+use Digest::MD5 qw(md5_hex);
 use File::Basename qw(fileparse);
 
 # Configuration
@@ -16,45 +17,14 @@ my $defroute = '/admin/imgbrowser';
 
 # Module core settings 
 
-my $navdata;
 my $authdata;
 my $lang;
 
 sub _defroute() {
   return $defroute;
 }
-sub _auth() {
-  _load_lang();
-  if (session('user')) { 
-   my $id = session('user');
-   $authdata  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
-  } else {
-   $authdata->{id} = 0;
-   $authdata->{status} = 0;
-   $authdata->{username} = '';
-   $authdata->{password} = '';
-  }                                                                    
-  if ($authdata->{status}) {
-   if ($authdata->{status} == 2) {
-    return true;
-   }
-  }
-  redirect '/admin';
-  return false;
-};
 sub _load_lang {
-  my $lng = config->{lang_default};;
-  if (defined request) {
-    my $_uribase=request->uri_base();
-    $_uribase=~s/http(s)?\:\/\///im;
-    my ($lang)=split(/\./, $_uribase);
-    my $lang_avail=lc config->{lang_available};
-    $lang_avail=~s/ //gm;
-    my (@langs)=split(/,/, $lang_avail);
-    if (exists {map { $_ => 1 } @langs}->{$lang}) {
-     $lng=$lang;
-    }                 
-  }
+  my $lng = &taracot::_detect_lang() || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/imgbrowser/lang/en.lng') || {};
   my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/imgbrowser/lang/'.$lng.'.lng') || {};
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
@@ -112,17 +82,14 @@ sub getDir {
 prefix $defroute;
 
 get '/' => sub {             
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
   my $_current_lang=_load_lang();
   return template 'imgbrowser_index', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url} }, { layout => 'browser_'.$_current_lang };
 };
 
 get '/dirdata' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   my $dir=param('dir');
   if ($dir !~ /^[\.A-Za-z0-9_\-\/]{0,200}$/ || $dir eq '/' || $dir =~ m/\.\./) {
    $dir='';
@@ -147,9 +114,8 @@ get '/dirdata' => sub {
 };
 
 post '/upload' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $file=upload('file');
   my $dir=param('dir');
@@ -197,9 +163,8 @@ post '/upload' => sub {
 };
 
 post '/paste' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $dir_from=param('dir_from');
   my $dir_to=param('dir_to');
@@ -275,9 +240,8 @@ post '/paste' => sub {
 };
 
 post '/newdir' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $new_dir=param('new_dir');
   if ($new_dir !~ /^[\.A-Za-z0-9_\-]{0,100}$/ || $new_dir =~ m/\.\./) {
@@ -295,9 +259,8 @@ post '/newdir' => sub {
 };
 
 post '/rename' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $dir=param('dir');
   if ($dir !~ /^[\.A-Za-z0-9_\-\/]{0,200}$/ || $dir eq '/' || $dir =~ m/\.\./ || !-d config->{files_dir}."images/".$dir) {
@@ -328,9 +291,8 @@ post '/rename' => sub {
 };
 
 post '/delete' => sub {
-  # Important! Access control
-  if (!_auth()) { return true; }
-  # End: Important! Access control
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $dir=param('dir');
   if ($dir !~ /^[\.A-Za-z0-9_\-\/]{0,200}$/ || $dir eq '/' || $dir =~ m/\.\./ || !-d config->{files_dir}."images/".$dir) {
