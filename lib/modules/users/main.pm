@@ -362,18 +362,21 @@ post '/data/delete' => sub {
   if(ref($id) eq 'ARRAY'){
    foreach my $item (@$id) {
     $item=int($item);
-    $del_sql.=' OR id='.$item;
+    if ($item ne $authdata->{id}) {
+     $del_sql.=' OR id='.$item;
+    }
    }
    if ($del_sql) {
     $del_sql=~s/ OR //;
    }
   } else {
-    $del_sql='id='.int($id);
+    if ($id ne $authdata->{id}) {
+     $del_sql='id='.int($id);
+    }
   }
-  
   if ($del_sql) {
     my $sth = database->prepare(
-     'DELETE FROM '.config->{db_table_prefix}.'_users WHERE '.$del_sql.' AND username != '.database->quote($authdata->{username})
+     'DELETE FROM '.config->{db_table_prefix}.'_users WHERE '.$del_sql
     );
     my $res;
     if ($sth->execute()) {
