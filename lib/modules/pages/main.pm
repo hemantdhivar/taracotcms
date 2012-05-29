@@ -42,12 +42,12 @@ get qr{(.*)} => sub {
   my $stitle = database->quick_select(config->{db_table_prefix}."_settings", { s_name => 'site_title', lang => $_current_lang });
   if (session('user')) { 
    my $id = session('user');
-   $taracot::taracout_auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
+   $taracot::taracot_auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
   } else {
-   $taracot::taracout_auth_data->{id} = 0;
-   $taracot::taracout_auth_data->{status} = 0;
-   $taracot::taracout_auth_data->{username} = '';
-   $taracot::taracout_auth_data->{password} = '';
+   $taracot::taracot_auth_data->{id} = 0;
+   $taracot::taracot_auth_data->{status} = 0;
+   $taracot::taracot_auth_data->{username} = '';
+   $taracot::taracot_auth_data->{password} = '';
   } 
   my ($url) = splat;
   # remove dupe chars
@@ -64,7 +64,7 @@ get qr{(.*)} => sub {
   }
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { filename => $url, lang => $_current_lang });
   if (defined $db_data && $db_data->{id}) {
-   $taracot::taracot_render_template = template 'index_'.$db_data->{lang}, { current_lang => $_current_lang,lang => $lang, authdata => \$taracot::taracout_auth_data, site_title => $stitle->{s_value}, page_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+   $taracot::taracot_render_template = template 'index_'.$db_data->{lang}, { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
   }
   pass();
 };
@@ -100,7 +100,7 @@ get '/' => sub {
    $_cnt++;
   }
   $hash_langs=~s/, //;
-  return template 'pages_index', { lang => $lang, navdata => $navdata, authdata => $taracot::taracout_auth_data, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
+  return template 'pages_index', { lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
   
 };
 

@@ -1,0 +1,12 @@
+auth_title: Authorization
+auth_username: Username
+auth_password: Password
+auth_login: Login
+auth_close: Close
+auth_error_title: Authorization error
+auth_error_text: Couldn't authorize you as the website administrator. Please check your username and password, then try again.
+admin_taracot: Taracot CMS
+admin_logout: Log out
+admin_loggedas: Logged as
+error_404_title: Not found
+error_404_desc: The document you've requested couldn't be found.<br/>Please check your URL and try again. 

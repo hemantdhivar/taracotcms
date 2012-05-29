@@ -53,7 +53,7 @@ get '/' => sub {
    $list_langs.=qq~<option value="$item">$a_langs_long[$_cnt]</option>~;
    $_cnt++;
   } 
-  return template 'sitemap_index', { lang => $lang, navdata => $navdata, list_langs => $list_langs }, { layout => 'admin' }; 
+  return template 'sitemap_index', { lang => $lang, navdata => $navdata, list_langs => $list_langs, authdata => $taracot::taracot_auth_data }, { layout => 'admin' }; 
 };
 
 get '/data/tree' => sub {
