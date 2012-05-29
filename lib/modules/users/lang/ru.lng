@@ -1,1 +1,65 @@
-
+module_name: Пользователи
+module_name_long: Управление пользователями
+id: ID
+username: Пользователь
+username_hint: Латинские буквы, цифры, "_" и "-"
+realname: Настоящее имя
+password: Пароль
+password_hint: Пожалуйста, введите пароль повторно для проверки<br />Минимум 6 символов
+password_hint_edit: Пожалуйста, введие новый пароль, если Вы хотите поменять его<br />Минимум 6 символов
+password_mismatch: Пароли не совпадают
+status: Статус
+status0: Неактивный пользователь
+status1: Пользователь
+status2: Администратор (имеет доступ к панели управления)
+email: E-mail
+actions: Действия
+btn_add: Добавить пользователя
+btn_del: Удалить выбранные
+btn_select_all: Выбрать все
+btn_select_none: Не выбирать ничего
+edit_user: Редактирование пользователя
+add_user: Добавить пользователя
+form_notice_add: Пожалуйста, заполните следующую форму для добавления в базу данных. Обязательные поля отмечены &laquo;звездочкой&raquo;.
+edit_user: Edit user
+form_notice_add: Пожалуйста, заполните следующую форму для редактирования пользователя. Обязательные поля отмечены &laquo;звездочкой&raquo;.
+edit_save: Сохранить изменения
+edit_cancel: Отмена
+form_errors: Форма содержит ошибки, пожалуйста, проверьте и исправьте их
+ajax_saving: Сохранение данных, пожалуйста, подождите...
+ajax_loading: Загрузка данных, пожалуйста, подождите...
+form_error_invalid_username: Неверное имя пользователя
+form_error_duplicate_username: Указанное имя пользователя уже существует   
+form_error_invalid_password: Неверный синтаксис пароля
+form_error_invalid_email: Неверный адрес E-Mail
+form_error_duplicate_email: Указанный адрес E-Mail уже существует
+form_error_invalid_realname: Неверно указано настоящее имя
+form_error_invalid_status: Неверный статус
+add_success_notify: Новый пользователь успешно добавлен
+edit_success_notify: Данные пользователя успешно сохранены
+data_loading_error: Ошибка во время загрузки страницы с сервера. Пожалуйста, проверьте соединение и повторите попытку.
+abort: Отмена
+delete_confirmation_title: Подтверждение удаления
+delete_confirmation_msg1: Следующий пользователь(и) будет навсегда удален из базы данных&#058;
+delete_confirmation_msg2: Вы уверены, что хотите продолжить?                    
+delete: Удалить                                                  
+delete_cancel: Отмена
+delete_success_notify: Пользователь успешно удален из базы данных
+delete_error_notify: Ошибка во время удаления пользователя(ей)
+delete_none_selected_title: Ничего не выбрано
+delete_none_selected_msg: Нет выбранных элементов. Предварительно требуется отметить необходимые элементы &laquo;галочкой&raquo;.
+btn_close: Закрыть
+field_edit_error_unknown: Ошибка во время сохранения поля
+error: Ошибка
+success: Успешно
+language_select_title: Выберите язык
+layout_select_title: Выберите шаблон
+status_select_title: Выберите статус страницы
+sLengthMenu: Отображение записей на страницу&#058; _MENU_
+sZeroRecords: Записи не найдены
+sInfo: Отображаются записи с _START_ по _END_ из _TOTAL_
+sInfoEmpty: Записи не отображаются
+sInfoFiltered: (всего записей&#058; _MAX_)  
+sPrevious: Пред. страница
+sNext: След. страница   
+sSearch: Поиск

@@ -1,1 +1,22 @@
-
+module_name: Карта
+module_name_long: Карта сайта
+tree_loading: Загрузка…
+ajax_loading: Подключение к серверу…
+tree_load_error: Ошибка во время загрузки данных
+tree_node_del_confirm: Вы уверены, что хотите удалить следующий элемент(ы)
+node_title: Заголовок элемента
+node_url: URL элемента
+node_save: Сохранить элемент
+node_cancel: Отмена
+node_untitled: Без названия
+tree_save: Сохранить и закрыть
+select_lang: Выберите язык для загрузки дерева
+load_tree: Загрузка
+tree_cancel: Отмена
+tree_reset: Сброс данных
+tree_cancel_confirm: Вы уверены, что хотите покинуть режим редактирования?\nВсе изменения будут потеряны.
+tree_reset_confirm: Вы уверены, что хотите сбросить данные?\nВсе элементы будут удалены, все данные будут потеряны.
+tree_save_error: Ошибка во время сохранения дерева
+success: Успешно
+error: Ошибка
+tree_save_success: Дерево успешно сохранено

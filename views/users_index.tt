@@ -236,11 +236,18 @@ $(document).ready(function() {
     "iDisplayLength": 10,
     "bAutoWidth": true,
     "sAjaxSource": "/admin/users/data/list",
-    "sLengthMenu": "[== $lang->{sLengthMenu} =]",
-		"sZeroRecords": "[== $lang->{sZeroRecords} =]",
-		"sInfo": "[== $lang->{sInfo} =]",
-		"sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
-		"sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
+    "oLanguage": {
+      "oPaginate": {
+        "sPrevious":  "[== $lang->{sPrevious} =]",                                
+		    "sNext":  "[== $lang->{sNext} =]"
+      },
+      "sLengthMenu": "[== $lang->{sLengthMenu} =]",
+		  "sZeroRecords": "[== $lang->{sZeroRecords} =]",
+		  "sInfo": "[== $lang->{sInfo} =]",
+		  "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
+		  "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
+		  "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
+     }, 
     "aoColumnDefs": [
      { "bSortable": false, "aTargets": [ 5 ] },
      { "fnRender": function ( oObj, sVal ) {
