@@ -47,3 +47,6 @@ sZeroRecords: Nothing found - sorry
 sInfo: Showing _START_ to _END_ of _TOTAL_ records
 sInfoEmpty: Showing 0 to 0 of 0 records
 sInfoFiltered: (filtered from _MAX_ total records)        
+sPrevious: Previous page
+sNext: Next page   
+sSearch: Search

@@ -26,9 +26,15 @@ sub _defroute() {
 sub _load_lang {
   my $lng = &taracot::_detect_lang() || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/en.lng') || {};
-  my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/'.$lng.'.lng') || {};
+  my $lang_adm_cnt={};
+  if ($lng ne 'en') {
+   $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/'.$lng.'.lng') || {};
+  }
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
-  my $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
+  my $lang_mod_cnt={};
+  if ($lng ne 'en') {
+   $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
+  }
   $lang = { %$lang_adm, %$lang_mod, %$lang_adm_cnt, %$lang_mod_cnt };
   return $lng;
 }

@@ -42,7 +42,10 @@ sub _detect_lang() {
 sub _load_lang {          
   my $lng = _detect_lang() || config->{lang_default};
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
-  my $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
+  my $lang_mod_cnt={};
+  if ($lng ne 'en') {
+   $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
+  }
   $lang = { %$lang_mod, %$lang_mod_cnt };
   return $lng;
 } 
