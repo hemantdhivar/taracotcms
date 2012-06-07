@@ -161,3 +161,40 @@ th {
 .browser-i-select {background-position:-112px 0px;}
 .browser-i-updir {background-position:-128px 0px;}
 .browser-i-upload {background-position:-144px 0px;}
+
+[class^="filetypes-i-"] {
+ display:inline-block;
+ width:20px;
+ height:20px;
+ vertical-align:text-top;
+ background-image:url(/images/filetypes.png);
+ background-position:20px 20px;
+ background-repeat:no-repeat;*margin-right:.3em;
+}
+[class^="filetypes-i-"]:last-child{*margin-left:0;}
+.filetypes-i-avi {background-position:0px 0px;} 
+.filetypes-i-bmp {background-position:-20px 0px;} 
+.filetypes-i-css {background-position:-40px 0px;} 
+.filetypes-i-doc {background-position:-60px 0px;} 
+.filetypes-i-docx {background-position:-60px 0px;}
+.filetypes-i-gif {background-position:-80px 0px;} 
+.filetypes-i-htm {background-position:-100px 0px;} 
+.filetypes-i-jpg {background-position:-120px 0px;} 
+.filetypes-i-jpeg {background-position:-120px 0px;}
+.filetypes-i-js {background-position:-140px 0px;} 
+.filetypes-i-mov {background-position:0px -20px;} 
+.filetypes-i-mp3 {background-position:-20px -20px;} 
+.filetypes-i-mp4 {background-position:-40px -20px;} 
+.filetypes-i-mpg {background-position:-60px -20px;} 
+.filetypes-i-pdf {background-position:-80px -20px;} 
+.filetypes-i-php {background-position:-100px -20px;} 
+.filetypes-i-png {background-position:-120px -20px;} 
+.filetypes-i-ppt {background-position:-140px -20px;} 
+.filetypes-i-pptx {background-position:-140px -20px;}
+.filetypes-i-rar {background-position:0px -40px;} 
+.filetypes-i-txt {background-position:-20px -40px;} 
+.filetypes-i-unknown {background-position:-40px -40px;} 
+.filetypes-i-xls {background-position:-60px -40px;} 
+.filetypes-i-xlsx {background-position:-60px -40px;}
+.filetypes-i-xml {background-position:-80px -40px;} 
+.filetypes-i-zip {background-position:-100px -40px;}

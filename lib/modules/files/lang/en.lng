@@ -1,0 +1,23 @@
+module_name: Files
+module_name_long: Files management
+dir_error: Unable to read storage directory
+no_files: There are currently no files uploaded.
+ajax_loadng: Loading data, please wait...
+files_hint: You can upload files to your website here.
+size_tb: TB
+size_gb: GB
+size_mb: MB
+size_kb: KB
+size_b: byte(s)
+file_upload: Upload file(s)
+file_uploading: Files uploading now, please be patient...
+file_upload_hint: Please choose some files to upload. When supported by your browser, you can also select multiple files and drag/drop files to the area below.
+upload_add: Select files
+upload_start: Start upload
+upload_clear: Clear list
+upload_back: Back to the list
+error: Error
+error_delete: Couldn't delete requested file
+success: Success
+success_delete: File has been deleted
+confirm_delete: Are you sure you wish to delete the following file
