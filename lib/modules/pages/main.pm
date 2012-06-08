@@ -4,6 +4,7 @@ use Dancer::Plugin::Database;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use taracot::loadpm;
+use Text::Unidecode;
 
 # Configuration
 
@@ -81,7 +82,7 @@ prefix $defroute;
 
 get '/' => sub {
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
-  _load_lang();
+  my $_current_lang=_load_lang();
   my $navdata=&taracot::admin::_navdata();
   my $layouts=config->{layouts_available};
   $layouts=~s/ //gm;
@@ -106,7 +107,7 @@ get '/' => sub {
    $_cnt++;
   }
   $hash_langs=~s/, //;
-  return template 'pages_index', { lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
+  return template 'pages_index', { current_lang => $_current_lang, lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
   
 };
 
@@ -476,8 +477,23 @@ post '/data/delete' => sub {
   } else {
     return qq~{"result":"0"}~;
   }
-      
 };
+
+post '/data/unidecode' => sub {
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $val=param('val');
+  if (!$val || length($val)>2048) {
+   return '{"result":"0"}';
+  }
+  $val=lc unidecode($val);
+  $val=~s/ /_/gm;
+  $val=~s/[^a-z0-9\-_\.\/]//gm;
+  if ($val) {
+   return '{"result":"1","data":"'.$val.'"}';
+  }
+  return '{"result":"0"}';
+}; 
 
 # End
 

@@ -69,3 +69,6 @@ imgbrowser: Image browser
 html: HTML
 wysiwyg: WYSIWYG
 switch_mode_question: Switching the mode will reset the current changes in editor. Continue?
+get_url: Generate URL automatically
+get_url_error_blank: Cannot generate URL when page title is not set
+get_url_error_other: Error while generating URL

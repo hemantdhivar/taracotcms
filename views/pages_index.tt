@@ -224,7 +224,9 @@
         <div class="control-group" id="cg_filename">
     			<label class="control-label" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
     			<div class="controls">
-    				<input type="text" class="input-xlarge" id="filename">
+    				<input type="text" class="input-xlarge" id="filename"><span class="help-inline"><img src="/images/get.png" alt="[== $lang->{get_url} =]" width="20" height="20" style="cursor:pointer" onclick="generateURL()" id="get_url" /></span>
+    				<div class="help-block" id="url_help" style="overflow:hidden"></div> 
+    				<span id="unidecode_progress" style="display:none"><img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
     			</div>
     		</div>
     		
@@ -436,6 +438,49 @@ $(document).ready(function() {
   } );
 } );
 
+$('#filename').change(function() {
+  var path = $('#filename').val().replace(/^\//, '');
+  var lang = $('#lang').val();
+  if (lang === '[== $current_lang =]') {
+   lang=''
+  } else {
+   lang+='.';
+  }
+  if (window.location.hostname.substring(0, 2) === $('#lang').val()) {
+   lang='';
+  }
+  path=path.replace(/[^a-z0-9\-_\.\/]/g,'');
+  var url = 'http://'+lang+window.location.hostname+'/'+path;
+  $('#url_help').html('<a href="'+url+'" target="blank">'+url+'</a>');
+});
+
+$('#lang').change(function() {
+ $('#filename').change(); 
+});
+
+function generateURL() {
+ if ($('#pagetitle').val().length < 1) {
+  $.jmessage('[== $lang->{error} =]', "[== $lang->{get_url_error_blank} =]", 2500, 'jm_message_error');
+  return;
+ }
+ $('#get_url').hide();
+ $('#filename').hide();
+ $('#unidecode_progress').show();
+ $.post("/admin/pages/data/unidecode", { val: $('#pagetitle').val() },
+  function(data){
+   if (data.result == 0) {
+    $.jmessage('[== $lang->{error} =]', "[== $lang->{get_url_error_blank} =]", 2500, 'jm_message_error');
+   } else {
+    $('#filename').val(data.data);
+   }
+   $('#filename').change();
+   $('#unidecode_progress').hide();
+   $('#get_url').show();
+   $('#filename').show();
+  }
+ );
+}
+
 function selectLanguage(row_id) {
  $('#language_select_pagetitle').html($('#pagetitle_'+row_id).html());
  $('#language_select').modal({keyboard: true});
@@ -496,6 +541,7 @@ $('#btn_add').click( function () {
    $('#eb_imgbrowser').hide();
    edit_mode='ck';
    $('#data_edit').show();
+   $('#filename').change();
    $('#h_data_actions').html('[== $lang->{add_page} =]');
    $('#form_notice').html("[== $lang->{form_notice_add} =]");
    $('#pagetitle').val('');
@@ -667,6 +713,7 @@ function editData(id) {
    edit_mode='ck';
    $('#eb_imgbrowser').hide();
    $('#data_edit').show();
+   $('#filename').change();
    $('#h_data_actions').html('[== $lang->{edit_page} =]');
    $('#form_notice').html("[== $lang->{form_notice_edit} =]");
    $('#pagetitle').val('');

@@ -69,3 +69,6 @@ imgbrowser: Изображения
 html: HTML
 wysiwyg: WYSIWYG
 switch_mode_question: Переключение режима редактора приведет к сбросу несохраненных изменений. Продолжить?
+get_url: Сгенерировать URL автоматически
+get_url_error_blank: Генерация URL невозможна, если заголовок страницы не задан
+get_url_error_other: Ошибка во время генерации URL
