@@ -439,19 +439,21 @@ $(document).ready(function() {
 } );
 
 $('#filename').change(function() {
+  var host=window.location.hostname;
+  host = host.replace(/[== $current_lang =]\./, '');
   var path = $('#filename').val().replace(/^\//, '');
   var lang = $('#lang').val();
-  if (lang === '[== $current_lang =]') {
-   lang=''
-  } else {
-   lang+='.';
-  }
-  if (window.location.hostname.substring(0, 2) === $('#lang').val()) {
-   lang='';
-  }
+  lang+='.';
   path=path.replace(/[^a-z0-9\-_\.\/]/g,'');
-  var url = 'http://'+lang+window.location.hostname+'/'+path;
+  var url = 'http://'+lang+host+'/'+path;
+  url = url.replace(/[== $default_lang =]\./, '');
   $('#url_help').html('<a href="'+url+'" target="blank">'+url+'</a>');
+});
+
+$('#pagetitle').change(function() {
+  if (!$('#filename').val() && $('#pagetitle').val().length > 0) {
+   generateURL();
+  }
 });
 
 $('#lang').change(function() {
@@ -477,6 +479,8 @@ function generateURL() {
    $('#unidecode_progress').hide();
    $('#get_url').show();
    $('#filename').show();
+   $('#filename').select();
+   $('#filename').focus();
   }
  );
 }
