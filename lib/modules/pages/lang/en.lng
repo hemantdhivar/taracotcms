@@ -72,3 +72,7 @@ switch_mode_question: Switching the mode will reset the current changes in edito
 get_url: Generate URL automatically
 get_url_error_blank: Cannot generate URL when page title is not set
 get_url_error_other: Error while generating URL
+disabled_header: Page disabled
+disabled_text: The page is currently not available. Please try again later.
+construction_header: Under construction
+construction_text: The page is currently under construction. Please try again later.

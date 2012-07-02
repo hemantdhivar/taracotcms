@@ -34,8 +34,9 @@
 	<thead>
 	<tr>
 		<th style="width:40px">[== $lang->{id} =]</th>
-		<th>[== $lang->{pagetitle} =]</th>
-		<th>[== $lang->{filename} =]</th>
+		<th>[== $lang->{pagetitle} =]</th>		
+    <th>[== $lang->{filename} =]</th>
+    <th style="width:100px;text-align:center">[== $lang->{groupid} =]</th>
 		<th style="width:100px;text-align:center">[== $lang->{language} =]</th>
 		<th style="width:100px;text-align:center">[== $lang->{layout} =]</th>
 		<th style="width:80px;text-align:center">[== $lang->{status} =]</th>
@@ -221,14 +222,26 @@
     			</div>
     		</div>
         
-        <div class="control-group" id="cg_filename">
-    			<label class="control-label" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<input type="text" class="input-xlarge" id="filename"><span class="help-inline"><img src="/images/get.png" alt="[== $lang->{get_url} =]" width="20" height="20" style="cursor:pointer" onclick="generateURL()" id="get_url" /></span>
-    				<div class="help-block" id="url_help" style="overflow:hidden"></div> 
-    				<span id="unidecode_progress" style="display:none"><img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
-    			</div>
-    		</div>
+        <div class="row">
+          <div class="span5">
+            <div class="control-group" id="cg_groupid"> 
+              <label class="control-label" for="groupid">[== $lang->{groupid} =]&nbsp;<span class="required_field">*</span></label>
+              <div class="controls">
+                <input type="text" class="input-xlarge" id="groupid">                
+              </div>
+            </div>
+          </div>
+          <div class="span5">
+            <div class="control-group" id="cg_filename">
+        			<label class="control-label" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
+        			<div class="controls" style="white-space:nowrap;">
+        				<input type="text" class="input-xlarge" id="filename"><span class="help-inline"><img src="/images/get.png" alt="[== $lang->{get_url} =]" width="20" height="20" style="cursor:pointer" onclick="generateURL()" id="get_url" /></span>
+        				<div class="help-block" id="url_help" style="overflow:hidden;width:100%"></div> 
+        				<span id="unidecode_progress" style="display:none"><img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
+        			</div>
+        		</div>
+          </div>           
+        </div>    
     		
     		<div class="row">
           <div class="span5">
@@ -298,6 +311,7 @@
          <span id="eb_switch_ck" class="btn btn-mini disabled">[== $lang->{wysiwyg} =]</span>
          <span id="eb_switch_cm" class="btn btn-mini">[== $lang->{html} =]</span>
          <span id="eb_imgbrowser" class="btn btn-mini btn-success">[== $lang->{imgbrowser} =]</span>
+         <span id="eb_images" class="btn btn-mini btn-success">[== $lang->{catalog_images} =]</span>
     </div>
     <div id="wysiwyg_editor_wrap"><div id="wysiwyg_editor"></div></div>
     <div id="html_editor_wrap" class="well" style="display:none;height:300px"><div id="html_editor"></div></div>
@@ -374,7 +388,7 @@ $(document).ready(function() {
     "sPaginationType": "bootstrap",
     "iDisplayLength": 10,
     "bAutoWidth": true,
-    "sAjaxSource": "/admin/pages/data/list",
+    "sAjaxSource": "/admin/catalog/data/list",
     "oLanguage": {
       "oPaginate": {
         "sPrevious":  "[== $lang->{sPrevious} =]",                                
@@ -392,7 +406,7 @@ $(document).ready(function() {
      { "fnRender": function ( oObj, sVal ) {
          return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
        },
-       "aTargets": [ 6 ]
+       "aTargets": [ 7 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          var pic='lamp_on.png';
@@ -400,17 +414,17 @@ $(document).ready(function() {
          if (sVal == 2) { pic='under_construction.png'; }
          return '<div style="text-align:center;cursor:pointer" class="editable_select" onclick="selectStatus('+row_id+')" id="status_'+row_id+'"><span style="display:none" id="rowstatus_'+row_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" /></div>';         
        },
-       "aTargets": [ 5 ]
+       "aTargets": [ 6 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          return '<div style="text-align:center;cursor:pointer" onclick="selectLanguage('+row_id+')" id="lang_'+row_id+'"><span style="display:none" id="langv_'+row_id+'">'+sVal+'</span><img src="/images/flags/'+sVal+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem(sVal)+'</div>';
        },
-       "aTargets": [ 3 ]
+       "aTargets": [ 4 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          return '<div style="text-align:center;cursor:pointer" id="layout_'+row_id+'" onclick="selectLayout('+row_id+')">'+sVal+'</div>';
        },
-       "aTargets": [ 4 ]
+       "aTargets": [ 5 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          row_id=sVal;
@@ -427,6 +441,11 @@ $(document).ready(function() {
          return '<div id="filename_'+row_id+'" class="editable_text">'+sVal+'</div';
        },
        "aTargets": [ 2 ]
+     },
+     { "fnRender": function ( oObj, sVal ) {
+         return '<div id="groupid_'+row_id+'" class="editable_text">'+sVal+'</div';
+       },
+       "aTargets": [ 3 ]
      }
     ],
     "fnDrawCallback": function() {
@@ -443,9 +462,12 @@ $('#filename').change(function() {
   host = host.replace(/[== $current_lang =]\./, '');
   var path = $('#filename').val().replace(/^\//, '');
   var lang = $('#lang').val();
+  var gid = $('#groupid').val();
   lang+='.';
   path=path.replace(/[^a-z0-9\-_\.\/]/g,'');
-  var url = 'http://'+lang+host+'/'+path;
+  var url = 'http://'+lang+host+'/catalog/'+gid+'/'+path;
+  url = url.replace(/catalog\/\/\//, 'catalog/');
+  url = url.replace(/catalog\/\//, 'catalog/');
   url = url.replace(/[== $default_lang =]\./, '');
   $('#url_help').html('<a href="'+url+'" target="blank">'+url+'</a>');
 });
@@ -460,6 +482,10 @@ $('#lang').change(function() {
  $('#filename').change(); 
 });
 
+$('#groupid').change(function() {
+ $('#filename').change(); 
+});
+
 function generateURL() {
  if ($('#pagetitle').val().length < 1) {
   $.jmessage('[== $lang->{error} =]', "[== $lang->{get_url_error_blank} =]", 2500, 'jm_message_error');
@@ -468,7 +494,7 @@ function generateURL() {
  $('#get_url').hide();
  $('#filename').hide();
  $('#unidecode_progress').show();
- $.post("/admin/pages/data/unidecode", { val: $('#pagetitle').val() },
+ $.post("/admin/catalog/data/unidecode", { val: $('#pagetitle').val() },
   function(data){
    if (data.result == 0) {
     $.jmessage('[== $lang->{error} =]', "[== $lang->{get_url_error_blank} =]", 2500, 'jm_message_error');
@@ -519,7 +545,7 @@ function submitEdit(value, settings) {
  value=value.replace(/\>/g, '&gt;');
  value=value.replace(/\"/g, '&quot;');
  var arr = this.id.split('_');
- $.post("/admin/pages/data/save/field", { field_name: arr[0], field_id: arr[1], field_value: value },
+ $.post("/admin/catalog/data/save/field", { field_name: arr[0], field_id: arr[1], field_value: value },
   function(data){
    if (data.result != '1') {
     $('#'+edit_id).html(value_old);
@@ -543,19 +569,22 @@ $('#btn_add').click( function () {
    $('#data_overview').hide();
    resetFormState();
    $('#eb_imgbrowser').hide();
+   $('#eb_images').hide();
    edit_mode='ck';
    $('#data_edit').show();
    $('#filename').change();
    $('#h_data_actions').html('[== $lang->{add_page} =]');
    $('#form_notice').html("[== $lang->{form_notice_add} =]");
    $('#pagetitle').val('');
-   $('#filename').val('');
+   $('#groupid').val('');
+   $('#filename').val('');   
    $('#keywords').val('');
    $('#description').val('');
    CKEDITOR.instances.wysiwyg_editor.setData('');
    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
    $("#lang").val($("#lang option:first").val());
    $("#layout").val($("#layout option:first").val());
+   $('#filename').change();
    $('#pagetitle').focus();
 });
 
@@ -568,7 +597,7 @@ $('#btn_edit_cancel').click( function () {
 // "Save" button handler (language select dialog mode)
 
 $('#btn_language_select_save').click( function () {
- $.post("/admin/pages/data/save/field", { field_name: "lang", field_id: edit_id, field_value: $('#language_select_lang').val() },
+ $.post("/admin/catalog/data/save/field", { field_name: "lang", field_id: edit_id, field_value: $('#language_select_lang').val() },
   function(data){
    if (data.result != '1') {
     if (data.error) {
@@ -585,7 +614,7 @@ $('#btn_language_select_save').click( function () {
 // "Save" button handler (layout select dialog mode)
 
 $('#btn_layout_select_save').click( function () {
- $.post("/admin/pages/data/save/field", { field_name: "layout", field_id: edit_id, field_value: $('#layout_select_layout').val() },
+ $.post("/admin/catalog/data/save/field", { field_name: "layout", field_id: edit_id, field_value: $('#layout_select_layout').val() },
   function(data){
    if (data.result != '1') {
     if (data.error) {
@@ -602,7 +631,7 @@ $('#btn_layout_select_save').click( function () {
 // "Save" button handler (status select dialog mode)
 
 $('#btn_status_select_save').click( function () {
- $.post("/admin/pages/data/save/field", { field_name: "status", field_id: edit_id, field_value: $("input[name='status_select_status']:checked").val() },
+ $.post("/admin/catalog/data/save/field", { field_name: "status", field_id: edit_id, field_value: $("input[name='status_select_status']:checked").val() },
   function(data){
    if (data.result != '1') {
     if (data.error) {
@@ -633,6 +662,10 @@ $('#btn_edit_save').click( function () {
     $('#cg_filename').addClass('error');
     errors=true;   
    }
+   if (!$('#groupid').val().match(/^.{1,80}$/)) {
+    $('#cg_groupid').addClass('error');
+    errors=true;   
+   }
    if (!$('#keywords').val().match(/^.{0,254}$/)) {
     $('#cg_keywords').addClass('error');
     errors=true;   
@@ -649,6 +682,8 @@ $('#btn_edit_save').click( function () {
    } else {
     $('#data_edit_form').hide();
     $('#data_edit_form_buttons').hide();
+    $('#wysiwyg_editor_wrap').hide();
+    $('#editor_buttons').hide();
     $('#ajax_loading_msg').html("[== $lang->{ajax_saving} =]");
     $('#ajax_loading').show();
     var tmp_content='';
@@ -657,9 +692,7 @@ $('#btn_edit_save').click( function () {
     } else {
      tmp_content=CKEDITOR.instances.wysiwyg_editor.getData();
     }
-    $('#wysiwyg_editor_wrap').hide();
-    $('#editor_buttons').hide();
-    $.post("/admin/pages/data/save", { id: edit_id, pagetitle: $('#pagetitle').val(), filename: $('#filename').val(), keywords: $('#keywords').val(), description: $('#description').val(), status: $("input[name='status']:checked").val(), content: tmp_content, lang: $('#lang').val(), layout: $('#layout').val() },
+    $.post("/admin/catalog/data/save", { id: edit_id, pagetitle: $('#pagetitle').val(), filename: $('#filename').val(), groupid: $('#groupid').val(), keywords: $('#keywords').val(), description: $('#description').val(), status: $("input[name='status']:checked").val(), content: tmp_content, lang: $('#lang').val(), layout: $('#layout').val() },
      function(data){
        $('#wysiwyg_editor_wrap').show();
        $('#editor_buttons').show();
@@ -684,6 +717,7 @@ $('#btn_edit_save').click( function () {
         resetFormState();
         edit_mode='ck';
         $('#eb_imgbrowser').hide();
+        $('#eb_images').hide();
         $('#data_edit').hide();
         $('#data_overview').show();
         if (edit_id == 0) {
@@ -708,6 +742,7 @@ $('#btn_abort').click( function() {
    resetFormState();
    edit_mode='ck';
    $('#eb_imgbrowser').hide();
+   $('#eb_images').hide();
    $('#data_edit').hide();
    $('#data_overview').show();
 } );
@@ -720,6 +755,7 @@ function editData(id) {
    resetFormState();
    edit_mode='ck';
    $('#eb_imgbrowser').hide();
+   $('#eb_images').show();
    $('#data_edit').show();
    $('#filename').change();
    $('#h_data_actions').html('[== $lang->{edit_page} =]');
@@ -733,7 +769,7 @@ function editData(id) {
    $('#data_edit_form_buttons').hide();
    $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
    $('#ajax_loading').show();
-   $.post("/admin/pages/data/load", { id: edit_id },
+   $.post("/admin/catalog/data/load", { id: edit_id },
      function(data){
        if (data.result == '0') {
          $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
@@ -756,6 +792,9 @@ function editData(id) {
          }
          if (data.filename) {
           $('#filename').val(data.filename);
+         }
+         if (data.groupid) {
+          $('#groupid').val(data.groupid);
          }
          if (data.keywords) {
           $('#keywords').val(data.keywords);
@@ -795,7 +834,7 @@ $('#btn_error_dialog_close').click( function () {
 // Button "Delete" handler (Dialog: "Delete")
 $('#btn_delete').click( function() {
   $('#delete_confirmation').modal('hide');
-  $.post("/admin/pages/data/delete", { 'delete_data': delete_data },
+  $.post("/admin/catalog/data/delete", { 'delete_data': delete_data },
      function(data){
        if (data.result == '0') {
          $('#error_dialog_msg').html("[== $lang->{delete_error_notify} =]");
@@ -817,6 +856,18 @@ $('#eb_imgbrowser').click(
    features = 'top=' + top + ',left=' +left;
    features += ',height=' + h + ',width=' + w + ',resizable=no';
    imgbrowser = open('/admin/imgbrowser?mode=cm', 'displayWindow', features);
+  }
+);
+
+$('#eb_images').click(
+  function() {
+   var features, w = screen.width-100, h = screen.height-200;
+   var top = (screen.height - h)/2-50, left = (screen.width - w)/2;
+   if(top < 0) top = 0;
+   if(left < 0) left = 0;
+   features = 'top=' + top + ',left=' +left;
+   features += ',height=' + h + ',width=' + w + ',resizable=no';
+   imgbrowser = open('/admin/catalog/images?dir=1234', 'displayWindow', features);
   }
 );
 
@@ -852,7 +903,7 @@ $('#eb_switch_cm').click( function() {
   $('#data_edit_form_buttons').hide();
   $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
   $('#ajax_loading').show();
-  $.post("/admin/pages/data/load", { id: edit_id },
+  $.post("/admin/catalog/data/load", { id: edit_id },
      function(data){
        if (data.result == '0') {
          $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
@@ -913,7 +964,7 @@ $('#eb_switch_ck').click( function() {
   $('#data_edit_form_buttons').hide();
   $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
   $('#ajax_loading').show();
-  $.post("/admin/pages/data/load", { id: edit_id },
+  $.post("/admin/catalog/data/load", { id: edit_id },
      function(data){
        if (data.result == '0') {
          $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
@@ -995,6 +1046,7 @@ function resetFormState() {
    $('#cg_keywords').removeClass('error');
    $('#cg_description').removeClass('error');
    $('#cg_filename').removeClass('error');
+   $('#cg_groupid').removeClass('groupid');
    $('#password_hint').html("[== $lang->{password_hint} =]");
    $('#eb_switch_cm').removeClass('disabled');
    $('#eb_switch_ck').addClass('disabled');
@@ -1004,4 +1056,4 @@ function resetFormState() {
 }
 
 </script>
-<script type="text/javascript">$('#nav_pages').addClass('active')</script>
+<script type="text/javascript">$('#nav_catalog').addClass('active')</script>

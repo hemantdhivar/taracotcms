@@ -328,6 +328,10 @@ post '/delete' => sub {
     $res=removeDir(config->{files_dir}."images/".$dir.'/'.$delete_file);
    } else {
     $res=removeFile(config->{files_dir}."images/".$dir.'/'.$delete_file);
+    my $md5n=md5_hex($delete_file);
+    if (-e config->{files_dir}."images/".$dir.'/.'.$md5n.'.jpg') {
+     $res=removeFile(config->{files_dir}."images/".$dir.'/.'.$md5n.'.jpg');
+    }  
    }
    if (!$res) {
     return '{"status":"0","reason":"'.$lang->{delete_error}.'"}';

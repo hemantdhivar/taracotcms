@@ -1,15 +1,16 @@
-package modules::pages::main;
+package modules::catalog::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use taracot::loadpm;
 use Text::Unidecode;
+use taracot::fs;
 
 # Configuration
 
-my $defroute = '/admin/pages';
-my @columns = ('id','pagetitle','filename','lang','layout','status');
+my $defroute = '/admin/catalog';
+my @columns = ('id','pagetitle','filename','groupid','lang','layout','status');
 my @columns_ft = ('pagetitle','filename');
 
 # Module core settings 
@@ -26,10 +27,10 @@ sub _defroute() {
 
 sub _load_lang {
   my $lng = &taracot::_detect_lang() || config->{lang_default};
-  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/en.lng') || {};
+  my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/catalog/lang/en.lng') || {};
   my $lang_adm_cnt={};
   if ($lng ne 'en') {
-   $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/'.$lng.'.lng') || {};
+   $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/catalog/lang/'.$lng.'.lng') || {};
   }
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
   my $lang_mod_cnt={};
@@ -42,7 +43,7 @@ sub _load_lang {
 
 # Frontend Routes
 
-prefix '/';
+prefix '/catalog';
 
 get qr{(.*)} => sub {
   my $_current_lang=_load_lang();
@@ -66,19 +67,21 @@ get qr{(.*)} => sub {
   if (!$url) { 
    $url='/'; 
   }
+  my ($groupid) = split(/\//, $url);
+  $url=~s/$groupid\///;
   if ($url !~ /^[A-Za-z0-9_\-\/]{0,254}$/) {
    pass();
   }
-  my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { filename => $url, lang => $_current_lang });
+  my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { groupid => $groupid, filename => $url, lang => $_current_lang });
   if (defined $db_data && $db_data->{id}) {
    if ($db_data->{status} eq 1) {
     $taracot::taracot_render_template = template 'index_'.$db_data->{lang}, { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
    }
    if ($db_data->{status} eq 0) {
-    $taracot::taracot_render_template = template 'pages_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
    }
    if ($db_data->{status} eq 2) {
-    $taracot::taracot_render_template = template 'pages_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
    }
   }
   pass();
@@ -115,7 +118,7 @@ get '/' => sub {
    $_cnt++;
   }
   $hash_langs=~s/, //;
-  return template 'pages_index', { current_lang => $_current_lang, default_lang => config->{lang_default}, lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
+  return template 'catalog_index', { current_lang => $_current_lang, default_lang => config->{lang_default}, lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
   
 };
 
@@ -155,7 +158,7 @@ get '/data/list' => sub {
   }
   my $total=0;
   my $sth = database->prepare(
-   'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_pages WHERE 1'
+   'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_catalog WHERE 1'
   );
   if ($sth->execute()) {
    ($total) = $sth -> fetchrow_array;
@@ -164,7 +167,7 @@ get '/data/list' => sub {
   my $total_filtered=0;
   if ($where ne '1' && $total > 0) {
    my $sth = database->prepare(
-    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_pages WHERE '.$where
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_catalog WHERE '.$where
    );
    if ($sth->execute()) {
     ($total_filtered) = $sth -> fetchrow_array;
@@ -181,7 +184,7 @@ get '/data/list' => sub {
   my $columns=join(',',@columns);
   $columns=~s/,$//;
   $sth = database->prepare(
-   'SELECT '.$columns.' FROM '.config->{db_table_prefix}.'_pages WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
+   'SELECT '.$columns.' FROM '.config->{db_table_prefix}.'_catalog WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
   );
   if ($sth->execute()) {
    while(my (@ary) = $sth -> fetchrow_array) {
@@ -210,6 +213,7 @@ post '/data/save' => sub {
   content_type 'application/json';
   my $pagetitle=param('pagetitle') || '';
   my $filename=param('filename') || '';
+  my $groupid=param('groupid') || '';
   my $keywords=param('keywords') || '';
   my $description=param('description') || '';
   my $content=param('content') || '';
@@ -238,6 +242,9 @@ post '/data/save' => sub {
   }
   if ($filename !~ /^[A-Za-z0-9_\-\/]{1,254}$/) {
    return qq~{"result":"0","field":"filename","error":"~.$lang->{form_error_invalid_filename}.qq~"}~;
+  }  
+  if ($groupid !~ /^[A-Za-z0-9_\-]{1,80}$/) {
+   return qq~{"result":"0","field":"groupid","error":"~.$lang->{form_error_invalid_groupid}.qq~"}~;
   }
   $keywords=~s/[\n\r]//gm;
   $keywords=~s/\"/&quot;/gm;
@@ -281,7 +288,7 @@ post '/data/save' => sub {
   $dupesql.=' AND lang = '.database->quote($plang);
   
   my $sth = database->prepare(
-   'SELECT id FROM '.config->{db_table_prefix}.'_pages WHERE filename='.database->quote($filename).$dupesql
+   'SELECT id FROM '.config->{db_table_prefix}.'_catalog WHERE filename='.database->quote($filename).$dupesql
   );
   if ($sth->execute()) {
    my ($tmpid) = $sth->fetchrow_array;
@@ -293,11 +300,11 @@ post '/data/save' => sub {
   $sth->finish();
   
   if ($id > 0) {
-   database->quick_update(config->{db_table_prefix}.'_pages', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_pages', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
   }
-      
+  
   return qq~{"result":"1"}~;
 };
 
@@ -312,7 +319,7 @@ post '/data/save/field' => sub {
 
   # Pre-check all fields
   
-  if ($field_name ne 'pagetitle' && $field_name ne 'filename' && $field_name ne 'lang' && $field_name ne 'layout' && $field_name ne 'status') {
+  if ($field_name ne 'pagetitle' && $field_name ne 'filename' && $field_name ne 'lang' && $field_name ne 'layout' && $field_name ne 'status' && $field_name ne 'groupid') {
    return '{"result":"0", "error":"'.$lang->{field_edit_error_unknown}.'"}'; 
   }
   
@@ -328,7 +335,7 @@ post '/data/save/field' => sub {
    my $sth;
    my $filename;
    $sth = database->prepare(
-    'SELECT filename FROM '.config->{db_table_prefix}.'_pages WHERE id = '.$field_id
+    'SELECT filename FROM '.config->{db_table_prefix}.'_catalog WHERE id = '.$field_id
    );
    if ($sth->execute()) {
     ($filename) = $sth->fetchrow_array;
@@ -338,7 +345,7 @@ post '/data/save/field' => sub {
     return qq~{"result":"0","error":"~.$lang->{field_edit_error_unknown}.qq~"}~;
    }
    $sth = database->prepare(
-    'SELECT id FROM '.config->{db_table_prefix}.'_pages WHERE filename = '.database->quote($filename).' AND lang = '.database->quote($field_value)
+    'SELECT id FROM '.config->{db_table_prefix}.'_catalog WHERE filename = '.database->quote($filename).' AND lang = '.database->quote($field_value)
    );
    if ($sth->execute()) {
     my ($tmpid) = $sth->fetchrow_array;
@@ -348,7 +355,7 @@ post '/data/save/field' => sub {
     }
    }
    $sth->finish();
-    database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { lang => $field_value, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { lang => $field_value, lastchanged => time });
     return '{"result":"1"}';
    }
    
@@ -361,7 +368,18 @@ post '/data/save/field' => sub {
    if (!exists {map { $_ => 1 } @layouts}->{$field_value}) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_layout}.qq~"}~;
    }
-   database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { layout => $field_value, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { layout => $field_value, lastchanged => time });
+   return '{"result":"1"}';
+  } 
+
+  # Check group ID
+
+  if ($field_name eq 'groupid') {
+    my $groupid=$field_value;
+    if ($groupid !~ /^[A-Za-z0-9_\-]{1,80}$/) {
+     return qq~{"result":"0","field":"groupid","error":"~.$lang->{form_error_invalid_groupid}.qq~"}~;
+    }
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { groupid => $groupid, lastchanged => time });
    return '{"result":"1"}';
   } 
   
@@ -372,7 +390,7 @@ post '/data/save/field' => sub {
    if ($pagetitle !~ /^.{1,254}$/) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_pagetitle}.qq~"}~;
    }
-   database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { pagetitle => $pagetitle, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { pagetitle => $pagetitle, lastchanged => time });
    return '{"result":"1"}';
   }
   
@@ -383,7 +401,7 @@ post '/data/save/field' => sub {
    if ($status < 0 || $status > 2) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_status}.qq~"}~;
    }
-   database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { status => $status, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { status => $status, lastchanged => time });
    return '{"result":"1"}';
   }
   
@@ -403,10 +421,10 @@ post '/data/save/field' => sub {
     return qq~{"result":"0","field":"filename","error":"~.$lang->{form_error_invalid_filename}.qq~"}~;
    }
    
-   my $page_data  = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
+   my $page_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { id => $field_id });
    
    my $sth = database->prepare(
-    'SELECT id FROM '.config->{db_table_prefix}.'_pages WHERE filename='.database->quote($filename).' AND id != '.$field_id.' AND lang='.database->quote($page_data->{lang})
+    'SELECT id FROM '.config->{db_table_prefix}.'_catalog WHERE filename='.database->quote($filename).' AND id != '.$field_id.' AND lang='.database->quote($page_data->{lang})
    );
    if ($sth->execute()) {
     my ($tmpid) = $sth->fetchrow_array;
@@ -416,14 +434,14 @@ post '/data/save/field' => sub {
     }
    }
    $sth->finish();
-   database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { filename => $filename, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { filename => $filename, lastchanged => time });
    return '{"result":"1","value":"'.$filename.'"}';
   }
   
   return '{"result":"0", "error":"'.$lang->{field_edit_error_unknown}.'"}';
 };
 
-post '/data/load' => sub {
+post '/data/load' => sub {  
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
   _load_lang();
   content_type 'application/json';
@@ -434,7 +452,7 @@ post '/data/load' => sub {
    return qq~{"result":"0"}~;
   }
   
-  my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { id => $id });
+  my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { id => $id });
   
   if ($db_data->{id}) {
    $db_data->{result} = 1;
@@ -472,7 +490,7 @@ post '/data/delete' => sub {
   
   if ($del_sql) {
     my $sth = database->prepare(
-     'DELETE FROM '.config->{db_table_prefix}.'_pages WHERE '.$del_sql
+     'DELETE FROM '.config->{db_table_prefix}.'_catalog WHERE '.$del_sql
     );
     my $res;
     if ($sth->execute()) {
@@ -502,6 +520,207 @@ post '/data/unidecode' => sub {
   }
   return '{"result":"0"}';
 }; 
+
+sub getDir {
+  my $dir = shift || '';
+  my $root_dir = shift || '';
+  return unless (defined $dir && -d $dir);
+  $dir =~ s#\\#/#g;
+  my @a_dirs=();
+  my @a_files=();
+  opendir(DIR, $dir) || die "Fatal error: can't open $dir\n";
+  my @files = grep {!/^\.\.?/} readdir(DIR);
+  closedir(DIR);
+  foreach my $file (@files) {
+   my %dd;
+   if (-d $dir.'/'.$file) {
+    $dd{'type'}="d";
+   } else {
+    $dd{'type'}="f";
+    $dd{'fmt'}='';
+    if ($file=~m/\.jp(e?)g$/i) {
+     $dd{'fmt'}='j';
+    }
+    if ($file=~m/\.gif$/i) {
+     $dd{'fmt'}='g';
+    }
+    if ($file=~m/\.png$/i) {
+     $dd{'fmt'}='p';
+    }
+    if (-e $dir.'/.'.md5_hex($file).'.jpg') {
+     $dd{'hash'}=md5_hex($file);
+    } else {
+     $dd{'hash'}='na';
+    }
+   }
+   $dd{'file'}=$file;
+   $dd{'id'}=$root_dir.$file;
+   if ($dd{'type'} eq 'd') {
+    push (@a_dirs, \%dd);
+   } else {
+    push (@a_files, \%dd);
+   }
+  }
+  push(@a_dirs, @a_files);
+  return \@a_dirs;
+}
+
+get '/images' => sub {             
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  my $_current_lang=_load_lang();
+  my $dir=param('dir');
+  if ($dir) {
+   $dir=int($dir) || '0';
+  } else {
+   return;
+  }
+  if ($dir eq 0) {
+    return;
+  }
+  return template 'catalog_images', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url}, dir => $dir }, { layout => 'browser_'.$_current_lang };
+};
+
+get '/data/images/dirdata' => sub {
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
+  my $dir=param('dir');
+  if ($dir) {
+   $dir=int($dir) || '0';
+  } else {
+   return;
+  }
+  if ($dir eq 0) {
+    return;
+  }
+  if (!-d config->{files_dir}.'/images_catalog/'.$dir) {
+   makePath(config->{files_dir}.'/images_catalog/'.$dir);
+  }
+  my %resp = ( 
+   current_dir => $dir,
+   files => getDir(config->{files_dir}.'/images_catalog/'.$dir, $dir)  
+  );  
+  my $json_xs = JSON::XS->new();
+  my $json = $json_xs->encode(\%resp);
+  content_type 'application/json'; 
+  return $json;
+};
+
+post '/data/images/upload' => sub {
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
+  content_type 'application/json';
+  my $file=upload('file');
+  my $dir=param('dir');
+  if ($dir !~ /^[\.A-Za-z0-9_\-\/]{0,200}$/ || $dir eq '/' || $dir =~ m/\.\./) {
+   return '{"error":"1","reason":"dir_syntax"}';
+  }
+  if (!-d config->{files_dir}."images_catalog/".$dir) {
+   return '{"error":"1","reason":"dir_not_found"}';
+  } 
+  if (!defined $file) {
+   return '{"error":"1","reason":"bad_upload"}';
+  } 
+  my $fn = $file->basename();
+  if ($fn =~ m/\.\./) {
+   return '{"error":"1","reason":"filename_syntax"}';
+  }
+  $fn=~s/ /_/gm;
+  $fn=unidecode($fn);
+  $fn=~s/[^a-zA-Z0-9\-_\.]//gm;
+  my $fp=config->{files_dir}."images_catalog/".$dir.'/'.$fn;
+  $fp=~s/\/\//\//gm;
+  $file->copy_to($fp);
+  if (-e $fp) {
+   my $img = Imager->new(file=>$fp) || die Imager->errstr();
+   my $x = $img->getwidth();
+   my $y = $img->getheight();
+   if ($x ne $y) {
+    my $cb = undef;
+    if ($x > $y) {
+      $cb = $y;
+      $x =int(($x - $cb )/2);
+      $y =0;
+    }
+    else {
+      $cb = $x ;
+      $y =int(($y - $cb )/2);
+      $x = 0;
+    }
+    $img = $img->crop( width=>$cb, height=>$cb );
+   }
+   $img = $img->scale(xpixels=>100, ypixels=>100);
+   $img->write(file => config->{files_dir}."images_catalog/".$dir.'/.'.md5_hex($fn).'.jpg');
+  }
+  return '{"filename":"'.$fn.'","dir":"'.param('dir').'"}';
+}; 
+
+post '/data/images/delete' => sub {
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
+  content_type 'application/json';
+  my $dir=param('dir');
+  if ($dir !~ /^[0-9]{0,80}$/ || !int($dir) || !-d config->{files_dir}."images_catalog/".$dir) {
+   return '{"status":"0","reason":"'.$lang->{dir_syntax_error}.'"}';
+  }
+  my $data=param('data[]');
+  my @files=[];
+  if(ref($data) eq 'ARRAY'){
+   @files=@$data;
+  } else {
+   push(@files, '');
+   $files[0]=$data;
+  }
+  my $cnt=@files;
+  if ($cnt eq 0) {
+   return '{"status":"0","error":"'.$lang->{no_files}.'"}';
+  }
+  foreach my $delete_file (@files) {
+   if (!$delete_file) {
+    next;
+   }
+   if ($delete_file !~ /^[\.A-Za-z0-9_\-]{1,100}$/ || $delete_file =~ m/\.\./ || !-e config->{files_dir}.'images_catalog/'.$dir.'/'.$delete_file) {
+    return '{"status":"0","reason":"'.$lang->{file_syntax_error}.'","file":"'.$delete_file.'"}';
+   }
+   my $res=undef;
+   $res=removeFile(config->{files_dir}."images_catalog/".$dir.'/'.$delete_file);
+   my $md5n=md5_hex($delete_file);
+   if (-e config->{files_dir}."images_catalog/".$dir.'/.'.$md5n.'.jpg') {
+    $res=removeFile(config->{files_dir}."images_catalog/".$dir.'/.'.$md5n.'.jpg');
+   }  
+   if (!$res) {
+    return '{"status":"0","reason":"'.$lang->{delete_error}.'"}';
+   }
+  }
+  return '{"status":"1"}';
+};
+
+post '/data/images/rename' => sub {
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
+  content_type 'application/json';
+  my $dir=param('dir');
+  if ($dir !~ /^[0-9]{0,80}$/ || !int($dir) || !-d config->{files_dir}."images_catalog/".$dir) {
+   return '{"status":"0","reason":"'.$lang->{dir_syntax_error}.'"}';
+  }
+  my $old_name=param('old_name');
+  if ($old_name !~ /^[\.A-Za-z0-9_\-]{1,100}$/ || $old_name =~ m/\.\./ || !-e config->{files_dir}."images_catalog/".$dir.'/'.$old_name) {
+   return '{"status":"0","reason":"'.$lang->{not_exists}.'"}';
+  }
+  my $new_name=param('new_name');
+  if ($new_name !~ /^[\.A-Za-z0-9_\-]{1,100}$/ || $new_name =~ m/\.\./) {
+   return '{"status":"0","reason":"'.$lang->{file_syntax_error}.'"}';
+  }
+  my $res=undef;
+  $res=moveFile(config->{files_dir}."images_catalog/".$dir.'/'.$old_name, config->{files_dir}."images_catalog/".$dir.'/'.$new_name);
+  my $md5n=md5_hex($old_name);
+  if (-e config->{files_dir}."images_catalog/".$dir.'/.'.$md5n.'.jpg') {
+   $res=moveFile(config->{files_dir}."images_catalog/".$dir.'/.'.$md5n.'.jpg', config->{files_dir}."images_catalog/".$dir.'/.'.md5_hex($new_name).'.jpg');
+  }  
+  if (!$res) {
+    return '{"status":"0","reason":"'.$lang->{rename_error}.'"}';
+  }
+  return '{"status":"1"}';
+};
 
 # End
 
