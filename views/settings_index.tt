@@ -1,6 +1,8 @@
 <script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="/js/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="/js/hashtable.js"></script>
 
 <h1>[== $lang->{module_name_long} =]</h1>
@@ -164,6 +166,9 @@
   		
   	</div>
   	<!-- data_edit_form -->
+
+    <div id="wysiwyg_editor_wrap"><div id="wysiwyg_editor"></div></div>
+
   	<div class="form-actions">
   		<div id="ajax_loading" style="display:none">
   			<img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
@@ -219,6 +224,8 @@ jQuery.fn.uncheckAll = function(name){
 $(document).ready(function() {
   $().dropdown();
   var row_id=0;
+  // Init CkEditor
+  $('#wysiwyg_editor').ckeditor({filebrowserBrowseUrl:'/admin/imgbrowser'});
   // Init data table
   dtable=$('#data_table').dataTable( {
     "sDom": "frtip",
@@ -375,7 +382,7 @@ $('#btn_edit_save').click( function () {
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html("[== $lang->{ajax_saving} =]");
     $('#ajax_loading').show();
-    $.post("/admin/settings/data/save", { id: edit_id, s_name: $('#s_name').val(), s_value: $('#s_value').val(), lang: $('#lang').val() },
+    $.post("/admin/settings/data/save", { id: edit_id, s_name: $('#s_name').val(), s_value: $('#s_value').val(), s_value_html: CKEDITOR.instances.wysiwyg_editor.getData(), lang: $('#lang').val() },
      function(data){
        if (data.result == '0') {
         if (data.error) { // ERROR
@@ -438,6 +445,7 @@ function editData(id) {
    $('#data_edit_form_buttons').hide();
    $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
    $('#ajax_loading').show();
+   CKEDITOR.instances.wysiwyg_editor.setData('');
    $.post("/admin/settings/data/load", { id: edit_id },
      function(data){
        if (data.result == '0') {
@@ -458,6 +466,9 @@ function editData(id) {
          }
          if (data.s_value) {
           $('#s_value').val(data.s_value);
+         }
+         if (data.s_value_html) {
+          CKEDITOR.instances.wysiwyg_editor.setData(data.s_value_html);
          }
          if (data.lang) {
           $('#lang').val(data.lang);

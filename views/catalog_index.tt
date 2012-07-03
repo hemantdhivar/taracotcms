@@ -222,6 +222,13 @@
     			</div>
     		</div>
         
+        <div class="control-group" id="cg_description_short">
+          <label class="control-label" for="description_short">[== $lang->{description_short} =]</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" id="description_short">
+          </div>
+        </div>
+
         <div class="row">
           <div class="span5">
             <div class="control-group" id="cg_groupid"> 
@@ -301,6 +308,15 @@
         		</div>
       		</div>
     		</div>
+
+        <div class="control-group" id="cg_special_flag">
+          <label class="control-label" for="special_flag">[== $lang->{special_flag} =]</label>
+          <div class="controls">
+            <label class="checkbox">
+              <input type="checkbox" id="special_flag" name="special_flag">
+            </label>
+          </div>          
+        </div>
     		
   		</span> <!-- form_controls -->
 
@@ -673,7 +689,11 @@ $('#btn_edit_save').click( function () {
    if (!$('#description').val().match(/^.{0,254}$/)) {
     $('#cg_description').addClass('error');
     errors=true;   
-   }   
+   }
+   if (!$('#description_short').val().match(/^.{0,2047}$/)) {
+    $('#cg_description_short').addClass('error');
+    errors=true;   
+   }     
    if (errors) {
     $('#form_error_msg_text').html("[== $lang->{form_errors} =]");
     $('#form_error_msg').fadeIn(400);
@@ -692,7 +712,13 @@ $('#btn_edit_save').click( function () {
     } else {
      tmp_content=CKEDITOR.instances.wysiwyg_editor.getData();
     }
-    $.post("/admin/catalog/data/save", { id: edit_id, pagetitle: $('#pagetitle').val(), filename: $('#filename').val(), groupid: $('#groupid').val(), keywords: $('#keywords').val(), description: $('#description').val(), status: $("input[name='status']:checked").val(), content: tmp_content, lang: $('#lang').val(), layout: $('#layout').val() },
+    var special;
+    if ($('input:checkbox[name=special_flag]').is(':checked')) {
+      special=1;
+    } else {
+      special=0;
+    }
+    $.post("/admin/catalog/data/save", { id: edit_id, pagetitle: $('#pagetitle').val(), filename: $('#filename').val(), groupid: $('#groupid').val(), keywords: $('#keywords').val(), description: $('#description').val(), description_short: $('#description_short').val(), status: $("input[name='status']:checked").val(), content: tmp_content, lang: $('#lang').val(), special_flag: special, layout: $('#layout').val() },
      function(data){
        $('#wysiwyg_editor_wrap').show();
        $('#editor_buttons').show();
@@ -761,6 +787,8 @@ function editData(id) {
    $('#h_data_actions').html('[== $lang->{edit_page} =]');
    $('#form_notice').html("[== $lang->{form_notice_edit} =]");
    $('#pagetitle').val('');
+   $('#description_short').val('');
+   $('input:checkbox[name=special_flag]').attr('checked', false);
    $('#password').val('');
    $('#password_repeat').val('');
    $('#filename').val('');
@@ -769,6 +797,7 @@ function editData(id) {
    $('#data_edit_form_buttons').hide();
    $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
    $('#ajax_loading').show();
+   CKEDITOR.instances.wysiwyg_editor.setData('');
    $.post("/admin/catalog/data/load", { id: edit_id },
      function(data){
        if (data.result == '0') {
@@ -802,6 +831,9 @@ function editData(id) {
          if (data.description) {
           $('#description').val(data.description);
          }
+         if (data.description_short) {
+          $('#description_short').val(data.description_short);
+         }
          if (data.content) {
           CKEDITOR.instances.wysiwyg_editor.setData(data.content);
          }
@@ -813,6 +845,9 @@ function editData(id) {
          }
          if (data.layout) {
           $('#layout').val(data.layout);
+         }
+         if (data.special_flag && data.special_flag != 0) {
+          $('input[name=special_flag]').attr('checked', true);
          }
          $('#filename').change();
          $('#pagetitle').focus();
@@ -867,7 +902,7 @@ $('#eb_images').click(
    if(left < 0) left = 0;
    features = 'top=' + top + ',left=' +left;
    features += ',height=' + h + ',width=' + w + ',resizable=no';
-   imgbrowser = open('/admin/catalog/images?dir=1234', 'displayWindow', features);
+   imgbrowser = open('/admin/catalog/images?dir='+edit_id, 'displayWindow', features);
   }
 );
 
@@ -1045,6 +1080,7 @@ function resetFormState() {
    $('#cg_pagetitle').removeClass('error');
    $('#cg_keywords').removeClass('error');
    $('#cg_description').removeClass('error');
+   $('#cg_description_short').removeClass('error');
    $('#cg_filename').removeClass('error');
    $('#cg_groupid').removeClass('groupid');
    $('#password_hint').html("[== $lang->{password_hint} =]");

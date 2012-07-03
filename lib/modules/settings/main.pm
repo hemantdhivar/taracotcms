@@ -163,6 +163,7 @@ post '/data/save' => sub {
   content_type 'application/json';  
   my $s_name=param('s_name') || '';
   my $s_value=param('s_value') || '';
+  my $s_value_html=param('s_value_html') || '';
   my $plang=param('lang') || '';
   my $id=param('id') || 0;
   $id=int($id);
@@ -178,7 +179,7 @@ post '/data/save' => sub {
   if (length($s_value) > 1048576) {
    return qq~{"result":"0","field":"s_value","error":"~.$lang->{form_error_invalid_s_value}.qq~"}~;
   }
-
+  $s_value_html=~s/\0//gm;
   my $lang_avail=lc config->{lang_available};
   $lang_avail=~s/ //gm;
   my (@langs)=split(/,/, $lang_avail);
@@ -209,9 +210,9 @@ post '/data/save' => sub {
   }
   
   if ($id > 0) {
-   database->quick_update(config->{db_table_prefix}.'_settings', { id => $id }, { s_name => $s_name, s_value => $s_value, lang => $plang, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_settings', { id => $id }, { s_name => $s_name, s_value => $s_value, s_value_html => $s_value_html, lang => $plang, lastchanged => time });
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_settings', { s_name => $s_name, s_value => $s_value, lang => $plang, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_settings', { s_name => $s_name, s_value => $s_value, s_value_html => $s_value_html, lang => $plang, lastchanged => time });
   }
       
   return qq~{"result":"1"}~;

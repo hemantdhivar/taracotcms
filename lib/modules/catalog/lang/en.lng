@@ -105,3 +105,6 @@ rename_error: Error while renaming the file
 delete_error: Error while deleting the file
 delete_confirm: Are you sure you wish to delete the following file(s)/dir(s)? 
 catalog_images: Catalog images
+description_short: Short description
+special_flag: Special offer
+form_error_invalid_description_short: Invalid short description syntax

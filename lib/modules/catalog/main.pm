@@ -68,14 +68,90 @@ get qr{(.*)} => sub {
    $url='/'; 
   }
   my ($groupid) = split(/\//, $url);
-  $url=~s/$groupid\///;
+  $url=~s/$groupid(\/?)//;
+  if (!$url && $groupid) {
+    my $sth;
+    if ($groupid) {
+      $sth = database->prepare(
+       'SELECT id,pagetitle,filename,groupid,description_short FROM '.config->{db_table_prefix}.'_catalog WHERE status=1 AND groupid='.database->quote($groupid).' AND lang='.database->quote($_current_lang)
+      );
+    } else {
+      $sth = database->prepare(
+       'SELECT id,pagetitle,filename,groupid,description_short FROM '.config->{db_table_prefix}.'_catalog WHERE status=1 AND lang='.database->quote($_current_lang)
+      );
+    }
+    my $items;
+    if ($sth->execute()) {
+     while(my ($id,$pagetitle,$filename,$groupid,$description_short) = $sth -> fetchrow_array) {
+       my $picture;
+       if (-d config->{files_dir}.'/images_catalog/'.$id) {
+         opendir(DIR, config->{files_dir}.'/images_catalog/'.$id) || die "Fatal error: can't open directory\n";
+         while(readdir(DIR)) {
+          if ($_ =~  m/^\.\.?/) {
+            next;
+          }
+          $picture="/files/images_catalog/$id/.".md5_hex($_).".jpg";
+          last;
+         }
+         closedir(DIR);       
+       } # if dir exists
+       if (!$picture) {
+        $picture="/images/placeholder_200.png";
+       }
+       if (!$description_short) {
+        $description_short='';
+       }
+       $items .= template 'catalog_item', { lang => $lang, picture => $picture, id => $id,  pagetitle => $pagetitle, filename => $filename, groupid => $groupid, description_short => $description_short }, { layout => undef };
+     } # while     
+    }
+    $sth->finish();
+    if (!$items) {
+      status 'not_found';
+      my $render_404 = template 'error_404', { lang => $lang }, { layout => undef };
+      return $render_404; 
+    }
+    my $var1="catalog_title";
+    if ($groupid) {
+      $var1.="_".$groupid;
+    }
+    my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => $var1, lang => $_current_lang });
+    my %page_data;
+    $page_data{'content'} = $db_var1->{s_value_html}.template 'catalog_list', { items => $items }, { layout => undef };
+    $page_data{'pagetitle'} = $db_var1->{s_value} || $lang->{module_name}; 
+    $taracot::taracot_render_template = template 'index_'.$_current_lang, { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => \%page_data }, { layout => config->{layout}.'_'.$_current_lang };
+    pass();
+    return;
+  } 
   if ($url !~ /^[A-Za-z0-9_\-\/]{0,254}$/) {
    pass();
+   return;
   }
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { groupid => $groupid, filename => $url, lang => $_current_lang });
   if (defined $db_data && $db_data->{id}) {
    if ($db_data->{status} eq 1) {
-    $taracot::taracot_render_template = template 'index_'.$db_data->{lang}, { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    my %img_pics;
+    my %img_urls;    
+    if (-d config->{files_dir}.'/images_catalog/'.$db_data->{id}) {
+      opendir(DIR, config->{files_dir}.'/images_catalog/'.$db_data->{id}) || die "Fatal error: can't open directory\n";
+      my $cnt=1;
+      while(readdir(DIR)) {
+       if ($_ =~  m/^\.\.?/) {
+        next;
+       }
+       $img_pics{$cnt} = "/files/images_catalog/".$db_data->{id}."/.".md5_hex($_).".jpg";
+       $img_urls{$cnt} = "/files/images_catalog/".$db_data->{id}."/".$_;
+       $cnt++;
+      }
+      closedir(DIR);
+    }
+    for (my $i=1; $i<10; $i++) {
+      if (!$img_pics{$i}) {
+        $img_pics{$i}="/images/blank.gif";
+        $img_urls{$i}="#";
+      }
+    }
+    my $grid=template 'catalog_images_grid', { img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
+    $taracot::taracot_render_template = template 'catalog_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $db_data, grid => $grid }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
    }
    if ($db_data->{status} eq 0) {
     $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
@@ -216,6 +292,8 @@ post '/data/save' => sub {
   my $groupid=param('groupid') || '';
   my $keywords=param('keywords') || '';
   my $description=param('description') || '';
+  my $description_short=param('description_short') || '';
+  my $special_flag=param('special_flag') || 0;
   my $content=param('content') || '';
   my $status=param('status') || 0;
   my $plang=param('lang') || '';
@@ -223,6 +301,11 @@ post '/data/save' => sub {
   $status=int($status);
   my $id=param('id') || 0;
   $id=int($id);
+  if ($special_flag) {
+    $special_flag=1;
+  } else {
+    $special_flag=0;
+  }
   
   $pagetitle=~s/[\n\r]//gm;
   $pagetitle=~s/\"/&quot;/gm;
@@ -262,6 +345,14 @@ post '/data/save' => sub {
   if ($description !~ /^.{0,254}$/) {
    return qq~{"result":"0","field":"description","error":"~.$lang->{form_error_invalid_description}.qq~"}~;
   }
+  $description_short=~s/[\n\r]//gm;
+  $description_short=~s/\"/&quot;/gm;
+  $description_short=~s/\</&lt;/gm;
+  $description_short=~s/\>/&gt;/gm;
+  $description_short=~s/\&/&amp;/gm;
+  if ($description_short !~ /^.{0,2047}$/) {
+   return qq~{"result":"0","field":"description_short","error":"~.$lang->{form_error_invalid_description_short}.qq~"}~;
+  }
   if ($status < 0 || $status > 2) {
    return qq~{"result":"0","error":"~.$lang->{form_error_invalid_status}.qq~"}~;
   }
@@ -300,9 +391,9 @@ post '/data/save' => sub {
   $sth->finish();
   
   if ($id > 0) {
-   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, description_short => $description_short, status => $status, content => $content, lang => $plang, layout => $layout, special_flag => $special_flag, lastchanged => time });
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, description_short => $description_short,  status => $status, content => $content, lang => $plang, layout => $layout, special_flag => $special_flag, lastchanged => time });
   }
   
   return qq~{"result":"1"}~;
@@ -648,7 +739,7 @@ post '/data/images/upload' => sub {
     }
     $img = $img->crop( width=>$cb, height=>$cb );
    }
-   $img = $img->scale(xpixels=>100, ypixels=>100);
+   $img = $img->scale(xpixels=>200, ypixels=>200);
    $img->write(file => config->{files_dir}."images_catalog/".$dir.'/.'.md5_hex($fn).'.jpg');
   }
   return '{"filename":"'.$fn.'","dir":"'.param('dir').'"}';

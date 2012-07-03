@@ -733,6 +733,7 @@ function editData(id) {
    $('#data_edit_form_buttons').hide();
    $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
    $('#ajax_loading').show();
+   CKEDITOR.instances.wysiwyg_editor.setData('');
    $.post("/admin/pages/data/load", { id: edit_id },
      function(data){
        if (data.result == '0') {

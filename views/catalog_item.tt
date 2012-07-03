@@ -1,0 +1,10 @@
+<li class="span3">
+ <div class="thumbnail">
+  <img src="[== $picture =]" alt="">
+  <div class="caption">
+    <h5>[== $pagetitle =]</h5>
+     <p>[== $description_short =]</p>
+     <p><a href="/catalog/[== $groupid =]/[== $filename =]" class="btn">Test</a></p>
+  </div>
+ </div>
+</li>

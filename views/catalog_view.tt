@@ -1,0 +1,11 @@
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/admin.css">
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<script src="/js/jquery.pngfix.min.js" type="text/javascript"></script>
+<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/js/jquery.jmessages.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/js/bootstrap-lightbox/bootstrap-lightbox.css" />
+<script type="text/javascript" src="/js/bootstrap-lightbox/bootstrap-lightbox.js"></script>
+<h1>[==  $page_data->{pagetitle} =]</h1>
+[== $grid =]
+[== $page_data->{content} =]

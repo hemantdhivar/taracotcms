@@ -1,0 +1,10 @@
+<ul class="thumbnails">
+<li class="span3">
+<a data-toggle="lightbox" href="#catalog_image_1" class="thumbnail"><img src="[== $img_pics->{1} =]" width="200" height="200" alt="" /></a>
+<div class="lightbox fade" id="catalog_image_1" style="display:none;"><div class='lightbox-content'><img src="[== $img_urls->{1} =]" alt="" /></div></div>
+</li>
+<li class="span2">
+<a data-toggle="lightbox" href="#catalog_image_1" class="thumbnail"><img src="[== $img_pics->{2} =]" width="85" height="85" alt="" /></a>
+<div class="lightbox fade" id="catalog_image_1" style="display:none;"><div class='lightbox-content'><img src="[== $img_urls->{2} =]" alt="" /></div></div>
+</li>
+</ul>
