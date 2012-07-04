@@ -25,6 +25,7 @@ form_notice_add: Please fill in the following form to add new item to the databa
 edit_page: Edit item
 form_notice_edit: Please fill in the following form to change item data. The required fields are marked with an asterisk.
 edit_save: Save changes
+edit_save_upload: Save and upload pictures
 edit_cancel: Cancel
 form_errors: Form contain errors, please check and try again
 ajax_saving: Saving data, please wait...

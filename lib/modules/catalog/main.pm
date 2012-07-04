@@ -378,7 +378,7 @@ post '/data/save' => sub {
   if ($id > 0) {
    $dupesql=' AND id != '.$id;
   }
-  $dupesql.=' AND lang = '.database->quote($plang);
+  $dupesql.=' AND lang = '.database->quote($plang).' AND groupid='.database->quote($groupid);
   
   my $sth = database->prepare(
    'SELECT id FROM '.config->{db_table_prefix}.'_catalog WHERE filename='.database->quote($filename).$dupesql
@@ -392,13 +392,20 @@ post '/data/save' => sub {
   }
   $sth->finish();
   
+  my $ins_id=0;
+
   if ($id > 0) {
    database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, description_short => $description_short, status => $status, content => $content, lang => $plang, layout => $layout, special_flag => $special_flag, lastchanged => time });
   } else {   
    database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, groupid => $groupid, keywords => $keywords, description => $description, description_short => $description_short,  status => $status, content => $content, lang => $plang, layout => $layout, special_flag => $special_flag, lastchanged => time });
+   $id = database->{q{mysql_insertid}};
+  }
+
+  if (!$ins_id) {
+    $ins_id=$id;
   }
   
-  return qq~{"result":"1"}~;
+  return qq~{"result":"1", "id":"$ins_id"}~;
 };
 
 post '/data/save/field' => sub {
@@ -472,8 +479,20 @@ post '/data/save/field' => sub {
     if ($groupid !~ /^[A-Za-z0-9_\-]{1,80}$/) {
      return qq~{"result":"0","field":"groupid","error":"~.$lang->{form_error_invalid_groupid}.qq~"}~;
     }
-   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { groupid => $groupid, lastchanged => time });
-   return '{"result":"1"}';
+    my $page_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { id => $field_id });
+    my $sth = database->prepare(
+     'SELECT id FROM '.config->{db_table_prefix}.'_catalog WHERE filename='.database->quote($page_data->{filename}).' AND id != '.$field_id.' AND lang='.database->quote($page_data->{lang}).' AND groupid='.database->quote($groupid)
+    );
+    if ($sth->execute()) {
+     my ($tmpid) = $sth->fetchrow_array;
+     if ($tmpid) {
+      $sth->finish();
+      return qq~{"result":"0","error":"~.$lang->{form_error_duplicate_filename}.qq~", "tmpid":"$tmpid"}~;
+     }
+    }
+    $sth->finish();
+    database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { groupid => $groupid, lastchanged => time });
+    return '{"result":"1"}';
   } 
   
   # Check pagetitle
@@ -482,7 +501,7 @@ post '/data/save/field' => sub {
    my $pagetitle=$field_value;
    if ($pagetitle !~ /^.{1,254}$/) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_pagetitle}.qq~"}~;
-   }
+   }   
    database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { pagetitle => $pagetitle, lastchanged => time });
    return '{"result":"1"}';
   }
@@ -517,7 +536,7 @@ post '/data/save/field' => sub {
    my $page_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { id => $field_id });
    
    my $sth = database->prepare(
-    'SELECT id FROM '.config->{db_table_prefix}.'_catalog WHERE filename='.database->quote($filename).' AND id != '.$field_id.' AND lang='.database->quote($page_data->{lang})
+    'SELECT id FROM '.config->{db_table_prefix}.'_catalog WHERE filename='.database->quote($filename).' AND id != '.$field_id.' AND lang='.database->quote($page_data->{lang}).' AND groupid='.database->quote($page_data->{groupid})
    );
    if ($sth->execute()) {
     my ($tmpid) = $sth->fetchrow_array;
@@ -573,12 +592,18 @@ post '/data/delete' => sub {
    foreach my $item (@$id) {
     $item=int($item);
     $del_sql.=' OR id='.$item;
+    if (-d config->{files_dir}.'/images_catalog/'.$item) {
+      removeDir(config->{files_dir}.'/images_catalog/'.$item);
+    }
    }
    if ($del_sql) {
-    $del_sql=~s/ OR //;
+    $del_sql=~s/ OR //;    
    }
   } else {
     $del_sql='id='.int($id);
+    if (-d config->{files_dir}.'/images_catalog/'.int($id)) {
+      removeDir(config->{files_dir}.'/images_catalog/'.int($id));
+    }
   }
   
   if ($del_sql) {
