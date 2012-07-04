@@ -108,3 +108,4 @@ catalog_images: Catalog images
 description_short: Short description
 special_flag: Special offer
 form_error_invalid_description_short: Invalid short description syntax
+catalog_view: View item

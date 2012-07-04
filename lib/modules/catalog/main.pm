@@ -69,7 +69,7 @@ get qr{(.*)} => sub {
   }
   my ($groupid) = split(/\//, $url);
   $url=~s/$groupid(\/?)//;
-  if (!$url && $groupid) {
+  if (!$url || !$groupid) {
     my $sth;
     if ($groupid) {
       $sth = database->prepare(
@@ -99,7 +99,7 @@ get qr{(.*)} => sub {
         $picture="/images/placeholder_200.png";
        }
        if (!$description_short) {
-        $description_short='';
+        $description_short='<br>';
        }
        $items .= template 'catalog_item', { lang => $lang, picture => $picture, id => $id,  pagetitle => $pagetitle, filename => $filename, groupid => $groupid, description_short => $description_short }, { layout => undef };
      } # while     
@@ -149,9 +149,11 @@ get qr{(.*)} => sub {
         $img_pics{$i}="/images/blank.gif";
         $img_urls{$i}="#";
       }
-    }
-    my $grid=template 'catalog_images_grid', { img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
-    $taracot::taracot_render_template = template 'catalog_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $db_data, grid => $grid }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    }    
+    my $grid=template 'catalog_images_grid', { id => $db_data->{id}, img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
+    my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => "catalog_title_".$groupid, lang => $_current_lang });
+    my $groupid_title = $db_var1->{s_value} || $groupid;
+    $taracot::taracot_render_template = template 'catalog_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $db_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
    }
    if ($db_data->{status} eq 0) {
     $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };

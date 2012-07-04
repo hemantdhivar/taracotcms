@@ -1,11 +1,7 @@
-<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="/css/admin.css">
-<script src="/js/jquery.min.js" type="text/javascript"></script>
-<script src="/js/jquery.pngfix.min.js" type="text/javascript"></script>
-<script src="/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/js/jquery.jmessages.js" type="text/javascript"></script>
-<link rel="stylesheet" href="/js/bootstrap-lightbox/bootstrap-lightbox.css" />
-<script type="text/javascript" src="/js/bootstrap-lightbox/bootstrap-lightbox.js"></script>
+<script type="text/javascript" src="/js/slimbox/slimbox2.js"></script>
+<link rel="stylesheet" href="/js/slimbox/css/slimbox2.css" type="text/css" media="screen" />
 <h1>[==  $page_data->{pagetitle} =]</h1>
+<a href="/catalog">[== $lang->{module_name} =]</a> &raquo; <a href="/catalog/[== $groupid =]">[== $groupid_title =]</a>
+<br/><br/>
 [== $grid =]
 [== $page_data->{content} =]

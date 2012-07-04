@@ -1,10 +1,15 @@
-<ul class="thumbnails">
-<li class="span3">
-<a data-toggle="lightbox" href="#catalog_image_1" class="thumbnail"><img src="[== $img_pics->{1} =]" width="200" height="200" alt="" /></a>
-<div class="lightbox fade" id="catalog_image_1" style="display:none;"><div class='lightbox-content'><img src="[== $img_urls->{1} =]" alt="" /></div></div>
-</li>
-<li class="span2">
-<a data-toggle="lightbox" href="#catalog_image_1" class="thumbnail"><img src="[== $img_pics->{2} =]" width="85" height="85" alt="" /></a>
-<div class="lightbox fade" id="catalog_image_1" style="display:none;"><div class='lightbox-content'><img src="[== $img_urls->{2} =]" alt="" /></div></div>
-</li>
-</ul>
+<div class="row">
+  <div class="span10">
+    <ul class="thumbnails">
+      <li class="span3" style="width:205px">
+      <a rel="lightbox-id[== $id =]" href="[== $img_urls->{1} =]" class="thumbnail"><img src="[== $img_pics->{1} =]" width="200" height="200" alt="" /></a>
+      </li>
+      <?pl for (my $img=2; $img<10; $img++) {
+       if ($img_urls->{$img} ne "#") { ?>
+      <li class="span2" style="width:96px">
+      <a rel="lightbox-id[== $id =]" href="[== $img_urls->{$img} =]" class="thumbnail"><img src="[== $img_pics->{$img} =]" width="85" height="85" alt="" /></a>
+      </li>
+      <?pl }} ?>
+    </ul>
+  </div>
+</div>
