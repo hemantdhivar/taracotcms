@@ -1,0 +1,7 @@
+div.catalog_special_item {
+	cursor:pointer;
+	width:85px;
+	text-align:center;
+	padding:5px;
+	border: 1px solid #ddd;
+}

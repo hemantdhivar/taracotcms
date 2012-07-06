@@ -1,0 +1,5 @@
+	<div onclick="location.href='/catalog/[== $groupid =]/[== $filename =]'" class="catalog_special_item">
+	  <a href="/catalog/[== $groupid =]/[== $filename =]"><img src="[== $picture =]" alt="" /></a><br/>
+	  [== $pagetitle =]<br/>
+	  [== $description_short =]
+	</div>

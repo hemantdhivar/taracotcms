@@ -6,6 +6,7 @@ use Digest::MD5 qw(md5_hex);
 use taracot::loadpm;
 use Text::Unidecode;
 use taracot::fs;
+use Fcntl qw(:flock SEEK_END); # import LOCK_* and SEEK_END constants 
 
 # Configuration
 
@@ -39,6 +40,42 @@ sub _load_lang {
   }
   $lang = { %$lang_adm, %$lang_mod, %$lang_adm_cnt, %$lang_mod_cnt };
   return $lng;
+}
+
+sub generate_special_html {
+ my $current_lang=shift;
+ my $items;
+ my $sth; 
+ $sth = database->prepare(
+   'SELECT id,pagetitle,filename,groupid,description_short FROM '.config->{db_table_prefix}.'_catalog WHERE status=1 AND special_flag=1 AND lang='.database->quote($current_lang)
+ );
+ if ($sth->execute()) {
+  while(my ($id,$pagetitle,$filename,$groupid,$description_short) = $sth -> fetchrow_array) {
+    my $picture;
+    if (-d config->{files_dir}.'/images_catalog/'.$id) {
+      opendir(DIR, config->{files_dir}.'/images_catalog/'.$id) || die "Fatal error: can't open directory\n";
+      while(readdir(DIR)) {
+        if ($_ =~  m/^\.\.?/) {
+          next;
+         }
+         $picture="/files/images_catalog/$id/.".md5_hex($_).".jpg";
+         last;
+      }
+      closedir(DIR);       
+    } # if dir exists
+    if (!$picture) {
+      $picture="/images/placeholder_200.png";
+    }
+    $items .= template 'catalog_special_item', { lang => $lang, picture => $picture, id => $id,  pagetitle => $pagetitle, filename => $filename, groupid => $groupid, description_short => $description_short }, { layout => undef };
+  } # while     
+ } 
+ $sth->finish();  
+ my $tmp = template 'catalog_special', { items => $items }, { layout => undef };
+ open(DATA, '>'.config->{root_dir}.'/'.config->{data_dir}.'/special_'.$current_lang.'.html') || return;
+ flock(DATA, LOCK_EX) || return;
+ binmode DATA, ':utf8';
+ print DATA $tmp || return;
+ close(DATA) || return; 
 }
 
 # Frontend Routes
@@ -287,7 +324,7 @@ get '/data/list' => sub {
 
 post '/data/save' => sub {
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
-  _load_lang();
+  my $_current_lang=_load_lang();
   content_type 'application/json';
   my $pagetitle=param('pagetitle') || '';
   my $filename=param('filename') || '';
@@ -404,13 +441,13 @@ post '/data/save' => sub {
   if (!$ins_id) {
     $ins_id=$id;
   }
-  
+  generate_special_html($_current_lang);
   return qq~{"result":"1", "id":"$ins_id"}~;
 };
 
 post '/data/save/field' => sub {
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
-  _load_lang();
+  my $_current_lang=_load_lang();
   content_type 'application/json';
   my $field_name=param('field_name') || '';
   my $field_id=param('field_id') || 0;
@@ -422,6 +459,8 @@ post '/data/save/field' => sub {
   if ($field_name ne 'pagetitle' && $field_name ne 'filename' && $field_name ne 'lang' && $field_name ne 'layout' && $field_name ne 'status' && $field_name ne 'groupid') {
    return '{"result":"0", "error":"'.$lang->{field_edit_error_unknown}.'"}'; 
   }
+
+  generate_special_html($_current_lang);
   
   # Check language
   

@@ -3,6 +3,7 @@ use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
+use Fcntl qw(:flock SEEK_END); # import LOCK_* and SEEK_END constants 
 
 # Configuration
 
@@ -208,13 +209,23 @@ post '/data/save' => sub {
     }
     $sth->finish();
   }
-  
   if ($id > 0) {
    database->quick_update(config->{db_table_prefix}.'_settings', { id => $id }, { s_name => $s_name, s_value => $s_value, s_value_html => $s_value_html, lang => $plang, lastchanged => time });
   } else {   
    database->quick_insert(config->{db_table_prefix}.'_settings', { s_name => $s_name, s_value => $s_value, s_value_html => $s_value_html, lang => $plang, lastchanged => time });
   }
-      
+  my $cached_settings=config->{cached_settings};
+  $cached_settings=~s/ //gm;
+  my @cached_settings = split(/,/, $cached_settings);
+  foreach my $item (@cached_settings) {
+    if ($item eq $s_name) {
+      open(DATA, '>'.config->{root_dir}.'/'.config->{data_dir}.'/settings_'.$item.'_'.$plang.'.html');
+      flock(DATA, LOCK_EX);
+      binmode DATA, ':utf8';
+      print DATA $s_value_html;
+      close(DATA); 
+    }
+  }
   return qq~{"result":"1"}~;
 };
 
