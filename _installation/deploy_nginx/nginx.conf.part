@@ -11,7 +11,7 @@ server {
         server_name website.tmp.rh1.ru;
         access_log /var/www/httpd-logs/website.access.log;
         error_log /var/www/httpd-logs/website.error.log;
-        location ~* /(images|css|js|taracot|files) {
+        location ~* ^/(images|css|js|taracot|files) {
                 root /var/www/website/data/site/public;
                 expires 30d;
         }
