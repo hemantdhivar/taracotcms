@@ -19,6 +19,14 @@ foreach my $module (@modules) {
   load $taracot_module_load;
 }
 
+my $load_blocks = config->{load_blocks_frontend};
+$load_blocks=~s/ //gm;
+my @blocks = split(/,/, $load_blocks);
+foreach my $block (@blocks) {
+  my $taracot_block_load="blocks::".lc($block)."::main";
+  loadpm $taracot_block_load;   
+}
+
 prefix "/";
 
 my $lang;
@@ -55,16 +63,16 @@ any qr{.*} => sub {
  if ($taracot_render_template) {
    my %blocks;
    my $load_blocks = config->{load_blocks_frontend};
-     $load_blocks=~s/ //gm;
-     my @blocks = split(/,/, $load_blocks);
-     foreach my $block (@blocks) {
+   $load_blocks=~s/ //gm;
+   my @blocks = split(/,/, $load_blocks);
+   foreach my $block (@blocks) {
       my $taracot_block_load="blocks::".lc($block)."::main";
       loadpm $taracot_block_load; 
       my $md=$taracot_block_load->new(authdata => $taracot_auth_data, lang => $lang, current_lang => $_current_lang);
       my $data=$md->data();
       $blocks{$block}=$data->{block_content};
       undef($md);
-    }
+   }
    while (my ($name, $value) = each(%blocks)){
     $taracot_render_template =~ s/\[\% ?$name ?\%\]/$value/igm; 
    }

@@ -5,4 +5,4 @@ views/layouts/.*\.cache$
 public/files/images/*
 data/.*\.html$
 public/3rdp/*
-views/layouts/3rdp.tt
+views/layouts/3rdp*.tt

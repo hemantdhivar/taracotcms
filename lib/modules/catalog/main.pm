@@ -54,11 +54,11 @@ sub generate_special_html {
     my $picture;
     if (-d config->{files_dir}.'/images_catalog/'.$id) {
       opendir(DIR, config->{files_dir}.'/images_catalog/'.$id) || die "Fatal error: can't open directory\n";
-      while(readdir(DIR)) {
-        if ($_ =~  m/^\.\.?/) {
+      while((my $filename = readdir(DIR))) {
+        if ($filename =~  m/^\.\.?/) {
           next;
          }
-         $picture="/files/images_catalog/$id/.".md5_hex($_).".jpg";
+         $picture="/files/images_catalog/$id/.".md5_hex($filename).".jpg";
          last;
       }
       closedir(DIR);       
@@ -123,11 +123,11 @@ get qr{(.*)} => sub {
        my $picture;
        if (-d config->{files_dir}.'/images_catalog/'.$id) {
          opendir(DIR, config->{files_dir}.'/images_catalog/'.$id) || die "Fatal error: can't open directory\n";
-         while(readdir(DIR)) {
-          if ($_ =~  m/^\.\.?/) {
+         while((my $filename = readdir(DIR))) {
+          if ($filename =~  m/^\.\.?/) {
             next;
           }
-          $picture="/files/images_catalog/$id/.".md5_hex($_).".jpg";
+          $picture="/files/images_catalog/$id/.".md5_hex($filename).".jpg";
           last;
          }
          closedir(DIR);       
@@ -167,16 +167,16 @@ get qr{(.*)} => sub {
   if (defined $db_data && $db_data->{id}) {
    if ($db_data->{status} eq 1) {
     my %img_pics;
-    my %img_urls;    
+    my %img_urls;  
     if (-d config->{files_dir}.'/images_catalog/'.$db_data->{id}) {
       opendir(DIR, config->{files_dir}.'/images_catalog/'.$db_data->{id}) || die "Fatal error: can't open directory\n";
       my $cnt=1;
-      while(readdir(DIR)) {
-       if ($_ =~  m/^\.\.?/) {
+      while((my $filename = readdir(DIR))) {
+       if ($filename =~  m/^\.\.?/) {
         next;
        }
-       $img_pics{$cnt} = "/files/images_catalog/".$db_data->{id}."/.".md5_hex($_).".jpg";
-       $img_urls{$cnt} = "/files/images_catalog/".$db_data->{id}."/".$_;
+       $img_pics{$cnt} = "/files/images_catalog/".$db_data->{id}."/.".md5_hex($filename).".jpg";
+       $img_urls{$cnt} = "/files/images_catalog/".$db_data->{id}."/".$filename;
        $cnt++;
       }
       closedir(DIR);
