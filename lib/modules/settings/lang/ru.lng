@@ -1,7 +1,7 @@
 module_name: Настройки
 module_name_long: Управление настройками
 id: ID
-s_name: Опация
+s_name: Опция
 s_name_hint: Название опции, лат. символы, "_" и "-"
 s_value: Значение
 language: Язык
