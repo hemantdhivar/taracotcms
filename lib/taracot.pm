@@ -9,7 +9,7 @@ prefix undef;
 
 our $taracot_render_template=undef;
 our $taracot_auth_data;
-our $taracot_current_version='0.20527';
+our $taracot_current_version='0.20528';
 
 my $load_modules = config->{load_modules_frontend};
 $load_modules=~s/ //gm;

@@ -21,7 +21,7 @@
 </head>
 <body>
   <div class="container-fluid" style="margin-top:19px;">
-   <div class="navbar">
+   <div class="navbar navbar-inverse">
     <div class="navbar-inner">
      <div class="container-fluid">
       <a class="brand" href="/admin">[== $lang->{admin_taracot} =]</a>

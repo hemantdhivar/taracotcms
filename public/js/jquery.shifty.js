@@ -14,7 +14,6 @@
             unselect: function () {}
         }, o);
         elems = $(this);
-        console.log($(this));
         last = null;
         var className = o.className;
         return $(this).each(function () {

@@ -30,7 +30,7 @@
 		<th style="width:100px">[== $lang->{s_name} =]</th>
 		<th>[== $lang->{s_value} =]</th>
 		<th style="width:100px;text-align:center">[== $lang->{language} =]</th>
-		<th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+		<th style="width:100px;text-align:center">[== $lang->{actions} =]</th>
 	</tr>
 	</thead>
 	<tbody>

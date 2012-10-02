@@ -39,8 +39,8 @@
      $('#ajax_loading').hide();
      if (data.length > 0) {
        var output='<table class="table table-striped">';
-       for ( item in data ) {
-        output+='<tr><td width="20"><i class="filetypes-i-'+data[item].type+'"></i></td><td><a href="/files/storage/'+data[item].name+'" target="_blank">/files/storage/'+data[item].name+'</a></td><td width="100" style="text-align:center">'+data[item].size+'</td><td width="30" style="text-align:right"><span class="btn btn-mini btn-danger" onclick="'+"deleteFile('"+data[item].name+"');"+'"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></td></tr>';
+       for (var t = 0; t < data.length; t++) {
+         output+='<tr><td width="20"><i class="filetypes-i-'+data[t].type+'"></i></td><td><a href="/files/storage/'+data[t].name+'" target="_blank">/files/storage/'+data[t].name+'</a></td><td width="100" style="text-align:center">'+data[t].size+'</td><td width="30" style="text-align:right"><span class="btn btn-mini btn-danger" onclick="'+"deleteFile('"+data[t].name+"');"+'"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></td></tr>';
        }
        output+='</table>'
        $('#file_list').html(output);
@@ -111,8 +111,8 @@
   $('#btn_upload_start').click(function(e) {
     if ($('#btn_upload_start').hasClass('disabled')) {
      return;
-    }
-    if (uploader.files.length > 0) {
+    }    
+    if (uploader.files.length > 0) {      
      $('#btn_upload_back').addClass('disabled');
      $('#btn_group_upload').hide();
      $('#uploading').show();
@@ -150,6 +150,7 @@
   $('#btn_upload').click(function(e) {
    $('#files_table').hide();
    $('#files_upload').show();
+   uploader.splice(0);
   });
  </script>
  <script type="text/javascript">$('#nav_files').addClass('active')</script>

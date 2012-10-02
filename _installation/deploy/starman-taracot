@@ -12,7 +12,7 @@ DAEMON=/usr/local/bin/plackup
 NAME="starman"
 # Defaults
 RUN="no"
-OPTIONS="--user=$SUSER --group=$SGROUP --env $ENVD --server Starman --workers=$WORKERS --port $PORT --app $CWD/bin/app.pl"
+OPTIONS="--user=$SUSER --group=$SGROUP --env $ENVD --server Starman --workers=$WORKERS --host 127.0.0.1 --port $PORT --app $CWD/bin/app.pl"
 PIDFILE="$NAME.pid"
 
 cd $CWD/bin
