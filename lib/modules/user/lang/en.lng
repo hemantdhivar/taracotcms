@@ -1,0 +1,5 @@
+module_name: User
+user_register: Register new user
+user_register_hint: Please fill the following form to register a new user account. Fields marked with an asterisk are required.
+user_register_username: User name
+user_register_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot;
