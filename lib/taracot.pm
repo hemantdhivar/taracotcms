@@ -4,6 +4,9 @@ use Dancer ':syntax';
 use taracot::admin;
 use Module::Load;
 use taracot::loadpm;
+use Imager;
+use Imager::Fill;
+use Imager::Matrix2d;
 
 prefix undef;
 
@@ -57,6 +60,42 @@ sub _load_lang {
   $lang = { %$lang_mod, %$lang_mod_cnt };
   return $lng;
 } 
+
+get '/captcha_img' => sub {
+  content_type 'image/png';
+  my $code=int(rand(10000));
+  while (length($code)<4) {
+    $code='0'.$code;
+  }
+  my @fills=('vline1', 'vline2', 'vline4', 'hline1', 
+             'hline2', 'hline4', 'slash1', 'slash2', 'slosh1', 'slosh2', 'grid1', 'grid2', 
+             'grid4', 'cross2', 'vlozenge', 'hlozenge', 'scalesdown', 'scalesup', 'scalesleft', 
+             'scalesright', 'tile_L');
+  my $image = Imager->new(xsize => 110, ysize => 50, channels => 4);
+  my $color1 = Imager::Color->new( int(rand(100))+150, int(rand(100))+150, int(rand(100))+150 );
+  my $color2 = Imager::Color->new( int(rand(50)), int(rand(50)), int(rand(50)) );
+  my $fill = Imager::Fill->new(hatch=>@fills[int(rand(@fills))], fg=>$color1, bg=>$color2, dx=>int(rand(30)), dy=>int(rand(30)) );
+  my $font = Imager::Font->new(file => config->{root_dir}.'/fonts/'.config->{captcha_font} );
+  $image->box(fill=>$fill);  
+  my $offset=10+int(rand(8));
+  foreach my $char (split(//, $code)) {
+   my $deg = int(rand(30));
+   if ($deg > 15) {
+    $deg=-$deg;
+   }
+   my $matrix = Imager::Matrix2d->rotate(degrees => $deg); 
+   $font->transform(matrix => $matrix);  
+   $image->string(string => $char, x => $offset, y => 30+int(rand(10)), color => $color1, font => $font, size  => 20+int(rand(10)), aa => int(rand(2)));
+   $offset=$offset+15+int(rand(8));
+  } 
+  $image->filter(type=>"conv", coef=>[-0.5, 2, -0.5 ]);
+  $image->filter(type=>"gaussian", stddev=>0.5);
+  $image = $image->convert(preset=>'grey');
+  #$image->filter(type=>"conv", coef=>[ 1, 2, 1 ]);
+  my $data;  
+  $image->write(data => \$data, type => 'png') or die $image->errstr;
+  return $data;
+};
 
 any qr{.*} => sub {
  my $_current_lang=_load_lang();

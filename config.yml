@@ -24,6 +24,8 @@ lang_default: 'en'
 db_table_prefix: 'taracot'
 salt: 'zuwrezathutebruhap6a558efane7asethe87caC44spa6upebrajaDrasares6u'
 cached_settings: 'block_left, block_right'
+agreement: '/agreement'
+captcha_font: 'ank.ttf'
 
 plugins:
  Database:

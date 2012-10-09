@@ -1,5 +1,15 @@
 module_name: User
 user_register: Register new user
 user_register_hint: Please fill the following form to register a new user account. Fields marked with an asterisk are required.
-user_register_username: User name
-user_register_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot;
+user_register_username: Username
+user_register_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot; only
+user_register_realname: Real name
+user_register_email: E-mail
+user_register_phone: Cell phone
+user_register_password: Password
+user_register_password_hint: At least 8 characters, please repeat it to verify
+user_register_captcha: Numbers on the picture
+user_register_submit: Submit
+user_register_agreement_1: I accept the
+user_register_agreement_2: agreement
+user_register_captcha_refresh: Click here to see another picture

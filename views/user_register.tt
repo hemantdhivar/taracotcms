@@ -1,0 +1,65 @@
+<h1>[== $lang->{user_register} =]</h1>
+[== $lang->{user_register_hint} =]
+<br/><br/><br/>
+<form class="form-horizontal">
+	<div class="control-group">
+    	<label class="control-label" for="reg_username">[== $lang->{user_register_username} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="controls">
+    		<input type="text" class="input-xlarge" id="reg_username">
+            <span class="help-block">[== $lang->{user_register_username_hint} =]</span>
+    	</div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="reg_realname">[== $lang->{user_register_realname} =]</label>
+        <div class="controls">
+            <input type="text" class="input-xlarge" id="reg_realname">
+        </div>
+    </div>
+    <div class="control-group">
+    	<label class="control-label" for="reg_email">[== $lang->{user_register_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="controls">
+    		<input type="text" id="reg_email">
+    	</div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="reg_phone">[== $lang->{user_register_phone} =]</label>
+        <div class="controls">
+            <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium" id="reg_phone"></div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="reg_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+        <div class="controls">
+            <input type="password" class="input-small" id="reg_password">
+            <input type="password" class="input-small" id="reg_password_repeat">
+            <span class="help-block">[== $lang->{user_register_password_hint} =]</span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="reg_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+        <div class="controls">
+            <input type="text" class="input-mini" id="reg_captcha">
+            <span id="captcha_img"></span>
+            &nbsp;<img src="/images/refresh.png" alt="[== $lang->{user_register_captcha_refresh} =]" title="[== $lang->{user_register_captcha_refresh} =]" width="16" height="16" style="cursor:pointer" onClick="reloadCaptcha()" />
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <label class="checkbox" style="cursor:pointer">
+                <input type="checkbox" id="reg_accept" />&nbsp;[== $lang->{user_register_agreement_1} =] <a href="[== $agreement_url =]" target="_blank">[== $lang->{user_register_agreement_2} =]</a>
+            </label>    
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">[== $lang->{user_register_submit} =]</button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $('#captcha_img').html('<img id="captcha_shown" src="/captcha_img?'+Math.random()+'" width="100" height="50" alt="" />');
+    function reloadCaptcha() {
+        $('#captcha_shown').attr('src', '/captcha_img?'+Math.random());
+    }
+    reloadCaptcha();
+    $('#reg_username').focus();
+</script>

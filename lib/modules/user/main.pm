@@ -39,7 +39,7 @@ sub _load_lang {
 
 get '/register' => sub {
   my $clang=_load_lang();
-  $taracot::taracot_render_template = template 'user_index', { lang => $lang, site_title => $lang->{user_register}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$clang };
+  $taracot::taracot_render_template = template 'user_register', { lang => $lang, agreement_url => config->{agreement}, site_title => $lang->{user_register}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$clang };
   pass();
 };
 
