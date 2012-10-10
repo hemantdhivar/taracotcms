@@ -2,18 +2,18 @@
 -- version 2.6.1
 -- http://www.phpmyadmin.net
 -- 
--- Хост: localhost
--- Время создания: Окт 02 2012 г., 18:27
--- Версия сервера: 5.0.45
--- Версия PHP: 5.2.4
+-- Host: localhost
+-- Generation Time: Oct 10, 2012 at 05:17 PM
+-- Server version: 5.0.45
+-- PHP Version: 5.2.4
 -- 
--- БД: `taracot`
+-- Database: `taracot`
 -- 
 
 -- --------------------------------------------------------
 
 -- 
--- Структура таблицы `taracot_catalog`
+-- Table structure for table `taracot_catalog`
 -- 
 
 CREATE TABLE `taracot_catalog` (
@@ -35,16 +35,16 @@ CREATE TABLE `taracot_catalog` (
 ) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 -- 
--- Дамп данных таблицы `taracot_catalog`
+-- Dumping data for table `taracot_catalog`
 -- 
 
 INSERT INTO `taracot_catalog` VALUES (11, 'Test2', 'cat1', 'url2', '', '', 1, 'url1', 'cat2', 'en', 'taracot', 0, 1341411586);
-INSERT INTO `taracot_catalog` VALUES (10, 'Test', 'cat1', 'url1', 'Тут типа контент', '', 1, 'url1', 'cat1', 'en', 'taracot', 1, 1341570666);
+INSERT INTO `taracot_catalog` VALUES (10, 'Test', 'cat1', 'url1', 'РўСѓС‚ С‚РёРїР° РєРѕРЅС‚РµРЅС‚', '', 1, 'url1', 'cat1', 'en', 'taracot', 1, 1341570666);
 
 -- --------------------------------------------------------
 
 -- 
--- Структура таблицы `taracot_pages`
+-- Table structure for table `taracot_pages`
 -- 
 
 CREATE TABLE `taracot_pages` (
@@ -63,7 +63,7 @@ CREATE TABLE `taracot_pages` (
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=3 ;
 
 -- 
--- Дамп данных таблицы `taracot_pages`
+-- Dumping data for table `taracot_pages`
 -- 
 
 INSERT INTO `taracot_pages` VALUES (1, 'Home', 'Page keywordz', 'Page description', '<p>\n	This is the home page.</p>\n<p>\n	As you see it, the installation seems to be running fine.</p>\n', 1, '/', 'en', '3rdp', 1341574629);
@@ -72,7 +72,7 @@ INSERT INTO `taracot_pages` VALUES (2, 'License', 'Page keywordz', 'Page descrip
 -- --------------------------------------------------------
 
 -- 
--- Структура таблицы `taracot_settings`
+-- Table structure for table `taracot_settings`
 -- 
 
 CREATE TABLE `taracot_settings` (
@@ -86,18 +86,18 @@ CREATE TABLE `taracot_settings` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=6 ;
 
 -- 
--- Дамп данных таблицы `taracot_settings`
+-- Dumping data for table `taracot_settings`
 -- 
 
 INSERT INTO `taracot_settings` VALUES (1, 'site_title', 'Taracot CMS', '', 'en', 1341314543);
 INSERT INTO `taracot_settings` VALUES (2, 'catalog_title', 'This is catalog!', '<p>\n	Here is a longer description.</p>\n<p>\n	<img alt="" src="/files/images/teddy_bear.png" style="width: 128px; height: 128px;" /></p>\n<p>\n	Hey hey.</p>\n', 'en', 1341313977);
 INSERT INTO `taracot_settings` VALUES (3, 'catalog_title_medved', 'Medvedik!', NULL, 'en', 1341311042);
-INSERT INTO `taracot_settings` VALUES (5, 'block_left', '', '<p>\n	Hey hey</p>\n<p>\n	I saved the world today!</p>\n<p>\n	Такие дела ;)</p>\n', 'en', 1341572329);
+INSERT INTO `taracot_settings` VALUES (5, 'block_left', '', '<p>\n	Hey hey</p>\n<p>\n	I saved the world today!</p>\n<p>\n	РўР°РєРёРµ РґРµР»Р° ;)</p>\n', 'en', 1341572329);
 
 -- --------------------------------------------------------
 
 -- 
--- Структура таблицы `taracot_users`
+-- Table structure for table `taracot_users`
 -- 
 
 CREATE TABLE `taracot_users` (
@@ -106,6 +106,7 @@ CREATE TABLE `taracot_users` (
   `password` varchar(100) NOT NULL,
   `realname` varchar(100) NOT NULL,
   `email` varchar(80) NOT NULL,
+  `phone` varchar(40) default NULL,
   `status` tinyint(4) NOT NULL default '0',
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
@@ -113,7 +114,7 @@ CREATE TABLE `taracot_users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=2 ;
 
 -- 
--- Дамп данных таблицы `taracot_users`
+-- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'admin', '86022564177871d4780b0a88e02f3ba5', 'Administrator', '', 2, 1329833236);
+INSERT INTO `taracot_users` VALUES (1, 'admin', '86022564177871d4780b0a88e02f3ba5', 'Administrator', 'xtreme@rh1.ru', '79217998111', 2, 1349862545);
