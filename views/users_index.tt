@@ -28,6 +28,7 @@
 		<th style="width:100px">[== $lang->{username} =]</th>
 		<th>[== $lang->{realname} =]</th>
 		<th>[== $lang->{email} =]</th>
+    <th>[== $lang->{phone} =]</th>
 		<th style="width:60px;text-align:center">[== $lang->{status} =]</th>
 		<th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
 	</tr>
@@ -156,6 +157,12 @@
     				<p class="help-block" id="password_hint">[== $lang->{password_hint} =]</p>
     			</div>
     		</div>
+        <div class="control-group" id="cg_phone">
+          <label class="control-label" for="phone">[== $lang->{phone} =]</label>
+          <div class="controls">
+            <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium" id="phone"></div>
+          </div>
+        </div>
     		<div class="control-group" id="cg_email">
     			<label class="control-label" for="email">[== $lang->{email} =]&nbsp;<span class="required_field">*</span></label>
     			<div class="controls">
@@ -253,7 +260,7 @@ $(document).ready(function() {
      { "fnRender": function ( oObj, sVal ) {
          return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
        },
-       "aTargets": [ 5 ]
+       "aTargets": [ 6 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          var pic='user.png';
@@ -261,7 +268,7 @@ $(document).ready(function() {
          if (sVal == 2) { pic='user_king.png'; }
          return '<div style="text-align:center;cursor:pointer" class="editable_select" onclick="selectStatus('+row_id+')" id="status_'+row_id+'"><span style="display:none" id="statusval_'+row_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" /></div>';         
        },
-       "aTargets": [ 4 ]
+       "aTargets": [ 5 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          row_id=sVal;
@@ -283,6 +290,11 @@ $(document).ready(function() {
          return '<div id="email_'+row_id+'" class="editable_text">'+sVal+'</div';
        },
        "aTargets": [ 3 ]
+     },
+     { "fnRender": function ( oObj, sVal ) {
+         return '<div id="phone_'+row_id+'" class="editable_text">'+sVal+'</div';
+       },
+       "aTargets": [ 4 ]
      }
     ],
     "fnDrawCallback": function() {
@@ -341,6 +353,7 @@ $('#btn_add').click( function () {
    $('#password_repeat').val('');
    $('#realname').val('');
    $('#email').val('');
+   $('#phone').val('');
    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
    $('#username').focus();
 });
@@ -397,6 +410,10 @@ $('#btn_edit_save').click( function () {
     $('#cg_email').addClass('error');
     errors=true;   
    }
+   if (!$('#phone').val().match(/^[0-9]{0,40}$/)) {
+    $('#cg_phone').addClass('error');
+    errors=true;   
+   }
    if (!$('#realname').val().match(/^.{0,80}$/)) {
     $('#cg_realname').addClass('error');
     errors=true;   
@@ -410,7 +427,7 @@ $('#btn_edit_save').click( function () {
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html("[== $lang->{ajax_saving} =]");
     $('#ajax_loading').show();
-    $.post("/admin/users/data/save", { id: edit_id, username: $('#username').val(), password: $('#password').val(), email: $('#email').val(), realname: $('#realname').val(), status: $("input[name='status']:checked").val() },
+    $.post("/admin/users/data/save", { id: edit_id, username: $('#username').val(), password: $('#password').val(), email: $('#email').val(), phone: $('#phone').val(), realname: $('#realname').val(), status: $("input[name='status']:checked").val() },
      function(data){
        if (data.result == '0') {
         if (data.error) { // ERROR
@@ -471,6 +488,7 @@ function editData(id) {
    $('#password_repeat').val('');
    $('#realname').val('');
    $('#email').val('');
+   $('#phone').val('');
    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
    $('#data_edit_form').hide();
    $('#data_edit_form_buttons').hide();
@@ -497,6 +515,9 @@ function editData(id) {
          }
          if (data.email) {
           $('#email').val(data.email);
+         }
+         if (data.phone) {
+          $('#phone').val(data.phone);
          }
          if (data.realname) {
           $('#realname').val(data.realname);
@@ -579,6 +600,7 @@ function resetFormState() {
    $('#cg_username').removeClass('error');
    $('#cg_password').removeClass('error');
    $('#cg_email').removeClass('error');
+   $('#cg_phone').removeClass('error');
    $('#cg_realname').removeClass('error');
    $('#password_hint').html("[== $lang->{password_hint} =]");
 }

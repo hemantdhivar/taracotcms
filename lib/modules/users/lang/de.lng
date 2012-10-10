@@ -13,6 +13,7 @@ status0: Inactive user (disabled for several reasons)
 status1: Normal user
 status2: Website administrator (has rights to access administration area)
 email: E-mail
+phone: Cell phone
 actions: Actions
 btn_add: Add user
 btn_del: Delete selected
@@ -35,6 +36,7 @@ form_error_invalid_email: Invalid e-mail syntax
 form_error_duplicate_email: Duplicate e-mail (user with such e-mail address already exists)
 form_error_invalid_realname: Invalid real name syntax
 form_error_invalid_status: Invalid status
+form_error_invalid_phone: Invalid phone number
 add_success_notify: New user has been added
 edit_success_notify: User data has been changed
 data_loading_error: Error while loading data from server. Please check your connection and try again.

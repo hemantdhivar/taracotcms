@@ -7,8 +7,8 @@ use Digest::MD5 qw(md5_hex);
 # Configuration
 
 my $defroute = '/admin/users';
-my @columns = ('id','username','realname','email','status');
-my @columns_ft = ('username','realname','email');
+my @columns = ('id','username','realname','email','phone','status');
+my @columns_ft = ('username','realname','email','phone');
 
 # Module core settings 
 
@@ -136,6 +136,7 @@ post '/data/save' => sub {
   my $username=param('username') || '';
   my $password=param('password') || '';
   my $email=param('email') || '';
+  my $phone=param('phone') || '';
   my $realname=param('realname') || '';
   my $status=param('status') || 0;
   $status=int($status);
@@ -156,13 +157,16 @@ post '/data/save' => sub {
   }
   $email=lc $email;
   $realname=~s/[\<\>\"\'\n\r\\\/]//gm;
-  if ($realname !~ /^.{0,80}$/) {
+    if ($realname !~ /^.{0,80}$/) {
    return qq~{"result":"0","field":"realname","error":"~.$lang->{form_error_invalid_realname}.qq~"}~;
   }
   if ($status < 0 || $status > 2) {
    return qq~{"result":"0","error":"~.$lang->{form_error_invalid_status}.qq~"}~;
   }
-  
+  $phone=~s/[^0-9]//gm;
+  if (length($phone) > 40) {
+   return qq~{"result":"0","error":"~.$lang->{form_error_invalid_phone}.qq~"}~; 
+  }
   my $dupesql='';
   if ($id > 0) {
    $dupesql=' AND id != '.$id;
@@ -199,12 +203,12 @@ post '/data/save' => sub {
   if ($id > 0) {
    if ($password) {
     $password = md5_hex(config->{salt}.$password);
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, password => $password, email => $email, realname => $realname, status => $status, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
    } else {
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, email => $email, realname => $realname, status => $status, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
    }
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, realname => $realname, status => $status, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
   }
       
   return qq~{"result":"1"}~;
@@ -222,7 +226,7 @@ post '/data/save/field' => sub {
 
   # Pre-check all fields
   
-  if ($field_name ne 'username' && $field_name ne 'realname' && $field_name ne 'email' && $field_name ne 'status') {
+  if ($field_name ne 'username' && $field_name ne 'realname' && $field_name ne 'email' && $field_name ne 'status' && $field_name ne 'phone' ) {
    return '{"result":"0", "error":"'.$lang->{field_edit_error_unknown}.'"}'; 
   }
   
@@ -281,6 +285,18 @@ post '/data/save/field' => sub {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_realname}.qq~"}~;
    }
    database->quick_update(config->{db_table_prefix}.'_users', { id => $field_id }, { realname => $realname, lastchanged => time });
+   return qq~{"result":"1"}~;
+  }
+
+  # Check phone
+  
+  if ($field_name eq 'phone') {
+   my $phone=$field_value;
+   $phone=~s/[^0-9]//gm;
+   if (length($phone) > 40) {
+    return qq~{"result":"0","error":"~.$lang->{form_error_invalid_phone}.qq~"}~;
+   }
+   database->quick_update(config->{db_table_prefix}.'_users', { id => $field_id }, { phone => $phone, lastchanged => time });
    return qq~{"result":"1"}~;
   }
   

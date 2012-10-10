@@ -13,6 +13,7 @@ status0: Неактивный пользователь
 status1: Пользователь
 status2: Администратор (имеет доступ к панели управления)
 email: E-mail
+phone: Телефон
 actions: Действия
 btn_add: Добавить пользователя
 btn_del: Удалить выбранные
@@ -35,6 +36,7 @@ form_error_invalid_email: Неверный адрес E-Mail
 form_error_duplicate_email: Указанный адрес E-Mail уже существует
 form_error_invalid_realname: Неверно указано настоящее имя
 form_error_invalid_status: Неверный статус
+form_error_invalid_phone: Неверный номер телефона
 add_success_notify: Новый пользователь успешно добавлен
 edit_success_notify: Данные пользователя успешно сохранены
 data_loading_error: Ошибка во время загрузки страницы с сервера. Пожалуйста, проверьте соединение и повторите попытку.
