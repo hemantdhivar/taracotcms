@@ -2,7 +2,7 @@
 [== $lang->{user_register_hint} =]
 <br/><br/><br/>
 <form class="form-horizontal">
-	<div class="control-group">
+	<div class="control-group" id="cg_reg_username">
     	<label class="control-label" for="reg_username">[== $lang->{user_register_username} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
     		<input type="text" class="input-xlarge" id="reg_username">
@@ -27,7 +27,7 @@
             <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium" id="reg_phone"></div>
         </div>
     </div>
-    <div class="control-group">
+    <div class="control-group" id="cg_reg_password">
         <label class="control-label" for="reg_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
         <div class="controls">
             <input type="password" class="input-small" id="reg_password">
@@ -51,7 +51,7 @@
         </div>
     </div>
     <div class="form-actions">
-        <button type="submit" class="btn btn-primary">[== $lang->{user_register_submit} =]</button>
+        <div class="btn btn-primary" id="btn_submit">[== $lang->{user_register_submit} =]</div>
     </div>
 </form>
 
@@ -60,6 +60,19 @@
     function reloadCaptcha() {
         $('#captcha_shown').attr('src', '/captcha_img?'+Math.random());
     }
+    $('#btn_submit').bind('click', function() {
+        $('#cg_reg_username').removeClass('error');
+        $('#cg_reg_password').removeClass('error');
+        var form_errors=false;
+        if (!$('#reg_username').val().match(/^[A-Za-z0-9_\-]{1,100}$/)) {
+            $('#cg_reg_username').addClass('error');
+            form_errors=true;   
+        }
+        if ($('#reg_password').val().length < 8 || $('#reg_password').val() != $('#reg_password_repeat').val()) {
+            $('#cg_reg_password').addClass('error');
+            form_errors=true;   
+        } 
+    });
     reloadCaptcha();
     $('#reg_username').focus();
 </script>
