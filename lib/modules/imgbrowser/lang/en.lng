@@ -36,3 +36,4 @@ newdir_error: Error while creating new directory
 rename_error: Error while renaming the file
 delete_error: Error while deleting the file
 delete_confirm: Are you sure you wish to delete the following file(s)/dir(s)?
+error_ajax: Error while connecting to server. Please try again later.

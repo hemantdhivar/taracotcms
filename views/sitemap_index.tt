@@ -210,20 +210,30 @@
     var tree = $("#tree").dynatree("getTree");
     $('#tree_btns').hide();
     $('#ajax_loading').show();
-    $.post("/admin/sitemap/data/tree/save", { data: JSON.stringify(tree.toDict(), null, 2), lang: $('#select_lang').val() },
-    function(data){
-     $('#tree_btns').show();
-     $('#ajax_loading').hide();
-     if (data.result != 1) {
-      $.jmessage('[== $lang->{error} =]', "[== $lang->{tree_save_error} =]", 2500, 'jm_message_success');
-      return;
-     }
-     $('#node_edit').hide();
-     $("#tree").dynatree("destroy");
-     $('#tree_editor').hide();
-     $('#tree_lang').show();
-     $.jmessage('[== $lang->{success} =]', "[== $lang->{tree_save_success} =]", 2500, 'jm_message_success');
-    }); 
+
+    $.ajax({
+        type: 'POST',
+        url: '/admin/sitemap/data/tree/save',
+        data: { data: JSON.stringify(tree.toDict(), null, 2), lang: $('#select_lang').val() },
+        dataType: "json",
+        success: function(data) {
+          $('#tree_btns').show();
+          $('#ajax_loading').hide();
+          if (data.result != 1) {
+            $.jmessage('[== $lang->{error} =]', "[== $lang->{tree_save_error} =]", 2500, 'jm_message_success');
+            return;
+          }
+          $('#node_edit').hide();
+          $("#tree").dynatree("destroy");
+          $('#tree_editor').hide();
+          $('#tree_lang').show();
+          $.jmessage('[== $lang->{success} =]', "[== $lang->{tree_save_success} =]", 2500, 'jm_message_success');
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+        }
+    });    
+
    }
   );
   $('#tree_btn_cancel').click(
@@ -252,21 +262,28 @@
     });
     $('#tree_btns').hide();
     $('#ajax_loading').show();
-    $.post("/admin/sitemap/data/tree/save", { data: JSON.stringify($("#tree").dynatree("getTree").toDict(), null, 2), lang: $('#select_lang').val() },
-      function(data){
-       $('#tree_btns').show();
-       $('#ajax_loading').hide();
-       if (data.result != 1) {
-        $.jmessage('[== $lang->{error} =]', "[== $lang->{tree_save_error} =]", 2500, 'jm_message_success');
-        return;
-       }
-       $('#node_edit').hide();
-       $("#tree").dynatree("destroy");
-       $('#tree_editor').hide();
-       $('#tree_lang').show();
-       $.jmessage('[== $lang->{success} =]', "[== $lang->{tree_save_success} =]", 2500, 'jm_message_success');     
-      }
-    ); 
+    $.ajax({
+        type: 'POST',
+        url: '/admin/sitemap/data/tree/save',
+        data: { data: JSON.stringify($("#tree").dynatree("getTree").toDict(), null, 2), lang: $('#select_lang').val() },
+        dataType: "json",
+        success: function(data) {
+           $('#tree_btns').show();
+           $('#ajax_loading').hide();
+           if (data.result != 1) {
+            $.jmessage('[== $lang->{error} =]', "[== $lang->{tree_save_error} =]", 2500, 'jm_message_success');
+            return;
+           }
+           $('#node_edit').hide();
+           $("#tree").dynatree("destroy");
+           $('#tree_editor').hide();
+           $('#tree_lang').show();
+           $.jmessage('[== $lang->{success} =]', "[== $lang->{tree_save_success} =]", 2500, 'jm_message_success');   
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+        }
+    });
    }
   );
   // Keypress events

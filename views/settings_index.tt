@@ -304,20 +304,30 @@ function submitEdit(value, settings) {
  value=value.replace(/\>/g, '&gt;');
  value=value.replace(/\"/g, '&quot;');
  var arr = this.id.split('-');
- $.post("/admin/settings/data/save/field", { field_name: arr[0], field_id: arr[1], field_value: value },
-  function(data){
-   if (data.result != '1') {
-    $('#'+edit_id).html(value_old);
-    if (data.error) {
-     $('#error_dialog_msg').html(data.error);
-     $('#error_dialog').modal({keyboard: true});
-    }
-   } else {
-    if (data.value) {
-     $('#'+edit_id).html(data.value);    
-    }
-   }
+
+ $.ajax({
+      type: 'POST',
+      url: '/admin/settings/data/save/field',
+      data: { field_name: arr[0], field_id: arr[1], field_value: value },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          $('#'+edit_id).html(value_old);
+          if (data.error) {
+           $('#error_dialog_msg').html(data.error);
+           $('#error_dialog').modal({keyboard: true});
+          }
+        } else {
+          if (data.value) {
+           $('#'+edit_id).html(data.value);    
+          }
+        }
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+      }
  });
+
  return(value);
 }
 
@@ -345,17 +355,27 @@ $('#btn_edit_cancel').click( function () {
 // "Save" button handler (language select dialog mode)
 
 $('#btn_language_select_save').click( function () {
- $.post("/admin/settings/data/save/field", { field_name: "lang", field_id: edit_id, field_value: $('#language_select_lang').val() },
-  function(data){
-   if (data.result != '1') {
-    if (data.error) {
-     $('#error_dialog_msg').html(data.error);
-     $('#error_dialog').modal({keyboard: true});
-    }
-   } else {
-    $('#lang_'+edit_id).html('<span style="display:none" id="langv_'+edit_id+'">'+$('#language_select_lang').val()+'</span><img src="/images/flags/'+$('#language_select_lang').val()+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem($('#language_select_lang').val()));
-   }
+ 
+ $.ajax({
+      type: 'POST',
+      url: '/admin/settings/data/save/field',
+      data: { field_name: "lang", field_id: edit_id, field_value: $('#language_select_lang').val() },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          if (data.error) {
+           $('#error_dialog_msg').html(data.error);
+           $('#error_dialog').modal({keyboard: true});
+          }
+        } else {
+          $('#lang_'+edit_id).html('<span style="display:none" id="langv_'+edit_id+'">'+$('#language_select_lang').val()+'</span><img src="/images/flags/'+$('#language_select_lang').val()+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem($('#language_select_lang').val()));
+        }
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+      }
  });
+
  $('#language_select').modal('hide');
 });
    
@@ -382,38 +402,50 @@ $('#btn_edit_save').click( function () {
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html("[== $lang->{ajax_saving} =]");
     $('#ajax_loading').show();
-    $.post("/admin/settings/data/save", { id: edit_id, s_name: $('#s_name').val(), s_value: $('#s_value').val(), s_value_html: CKEDITOR.instances.wysiwyg_editor.getData(), lang: $('#lang').val() },
-     function(data){
-       if (data.result == '0') {
-        if (data.error) { // ERROR
-         $('#form_error_msg_text').html(data.error);
-         $('#form_error_msg').fadeIn(400);
-         $('#form_error_msg').alert();
+
+    $.ajax({
+        type: 'POST',
+        url: '/admin/settings/data/save',
+        data: { id: edit_id, s_name: $('#s_name').val(), s_value: $('#s_value').val(), s_value_html: CKEDITOR.instances.wysiwyg_editor.getData(), lang: $('#lang').val() },
+        dataType: "json",
+        success: function(data) {
+          if (data.result == '0') {
+            if (data.error) { // ERROR
+             $('#form_error_msg_text').html(data.error);
+             $('#form_error_msg').fadeIn(400);
+             $('#form_error_msg').alert();
+            }
+            $('#data_edit_form').show();
+            $('#data_edit_form_buttons').show();
+            $('#ajax_loading').hide();
+            if (data.field) {
+             $('#cg_'+data.field).addClass('error');
+             $('#'+data.field).focus();
+            }
+            $("html, body").animate({ scrollTop: 0 }, "fast");
+          } else { // OK
+            $('#data_edit_form').show();
+            $('#data_edit_form_buttons').show();
+            $('#ajax_loading').hide();
+            resetFormState();
+            $('#data_edit').hide();
+            $('#data_overview').show();
+            if (edit_id == 0) {
+             $.jmessage('[== $lang->{success} =]', "[== $lang->{add_success_notify} =]", 2500, 'jm_message_success');
+            } else {
+             $.jmessage('[== $lang->{success} =]', "[== $lang->{edit_success_notify} =]", 2500, 'jm_message_success');
+            }
+            dtable.fnReloadAjax();
+          }
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+          $('#data_edit_form').show();
+          $('#data_edit_form_buttons').show();
+          $('#ajax_loading').hide();
         }
-        $('#data_edit_form').show();
-        $('#data_edit_form_buttons').show();
-        $('#ajax_loading').hide();
-        if (data.field) {
-         $('#cg_'+data.field).addClass('error');
-         $('#'+data.field).focus();
-        }
-        $("html, body").animate({ scrollTop: 0 }, "fast");
-       } else { // OK
-        $('#data_edit_form').show();
-        $('#data_edit_form_buttons').show();
-        $('#ajax_loading').hide();
-        resetFormState();
-        $('#data_edit').hide();
-        $('#data_overview').show();
-        if (edit_id == 0) {
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{add_success_notify} =]", 2500, 'jm_message_success');
-        } else {
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{edit_success_notify} =]", 2500, 'jm_message_success');
-        }
-        dtable.fnReloadAjax();
-       }
-     }
-    );  
+    });
+
    }
 });
 
@@ -446,37 +478,50 @@ function editData(id) {
    $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
    $('#ajax_loading').show();
    CKEDITOR.instances.wysiwyg_editor.setData('');
-   $.post("/admin/settings/data/load", { id: edit_id },
-     function(data){
-       if (data.result == '0') {
-         $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
-         $('#form_error_msg').fadeIn(400);
-         $('#form_error_msg').alert();
-         $('#ajax_loading').hide();
-         $('#data_edit_form').show();
-         $('#form_controls').hide();
-         $('#btn_abort').show();
-       } else { // OK
-         $('#ajax_loading').hide();
-         $('#data_edit_form').show();
-         $('#form_controls').show();
-         $('#data_edit_form_buttons').show();
-         if (data.s_name) {
-          $('#s_name').val(data.s_name);
-         }
-         if (data.s_value) {
-          $('#s_value').val(data.s_value);
-         }
-         if (data.s_value_html) {
-          CKEDITOR.instances.wysiwyg_editor.setData(data.s_value_html);
-         }
-         if (data.lang) {
-          $('#lang').val(data.lang);
-         }
-         $('#s_name').focus();
-       }
-     }
-    ); 
+
+   $.ajax({
+        type: 'POST',
+        url: '/admin/settings/data/load',
+        data: { id: edit_id },
+        dataType: "json",
+        success: function(data) {
+          if (data.result == '0') {
+             $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
+             $('#form_error_msg').fadeIn(400);
+             $('#form_error_msg').alert();
+             $('#ajax_loading').hide();
+             $('#data_edit_form').show();
+             $('#form_controls').hide();
+             $('#btn_abort').show();
+          } else { // OK
+             $('#ajax_loading').hide();
+             $('#data_edit_form').show();
+             $('#form_controls').show();
+             $('#data_edit_form_buttons').show();
+             if (data.s_name) {
+              $('#s_name').val(data.s_name);
+             }
+             if (data.s_value) {
+              $('#s_value').val(data.s_value);
+             }
+             if (data.s_value_html) {
+              CKEDITOR.instances.wysiwyg_editor.setData(data.s_value_html);
+             }
+             if (data.lang) {
+              $('#lang').val(data.lang);
+             }
+             $('#s_name').focus();
+          }
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+          $('#ajax_loading').hide();
+          $('#data_edit_form').show();
+          $('#form_controls').hide();
+          $('#btn_abort').show();
+        }
+   });   
+
 }
 
 // Button "Cancel" handler (Dialog: "Delete")
@@ -492,17 +537,24 @@ $('#btn_error_dialog_close').click( function () {
 // Button "Delete" handler (Dialog: "Delete")
 $('#btn_delete').click( function() {
   $('#delete_confirmation').modal('hide');
-  $.post("/admin/settings/data/delete", { 'delete_data': delete_data },
-     function(data){
-       if (data.result == '0') {
-         $('#error_dialog_msg').html("[== $lang->{delete_error_notify} =]");
-         $('#error_dialog').modal({keyboard: true});
-       } else { // OK
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{delete_success_notify} =]", 2500, 'jm_message_success');
-       }
-       dtable.fnReloadAjax();
-     }
-    ); 
+  $.ajax({
+      type: 'POST',
+      url: '/admin/settings/data/delete',
+      data: { 'delete_data': delete_data },
+      dataType: "json",
+      success: function(data) {
+        if (data.result == '0') {
+           $('#error_dialog_msg').html("[== $lang->{delete_error_notify} =]");
+           $('#error_dialog').modal({keyboard: true});
+        } else { // OK
+           $.jmessage('[== $lang->{success} =]', "[== $lang->{delete_success_notify} =]", 2500, 'jm_message_success');
+        }
+        dtable.fnReloadAjax();
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+      }
+  });
 });
 
 // Button "Delete selected" handler

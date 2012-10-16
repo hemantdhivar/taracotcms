@@ -13,3 +13,4 @@ user_register_submit: Submit
 user_register_agreement_1: I accept the
 user_register_agreement_2: agreement
 user_register_captcha_refresh: Click here to see another picture
+error_ajax: Error while connecting to server. Please try again later.

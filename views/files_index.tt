@@ -34,35 +34,54 @@
  <script type="text/javascript">
   function loadDir() {
    $('#ajax_loading').show();
-   $.post("/admin/files/storage/list", { },
-    function(data){
-     $('#ajax_loading').hide();
-     if (data.length > 0) {
-       var output='<table class="table table-striped">';
-       for (var t = 0; t < data.length; t++) {
-         output+='<tr><td width="20"><i class="filetypes-i-'+data[t].type+'"></i></td><td><a href="/files/storage/'+data[t].name+'" target="_blank">/files/storage/'+data[t].name+'</a></td><td width="100" style="text-align:center">'+data[t].size+'</td><td width="30" style="text-align:right"><span class="btn btn-mini btn-danger" onclick="'+"deleteFile('"+data[t].name+"');"+'"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></td></tr>';
-       }
-       output+='</table>'
-       $('#file_list').html(output);
-     } else {
-      $('#file_list').html('<span class="label label-important">'+"[== $lang->{no_files} =]"+'</span>');
-     }
-    });
+   $.ajax({
+        type: 'POST',
+        url: '/admin/files/storage/list',
+        data: { },
+        dataType: "json",
+        success: function(data) {
+          $('#ajax_loading').hide();
+           if (data.length > 0) {
+             var output='<table class="table table-striped">';
+             for (var t = 0; t < data.length; t++) {
+               output+='<tr><td width="20"><i class="filetypes-i-'+data[t].type+'"></i></td><td><a href="/files/storage/'+data[t].name+'" target="_blank">/files/storage/'+data[t].name+'</a></td><td width="100" style="text-align:center">'+data[t].size+'</td><td width="30" style="text-align:right"><span class="btn btn-mini btn-danger" onclick="'+"deleteFile('"+data[t].name+"');"+'"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></td></tr>';
+             }
+             output+='</table>'
+             $('#file_list').html(output);
+           } else {
+            $('#file_list').html('<span class="label label-important">'+"[== $lang->{no_files} =]"+'</span>');
+          }
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+          $('#file_list').html('<span class="label label-important">'+"[== $lang->{no_files} =]"+'</span>');
+        }
+   });
   }
   loadDir();
   function deleteFile(file_name) {
    if (!confirm("[== $lang->{confirm_delete} =]:\n\n"+file_name)) {
     return;
    }
-   $.post("/admin/files/storage/delete", { filename: file_name },
-    function(data){
-     if (data.result > 0) {
-       $.jmessage('[== $lang->{success} =]', "[== $lang->{success_delete} =]", 2500, 'jm_message_success');
-       loadDir();
-     } else {
-       $.jmessage('[== $lang->{error} =]', "[== $lang->{error_delete} =]", 2500, 'jm_message_error');  
-     }
-    });
+
+   $.ajax({
+        type: 'POST',
+        url: '/admin/files/storage/delete',
+        data: { filename: file_name },
+        dataType: "json",
+        success: function(data) {
+          if (data.result > 0) {
+             $.jmessage('[== $lang->{success} =]', "[== $lang->{success_delete} =]", 2500, 'jm_message_success');
+             loadDir();
+          } else {
+             $.jmessage('[== $lang->{error} =]', "[== $lang->{error_delete} =]", 2500, 'jm_message_error');  
+          }
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+        }
+   });
+
   }
   var uploader;
   uploader = new plupload.Uploader({

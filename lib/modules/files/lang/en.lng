@@ -21,3 +21,4 @@ error_delete: Couldn't delete requested file
 success: Success
 success_delete: File has been deleted
 confirm_delete: Are you sure you wish to delete the following file
+error_ajax: Error while connecting to server. Please try again later.

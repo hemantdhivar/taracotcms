@@ -45,9 +45,13 @@
 $('#btn_login').click( function() {
    $('#auth_form').hide();
    $('#taracot_auth_img').show();
-   $.post("/admin/authorize", { username: $('#auth_username').val(), password: $('#auth_password').val() },
-     function(data){
-       if (data.result == '1') {
+   $.ajax({
+    type: 'POST',
+    url: '/admin/authorize',
+    data: { username: $('#auth_username').val(), password: $('#auth_password').val() },
+    dataType: "json",
+    success: function(data) {
+      if (data.result == '1') {
         location.href='/admin?'+randomString(12);
        } else {
         $('#auth_form').show();
@@ -55,8 +59,16 @@ $('#btn_login').click( function() {
         $('#auth_password').val('');
         $('#auth_username').focus();
         $('#auth_error_modal').modal({keyboard: true});
-       }           
-   }); 
+       } 
+    },
+    error: function() {
+       $('#auth_form').show();
+       $('#taracot_auth_img').hide();
+       $('#auth_password').val('');
+       $('#auth_username').focus();
+       alert("[== $lang->{error_ajax} =]");
+    }
+   });
 });
 $('#auth_error_close').click( function() {
    $('#auth_error_modal').modal('hide'); 

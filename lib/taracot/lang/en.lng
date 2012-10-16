@@ -10,3 +10,4 @@ admin_logout: Log out
 admin_loggedas: Logged as
 error_404_title: Not found
 error_404_desc: The document you've requested couldn't be found.<br/>Please check your URL and try again. 
+error_ajax: Error while connecting to server. Please try again later.

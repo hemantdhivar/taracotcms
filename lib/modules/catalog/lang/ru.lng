@@ -110,3 +110,4 @@ description_short: Краткое описание
 special_flag: Специальное предложение
 form_error_invalid_description: Ошибка в синтаксисе краткого описания
 catalog_view: Просмотр
+error_ajax: Ошибка во время соединения с сервером. Повторите попытку позже.

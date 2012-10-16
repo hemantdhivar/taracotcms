@@ -9,19 +9,19 @@
             <span class="help-block">[== $lang->{user_register_username_hint} =]</span>
     	</div>
     </div>
-    <div class="control-group">
+    <div class="control-group" id="cg_reg_realname">
         <label class="control-label" for="reg_realname">[== $lang->{user_register_realname} =]</label>
         <div class="controls">
             <input type="text" class="input-xlarge" id="reg_realname">
         </div>
     </div>
-    <div class="control-group">
+    <div class="control-group" id="cg_reg_email">
     	<label class="control-label" for="reg_email">[== $lang->{user_register_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
     		<input type="text" id="reg_email">
     	</div>
     </div>
-    <div class="control-group">
+    <div class="control-group" id="cg_reg_phone">
         <label class="control-label" for="reg_phone">[== $lang->{user_register_phone} =]</label>
         <div class="controls">
             <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium" id="reg_phone"></div>
@@ -35,7 +35,7 @@
             <span class="help-block">[== $lang->{user_register_password_hint} =]</span>
         </div>
     </div>
-    <div class="control-group">
+    <div class="control-group" id="cg_reg_captcha">
         <label class="control-label" for="reg_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
         <div class="controls">
             <input type="text" class="input-mini" id="reg_captcha">
@@ -44,7 +44,7 @@
         </div>
     </div>
     <div class="control-group">
-        <div class="controls">
+        <div class="controls" id="cg_reg_agreement">
             <label class="checkbox" style="cursor:pointer">
                 <input type="checkbox" id="reg_accept" />&nbsp;[== $lang->{user_register_agreement_1} =] <a href="[== $agreement_url =]" target="_blank">[== $lang->{user_register_agreement_2} =]</a>
             </label>    
@@ -63,15 +63,31 @@
     $('#btn_submit').bind('click', function() {
         $('#cg_reg_username').removeClass('error');
         $('#cg_reg_password').removeClass('error');
+        $('#cg_reg_realname').removeClass('error');
+        $('#cg_reg_email').removeClass('error');
+        $('#cg_reg_phone').removeClass('error');
+        $('#cg_reg_captcha').removeClass('error');
         var form_errors=false;
         if (!$('#reg_username').val().match(/^[A-Za-z0-9_\-]{1,100}$/)) {
             $('#cg_reg_username').addClass('error');
             form_errors=true;   
         }
-        if ($('#reg_password').val().length < 8 || $('#reg_password').val() != $('#reg_password_repeat').val()) {
+        if (!$('#reg_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) || $('#reg_password').val() != $('#reg_password_repeat').val()) {
             $('#cg_reg_password').addClass('error');
             form_errors=true;   
-        } 
+        }
+        if (!$('#reg_realname').val().match(/^.{0,80}$/)) {
+            $('#cg_reg_realname').addClass('error');
+            form_errors=true;   
+        }
+        if (!$('#reg_phone').val().match(/^[0-9\-\(\)\s]{0,40}$/)) {
+            $('#cg_reg_phone').addClass('error');
+            form_errors=true;   
+        }
+        if (!$('#reg_email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+            $('#cg_reg_email').addClass('error');
+            form_errors=true;   
+        }
     });
     reloadCaptcha();
     $('#reg_username').focus();

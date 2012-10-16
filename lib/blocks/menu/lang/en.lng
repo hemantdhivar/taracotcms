@@ -1,2 +1,3 @@
 no_menu_available: No menu available for current language
 input_output_error: Input/output error
+error_ajax: Error while connecting to server. Please try again later.

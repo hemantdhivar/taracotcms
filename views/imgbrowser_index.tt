@@ -92,8 +92,13 @@
  openDir('');
  function getDir() {
   $('#files').html('<img src="/images/blank.gif" width="25" height="11" alt="" /><img src="/images/well_loading.gif" width="16" height="11" alt="" /> [== $lang->{loading_folder} =]');
-  $.get("/admin/imgbrowser/dirdata", { dir: current_dir, rnd_num: new Date().getTime() },
-     function(data){
+
+  $.ajax({
+    type: 'GET',
+    url: '/admin/imgbrowser/dirdata',
+    data: { dir: current_dir, rnd_num: new Date().getTime() },
+    dataType: "json",
+    success: function(data) {
       idata.clear();
       $('#files').html('');
       disableClipButtons();
@@ -177,8 +182,12 @@
         }
        }
       });
-     }
-  );   
+    },
+    error: function() {
+      alert("[== $lang->{error_ajax} =]");
+    }
+  });
+
  } // getDir
  function openDir(dir) {
   if (!current_dir.match("\/$")) {
@@ -395,23 +404,32 @@
    $('#btn_copy').removeClass('btn-info');
    $('#btn_cut').removeClass('btn-info');
    $('#btn_group_dir').hide();
-   $.post("/admin/imgbrowser/paste", { dir_from: clipboard_dir, dir_to: current_dir, mode: clipboard_mode, data: clipboard_data },
-     function(data){
-      clipboard_dir='';
-      clipboard_data='';
-      clipboard_mode='';
-      $('#btn_upload').removeClass('disabled');
-      $('#btn_group_dir').show();
-      if (data.status != 1 && data.reason) {
-       var msg = data.reason;
-       if (data.file) {
-        msg += '<br>'+data.file;
-       }
-       $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
-      }
-      getDir();
-     }
-   );
+
+   $.ajax({
+        type: 'POST',
+        url: '/admin/imgbrowser/paste',
+        data: { dir_from: clipboard_dir, dir_to: current_dir, mode: clipboard_mode, data: clipboard_data },
+        dataType: "json",
+        success: function(data) {
+          clipboard_dir='';
+          clipboard_data='';
+          clipboard_mode='';
+          $('#btn_upload').removeClass('disabled');
+          $('#btn_group_dir').show();
+          if (data.status != 1 && data.reason) {
+           var msg = data.reason;
+           if (data.file) {
+            msg += '<br>'+data.file;
+           }
+           $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+          }
+          getDir();
+        },
+        error: function() {
+          alert("[== $lang->{error_ajax} =]");
+        }
+   });   
+
  });
  // "New dir" button handler
  $('#btn_newdir').click( function () {
@@ -470,18 +488,27 @@
   }
   var list=names.join(', ');
   if (confirm("[== $lang->{delete_confirm} =]\n\n"+list)) {
-   $.post("/admin/imgbrowser/delete", { dir: current_dir, data: names },
-     function(data){
-      if (data.status != 1 && data.reason) {
-       var msg = data.reason;
-       if (data.file) {
-        msg += '<br>'+data.file;
-       }
-       $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+
+  $.ajax({
+      type: 'POST',
+      url: '/admin/imgbrowser/delete',
+      data: { dir: current_dir, data: names },
+      dataType: "json",
+      success: function(data) {
+        if (data.status != 1 && data.reason) {
+         var msg = data.reason;
+         if (data.file) {
+          msg += '<br>'+data.file;
+         }
+         $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+        }
+        getDir();
+      },
+      error: function() {
+        alert("[== $lang->{error_ajax} =]");
       }
-      getDir();
-     }
-   );
+  });
+
   }
  });
  // Input data modal dialog "Close" button handler
@@ -498,18 +525,25 @@
      return;
    }
    $('#id_cg_msg').removeClass('error');
-   $.post("/admin/imgbrowser/newdir", { dir: current_dir, new_dir: $('#id_if').val() },
-     function(data){
-      if (data.status != 1 && data.reason) {
-       var msg = data.reason;
-       if (data.file) {
-        msg += '<br>'+data.file;
-       }
-       $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
-      }
-      getDir();
-     }
-   );
+    $.ajax({
+        type: 'POST',
+        url: '/admin/imgbrowser/newdir',
+        data: { dir: current_dir, new_dir: $('#id_if').val() },
+        dataType: "json",
+        success: function(data) {
+          if (data.status != 1 && data.reason) {
+            var msg = data.reason;
+            if (data.file) {
+              msg += '<br>'+data.file;
+            }
+            $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+          }
+          getDir();
+        },
+        error: function() {
+          alert("[== $lang->{error_ajax} =]");
+        }
+    });   
   } // newdir: end
   // rename: begin
   if (id_mode == 'rename') {
@@ -518,18 +552,27 @@
      return;
    }
    $('#id_cg_msg').removeClass('error');
-   $.post("/admin/imgbrowser/rename", { dir: current_dir, old_name: tmp_old_name, new_name: $('#id_if').val() },
-     function(data){
-      if (data.status != 1 && data.reason) {
-       var msg = data.reason;
-       if (data.file) {
-        msg += '<br>'+data.file;
-       }
-       $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
-      }
-      getDir();
-     }
-   );
+
+   $.ajax({
+        type: 'POST',
+        url: '/admin/imgbrowser/rename',
+        data: { dir: current_dir, old_name: tmp_old_name, new_name: $('#id_if').val() },
+        dataType: "json",
+        success: function(data) {
+          if (data.status != 1 && data.reason) {
+           var msg = data.reason;
+           if (data.file) {
+            msg += '<br>'+data.file;
+           }
+           $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+          }
+          getDir();
+        },
+        error: function() {
+          alert("[== $lang->{error_ajax} =]");
+        }
+   });
+
   } // rename: end
   $('#img_browser').show();
   $('#input_dialog').hide(200);

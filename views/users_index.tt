@@ -324,15 +324,23 @@ function submitEdit(value, settings) {
  value=value.replace(/\>/g, '&gt;');
  value=value.replace(/\"/g, '&quot;');
  var arr = this.id.split('_');
- $.post("/admin/users/data/save/field", { field_name: arr[0], field_id: arr[1], field_value: value },
-  function(data){
-   if (data.result != '1') {
-    $('#'+edit_id).html(value_old);
-    if (data.error) {
-     $('#error_dialog_msg').html(data.error);
-     $('#error_dialog').modal({keyboard: true});
-    }
-   }
+ $.ajax({
+      type: 'POST',
+      url: '/admin/users/data/save/field',
+      data: { field_name: arr[0], field_id: arr[1], field_value: value },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          $('#'+edit_id).html(value_old);
+          if (data.error) {
+           $('#error_dialog_msg').html(data.error);
+           $('#error_dialog').modal({keyboard: true});
+          }
+        }
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+      }
  });
  return(value);
 }
@@ -367,20 +375,28 @@ $('#btn_edit_cancel').click( function () {
 // "Save" button handler (status select dialog mode)
 
 $('#btn_status_select_save').click( function () {
- $.post("/admin/users/data/save/field", { field_name: "status", field_id: edit_id, field_value: $("input[name='status_select_status']:checked").val() },
-  function(data){
-   if (data.result != '1') {
-    if (data.error) {
-     $('#error_dialog_msg').html(data.error);
-     $('#error_dialog').modal({keyboard: true});
-    }
-   } else {
-    var sVal=$("input[name='status_select_status']:checked").val();
-    var pic='user.png';
-    if (sVal == 0) { pic='user_disabled.png'; }
-    if (sVal == 2) { pic='user_king.png'; }
-    $('#status_'+edit_id).html('<span style="display:none" id="statusval_'+edit_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" />');
-   }
+ $.ajax({
+      type: 'POST',
+      url: '/admin/users/data/save/field',
+      data: { field_name: "status", field_id: edit_id, field_value: $("input[name='status_select_status']:checked").val() },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          if (data.error) {
+           $('#error_dialog_msg').html(data.error);
+           $('#error_dialog').modal({keyboard: true});
+          }
+        } else {
+          var sVal=$("input[name='status_select_status']:checked").val();
+          var pic='user.png';
+          if (sVal == 0) { pic='user_disabled.png'; }
+          if (sVal == 2) { pic='user_king.png'; }
+          $('#status_'+edit_id).html('<span style="display:none" id="statusval_'+edit_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" />');
+        }
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+      }
  });
  $('#status_select').modal('hide');
 });
@@ -427,37 +443,49 @@ $('#btn_edit_save').click( function () {
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html("[== $lang->{ajax_saving} =]");
     $('#ajax_loading').show();
-    $.post("/admin/users/data/save", { id: edit_id, username: $('#username').val(), password: $('#password').val(), email: $('#email').val(), phone: $('#phone').val(), realname: $('#realname').val(), status: $("input[name='status']:checked").val() },
-     function(data){
-       if (data.result == '0') {
-        if (data.error) { // ERROR
-         $('#form_error_msg_text').html(data.error);
-         $('#form_error_msg').fadeIn(400);
-         $('#form_error_msg').alert();
+
+    $.ajax({
+        type: 'POST',
+        url: '/admin/users/data/save',
+        data: { id: edit_id, username: $('#username').val(), password: $('#password').val(), email: $('#email').val(), phone: $('#phone').val(), realname: $('#realname').val(), status: $("input[name='status']:checked").val() },
+        dataType: "json",
+        success: function(data) {
+          if (data.result == '0') {
+            if (data.error) { // ERROR
+             $('#form_error_msg_text').html(data.error);
+             $('#form_error_msg').fadeIn(400);
+             $('#form_error_msg').alert();
+            }
+            $('#data_edit_form').show();
+            $('#data_edit_form_buttons').show();
+            $('#ajax_loading').hide();
+            if (data.field) {
+             $('#cg_'+data.field).addClass('error');
+             $('#'+data.field).focus();
+            }
+           } else { // OK
+            $('#data_edit_form').show();
+            $('#data_edit_form_buttons').show();
+            $('#ajax_loading').hide();
+            resetFormState();
+            $('#data_edit').hide();
+            $('#data_overview').show();
+            if (edit_id == 0) {
+             $.jmessage('[== $lang->{success} =]', "[== $lang->{add_success_notify} =]", 2500, 'jm_message_success');
+            } else {
+             $.jmessage('[== $lang->{success} =]', "[== $lang->{edit_success_notify} =]", 2500, 'jm_message_success');
+            }
+            dtable.fnReloadAjax();
+           }
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+          $('#data_edit_form').show();
+          $('#data_edit_form_buttons').show();
+          $('#ajax_loading').hide();
         }
-        $('#data_edit_form').show();
-        $('#data_edit_form_buttons').show();
-        $('#ajax_loading').hide();
-        if (data.field) {
-         $('#cg_'+data.field).addClass('error');
-         $('#'+data.field).focus();
-        }
-       } else { // OK
-        $('#data_edit_form').show();
-        $('#data_edit_form_buttons').show();
-        $('#ajax_loading').hide();
-        resetFormState();
-        $('#data_edit').hide();
-        $('#data_overview').show();
-        if (edit_id == 0) {
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{add_success_notify} =]", 2500, 'jm_message_success');
-        } else {
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{edit_success_notify} =]", 2500, 'jm_message_success');
-        }
-        dtable.fnReloadAjax();
-       }
-     }
-    );  
+    });
+
    }
 });
 
@@ -494,41 +522,54 @@ function editData(id) {
    $('#data_edit_form_buttons').hide();
    $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
    $('#ajax_loading').show();
-   $.post("/admin/users/data/load", { id: edit_id },
-     function(data){
-       if (data.result == '0') {
-         $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
-         $('#form_error_msg').fadeIn(400);
-         $('#form_error_msg').alert();
-         $('#ajax_loading').hide();
-         $('#data_edit_form').show();
-         $('#form_controls').hide();
-         $('#btn_abort').show();
-       } else { // OK
-         $('#ajax_loading').hide();
-         $('#data_edit_form').show();
-         $('#form_controls').show();
-         $('#data_edit_form_buttons').show();
-         $('#password_hint').html("[== $lang->{password_hint_edit} =]");
-         if (data.username) {
-          $('#username').val(data.username);
-         }
-         if (data.email) {
-          $('#email').val(data.email);
-         }
-         if (data.phone) {
-          $('#phone').val(data.phone);
-         }
-         if (data.realname) {
-          $('#realname').val(data.realname);
-         }
-         if (data.status) {
-          $('input:radio[name="status"]').filter('[value="'+data.status+'"]').attr('checked', true);
-         }
-         $('#username').focus();
-       }
-     }
-    ); 
+
+   $.ajax({
+        type: 'POST',
+        url: '/admin/users/data/load',
+        data: { id: edit_id },
+        dataType: "json",
+        success: function(data) {
+          if (data.result == '0') {
+             $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
+             $('#form_error_msg').fadeIn(400);
+             $('#form_error_msg').alert();
+             $('#ajax_loading').hide();
+             $('#data_edit_form').show();
+             $('#form_controls').hide();
+             $('#btn_abort').show();
+           } else { // OK
+             $('#ajax_loading').hide();
+             $('#data_edit_form').show();
+             $('#form_controls').show();
+             $('#data_edit_form_buttons').show();
+             $('#password_hint').html("[== $lang->{password_hint_edit} =]");
+             if (data.username) {
+              $('#username').val(data.username);
+             }
+             if (data.email) {
+              $('#email').val(data.email);
+             }
+             if (data.phone) {
+              $('#phone').val(data.phone);
+             }
+             if (data.realname) {
+              $('#realname').val(data.realname);
+             }
+             if (data.status) {
+              $('input:radio[name="status"]').filter('[value="'+data.status+'"]').attr('checked', true);
+             }
+             $('#username').focus();
+           }
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+          $('#ajax_loading').hide();
+          $('#data_edit_form').show();
+          $('#form_controls').hide();
+          $('#btn_abort').show();
+        }
+   });
+
 }
 
 // Button "Cancel" handler (Dialog: "Delete")
@@ -544,17 +585,26 @@ $('#btn_error_dialog_close').click( function () {
 // Button "Delete" handler (Dialog: "Delete")
 $('#btn_delete').click( function() {
   $('#delete_confirmation').modal('hide');
-  $.post("/admin/users/data/delete", { 'delete_data': delete_data },
-     function(data){
-       if (data.result == '0') {
-         $('#error_dialog_msg').html("[== $lang->{delete_error_notify} =]");
-         $('#error_dialog').modal({keyboard: true});
-       } else { // OK
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{delete_success_notify} =]", 2500, 'jm_message_success');
-       }
-       dtable.fnReloadAjax();
-     }
-    ); 
+
+  $.ajax({
+      type: 'POST',
+      url: '/admin/users/data/delete',
+      data: { 'delete_data': delete_data },
+      dataType: "json",
+      success: function(data) {
+        if (data.result == '0') {
+           $('#error_dialog_msg').html("[== $lang->{delete_error_notify} =]");
+           $('#error_dialog').modal({keyboard: true});
+         } else { // OK
+           $.jmessage('[== $lang->{success} =]', "[== $lang->{delete_success_notify} =]", 2500, 'jm_message_success');
+         }
+         dtable.fnReloadAjax();
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+      }
+  });
+
 });
 
 // Button "Delete selected" handler

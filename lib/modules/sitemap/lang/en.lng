@@ -20,3 +20,4 @@ tree_save_error: Error while saving tree
 success: Success
 error: Error
 tree_save_success: Save success
+error_ajax: Error while connecting to server. Please try again later.

@@ -63,3 +63,4 @@ sInfoFiltered: (filtered from _MAX_ total records)
 sPrevious: Previous page
 sNext: Next page   
 sSearch: Search
+error_ajax: Error while connecting to server. Please try again later.

@@ -67,62 +67,68 @@
   
   function getDir() {
    $('#files').html('<img src="/images/blank.gif" width="25" height="11" alt="" /><img src="/images/well_loading.gif" width="16" height="11" alt="" /> [== $lang->{loading_folder} =]');
-   $.get("/admin/catalog/data/images/dirdata", { dir: [== $dir =], rnd_num: new Date().getTime() },
-     function(data){
+   
+   $.ajax({
+        type: 'GET',
+        url: '/admin/catalog/data/images/dirdata',
+        data: { dir: [== $dir =], rnd_num: new Date().getTime() },
+        dataType: "json",
+        success: function(data) {
+          idata.clear();
+          $('#files').html('');
+          current_dir=data.current_dir;            
+          $.each(data.files, function(key, val) {
+           var pic;
+           var act='';
+           pic='/files/images_catalog/'+current_dir+'/.'+val.hash+'.jpg';
+           var fp='blank.gif';
+           var hp='';
+           if (val.fmt == 'j') {
+            fp='icon_jpeg_small.png';
+            hp='icon_jpeg.png';
+           }
+           if (val.fmt == 'g') {
+            fp='icon_gif_small.png';
+            hp='icon_gif.png';
+           }
+           if (val.fmt == 'p') {
+            fp='icon_png_small.png';
+            hp='icon_png.png';
+           }
+           if (hp.length == 0) {
+            hp='icon_generic.png';
+           }
+           if (val.hash == 'na') {
+            pic='/images/'+hp;
+            fp='blank.gif';
+           }
+           idata.setItem('file_'+val.id, val.file);
+           idata.setItem('type_'+val.id, val.type);
+           var fn=val.file;
+           fn = fn.substr(0,17)+(fn.length>17?'...':'');
+           $('#files').append('<li class="thumbnail browser_thumbnail node" ondblclick="'+act+'" id="'+val.id+'"><div style="background-image: url('+pic+')" class="browser_thumbnail_pic"><img src="/images/'+fp+'" width="32" height="16" alt="" class="browser_thumbnail_pic_type" /></div><div class="thumbnail_font">'+fn+'</div></li>');
+          });
+          $('.node').shifty({
+           className: 'node_selected',
+           select: function(el){ 
+            var ns=$('.node').getSelected('node_selected');
+            if(ns.length > 0) {
+             enableClipButtons();
+            }        
+           },
+           unselect: function(el){
+            var ns=$('.node').getSelected('node_selected');
+            if(ns.length == 0) {
+             disableClipButtons();
+            }        
+          }
+         });  
+        }, //success
+        error: function() {
+          alert("[== $lang->{error_ajax} =]");
+        }
+   });
 
-
-      idata.clear();
-      $('#files').html('');
-      current_dir=data.current_dir;            
-      $.each(data.files, function(key, val) {
-       var pic;
-       var act='';
-       pic='/files/images_catalog/'+current_dir+'/.'+val.hash+'.jpg';
-       var fp='blank.gif';
-       var hp='';
-       if (val.fmt == 'j') {
-        fp='icon_jpeg_small.png';
-        hp='icon_jpeg.png';
-       }
-       if (val.fmt == 'g') {
-        fp='icon_gif_small.png';
-        hp='icon_gif.png';
-       }
-       if (val.fmt == 'p') {
-        fp='icon_png_small.png';
-        hp='icon_png.png';
-       }
-       if (hp.length == 0) {
-        hp='icon_generic.png';
-       }
-       if (val.hash == 'na') {
-        pic='/images/'+hp;
-        fp='blank.gif';
-       }
-       idata.setItem('file_'+val.id, val.file);
-       idata.setItem('type_'+val.id, val.type);
-       var fn=val.file;
-       fn = fn.substr(0,17)+(fn.length>17?'...':'');
-       $('#files').append('<li class="thumbnail browser_thumbnail node" ondblclick="'+act+'" id="'+val.id+'"><div style="background-image: url('+pic+')" class="browser_thumbnail_pic"><img src="/images/'+fp+'" width="32" height="16" alt="" class="browser_thumbnail_pic_type" /></div><div class="thumbnail_font">'+fn+'</div></li>');
-      });
-      $('.node').shifty({
-       className: 'node_selected',
-       select: function(el){ 
-        var ns=$('.node').getSelected('node_selected');
-        if(ns.length > 0) {
-         enableClipButtons();
-        }        
-       },
-       unselect: function(el){
-        var ns=$('.node').getSelected('node_selected');
-        if(ns.length == 0) {
-         disableClipButtons();
-        }        
-      }
-     });   
-
-     }
-   )
   }
 
  function enableClipButtons() {
@@ -276,18 +282,25 @@
   }
   var list=names.join(', ');
   if (confirm("[== $lang->{delete_confirm} =]\n\n"+list)) {
-   $.post("/admin/catalog/data/images/delete", { dir: "[== $dir =]", data: names },
-     function(data){
-      if (data.status != 1 && data.reason) {
-       var msg = data.reason;
-       if (data.file) {
-        msg += '<br>'+data.file;
-       }
-       $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+    $.ajax({
+      type: 'POST',
+      url: "/admin/catalog/data/images/delete",
+      data: { dir: "[== $dir =]", data: names },
+      dataType: "json",
+      success: function(data) {
+        if (data.status != 1 && data.reason) {
+         var msg = data.reason;
+         if (data.file) {
+          msg += '<br>'+data.file;
+         }
+         $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+        }
+        getDir();
+      },
+      error: function() {
+        alert("[== $lang->{error_ajax} =]");
       }
-      getDir();
-     }
-   );
+    });
   }
  });
  // Input data modal dialog "Close" button handler
@@ -304,18 +317,27 @@
      return;
    }
    $('#id_cg_msg').removeClass('error');
-   $.post("/admin/catalog/data/images/rename", { dir: "[== $dir =]", old_name: tmp_old_name, new_name: $('#id_if').val() },
-     function(data){
-      if (data.status != 1 && data.reason) {
-       var msg = data.reason;
-       if (data.file) {
-        msg += '<br>'+data.file;
-       }
-       $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+
+   $.ajax({
+      type: 'POST',
+      url: "/admin/catalog/data/images/rename",
+      data: { dir: "[== $dir =]", old_name: tmp_old_name, new_name: $('#id_if').val() },
+      dataType: "json",
+      success: function(data) {
+        if (data.status != 1 && data.reason) {
+         var msg = data.reason;
+         if (data.file) {
+          msg += '<br>'+data.file;
+         }
+         $.jmessage('[== $lang->{error} =]', msg, 2500, 'jm_message_error');
+        }
+        getDir();
+      },
+      error: function() {
+        alert("[== $lang->{error_ajax} =]");
       }
-      getDir();
-     }
-   );
+    });
+
   } // rename: end
   $('#img_browser').show();
   $('#input_dialog').hide(200);

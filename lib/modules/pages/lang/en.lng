@@ -76,3 +76,4 @@ disabled_header: Page disabled
 disabled_text: The page is currently not available. Please try again later.
 construction_header: Under construction
 construction_text: The page is currently under construction. Please try again later.
+error_ajax: Error while connecting to server. Please try again later.
