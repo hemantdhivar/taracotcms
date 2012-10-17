@@ -2,15 +2,36 @@ module_name: User
 user_register: Register new user
 user_register_hint: Please fill the following form to register a new user account. Fields marked with an asterisk are required.
 user_register_username: Username
-user_register_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot; only
+user_register_username_or_email: Username (or e-mail)
+user_register_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot; only (3-100)
 user_register_realname: Real name
 user_register_email: E-mail
 user_register_phone: Cell phone
 user_register_password: Password
 user_register_password_hint: At least 8 characters, please repeat it to verify
-user_register_captcha: Numbers on the picture
+user_register_captcha: 4 digits<br />on the picture
 user_register_submit: Submit
 user_register_agreement_1: I accept the
 user_register_agreement_2: agreement
 user_register_captcha_refresh: Click here to see another picture
 error_ajax: Error while connecting to server. Please try again later.
+user_register_error_username: Username is not valid
+user_register_error_login: Username (or e-mail) is not valid
+user_register_error_realname: Real name is too long (should be less than 80 characters)
+user_register_error_email: E-mail is not valid
+user_register_error_phone: Cell phone is not valid
+user_register_error_password: Invalid password syntax or passwords do not match
+user_register_error_password_single: Invalid password syntax
+user_register_error_captcha: Code you've entered is not valid
+user_register_error_agreement: You have to accept the website agreement to continue
+user_register_error_username_taken: User with username provided is already registered
+user_register_error_email_taken: User with e-mail address provided is already registered
+user_register_processing: Processing, please wait...
+user_register_success: Registration was successful! Please check your mailbox to confirm your account.
+user_authorize: Authorize
+user_authorize_hint: Please enter your username (or e-mail) and password to log in.
+user_auth_submit: Login
+user_auth_register: Register new account
+user_auth_forgot_password: Forgot your password? Click here
+user_auth_success: You are now authorized on this website.
+user_auth_invalid: Invalid username (e-mail) or password

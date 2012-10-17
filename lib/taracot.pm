@@ -1,6 +1,7 @@
 package taracot;
 
 use Dancer ':syntax';
+use Dancer::Plugin::Database;
 use taracot::admin;
 use Module::Load;
 use taracot::loadpm;
@@ -29,6 +30,26 @@ foreach my $block (@blocks) {
   my $taracot_block_load="blocks::".lc($block)."::main";
   loadpm $taracot_block_load;   
 }
+
+our $authdata;
+sub _auth() {
+  if (session('user')) { 
+   my $id = session('user');
+   $authdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id });
+  } else {
+   $authdata->{id} = 0;
+   $authdata->{status} = 0;
+   $authdata->{username} = '';
+   $authdata->{password} = '';
+  }
+  if ($authdata->{status}) {
+   if ($authdata->{status} == 2) {
+    return true;
+   }
+  }
+  return false;
+};
+ 
 
 prefix "/";
 
@@ -63,10 +84,11 @@ sub _load_lang {
 
 get '/captcha_img' => sub {
   content_type 'image/png';
-  my $code=int(rand(10000));
+  my $code=int(rand(10000));  
   while (length($code)<4) {
     $code='0'.$code;
   }
+  session captcha => $code; 
   my @fills=('vline1', 'vline2', 'vline4', 'hline1', 
              'hline2', 'hline4', 'slash1', 'slash2', 'slosh1', 'slosh2', 'grid1', 'grid2', 
              'grid4', 'cross2', 'vlozenge', 'hlozenge', 'scalesdown', 'scalesup', 'scalesleft', 
