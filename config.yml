@@ -41,3 +41,10 @@ plugins:
    AutoCommit: 1
   on_connect_do: ["SET NAMES 'utf8'", "SET CHARACTER SET 'utf8'" ]
   log_queries: 1
+ Email:
+  headers:
+    from: 'noreply@taracot.org'
+    X-Mailer: 'Taracot CMS'
+  transport:
+    Sendmail:
+      sendmail: '/usr/sbin/sendmail'

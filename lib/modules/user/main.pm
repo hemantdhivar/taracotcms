@@ -1,6 +1,8 @@
 package modules::user::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Dancer::Plugin::Email;
+use Try::Tiny;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 
@@ -39,8 +41,9 @@ sub _load_lang {
 
 get '/register' => sub {
   if (&taracot::_auth()) { redirect '/' } 
-  my $clang=_load_lang();
-  $taracot::taracot_render_template = template 'user_register', { lang => $lang, agreement_url => config->{agreement}, site_title => $lang->{user_register}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$clang };
+  my $_current_lang=_load_lang();
+  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
+  $taracot::taracot_render_template = template 'user_register', { lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$_current_lang };
   pass();
 };
 
@@ -124,13 +127,29 @@ any '/register/process' => sub {
   # perform the registration
   $password = md5_hex(config->{salt}.$password);
   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, lastchanged => time }); 
+  my $site_title = database->quick_select(config->{db_table_prefix}."_settings", { s_name => 'site_title', lang => $_current_lang });
+  try {
+    email {
+      to      => $email,
+      subject => $lang->{user_register_email_subj}.' '.$site_title->{s_value},
+      body    => 'Dear Sue, ...',
+      attach  => ['/path/to/attachment1', '/path/to/attachment2'],
+      type    => 'html', # can be 'html' or 'plain'
+      headers => { "X-Accept-Language" => 'en' }
+    };
+  } catch {
+    #$_;
+  };
   return $json_xs->encode(\%res);
 };
 
 get '/authorize' => sub {
   if (&taracot::_auth()) { redirect '/' } 
-  my $clang=_load_lang();
-  $taracot::taracot_render_template = template 'user_authorize', { lang => $lang, site_title => $lang->{user_authorize}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$clang };
+  my $_current_lang=_load_lang();
+  my %db_data;
+  my $site_title = database->quick_select(config->{db_table_prefix}."_settings", { s_name => 'site_title', lang => $_current_lang });
+  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
+  $taracot::taracot_render_template = template 'user_authorize', { lang => $lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$_current_lang };
   pass();
 };
 

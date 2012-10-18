@@ -49,7 +49,30 @@ sub _auth() {
   }
   return false;
 };
- 
+
+sub _load_settings() {
+  my $pars = $_[0];
+  my $lang = $_[1];
+  $pars=~s/ //gm;
+  my @par=split(/,/, $pars);
+  my $sql='';
+  my %data;
+  foreach my $item (@par) {
+    $sql.=qq~ OR `s_name`=~.database->quote($item);
+  }
+  $sql=~s/ OR //;  
+  my $sth; 
+  $sth = database->prepare(
+   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE ('.$sql.') AND lang='.database->quote($lang)
+  );
+  if ($sth->execute()) {
+   while(my ($s_name, $s_value) = $sth -> fetchrow_array) {
+    $data{$s_name}=$s_value;
+   } # while     
+  } 
+  $sth->finish();  
+  return \%data;
+} 
 
 prefix "/";
 

@@ -35,3 +35,4 @@ user_auth_register: Register new account
 user_auth_forgot_password: Forgot your password? Click here
 user_auth_success: You are now authorized on this website.
 user_auth_invalid: Invalid username (e-mail) or password
+user_register_email_subj: Registration on

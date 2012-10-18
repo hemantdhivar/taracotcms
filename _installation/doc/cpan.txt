@@ -12,3 +12,5 @@ JSON::XS
 Text::Unidecode
 Imager
 File::Basename
+Dancer::Plugin::Email 
+Try::Tiny

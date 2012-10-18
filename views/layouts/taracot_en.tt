@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>[== $page_data->{pagetitle} =] | [== $site_title =]</title>
+    <title>[== $pagetitle =] | [== $page_data->{site_title} =]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="keywords" content="[== $page_data->{keywords} =]">
-    <meta name="description" content="[== $page_data->{description} =]">
+    <meta name="keywords" content="[== $page_data->{site_keywords} =]">
+    <meta name="description" content="[== $page_data->{site_description} =]">
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/taracot/main.css" rel="stylesheet">
     <link rel="shortcut icon" href="/favicon.ico">
