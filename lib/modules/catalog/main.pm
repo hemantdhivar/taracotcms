@@ -163,7 +163,7 @@ get qr{(.*)} => sub {
    pass();
    return;
   }
-  my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { groupid => $groupid, filename => $url, lang => $_current_lang });
+  my $db_data = database->quick_select(config->{db_table_prefix}.'_catalog', { groupid => $groupid, filename => $url, lang => $_current_lang });
   if (defined $db_data && $db_data->{id}) {
    if ($db_data->{status} eq 1) {
     my %img_pics;
@@ -187,10 +187,18 @@ get qr{(.*)} => sub {
         $img_urls{$i}="#";
       }
     }    
+    my $page_keywords = $db_data->{keywords}.', '.$page_data->{site_keywords};
+    my $page_description = $db_data->{description}.'. '.$page_data->{site_description};
+    $page_keywords=~s/^, //;
+    $page_description=~s/^\. //;
+    $page_keywords=~s/, $//;
+    $page_description=~s/\. $//;
+    $page_data->{site_keywords}=$page_keywords;
+    $page_data->{site_description}=$page_description;
     my $grid=template 'catalog_images_grid', { id => $db_data->{id}, img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
     my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => "catalog_title_".$groupid, lang => $_current_lang });
     my $groupid_title = $db_var1->{s_value} || $groupid;
-    $taracot::taracot_render_template = template 'catalog_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $page_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title, pagetitle => $groupid_title }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    $taracot::taracot_render_template = template 'catalog_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => $db_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title, pagetitle => $db_data->{pagetitle} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
    }
    if ($db_data->{status} eq 0) {
     $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };

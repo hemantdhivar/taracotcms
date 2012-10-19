@@ -18,7 +18,7 @@
     </div>
     <div class="control-group">
         <div class="controls" id="cg_auth_agreement">
-            <a href="/user/restore_password" target="_blank">[== $lang->{user_auth_forgot_password} =]</a>
+            <a href="/user/password" target="_blank">[== $lang->{user_auth_forgot_password} =]</a>
         </div>
     </div>
     <div class="form-actions">

@@ -36,3 +36,11 @@ user_auth_forgot_password: Forgot your password? Click here
 user_auth_success: You are now authorized on this website.
 user_auth_invalid: Invalid username (e-mail) or password
 user_register_email_subj: Registration on
+user_activate: Activate user
+user_activate_error_url: Invalid activation data, please check your URL and try again.
+user_activate_error_wrong_code: Invalid activation data, please check your URL and try again.
+user_activate_success: User has been activated sucessfully. You can log into website now.
+user_password: Reset user password
+user_password_hint: Please fill the following form to reset your forgotten password. Fields marked with an asterisk are required.
+user_password_submit: Send data
+user_pwd_success_sent: Password change request created. Please verify your mailbox for further instructions.

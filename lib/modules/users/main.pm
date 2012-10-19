@@ -152,7 +152,7 @@ post '/data/save' => sub {
      return qq~{"result":"0","field":"password","error":"~.$lang->{form_error_invalid_password}.qq~"}~;
     }
   }
-  if ($email !~ /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/) {
+  if ($email !~ /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/ || length($email) >80) {
    return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_email}.qq~"}~;
   }
   $email=lc $email;
@@ -257,7 +257,7 @@ post '/data/save/field' => sub {
   
   if ($field_name eq 'email') {
    my $email=$field_value;
-   if ($email !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/) {
+   if ($email !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/ || length($email) > 80) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_email}.qq~"}~;
    }
    $email=lc $email;

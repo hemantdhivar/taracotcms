@@ -2,6 +2,7 @@ package modules::user::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use Dancer::Plugin::Email;
+use HTML::Entities qw(encode_entities_numeric);
 use Try::Tiny;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
@@ -47,7 +48,7 @@ get '/register' => sub {
   pass();
 };
 
-any '/register/process' => sub {
+post '/register/process' => sub {
   my $_current_lang=_load_lang();
   my %res;
   $res{status}=1; 
@@ -83,7 +84,7 @@ any '/register/process' => sub {
     push @errors, $lang->{user_register_error_password};
     push @fields, 'password';  
   }
-  if ($email !~ /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/) { 
+  if ($email !~ /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/ || length($email) >80) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_email};
     push @fields, 'email';  
@@ -126,16 +127,18 @@ any '/register/process' => sub {
   }
   # perform the registration
   $password = md5_hex(config->{salt}.$password);
-  database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, lastchanged => time }); 
-  my $site_title = database->quick_select(config->{db_table_prefix}."_settings", { s_name => 'site_title', lang => $_current_lang });
+  my $verification=md5_hex(config->{salt}.$password.time.rand);
+  database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, verification => $verification, lastchanged => time }); 
+  my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
+  my $activation_url = request->uri_base().'/user/activate/'.$username.'/'.$verification;
+  my $body = template 'user_mail_register_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
   try {
     email {
       to      => $email,
-      subject => $lang->{user_register_email_subj}.' '.$site_title->{s_value},
-      body    => 'Dear Sue, ...',
-      attach  => ['/path/to/attachment1', '/path/to/attachment2'],
+      subject => $lang->{user_register_email_subj}.' '.$db_data->{site_title},
+      body    => $body,
       type    => 'html', # can be 'html' or 'plain'
-      headers => { "X-Accept-Language" => 'en' }
+      headers => { "X-Accept-Language" => $_current_lang }
     };
   } catch {
     #$_;
@@ -147,13 +150,12 @@ get '/authorize' => sub {
   if (&taracot::_auth()) { redirect '/' } 
   my $_current_lang=_load_lang();
   my %db_data;
-  my $site_title = database->quick_select(config->{db_table_prefix}."_settings", { s_name => 'site_title', lang => $_current_lang });
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
   $taracot::taracot_render_template = template 'user_authorize', { lang => $lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$_current_lang };
   pass();
 };
 
-any '/authorize/process' => sub {
+post '/authorize/process' => sub {
   my $_current_lang=_load_lang();
   my %res;
   $res{status}=1; 
@@ -168,7 +170,7 @@ any '/authorize/process' => sub {
   my $email='';
   $login=lc($login);
   if ($login =~ m/\@/) {
-    if ($login !~ /^([a-z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-z0-9\-]+\.)+))([a-z]{2,4}|[0-9]{1,3})(\]?)$/) { 
+    if ($login !~ /^([a-z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-z0-9\-]+\.)+))([a-z]{2,4}|[0-9]{1,3})(\]?)$/ || length($login) > 80) { 
       $res{status}=0; 
       push @errors, $lang->{user_register_error_email};
       push @fields, 'login';  
@@ -203,6 +205,94 @@ any '/authorize/process' => sub {
   if ($email) {
     $db_data  = database->quick_select(config->{db_table_prefix}.'_users', { email => $email, password => $password });
   }
+  if (!$db_data->{id}) {
+    $res{status}=0; 
+    push @errors, $lang->{user_auth_invalid}; 
+    push @fields, 'login';
+    push @fields, 'password';
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  session user => $db_data->{id}; 
+  return $json_xs->encode(\%res);
+};
+
+get '/activate/:username/:verification' => sub {
+  if (&taracot::_auth()) { redirect '/' } 
+  my $msg='';
+  my $_current_lang=_load_lang();
+  my $username = params->{username};
+  my $verification = params->{verification};
+  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
+  if ($username !~ /^[a-z0-9_\-]{1,100}$/ || $verification !~ /^[a-f0-9]{32}$/) { 
+    $msg = $lang->{user_activate_error_url};
+    $taracot::taracot_render_template = template 'user_activate', { lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang };
+    pass();
+    return;
+  }  
+  my $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, verification => $verification });
+  if (!$db_data->{id}) {
+    $msg = $lang->{user_activate_error_wrong_code};
+    $taracot::taracot_render_template = template 'user_activate', { lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang };
+    pass();
+    return;
+  }
+  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => '', status => 1, lastchanged => time }); 
+  $msg = $lang->{user_activate_success};
+  $taracot::taracot_render_template = template 'user_activate', { lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang };
+  pass();
+};
+
+get '/password' => sub {
+  if (&taracot::_auth()) { redirect '/' } 
+  my $_current_lang=_load_lang();
+  my %db_data;
+  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
+  $taracot::taracot_render_template = template 'user_password', { lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password} }, { layout => config->{layout}.'_'.$_current_lang };
+  pass();
+};
+
+post '/password/process' => sub {
+  my $_current_lang=_load_lang();
+  my %res;
+  $res{status}=1; 
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new();
+  if (&taracot::_auth()) { $res{status}=0; return $json_xs->encode(\%res); } 
+  my $captcha=int(param('reg_captcha')) || 0;
+  my $session_captcha=session('captcha');
+  session captcha => rand; 
+  if ($session_captcha ne $captcha) {    
+    push @errors, $lang->{user_register_error_captcha};
+    push @fields, 'captcha';
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    $res{status}=0; 
+    return $json_xs->encode(\%res); 
+  }
+  # first wave validations
+  my $username=lc param('pwd_username') || '';
+  my $email=lc param('pwd_email') || '';
+  if ($username !~ /^[A-Za-z0-9_\-]{1,100}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_username};
+    push @fields, 'username';  
+  }
+  if ($email !~ /^([a-z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-z0-9\-]+\.)+))([a-z]{2,4}|[0-9]{1,3})(\]?)$/ || length($email) > 80) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_email};
+    push @fields, 'login';  
+  }
+  if ($res{status} eq 0) {
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  # second wave validations
+  my $db_data;
+  $db_data  = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, email => $email });
   if (!$db_data->{id}) {
     $res{status}=0; 
     push @errors, $lang->{user_auth_invalid}; 
