@@ -43,7 +43,7 @@ sub _auth() {
    $authdata->{password} = '';
   }
   if ($authdata->{status}) {
-   if ($authdata->{status} == 2) {
+   if ($authdata->{status} > 0) {
     return true;
    }
   }
