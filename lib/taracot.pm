@@ -31,8 +31,8 @@ foreach my $block (@blocks) {
   loadpm $taracot_block_load;   
 }
 
-our $authdata;
 sub _auth() {
+  my $authdata;
   if (session('user')) { 
    my $id = session('user');
    $authdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id });
@@ -44,10 +44,10 @@ sub _auth() {
   }
   if ($authdata->{status}) {
    if ($authdata->{status} > 0) {
-    return true;
-   }
+    return $authdata;
+   } 
   }
-  return false;
+  return undef;
 };
 
 sub _load_settings() {

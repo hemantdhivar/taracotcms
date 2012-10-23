@@ -17,7 +17,6 @@ my $defroute = '/admin/imgbrowser';
 
 # Module core settings 
 
-my $authdata;
 my $lang;
 
 sub _defroute() {

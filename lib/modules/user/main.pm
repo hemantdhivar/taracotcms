@@ -6,6 +6,7 @@ use HTML::Entities qw(encode_entities_numeric);
 use Try::Tiny;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
+use Date::Format;
 
 # Configuration
 
@@ -41,7 +42,7 @@ sub _load_lang {
 # Routes
 
 get '/register' => sub {
-  if (&taracot::_auth()) { redirect '/' } 
+  if (&taracot::_auth()) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
   $taracot::taracot_render_template = template 'user_register', { lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$_current_lang };
@@ -128,7 +129,7 @@ post '/register/process' => sub {
   # perform the registration
   $password = md5_hex(config->{salt}.$password);
   my $verification=md5_hex(config->{salt}.$password.time.rand);
-  database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, verification => 'act_'.$verification, lastchanged => time });
+  database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, verification => 'act_'.$verification, regdate => time, lastchanged => time });
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/'.$username.'/'.$verification;
   my $body = template 'user_mail_register_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
@@ -147,7 +148,7 @@ post '/register/process' => sub {
 };
 
 get '/authorize' => sub {
-  if (&taracot::_auth()) { redirect '/' } 
+  if (&taracot::_auth()) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
@@ -235,7 +236,7 @@ post '/authorize/process' => sub {
 };
 
 get '/activate/:username/:verification' => sub {
-  if (&taracot::_auth()) { redirect '/' } 
+  if (&taracot::_auth()) { redirect '/user/account' } 
   my $msg='';
   my $_current_lang=_load_lang();
   my $username = params->{username};
@@ -261,7 +262,7 @@ get '/activate/:username/:verification' => sub {
 };
 
 get '/password' => sub {
-  if (&taracot::_auth()) { redirect '/' } 
+  if (&taracot::_auth()) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
@@ -346,7 +347,7 @@ post '/password/process' => sub {
 };
 
 get '/password/reset/:username/:verification' => sub {
-  if (&taracot::_auth()) { redirect '/' } 
+  if (&taracot::_auth()) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $username = params->{username};
   my $verification = params->{verification};
@@ -409,6 +410,26 @@ post '/password/reset/process' => sub {
   $password = md5_hex(config->{salt}.$password);
   database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => '', password => $password, lastchanged => time }); 
   return $json_xs->encode(\%res);
+};
+
+get '/account' => sub {
+  my $auth = &taracot::_auth();
+  if (!$auth) { redirect '/user/authorize' } 
+  my $_current_lang=_load_lang();
+  my %db_data;
+  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
+  if ($auth->{regdate}) {
+   $auth->{regdate} = time2str($lang->{user_account_date_template}, $auth->{regdate});
+   $auth->{regdate} =~ s/\\//gm;
+  } else {
+    $auth->{regdate} = $lang->{user_account_regdate_unknown};
+  } 
+  my $avatar = '/images/default_avatar.png';
+  if (-e config->{files_dir}.'/avatars/'.$auth->{username}.'.jpg') {
+    $avatar = config->{files_url}.'/avatars/'.$auth->{username}.'.jpg';
+  }
+  $taracot::taracot_render_template = template 'user_account', { lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang };
+  pass();
 };
 
 # End

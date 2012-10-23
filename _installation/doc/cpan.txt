@@ -2,7 +2,7 @@ Additionally installed:
 
 Dancer::Plugin::Database
 Dancer::Template::Tenjin
-Dancer::Session::Storable 
+Dancer::Session::Storable
 Time::Duration::Parse
 YAML::XS
 Module::Load
@@ -12,5 +12,6 @@ JSON::XS
 Text::Unidecode
 Imager
 File::Basename
-Dancer::Plugin::Email 
+Dancer::Plugin::Email
 Try::Tiny
+Date::Format

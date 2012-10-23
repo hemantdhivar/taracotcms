@@ -16,9 +16,9 @@ sub _load_lang {
 }
 
 my $navdata;
-our $authdata;
 
 sub _auth() {
+  my $authdata = undef;
   if (session('user')) { 
    my $id = session('user');
    $authdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id });
@@ -30,10 +30,10 @@ sub _auth() {
   }
   if ($authdata->{status}) {
    if ($authdata->{status} == 2) {
-    return true;
+    return $authdata;
    }
   }
-  return false;
+  return undef;
 };
 
 # Load navigation data
@@ -69,7 +69,8 @@ prefix "/admin";
 
 get '/' => sub {
   _load_lang();
-  if (_auth()) {
+  my $authdata = _auth();
+  if ($authdata) {
     my $navdata=_navdata();
 	  return template 'admin_index', { lang => $lang, navdata => $navdata, authdata => $authdata, config => config, taracot_current_version => $taracot::taracot_current_version }, { layout => 'admin' };
   }
