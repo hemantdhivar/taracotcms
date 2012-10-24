@@ -50,6 +50,7 @@ get '/register' => sub {
 };
 
 post '/register/process' => sub {
+  content_type 'application/json';
   my $_current_lang=_load_lang();
   my %res;
   $res{status}=1; 
@@ -157,6 +158,7 @@ get '/authorize' => sub {
 };
 
 post '/authorize/process' => sub {
+  content_type 'application/json';
   my $_current_lang=_load_lang();
   my %res;
   $res{status}=1; 
@@ -271,6 +273,7 @@ get '/password' => sub {
 };
 
 post '/password/process' => sub {
+  content_type 'application/json';
   my $_current_lang=_load_lang();
   my %res;
   $res{status}=1; 
@@ -368,6 +371,7 @@ get '/password/reset/:username/:verification' => sub {
 };
 
 post '/password/reset/process' => sub {
+  content_type 'application/json';
   my $_current_lang=_load_lang();
   my %res;
   $res{status}=1; 
@@ -424,12 +428,49 @@ get '/account' => sub {
   } else {
     $auth->{regdate} = $lang->{user_account_regdate_unknown};
   } 
+  if (-e config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg') {
+    unlink(config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg');
+  }
   my $avatar = '/images/default_avatar.png';
   if (-e config->{files_dir}.'/avatars/'.$auth->{username}.'.jpg') {
     $avatar = config->{files_url}.'/avatars/'.$auth->{username}.'.jpg';
   }
   $taracot::taracot_render_template = template 'user_account', { lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang };
   pass();
+};
+
+post '/account/avatar/upload' => sub {
+  content_type 'application/json';
+  my $auth = &taracot::_auth();
+  if (!$auth) { 
+    return '{"error":"1"}'; 
+  } 
+  my $file = upload('file');
+  if (!defined $file) {
+   return '{"error":"1"}';
+  }
+  if ($file->size > 1048576) { # 1 MB = 1048576 bytes
+   return '{"error":"1"}';
+  }
+  my $img = Imager->new(file=>$file->tempname) || return '{"error":"1"}';
+  my $x = $img->getwidth();
+  my $y = $img->getheight();
+  if ($x ne $y) {
+    my $cb = undef;
+    if ($x > $y) {
+      $cb = $y;
+      $x =int(($x - $cb )/2);
+      $y =0;
+    } else {
+      $cb = $x ;
+      $y =int(($y - $cb )/2);
+      $x = 0;
+    }
+    $img = $img->crop( width=>$cb, height=>$cb );
+  }
+  $img = $img->scale(xpixels=>100, ypixels=>100);
+  $img->write(file => config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg');
+  return '{"error":"0"}';
 };
 
 # End

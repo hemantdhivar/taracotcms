@@ -43,3 +43,9 @@ div.container hr{color:444}
      -moz-background-clip: padding;
           background-clip: padding-box;
 }
+input::-moz-focus-inner {
+  border: 0;
+}
+a {
+ outline: none;
+}

@@ -62,3 +62,12 @@ user_account_status: Account status
 user_account_date_template: \%Y/\%m/\%d
 user_account_regdate: Registration date
 user_account_regdate_unknown: Unknown
+user_account_save: Save
+user_account_proifle_hint: You can change your profile data in the form below.
+user_account_profile_email_warning: Important&#58; if you change your e-mail address, the account will be disabled immediately and you will need to re-activate it by following the instructions that will be sent to your new e-mail address. 
+user_account_logout: Log out
+user_account_change_avatar: Change
+user_account_current_password: Current password
+image_files: Image files
+user_account_avatar_uploading: Uploading image...
+user_account_avatar_uploading_error: Error while uploading your new avatar picture!

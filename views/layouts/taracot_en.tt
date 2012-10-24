@@ -42,8 +42,6 @@
 
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
-    
-    <script type="text/javascript">$('.carousel').carousel({interval: 7000,pause:'hover'})</script>
 
   </body>
 </html>
