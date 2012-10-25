@@ -11,8 +11,6 @@ use Imager::Matrix2d;
 
 prefix undef;
 
-our $taracot_render_template=undef;
-our $taracot_auth_data;
 our $taracot_current_version='0.20528';
 
 my $load_modules = config->{load_modules_frontend};
@@ -105,6 +103,32 @@ sub _load_lang {
   return $lng;
 } 
 
+sub _process_template {
+ my $taracot_render_template=$_[0];
+ my $_current_lang=_load_lang();
+ if ($taracot_render_template) {
+   my %blocks;
+   my $load_blocks = config->{load_blocks_frontend};
+   $load_blocks=~s/ //gm;
+   my @blocks = split(/,/, $load_blocks);
+   foreach my $block (@blocks) {
+      my $taracot_block_load="blocks::".lc($block)."::main";
+      loadpm $taracot_block_load; 
+      my $md=$taracot_block_load->new(lang => $lang, current_lang => $_current_lang);
+      my $data=$md->data();
+      $blocks{$block}=$data->{block_content};
+      undef($md);
+   }
+   while (my ($name, $value) = each(%blocks)){
+    $taracot_render_template =~ s/\[\% ?$name ?\%\]/$value/igm; 
+   }
+   my $render = $taracot_render_template;
+   $taracot_render_template=undef;
+   return $render;
+ }
+ return undef;
+}
+
 get '/captcha_img' => sub {
   content_type 'image/png';
   my $code=int(rand(10000));  
@@ -142,29 +166,7 @@ get '/captcha_img' => sub {
   return $data;
 };
 
-any qr{.*} => sub {
- my $_current_lang=_load_lang();
- if ($taracot_render_template) {
-   my %blocks;
-   my $load_blocks = config->{load_blocks_frontend};
-   $load_blocks=~s/ //gm;
-   my @blocks = split(/,/, $load_blocks);
-   foreach my $block (@blocks) {
-      my $taracot_block_load="blocks::".lc($block)."::main";
-      loadpm $taracot_block_load; 
-      my $md=$taracot_block_load->new(authdata => $taracot_auth_data, lang => $lang, current_lang => $_current_lang);
-      my $data=$md->data();
-      $blocks{$block}=$data->{block_content};
-      undef($md);
-   }
-   while (my ($name, $value) = each(%blocks)){
-    $taracot_render_template =~ s/\[\% ?$name ?\%\]/$value/igm; 
-   }
-   my $render = $taracot_render_template;
-   $taracot_render_template=undef;
-   $taracot_auth_data=undef;
-   return $render;
- }
+any qr{.*} => sub { 
  status 'not_found';
  my $render_404 = template 'error_404', { lang => $lang }, { layout => undef };
  return $render_404;

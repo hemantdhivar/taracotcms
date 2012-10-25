@@ -1,0 +1,2 @@
+<h1>[== $lang->{user_account_logout} =]</h1>
+[== $lang->{user_account_logout_success} =]

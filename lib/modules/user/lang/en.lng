@@ -55,6 +55,7 @@ user_password_reset_fail: You can't change this user's password.
 user_account: Account
 user_account_tab_overview: Overview
 user_account_tab_profie: Profile
+user_account_tab_email: E-Mail
 user_account_tab_password: Password
 user_account_welcome: Welcome
 user_account_status_list: Inactive user,Active user,Website Administrator
@@ -66,6 +67,7 @@ user_account_save: Save
 user_account_proifle_hint: You can change your profile data in the form below.
 user_account_profile_email_warning: Important&#58; if you change your e-mail address, the account will be disabled immediately and you will need to re-activate it by following the instructions that will be sent to your new e-mail address. 
 user_account_logout: Log out
+user_account_logout_success: You've successfully log out from the website.
 user_account_change_avatar: Change
 user_account_current_password: Current password
 image_files: Image files

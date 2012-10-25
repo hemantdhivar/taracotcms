@@ -11,9 +11,17 @@
         <a href="#tab_profile">[== $lang->{user_account_tab_profie} =]</a>
     </li>
     <li>
+        <a href="#tab_email">[== $lang->{user_account_tab_email} =]</a>
+    </li>
+    <li>
         <a href="#tab_password">[== $lang->{user_account_tab_password} =]</a>
     </li>
 </ul>
+<div id="account_notification" style="display:none">
+    <div id="account_notification_inner">
+        <img src="/images/success.png" width="24" height="24" alt="" />&nbsp;&nbsp;<span id="account_notification_msg"></span>
+    </div>
+</div>
 <div class="tab-content">
     <div class="tab-pane active" id="tab_overview">
         <h3>[== $lang->{user_account_welcome} =], [== $auth_data->{realname} || $auth_data->{username} =]!</h3>        
@@ -51,9 +59,10 @@
     <div class="tab-pane" id="tab_profile">
         <span id="profile_form_hint">[== $lang->{user_account_proifle_hint} =]</span>
         <br /><br />
+        <div class="alert alert-error" id="form_profile_errors" style="display:none"></div>
         <div class="row-fluid">
             <div class="span10">
-                <form class="form-horizontal" id="act_form">
+                <form class="form-horizontal" id="act_form_profile">
                     <div class="control-group" id="cg_act_realname">
                         <label class="control-label" for="act_realname">[== $lang->{user_register_realname} =]</label>
                         <div class="controls">
@@ -61,7 +70,7 @@
                         </div>
                     </div>
                     <div class="control-group" id="cg_act_email">
-                        <label class="control-label" for="act_email">[== $lang->{user_register_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+                        <label class="control-label" for="act_email">[== $lang->{user_register_email} =]&nbsp;<span class="red_asterisk">*</span></label>
                         <div class="controls">
                             <input type="text" id="act_email" value="[== $auth_data->{email} =]" />                            
                         </div>
@@ -73,34 +82,78 @@
                         </div>
                     </div>
                     <div class="control-group" id="cg_act_password">
-                        <label class="control-label" for="act_password">[== $lang->{user_account_current_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+                        <label class="control-label" for="act_password">[== $lang->{user_account_current_password} =]&nbsp;<span class="red_asterisk">*</span></label>
                         <div class="controls">
                             <input type="password" id="act_password" />
                         </div>
                     </div>
                     <div class="form-actions">
-                        <div class="btn btn-primary" id="btn_submit">[== $lang->{user_account_save} =]</div>
+                        <div class="btn btn-primary" id="btn_submit_profile">[== $lang->{user_account_save} =]</div>
                     </div>
                 </form>
             </div>
-            <div class="span2">
-                <center>
-                    <div id="avatar_profile_wrap" style="width:100px;height:100px">
-                        <div id="avatar_loading" style="display:none">
-                            <img src="/images/green_loading.gif" width="43" height="11" alt="" />
-                            <br />
-                            <span style="font-size:10px">[== $lang->{user_account_avatar_uploading} =]</span>
-                        </div>
-                        <img src="[== $avatar =]" width="100" height="100" alt="" id="avatar_profile_img" style="cursor:pointer" onclick="$('#btn_avatar_change').click()" />
+            <div class="span2" style="text-align:center">
+                <div id="avatar_profile_wrap">
+                    <div id="avatar_loading" style="display:none">
+                        <img src="/images/green_loading.gif" width="43" height="11" alt="" />
+                        <br />
+                        <span style="font-size:10px">[== $lang->{user_account_avatar_uploading} =]</span>
                     </div>
-                    <div style="height:8px;width:100px"></div>                    
-                    <div class="btn btn-mini" id="btn_avatar_change">[== $lang->{user_account_change_avatar} =]</div>
-                </center>
+                    <img src="[== $avatar =]" width="100" height="100" alt="" id="avatar_profile_img" onclick="$('#btn_avatar_change').click()" />
+                </div>
+                <div style="height:8px;width:100px"></div>                    
+                <div class="btn btn-mini" id="btn_avatar_change">[== $lang->{user_account_change_avatar} =]</div>
             </div>
         </div>
     </div>
+    <div class="tab-pane" id="tab_email">
+        <div class="alert">[== $lang->{user_account_profile_email_warning} =]</div>
+        <div class="row-fluid">
+            <div class="span12">
+                <form class="form-horizontal" id="emc_form_email">
+                    <div class="control-group" id="cg_emc_email">
+                        <label class="control-label" for="emc_email">[== $lang->{user_register_email} =]&nbsp;<span class="red_asterisk">*</span></label>
+                        <div class="controls">
+                            <input type="text" id="emc_email" value="[== $auth_data->{email} =]" />                            
+                        </div>
+                    </div>
+                    <div class="control-group" id="cg_emc_password">
+                        <label class="control-label" for="emc_password">[== $lang->{user_account_current_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                        <div class="controls">
+                            <input type="password" id="emc_password" />
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="btn btn-primary" id="btn_submit_mail">[== $lang->{user_account_save} =]</div>
+                    </div>
+                </form>
+            </div>
+        </div>    
+    </div> 
     <div class="tab-pane" id="tab_password">
-        password
+        <div class="row-fluid">
+            <div class="span12">
+                <form class="form-horizontal" id="pwd_form_email">
+                    <div class="control-group" id="cg_pwd_password">
+                        <label class="control-label" for="pwd_password">[== $lang->{user_register_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                        <div class="controls">
+                            <input type="password" class="input-small" id="pwd_password">
+                            <input type="password" class="input-small" id="pwd_password_repeat">
+                            <span class="help-block">[== $lang->{user_register_password_hint} =]</span>
+                        </div>
+                    </div>
+                    <div class="control-group" id="cg_pwd_old_password">
+                        <label class="control-label" for="pwd_old_password">[== $lang->{user_account_current_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                        <div class="controls">
+                            <input type="password" id="pwd_old_password" />
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="btn btn-primary" id="btn_submit_password">[== $lang->{user_account_save} =]</div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>    
 </div>
 <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
@@ -152,6 +205,18 @@
                     });                    
                 }
             }
-        })                
+            if (target.search('tab_email') != -1) {
+                $('#emc_email').focus();
+            }
+            if (target.search('tab_password') != -1) {
+                $('#pwd_password').focus();
+            }
+        })        
+        $("#account_notification").css( 'top', $('#account_tabs').height() + $('#account_tabs').position().top+3 );
+        $("#account_notification").css( 'width', $('#account_tabs').width() );
+        //$('#account_notification').fadeIn(400).delay(2000).fadeOut(400);
+        $('#btn_logout').click( function () { 
+            location.href='/user/logout';
+        } );
     }); // document.ready
 </script>

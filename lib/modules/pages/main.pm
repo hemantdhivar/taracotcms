@@ -81,14 +81,18 @@ get qr{(.*)} => sub {
   $page_data->{site_description}=$page_description;
 
   if (defined $db_data && $db_data->{id}) {
+   my $render_template;
    if ($db_data->{status} eq 1) {
-    $taracot::taracot_render_template = template 'pages_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    $render_template = &taracot::_process_template( template 'pages_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 0) {
-    $taracot::taracot_render_template = template 'pages_status', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 2) {
-    $taracot::taracot_render_template = template 'pages_status', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} };
+    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+   }
+   if ($render_template) {
+    return $render_template;
    }
   }
   pass();
