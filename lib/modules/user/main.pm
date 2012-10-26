@@ -7,6 +7,7 @@ use Try::Tiny;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use Date::Format;
+use taracot::fs;
 
 # Configuration
 
@@ -440,7 +441,7 @@ get '/account' => sub {
     $auth->{regdate} = $lang->{user_account_regdate_unknown};
   } 
   if (-e config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg') {
-    unlink(config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg');
+    removeFile(config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg');
   }
   my $avatar = '/images/default_avatar.png';
   if (-e config->{files_dir}.'/avatars/'.$auth->{username}.'.jpg') {
@@ -485,6 +486,129 @@ post '/account/avatar/upload' => sub {
   $img = $img->scale(xpixels=>100, ypixels=>100);
   $img->write(file => config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg');
   return '{"error":"0"}';
+};
+
+post '/account/profile/process' => sub {
+  content_type 'application/json';
+  my $auth = &taracot::_auth();
+  my $_current_lang=_load_lang();
+  my %res;
+  $res{status}=1; 
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new();
+  if (!$auth) { 
+    $res{status}=0; 
+    return $json_xs->encode(\%res); 
+  }
+  # first wave validations
+  my $password=param('pro_password') || '';
+  my $phone=param('pro_phone') || '';
+  my $realname=param('pro_realname') || '';   
+  if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_single};
+    push @fields, 'password';  
+  }
+  $realname=~s/[\<\>\"\'\n\r\\\/]//gm; 
+  if ($realname !~ /^.{0,80}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_realname};
+    push @fields, 'realname';  
+  }
+  $phone=~s/[^0-9]//gm;
+  if (length($phone) > 40) {
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_phone};
+    push @fields, 'phone';
+  }
+  if ($res{status} eq 0) {
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  # second wave validations
+  $password = md5_hex(config->{salt}.$password);
+  my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id}, password => $password });
+  if (!$db_data_1->{id}) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_bad};
+    push @fields, 'password';  
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  # success
+  if (-e config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg') {
+    removeFile(config->{files_dir}."/avatars/".$auth->{username}.'.jpg');
+    moveFile(config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg', config->{files_dir}."/avatars/".$auth->{username}.'.jpg');
+  }
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { realname => $realname, phone => $phone, lastchanged => time }); 
+  return $json_xs->encode(\%res);
+};
+
+post '/account/email/process' => sub {
+  content_type 'application/json';
+  my $auth = &taracot::_auth();
+  my $_current_lang=_load_lang();
+  my %res;
+  $res{status}=1; 
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new();
+  if (!$auth) { 
+    $res{status}=0; 
+    return $json_xs->encode(\%res); 
+  }
+  # first wave validations
+  my $password=param('emc_password') || '';
+  my $email=param('emc_new_email') || '';
+  $email = lc $email;
+  if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_single};
+    push @fields, 'password';  
+  }
+  if ($email !~ /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/ || length($email) >80) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_email};
+    push @fields, 'new_email';  
+  }
+  if ($res{status} eq 0) {
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  # second wave validations
+  $password = md5_hex(config->{salt}.$password);
+  my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id}, password => $password });
+  if (!$db_data_1->{id}) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_bad};
+    push @fields, 'password';  
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  # success  
+  my $verification=md5_hex(config->{salt}.$password.time.rand);
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'act_'.$verification, lastchanged => time });   
+  my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
+  my $activation_url = request->uri_base().'/user/activate/'.$auth->{username}.'/'.$verification;
+  my $body = template 'user_mail_emailchange_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
+  try {
+    email {
+      to      => $email,
+      subject => $lang->{user_register_emailchange_subj}.' '.$db_data->{site_title},
+      body    => $body,
+      type    => 'html',
+      headers => { "X-Accept-Language" => $_current_lang }
+    };
+  } catch {
+    #$_;
+  };
+  session user => '';
+  return $json_xs->encode(\%res);
 };
 
 get '/logout' => sub {

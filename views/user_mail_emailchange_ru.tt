@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>&#1057;&#1084;&#1077;&#1085;&#1072; e-mail &#1072;&#1076;&#1088;&#1077;&#1089;&#1072; &#1085;&#1072;: [== $site_title =]</title>
+	<style type="text/css">
+		#outlook a {padding:0;}
+		body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:14px;}
+		.ExternalClass {width:100%;}
+		.ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;}
+		#backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+		img {outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;}
+		a img {border:none;}
+		.image_fix {display:block;}
+		p {margin: 1em 0;}
+		h1, h2, h3, h4, h5, h6 {color: black !important;}
+		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {color: blue !important;}
+		h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active {
+			color: red !important;
+		 }
+		h1 a:visited, h2 a:visited,  h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited {
+			color: purple !important;
+		table td {border-collapse: collapse;}
+    table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+		a {color: orange;}
+	</style>
+	<!--[if IEMobile 7]>
+	<style type="text/css">
+	</style>
+	<![endif]-->
+</head>
+<body>
+	<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
+	<tr>
+		<td>
+			<img class="image_fix" src="[== $site_logo_url =]" alt="[== $site_title =]" title="[== $site_title =]" />
+			<br /><br />
+			&#1042;&#1099; &#1086;&#1090;&#1087;&#1088;&#1072;&#1074;&#1080;&#1083;&#1080; &#1079;&#1072;&#1087;&#1088;&#1086;&#1089; &#1085;&#1072; &#1089;&#1084;&#1077;&#1085;&#1091; &#1072;&#1076;&#1088;&#1077;&#1089;&#1072; &#1101;&#1083;&#1077;&#1082;&#1090;&#1088;&#1086;&#1085;&#1085;&#1086;&#1081; &#1087;&#1086;&#1095;&#1090;&#1099; &#1085;&#1072; <b>[== $site_title =]</b>!<br /><br />
+			&#1044;&#1083;&#1103; &#1101;&#1090;&#1086;&#1075;&#1086; &#1090;&#1088;&#1077;&#1073;&#1091;&#1077;&#1090;&#1089;&#1103; &#1087;&#1086;&#1074;&#1090;&#1086;&#1088;&#1085;&#1072;&#1103; &#1072;&#1082;&#1090;&#1080;&#1074;&#1072;&#1094;&#1080;&#1103; &#1072;&#1082;&#1082;&#1072;&#1091;&#1085;&#1090;&#1072;. &#1044;&#1083;&#1103; &#1079;&#1072;&#1074;&#1077;&#1088;&#1077;&#1096;&#1077;&#1085;&#1080;&#1103; &#1087;&#1088;&#1086;&#1094;&#1077;&#1076;&#1091;&#1088;&#1099; &#1072;&#1082;&#1090;&#1080;&#1074;&#1072;&#1094;&#1080;&#1080;, &#1087;&#1086;&#1078;&#1072;&#1083;&#1091;&#1081;&#1089;&#1090;&#1072;, &#1087;&#1077;&#1088;&#1077;&#1081;&#1076;&#1080;&#1090;&#1077; &#1087;&#1086; &#1089;&#1089;&#1099;&#1083;&#1082;&#1077;:
+			<br /><br />
+			<a href="[== $activation_url =]">[== $activation_url =]</a>
+			<br /><br />
+			&#1057;&#1087;&#1072;&#1089;&#1080;&#1073;&#1086;!!
+		</td>
+	</tr>
+	</table>
+</body>
+</html>

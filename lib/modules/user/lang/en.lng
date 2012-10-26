@@ -6,6 +6,9 @@ user_register_username_or_email: Username (or e-mail)
 user_register_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot; only (3-100)
 user_register_realname: Real name
 user_register_email: E-mail
+user_register_email_current: Current e-mail
+user_register_email_new: New e-mail
+user_register_email_new_hint: Please type it twice to verify, be careful!
 user_register_phone: Cell phone
 user_register_password: Password
 user_register_password_hint: At least 8 characters, please repeat it to verify
@@ -22,7 +25,10 @@ user_register_error_realname: Real name is too long (should be less than 80 char
 user_register_error_email: E-mail is not valid
 user_register_error_phone: Cell phone is not valid
 user_register_error_password: Invalid password syntax or passwords do not match
+user_register_error_email_multi: Invalid e-mail syntax or e-mail addresses do not match
+user_register_error_email_equals: Your old e-mail address equals your new e-mail address
 user_register_error_password_single: Invalid password syntax
+user_register_error_password_bad: Invalid password
 user_register_error_captcha: Code you've entered is not valid
 user_register_error_agreement: You have to accept the website agreement to continue
 user_register_error_username_taken: User with username provided is already registered
@@ -39,6 +45,7 @@ user_auth_invalid: Invalid username (e-mail) or password
 user_auth_already_logged_in: This (or another) user is already logged in
 user_auth_user_disabled: User is currently disabled on this website
 user_register_email_subj: Registration on
+user_register_emailchange_subj: E-mail change on
 user_activate: Activate user
 user_activate_error_url: Invalid activation data, please check your URL and try again.
 user_activate_error_wrong_code: Invalid activation data, please check your URL and try again.
@@ -73,3 +80,6 @@ user_account_current_password: Current password
 image_files: Image files
 user_account_avatar_uploading: Uploading image...
 user_account_avatar_uploading_error: Error while uploading your new avatar picture!
+user_account_profile_saved: Your profile data has been saved successfully!
+user_account_password_saved: Your new password has been saved successfully!
+user_account_profile_saved: Your e-mail has been saved successfully! At this time your account is disabled, so you need to re-activate it. Please follow the instructions you'll find in your mailbox.
