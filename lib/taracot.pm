@@ -120,11 +120,10 @@ sub _process_template {
       undef($md);
    }
    while (my ($name, $value) = each(%blocks)){
-    $taracot_render_template =~ s/\[\% ?$name ?\%\]/$value/igm; 
+    $taracot_render_template =~ s/\[\% ?$name ?\%\]/$value/igm;
    }
-   my $render = $taracot_render_template;
-   $taracot_render_template=undef;
-   return $render;
+   $taracot_render_template =~ s/\[\% current_lang ?\%\]/$_current_lang/gm;
+   return $taracot_render_template;
  }
  return undef;
 }

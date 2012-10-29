@@ -1,8 +1,6 @@
 <script type="text/javascript" src="/js/jquery.shifty.js"></script>
-<script type="text/javascript" src="/js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="/js/hashtable.js"></script>
 <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
-<link rel="stylesheet" type="text/css" href="/css/jquery.qtip.min.css">
 
 <h1 style="padding-top:6px">[== $lang->{pagetitle} =]</h1>
 
@@ -25,22 +23,22 @@
 <div id="img_browser">
   <div class="btn-toolbar">
     <div class="btn-group">
-     <span class="btn btn-success disabled" id="btn_select"><i class="browser-i-select"></i></span>
-     <span class="btn" id="btn_upload"><i class="browser-i-upload"></i></span>
+     <span class="btn btn-success disabled buttons-tooltip" id="btn_select" rel="tooltip" data-placement="bottom" title="[== $lang->{select} =]"><i class="browser-i-select"></i></span>
+     <span class="btn buttons-tooltip" id="btn_upload" rel="tooltip" data-placement="bottom" title="[== $lang->{upload} =]"><i class="browser-i-upload"></i></span>
     </div>
     <div class="btn-group" id="btn_group_dir">
-     <span class="btn btn-warning disabled" id="btn_up"><i class="browser-i-updir"></i></span>
-     <span class="btn btn-warning disabled" id="btn_chdir"><i class="browser-i-chdir"></i></span>
-     <span class="btn" id="btn_newdir"><i class="browser-i-newdir"></i></span>
+     <span class="btn btn-warning disabled buttons-tooltip" id="btn_up" rel="tooltip" data-placement="bottom" title="[== $lang->{up} =]"><i class="browser-i-updir"></i></span>
+     <span class="btn btn-warning disabled buttons-tooltip" id="btn_chdir" rel="tooltip" data-placement="bottom" title="[== $lang->{chdir} =]"><i class="browser-i-chdir"></i></span>
+     <span class="btn buttons-tooltip" id="btn_newdir" rel="tooltip" data-placement="bottom" title="[== $lang->{newdir} =]"><i class="browser-i-newdir"></i></span>
     </div>
     <div class="btn-group">
-     <span class="btn disabled" id="btn_cut"><i class="browser-i-cut"></i></span>
-     <span class="btn disabled" id="btn_copy"><i class="browser-i-copy"></i></span>
-     <span class="btn disabled" id="btn_paste"><i class="browser-i-paste"></i></span>
+     <span class="btn disabled buttons-tooltip" id="btn_cut" rel="tooltip" data-placement="bottom" title="[== $lang->{cut} =]"><i class="browser-i-cut"></i></span>
+     <span class="btn disabled buttons-tooltip" id="btn_copy" rel="tooltip" data-placement="bottom" title="[== $lang->{copy} =]"><i class="browser-i-copy"></i></span>
+     <span class="btn disabled buttons-tooltip" id="btn_paste" rel="tooltip" data-placement="bottom" title="[== $lang->{paste} =]"><i class="browser-i-paste"></i></span>
     </div>
     <div class="btn-group">
-     <span class="btn disabled" id="btn_rename"><i class="browser-i-rename"></i></span>
-     <span class="btn btn-danger disabled" id="btn_delete"><i class="browser-i-delete"></i></span>
+     <span class="btn disabled buttons-tooltip" id="btn_rename" rel="tooltip" data-placement="bottom" title="[== $lang->{rename} =]"><i class="browser-i-rename"></i></span>
+     <span class="btn btn-danger disabled buttons-tooltip" id="btn_delete" rel="tooltip" data-placement="bottom" title="[== $lang->{delete} =]"><i class="browser-i-delete"></i></span>
     </div>
   </div>
   <div id="cd" style="padding-bottom:10px;padding-top:10px"></div>
@@ -78,16 +76,7 @@
  var tmp_old_name='';
  var return_mode=getUrlParam('mode') || 'ck';
  // begin: set popovers for buttons
- $('#btn_select').qtip({ content:{text:"[== $lang->{select} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_upload').qtip({ content:{text:"[== $lang->{upload} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_up').qtip({ content:{text:"[== $lang->{up} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_chdir').qtip({ content:{text:"[== $lang->{chdir} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_newdir').qtip({ content:{text:"[== $lang->{newdir} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_cut').qtip({ content:{text:"[== $lang->{cut} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_copy').qtip({ content:{text:"[== $lang->{copy} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_paste').qtip({ content:{text:"[== $lang->{paste} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_rename').qtip({ content:{text:"[== $lang->{rename} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_delete').qtip({ content:{text:"[== $lang->{delete} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
+ $('.buttons-tooltip').tooltip();
  // end: set popovers for buttons
  openDir('');
  function getDir() {

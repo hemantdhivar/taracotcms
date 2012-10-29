@@ -1,9 +1,7 @@
  <script type="text/javascript" src="/js/jquery.shifty.js"></script>
- <script type="text/javascript" src="/js/jquery.qtip.min.js"></script>
- <script type="text/javascript" src="/js/hashtable.js"></script>
+  <script type="text/javascript" src="/js/hashtable.js"></script>
  <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
- <link rel="stylesheet" type="text/css" href="/css/jquery.qtip.min.css">
- <h1>[== $lang->{module_name_long} =]</h1>
+  <h1>[== $lang->{module_name_long} =]</h1>
  <br />
  <div id="files_table">
    [== $lang->{files_hint} =]

@@ -1,8 +1,6 @@
 <script type="text/javascript" src="/js/jquery.shifty.js"></script>
-<script type="text/javascript" src="/js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="/js/hashtable.js"></script>
 <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
-<link rel="stylesheet" type="text/css" href="/css/jquery.qtip.min.css">
 
 <h1 style="padding-top:6px">[== $lang->{images_title} =]</h1>
 
@@ -25,11 +23,11 @@
 <div id="img_browser">
   <div class="btn-toolbar">
     <div class="btn-group">
-     <span class="btn" id="btn_upload"><i class="browser-i-upload"></i></span>
+     <span class="btn buttons-tooltip" id="btn_upload" rel="tooltip" data-placement="bottom" title="[== $lang->{upload} =]"><i class="browser-i-upload"></i></span>
     </div>
     <div class="btn-group">
-     <span class="btn disabled" id="btn_rename"><i class="browser-i-rename"></i></span>
-     <span class="btn btn-danger disabled" id="btn_delete"><i class="browser-i-delete"></i></span>
+     <span class="btn disabled buttons-tooltip" id="btn_rename" rel="tooltip" data-placement="bottom" title="[== $lang->{rename} =]"><i class="browser-i-rename"></i></span>
+     <span class="btn btn-danger disabled buttons-tooltip" id="btn_delete" rel="tooltip" data-placement="bottom" title="[== $lang->{delete} =]"><i class="browser-i-delete"></i></span>
     </div>
   </div>
   <ul class="thumbnails" id="files"></ul>
@@ -60,9 +58,7 @@
  var current_dir='';
  var tmp_old_name='';
   // begin: set popovers for buttons
- $('#btn_upload').qtip({ content:{text:"[== $lang->{upload} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_rename').qtip({ content:{text:"[== $lang->{rename} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
- $('#btn_delete').qtip({ content:{text:"[== $lang->{delete} =]"}, position: {at:'bottom left'}, show: {delay: 700}, style: {classes: 'ui-tooltip-youtube'} });
+ $('.buttons-tooltip').tooltip();
  // end: set popovers for buttons
   
   function getDir() {
