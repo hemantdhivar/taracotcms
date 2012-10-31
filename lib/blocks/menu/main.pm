@@ -54,7 +54,7 @@ sub data() {
    $json = decode_json($$data)
   } 
  }
- my $res=qq~<ul class="nav nav-pills">~;
+ my $res;
  my $level0=@$json[0];
  my $level0_children=$level0->{children};
  my @level1;
@@ -96,7 +96,6 @@ sub data() {
    $res.=qq~<li><a href="$url">~.encode_entities($item->{title}).qq~</a></li>~;
   }
  }
- $res.=qq~</ul>~;     
  $reply{block_content}=$lang->{input_output_error};
  open(DATA, '>'.config->{root_dir}.'/'.config->{data_dir}.'/sitemap_'.$current_lang.'.html') || return \%reply;
  flock(DATA, LOCK_EX) || return \%reply;
