@@ -1,0 +1,7 @@
+/******************************************************
+	* jQuery plug-in
+	* Easy Pinned Footer
+	* Developed by J.P. Given (http://johnpatrickgiven.com)
+	* Useage: anyone so long as credit is left alone
+******************************************************/
+(function(a){function b(b){if(window.console&&window.console.log){window.console.log("Window Width: "+a(window).width());window.console.log("Window Height: "+a(window).height())}}function c(){var a=0;if(typeof window.innerHeight=="number"){a=window.innerHeight}else{if(document.documentElement&&document.documentElement.clientHeight){a=document.documentElement.clientHeight}else{if(document.body&&document.body.clientHeight){a=document.body.clientHeight}}}return a}function d(){var a=0;if(typeof window.innerWidth=="number"){a=window.innerWidth}else{if(document.documentElement&&document.documentElement.clientWidth){a=document.documentElement.clientWidth}else{if(document.body&&document.body.clientWidth){a=document.body.clientWidth}}}return a}a.fn.pinFooter=function(b){var e=a(window).height();var f=d();var g=a(this).outerHeight(true);var h=a("body").outerHeight(true);var i=parseInt(a("body").css("margin-bottom"));if(b=="relative"){if(h>c()){a(this).css("position","absolute");a(this).css("width",f+"px");a(this).css("top",h-g+"px");a("body").css("overflow-x","hidden")}else{a(this).css("position","fixed");a(this).css("width",f+"px");a(this).css("top",e-g+"px")}}else{a(this).css("position","fixed");a(this).css("width",f+"px");a(this).css("top",e-g+"px");a("body").css("height",h+i+"px")}};})(jQuery)
