@@ -39,7 +39,7 @@
     </div>
     <div class="container taracot-header">
       <div class="row">
-        <div class="span12 visible-tablet visible-desktop" id="taracot-header-span">
+        <div class="span12 visible-desktop" id="taracot-header-span">
           <?pl if ($auth_data->{id}) { ?>
           Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
           <?pl } else { ?>
@@ -51,7 +51,7 @@
   </div>
   <div id="taracot-top-img"></div>  
   <div class="container taracot-after-header" id="taracot-content">
-    <div class="visible-phone taracot-phone-login-buttons">
+    <div class="visible-phone visible-tablet taracot-phone-login-buttons">
       <?pl if ($auth_data->{id}) { ?>
       Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
       <?pl } else { ?>
