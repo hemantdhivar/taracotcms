@@ -46,14 +46,15 @@ prefix '/';
 
 get qr{(.*)} => sub {
   my $_current_lang=_load_lang();
+  my $auth_data;
   if (session('user')) { 
    my $id = session('user');
-   $taracot::taracot_auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
+   $auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
   } else {
-   $taracot::taracot_auth_data->{id} = 0;
-   $taracot::taracot_auth_data->{status} = 0;
-   $taracot::taracot_auth_data->{username} = '';
-   $taracot::taracot_auth_data->{password} = '';
+   $auth_data->{id} = 0;
+   $auth_data->{status} = 0;
+   $auth_data->{username} = '';
+   $auth_data->{password} = '';
   } 
   my ($url) = splat;
   # remove dupe chars
@@ -69,8 +70,7 @@ get qr{(.*)} => sub {
    pass();
   }
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { filename => $url, lang => $_current_lang });
-  my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);
-  
+  my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);  
   my $page_keywords = $db_data->{keywords}.', '.$page_data->{site_keywords};
   my $page_description = $db_data->{description}.'. '.$page_data->{site_description};
   $page_keywords=~s/^, //;
@@ -79,17 +79,16 @@ get qr{(.*)} => sub {
   $page_description=~s/\. $//;
   $page_data->{site_keywords}=$page_keywords;
   $page_data->{site_description}=$page_description;
-
   if (defined $db_data && $db_data->{id}) {
    my $render_template;
    if ($db_data->{status} eq 1) {
-    $render_template = &taracot::_process_template( template 'pages_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'pages_view', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 0) {
-    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 2) {
-    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($render_template) {
     return $render_template;

@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <link rel="stylesheet" href="/taracot/main.css">
   <script src="/js/jquery.min.js"></script>
-  <script src="/js/jquery.ez-pinned-footer.js"></script>
   <script src="/js/bootstrap.min.js"></script>  
   <!-- IE Fix for HTML5 Tags -->
   <!--[if lt IE 9]>
@@ -40,28 +39,31 @@
     </div>
     <div class="container taracot-header">
       <div class="row">
-        <div class="span11"></div>
-        <div class="span1 visible-tablet visible-desktop" id="taracot-header-span">
-          yo yo yo
+        <div class="span12 visible-tablet visible-desktop" id="taracot-header-span">
+          <?pl if ($auth_data->{id}) { ?>
+          Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
+          <?pl } else { ?>
+          <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
+          <?pl } ?>
         </div>
       </div>
     </div>
   </div>
   <div id="taracot-top-img"></div>  
   <div class="container taracot-after-header" id="taracot-content">
-     <div class="visible-phone well well-small">Login</div>
-     [== $content =]     
+    <div class="visible-phone taracot-phone-login-buttons">
+      <?pl if ($auth_data->{id}) { ?>
+      Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
+      <?pl } else { ?>
+      <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
+      <?pl } ?>
+    </div>
+    [== $content =]     
   </div>  
   <footer id="taracot-footer">
     <div class="container">
       <p>Taracot CMS designed by <a href="http://taracot.org" rel="author">Michael Matveev</a></p>
     </div>
   </footer>   
-  <script type="text/javascript">
-   $(document).ready(function(){
-    $('#taracot-footer').pinFooter("relative");
-    $(window).resize(function() { $('#taracot-footer').pinFooter("relative"); });
-   })
-  </script>
 </body>
 </html>

@@ -44,7 +44,6 @@
                         <td>[== $auth_data->{regdate} =]</td>
                     </tr>
                 </table>
-                <div class="btn btn-warning" id="btn_logout">[== $lang->{user_account_logout} =]</div>
             </div>
             <div class="span2" style="text-align:center">
                 <img src="[== $avatar =]" width="100" height="100" alt="" id="avatar_overview_img" />                
@@ -241,10 +240,7 @@
             if (target.search('tab_password') != -1) {
                 $('#pwd_password').focus();
             }
-        })        
-        $('#btn_logout').click( function () { 
-            location.href='/user/logout';
-        } );
+        });
         $('#btn_submit_profile').bind('click', function() {
             $('#cg_pro_realname').removeClass('error');
             $('#cg_pro_phone').removeClass('error');

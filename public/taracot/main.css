@@ -58,7 +58,10 @@ body,html
 .taracot-after-header {
   margin-top: 150px;
   overflow:auto;
- }
+}
+.taracot-phone-login-buttons {
+  padding-bottom: 10px;
+}
 h1 {
   margin-bottom: 20px;
 }
@@ -66,6 +69,7 @@ footer {
   background-color: #444;
   color:#ddd;
   padding-top:20px;
+  padding-bottom:10px;
   margin-top:20px;
 }
 footer a {

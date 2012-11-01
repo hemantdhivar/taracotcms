@@ -85,15 +85,16 @@ prefix '/catalog';
 get qr{(.*)} => sub {
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);  
+  my $auth_data;
   my $stitle = database->quick_select(config->{db_table_prefix}."_settings", { s_name => 'site_title', lang => $_current_lang });
   if (session('user')) { 
    my $id = session('user');
-   $taracot::taracot_auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
+   $auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
   } else {
-   $taracot::taracot_auth_data->{id} = 0;
-   $taracot::taracot_auth_data->{status} = 0;
-   $taracot::taracot_auth_data->{username} = '';
-   $taracot::taracot_auth_data->{password} = '';
+   $auth_data->{id} = 0;
+   $auth_data->{status} = 0;
+   $auth_data->{username} = '';
+   $auth_data->{password} = '';
   } 
   my ($url) = splat;
   # remove dupe chars
@@ -155,7 +156,7 @@ get qr{(.*)} => sub {
     my %db_data;
     my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => $var1, lang => $_current_lang });
     $db_data{'content'} = $db_var1->{s_value_html}.template 'catalog_list', { items => $items }, { layout => undef };
-    my $render_template = &taracot::_process_template( template 'catalog_view_index', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => \%db_data, pagetitle => $db_var1->{s_value} || $lang->{module_name} }, { layout => config->{layout}.'_'.$_current_lang } );
+    my $render_template = &taracot::_process_template( template 'catalog_view_index', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => \%db_data, pagetitle => $db_var1->{s_value} || $lang->{module_name} }, { layout => config->{layout}.'_'.$_current_lang } );
     if ($render_template) {
       return $render_template;
     }
@@ -202,7 +203,7 @@ get qr{(.*)} => sub {
     my $grid=template 'catalog_images_grid', { id => $db_data->{id}, img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
     my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => "catalog_title_".$groupid, lang => $_current_lang });
     my $groupid_title = $db_var1->{s_value} || $groupid;
-    $render_template = &taracot::_process_template( template 'catalog_view', { current_lang => $_current_lang, lang => $lang, authdata => \$taracot::taracot_auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => $db_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title, pagetitle => $db_data->{pagetitle} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'catalog_view', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => $db_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title, pagetitle => $db_data->{pagetitle} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 0) {
     $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
