@@ -3,7 +3,6 @@ use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use Dancer::Plugin::Email;
 use HTML::Entities qw(encode_entities_numeric);
-use Try::Tiny;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use Date::Format;
@@ -138,17 +137,13 @@ post '/register/process' => sub {
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/'.$username.'/'.$verification;
   my $body = template 'user_mail_register_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
-  try {
-    email {
+  email {
       to      => $email,
       subject => $lang->{user_register_email_subj}.' '.$db_data->{site_title},
       body    => $body,
       type    => 'html',
       headers => { "X-Accept-Language" => $_current_lang }
-    };
-  } catch {
-    #$_;
-  };
+  };  
   return $json_xs->encode(\%res);
 };
 
@@ -346,16 +341,12 @@ post '/password/process' => sub {
   $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/password/reset/'.$username.'/'.$verification;
   my $body = template 'user_mail_password_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
-  try {
-    email {
+  email {
       to      => $email,
       subject => $lang->{user_register_email_subj}.' '.$db_data->{site_title},
       body    => $body,
       type    => 'html',
       headers => { "X-Accept-Language" => $_current_lang }
-    };
-  } catch {
-    #$_;
   };
   return $json_xs->encode(\%res);
 };
@@ -596,16 +587,12 @@ post '/account/email/process' => sub {
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/'.$auth->{username}.'/'.$verification;
   my $body = template 'user_mail_emailchange_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
-  try {
-    email {
+  email {
       to      => $email,
       subject => $lang->{user_register_emailchange_subj}.' '.$db_data->{site_title},
       body    => $body,
       type    => 'html',
       headers => { "X-Accept-Language" => $_current_lang }
-    };
-  } catch {
-    #$_;
   };
   session user => '';
   return $json_xs->encode(\%res);
