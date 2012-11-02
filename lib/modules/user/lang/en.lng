@@ -27,8 +27,10 @@ user_register_error_phone: Cell phone is not valid
 user_register_error_password: Invalid password syntax or passwords do not match
 user_register_error_email_multi: Invalid e-mail syntax or e-mail addresses do not match
 user_register_error_email_equals: Your old e-mail address equals your new e-mail address
+user_register_error_password_equals: Your old password equals your new password
 user_register_error_password_single: Invalid password syntax
 user_register_error_password_bad: Invalid password
+user_register_error_password_multi: Invalid password syntax or passwords do not match
 user_register_error_captcha: Code you've entered is not valid
 user_register_error_agreement: You have to accept the website agreement to continue
 user_register_error_username_taken: User with username provided is already registered
@@ -82,4 +84,4 @@ user_account_avatar_uploading: Uploading image...
 user_account_avatar_uploading_error: Error while uploading your new avatar picture!
 user_account_profile_saved: Your profile data has been saved successfully!
 user_account_password_saved: Your new password has been saved successfully!
-user_account_profile_saved: Your e-mail has been saved successfully! At this time your account is disabled, so you need to re-activate it. Please follow the instructions you'll find in your mailbox.
+user_account_email_saved: Your profile has been saved successfully! At this time your account is disabled, so you need to re-activate it. Please follow the instructions you'll find in your mailbox.

@@ -4,7 +4,7 @@
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="/js/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="/js/hashtable.js"></script>
-<script src="/js/codemirror/lib/codemirror.js"></script
+<script src="/js/codemirror/lib/codemirror.js"></script>
 <script src="/js/codemirror/mode/javascript/javascript.js"></script>
 <script src="/js/codemirror/mode/xml/xml.js"></script>
 <script src="/js/codemirror/mode/css/css.js"></script>
@@ -34,9 +34,8 @@
 	<thead>
 	<tr>
 		<th style="width:40px">[== $lang->{id} =]</th>
-		<th>[== $lang->{pagetitle} =]</th>		
-    <th>[== $lang->{filename} =]</th>
-    <th style="width:100px;text-align:center">[== $lang->{groupid} =]</th>
+		<th>[== $lang->{pagetitle} =]</th>
+		<th>[== $lang->{filename} =]</th>
 		<th style="width:100px;text-align:center">[== $lang->{language} =]</th>
 		<th style="width:100px;text-align:center">[== $lang->{layout} =]</th>
 		<th style="width:80px;text-align:center">[== $lang->{status} =]</th>
@@ -174,8 +173,8 @@
 		</div>
   </span>
  </div>
-  <div class="modal-footer">    
-    <a class="btn" id="btn_status_select_close">[== $lang->{edit_cancel} =]</a>    
+  <div class="modal-footer">
+    <a class="btn" id="btn_status_select_close">[== $lang->{edit_cancel} =]</a>
     <a class="btn btn-success" id="btn_status_select_save">[== $lang->{edit_save} =]</a>
  </div>
 </div>
@@ -222,33 +221,14 @@
     			</div>
     		</div>
         
-        <div class="control-group" id="cg_description_short">
-          <label class="control-label" for="description_short">[== $lang->{description_short} =]</label>
-          <div class="controls">
-            <input type="text" class="input-xlarge" id="description_short">
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="span5">
-            <div class="control-group" id="cg_groupid"> 
-              <label class="control-label" for="groupid">[== $lang->{groupid} =]&nbsp;<span class="required_field">*</span></label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" id="groupid">                
-              </div>
-            </div>
-          </div>
-          <div class="span5">
-            <div class="control-group" id="cg_filename">
-        			<label class="control-label" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
-        			<div class="controls" style="white-space:nowrap;">
-        				<input type="text" class="input-xlarge" id="filename"><span class="help-inline"><img src="/images/get.png" alt="[== $lang->{get_url} =]" width="20" height="20" style="cursor:pointer" onclick="generateURL()" id="get_url" /></span>
-        				<div class="help-block" id="url_help" style="overflow:hidden;width:100%"></div> 
-        				<span id="unidecode_progress" style="display:none"><img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
-        			</div>
-        		</div>
-          </div>           
-        </div>    
+        <div class="control-group" id="cg_filename">
+    			<label class="control-label" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
+    			<div class="controls">
+    				<input type="text" class="input-xlarge" id="filename"><span class="help-inline"><img src="/images/get.png" alt="[== $lang->{get_url} =]" width="20" height="20" style="cursor:pointer" onclick="generateURL()" id="get_url" /></span>
+    				<div class="help-block" id="url_help" style="overflow:hidden"></div> 
+    				<span id="unidecode_progress" style="display:none"><img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
+    			</div>
+    		</div>
     		
     		<div class="row">
           <div class="span5">
@@ -308,15 +288,6 @@
         		</div>
       		</div>
     		</div>
-
-        <div class="control-group" id="cg_special_flag">
-          <label class="control-label" for="special_flag">[== $lang->{special_flag} =]</label>
-          <div class="controls">
-            <label class="checkbox">
-              <input type="checkbox" id="special_flag" name="special_flag">
-            </label>
-          </div>          
-        </div>
     		
   		</span> <!-- form_controls -->
 
@@ -327,7 +298,6 @@
          <span id="eb_switch_ck" class="btn btn-mini disabled">[== $lang->{wysiwyg} =]</span>
          <span id="eb_switch_cm" class="btn btn-mini">[== $lang->{html} =]</span>
          <span id="eb_imgbrowser" class="btn btn-mini btn-success">[== $lang->{imgbrowser} =]</span>
-         <span id="eb_images" class="btn btn-mini btn-success">[== $lang->{catalog_images} =]</span>
     </div>
     <div id="wysiwyg_editor_wrap"><div id="wysiwyg_editor"></div></div>
     <div id="html_editor_wrap" class="well" style="display:none;height:300px"><div id="html_editor"></div></div>
@@ -338,7 +308,6 @@
   		</div>
   		<div id="data_edit_form_buttons">
   			<span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>
-        <span class="btn" id="btn_edit_save_upload">[== $lang->{edit_save_upload} =]</span>
   			<span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
   		</div>
   		<span class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</span>
@@ -354,7 +323,6 @@ var edit_id=0;
 var edit_mode='ck';
 var delete_data = new Array();
 var dtable;
-var flag_open_upload_after_save=0;
 var langs = new HashTable({[== $hash_langs =]});
 
 // Init CodeMirror
@@ -406,7 +374,7 @@ $(document).ready(function() {
     "sPaginationType": "bootstrap",
     "iDisplayLength": 10,
     "bAutoWidth": true,
-    "sAjaxSource": "/admin/catalog/data/list",
+    "sAjaxSource": "/admin/pages/data/list",
     "oLanguage": {
       "oPaginate": {
         "sPrevious":  "[== $lang->{sPrevious} =]",                                
@@ -424,7 +392,7 @@ $(document).ready(function() {
      { "fnRender": function ( oObj, sVal ) {
          return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
        },
-       "aTargets": [ 7 ]
+       "aTargets": [ 6 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          var pic='lamp_on.png';
@@ -432,17 +400,17 @@ $(document).ready(function() {
          if (sVal == 2) { pic='under_construction.png'; }
          return '<div style="text-align:center;cursor:pointer" class="editable_select" onclick="selectStatus('+row_id+')" id="status_'+row_id+'"><span style="display:none" id="rowstatus_'+row_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" /></div>';         
        },
-       "aTargets": [ 6 ]
+       "aTargets": [ 5 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          return '<div style="text-align:center;cursor:pointer" onclick="selectLanguage('+row_id+')" id="lang_'+row_id+'"><span style="display:none" id="langv_'+row_id+'">'+sVal+'</span><img src="/images/flags/'+sVal+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem(sVal)+'</div>';
        },
-       "aTargets": [ 4 ]
+       "aTargets": [ 3 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          return '<div style="text-align:center;cursor:pointer" id="layout_'+row_id+'" onclick="selectLayout('+row_id+')">'+sVal+'</div>';
        },
-       "aTargets": [ 5 ]
+       "aTargets": [ 4 ]
      },
      { "fnRender": function ( oObj, sVal ) {
          row_id=sVal;
@@ -459,11 +427,6 @@ $(document).ready(function() {
          return '<div id="filename_'+row_id+'" class="editable_text">'+sVal+'</div';
        },
        "aTargets": [ 2 ]
-     },
-     { "fnRender": function ( oObj, sVal ) {
-         return '<div id="groupid_'+row_id+'" class="editable_text">'+sVal+'</div';
-       },
-       "aTargets": [ 3 ]
      }
     ],
     "fnDrawCallback": function() {
@@ -480,12 +443,9 @@ $('#filename').change(function() {
   host = host.replace(/[== $current_lang =]\./, '');
   var path = $('#filename').val().replace(/^\//, '');
   var lang = $('#lang').val();
-  var gid = $('#groupid').val();
   lang+='.';
   path=path.replace(/[^a-z0-9\-_\.\/]/g,'');
-  var url = 'http://'+lang+host+'/catalog/'+gid+'/'+path;
-  url = url.replace(/catalog\/\/\//, 'catalog/');
-  url = url.replace(/catalog\/\//, 'catalog/');
+  var url = 'http://'+lang+host+'/'+path;
   url = url.replace(/[== $default_lang =]\./, '');
   $('#url_help').html('<a href="'+url+'" target="blank">'+url+'</a>');
 });
@@ -500,10 +460,6 @@ $('#lang').change(function() {
  $('#filename').change(); 
 });
 
-$('#groupid').change(function() {
- $('#filename').change(); 
-});
-
 function generateURL() {
  if ($('#pagetitle').val().length < 1) {
   $.jmessage('[== $lang->{error} =]', "[== $lang->{get_url_error_blank} =]", 2500, 'jm_message_error');
@@ -514,25 +470,27 @@ function generateURL() {
  $('#unidecode_progress').show();
 
  $.ajax({
-    type: 'POST',
-    url: '/admin/catalog/data/unidecode',
-    data: { val: $('#pagetitle').val() },
-    dataType: "json",
-    success: function(data) {
-      if (data.result == 0) {
-      $.jmessage('[== $lang->{error} =]', "[== $lang->{get_url_error_blank} =]", 2500, 'jm_message_error');
-      } else {
-       $('#filename').val(data.data);
+      type: 'POST',
+      url: '/admin/pages/data/unidecode',
+      data: { val: $('#pagetitle').val() },
+      dataType: "json",
+      success: function(data) {
+        if (data.result == 0) {
+          $.jmessage('[== $lang->{error} =]', "[== $lang->{get_url_error_blank} =]", 2500, 'jm_message_error');
+        } else {
+          $('#filename').val(data.data);
+        }
+        $('#filename').change();
+        $('#unidecode_progress').hide();
+        $('#get_url').show();
+        $('#filename').show();
+        $('#filename').select();
+        $('#filename').focus();
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
       }
-      $('#filename').change();
-      $('#unidecode_progress').hide();
-      $('#get_url').show();
-      $('#filename').show();
-    },
-    error: function() {
-      $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
-    }
-  });
+ });
 
 }
 
@@ -570,28 +528,27 @@ function submitEdit(value, settings) {
  value=value.replace(/\>/g, '&gt;');
  value=value.replace(/\"/g, '&quot;');
  var arr = this.id.split('_');
-
  $.ajax({
-    type: 'POST',
-    url: '/admin/catalog/data/save/field',
-    data: { field_name: arr[0], field_id: arr[1], field_value: value },
-    dataType: "json",
-    success: function(data) {
-      if (data.result != '1') {
-        $('#'+edit_id).html(value_old);
-        if (data.error) {
+      type: 'POST',
+      url: '/admin/pages/data/save/field',
+      data: { field_name: arr[0], field_id: arr[1], field_value: value },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          $('#'+edit_id).html(value_old);
+          if (data.error) {
            $('#error_dialog_msg').html(data.error);
            $('#error_dialog').modal({keyboard: true});
+          }
         } else {
-           if (data.value) {
-            $('#'+edit_id).html(data.value);
+          if (data.value) {
+           $('#'+edit_id).html(data.value);    
           }
         }
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
       }
-    },
-    error: function() {
-      $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
-    }
  });
  return(value);
 }
@@ -603,23 +560,19 @@ $('#btn_add').click( function () {
    $('#data_overview').hide();
    resetFormState();
    $('#eb_imgbrowser').hide();
-   $('#eb_images').hide();
-   $('#btn_edit_save_upload').show();
    edit_mode='ck';
    $('#data_edit').show();
    $('#filename').change();
    $('#h_data_actions').html('[== $lang->{add_page} =]');
    $('#form_notice').html("[== $lang->{form_notice_add} =]");
    $('#pagetitle').val('');
-   $('#groupid').val('');
-   $('#filename').val('');   
+   $('#filename').val('');
    $('#keywords').val('');
    $('#description').val('');
    CKEDITOR.instances.wysiwyg_editor.setData('');
    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
    $("#lang").val($("#lang option:first").val());
    $("#layout").val($("#layout option:first").val());
-   $('#filename').change();
    $('#pagetitle').focus();
 });
 
@@ -632,83 +585,80 @@ $('#btn_edit_cancel').click( function () {
 // "Save" button handler (language select dialog mode)
 
 $('#btn_language_select_save').click( function () {
- $.ajax({
-    type: 'POST',
-    url: '/admin/catalog/data/save/field',
-    data: { field_name: "lang", field_id: edit_id, field_value: $('#language_select_lang').val() },
-    dataType: "json",
-    success: function(data) {
-      if (data.result != '1') {
-        if (data.error) {
-         $('#error_dialog_msg').html(data.error);
-         $('#error_dialog').modal({keyboard: true});
+  $.ajax({
+      type: 'POST',
+      url: '/admin/pages/data/save/field',
+      data: { field_name: "lang", field_id: edit_id, field_value: $('#language_select_lang').val() },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          if (data.error) {
+            $('#error_dialog_msg').html(data.error);
+            $('#error_dialog').modal({keyboard: true});
+          }
+        } else {
+          $('#lang_'+edit_id).html('<span style="display:none" id="langv_'+edit_id+'">'+$('#language_select_lang').val()+'</span><img src="/images/flags/'+$('#language_select_lang').val()+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem($('#language_select_lang').val()));
         }
-       } else {
-        $('#lang_'+edit_id).html('<span style="display:none" id="langv_'+edit_id+'">'+$('#language_select_lang').val()+'</span><img src="/images/flags/'+$('#language_select_lang').val()+'.png" width="16" height="11" alt="" />&nbsp;'+langs.getItem($('#language_select_lang').val()));
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
       }
-    },
-    error: function() {
-      $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
-    }
- });
+  });
  $('#language_select').modal('hide');
 });
 
 // "Save" button handler (layout select dialog mode)
 
 $('#btn_layout_select_save').click( function () {
-
  $.ajax({
-    type: 'POST',
-    url: '/admin/catalog/data/save/field',
-    data: { field_name: "layout", field_id: edit_id, field_value: $('#layout_select_layout').val() },
-    dataType: "json",
-    success: function(data) {
-      if (data.result != '1') {
-        if (data.error) {
-         $('#error_dialog_msg').html(data.error);
-         $('#error_dialog').modal({keyboard: true});
+      type: 'POST',
+      url: '/admin/pages/data/save/field',
+      data: { field_name: "layout", field_id: edit_id, field_value: $('#layout_select_layout').val() },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          if (data.error) {
+           $('#error_dialog_msg').html(data.error);
+           $('#error_dialog').modal({keyboard: true});
+          }
+        } else {
+          $('#layout_'+edit_id).html($('#layout_select_layout').val());
         }
-       } else {
-        $('#layout_'+edit_id).html($('#layout_select_layout').val());
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
       }
-    },
-    error: function() {
-      $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
-    }
  });
-
  $('#layout_select').modal('hide');
-
 });
 
 // "Save" button handler (status select dialog mode)
 
 $('#btn_status_select_save').click( function () {
- $.ajax({
-    type: 'POST',
-    url: '/admin/catalog/data/save/field',
-    data: { field_name: "status", field_id: edit_id, field_value: $("input[name='status_select_status']:checked").val() },
-    dataType: "json",
-    success: function(data) {
-      if (data.result != '1') {
-        if (data.error) {
-         $('#error_dialog_msg').html(data.error);
-         $('#error_dialog').modal({keyboard: true});
+  $.ajax({
+      type: 'POST',
+      url: '/admin/pages/data/save/field',
+      data: { field_name: "status", field_id: edit_id, field_value: $("input[name='status_select_status']:checked").val() },
+      dataType: "json",
+      success: function(data) {
+        if (data.result != '1') {
+          if (data.error) {
+           $('#error_dialog_msg').html(data.error);
+           $('#error_dialog').modal({keyboard: true});
+          }
+        } else {
+          var sVal=$("input[name='status_select_status']:checked").val();
+          var pic='lamp_on.png';
+          if (sVal == 0) { pic='lamp_off.png'; }
+          if (sVal == 2) { pic='under_construction.png'; }
+          $('#status_'+edit_id).html('<span style="display:none" id="status_'+edit_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" />');
         }
-       } else {
-        var sVal=$("input[name='status_select_status']:checked").val();
-        var pic='lamp_on.png';
-        if (sVal == 0) { pic='lamp_off.png'; }
-        if (sVal == 2) { pic='under_construction.png'; }
-        $('#status_'+edit_id).html('<span style="display:none" id="status_'+edit_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" />');
+      },
+      error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
       }
-    },
-    error: function() {
-      $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
-    }
- });
-  $('#status_select').modal('hide');
+ });  
+ $('#status_select').modal('hide');
 });
     
 // "Save" button handler (form mode)
@@ -724,10 +674,6 @@ $('#btn_edit_save').click( function () {
     $('#cg_filename').addClass('error');
     errors=true;   
    }
-   if (!$('#groupid').val().match(/^.{1,80}$/)) {
-    $('#cg_groupid').addClass('error');
-    errors=true;   
-   }
    if (!$('#keywords').val().match(/^.{0,254}$/)) {
     $('#cg_keywords').addClass('error');
     errors=true;   
@@ -735,11 +681,7 @@ $('#btn_edit_save').click( function () {
    if (!$('#description').val().match(/^.{0,254}$/)) {
     $('#cg_description').addClass('error');
     errors=true;   
-   }
-   if (!$('#description_short').val().match(/^.{0,2047}$/)) {
-    $('#cg_description_short').addClass('error');
-    errors=true;   
-   }     
+   }   
    if (errors) {
     $('#form_error_msg_text').html("[== $lang->{form_errors} =]");
     $('#form_error_msg').fadeIn(400);
@@ -748,8 +690,6 @@ $('#btn_edit_save').click( function () {
    } else {
     $('#data_edit_form').hide();
     $('#data_edit_form_buttons').hide();
-    $('#wysiwyg_editor_wrap').hide();
-    $('#editor_buttons').hide();
     $('#ajax_loading_msg').html("[== $lang->{ajax_saving} =]");
     $('#ajax_loading').show();
     var tmp_content='';
@@ -758,78 +698,57 @@ $('#btn_edit_save').click( function () {
     } else {
      tmp_content=CKEDITOR.instances.wysiwyg_editor.getData();
     }
-    var special;
-    if ($('input:checkbox[name=special_flag]').is(':checked')) {
-      special=1;
-    } else {
-      special=0;
-    }
+    $('#wysiwyg_editor_wrap').hide();
+    $('#editor_buttons').hide();
 
     $.ajax({
-      type: 'POST',
-      url: '/admin/catalog/data/save',
-      data: { id: edit_id, pagetitle: $('#pagetitle').val(), filename: $('#filename').val(), groupid: $('#groupid').val(), keywords: $('#keywords').val(), description: $('#description').val(), description_short: $('#description_short').val(), status: $("input[name='status']:checked").val(), content: tmp_content, lang: $('#lang').val(), special_flag: special, layout: $('#layout').val() },
-      dataType: "json",
-      success: function(data) {
-        $('#wysiwyg_editor_wrap').show();
-       $('#editor_buttons').show();
-       if (data.result == '0') {
-        if (data.error) { // ERROR
-         $('#form_error_msg_text').html(data.error);
-         $('#form_error_msg').fadeIn(400);
-         $('#form_error_msg').alert();
+        type: 'POST',
+        url: '/admin/pages/data/save',
+        data: { id: edit_id, pagetitle: $('#pagetitle').val(), filename: $('#filename').val(), keywords: $('#keywords').val(), description: $('#description').val(), status: $("input[name='status']:checked").val(), content: tmp_content, lang: $('#lang').val(), layout: $('#layout').val() },
+        dataType: "json",
+        success: function(data) {
+           $('#wysiwyg_editor_wrap').show();
+           $('#editor_buttons').show();
+           if (data.result == '0') {
+            if (data.error) { // ERROR
+             $('#form_error_msg_text').html(data.error);
+             $('#form_error_msg').fadeIn(400);
+             $('#form_error_msg').alert();
+            }
+            $('#data_edit_form').show();
+            $('#data_edit_form_buttons').show();
+            $('#ajax_loading').hide();
+            if (data.field) {
+             $('#cg_'+data.field).addClass('error');
+             $('#'+data.field).focus();
+            }
+            $("html, body").animate({ scrollTop: 0 }, "fast");
+           } else { // OK
+            $('#data_edit_form').show();
+            $('#data_edit_form_buttons').show();
+            $('#ajax_loading').hide();
+            resetFormState();
+            edit_mode='ck';
+            $('#eb_imgbrowser').hide();
+            $('#data_edit').hide();
+            $('#data_overview').show();
+            if (edit_id == 0) {
+             $.jmessage('[== $lang->{success} =]', "[== $lang->{add_success_notify} =]", 2500, 'jm_message_success');
+            } else {
+             $.jmessage('[== $lang->{success} =]', "[== $lang->{edit_success_notify} =]", 2500, 'jm_message_success');
+            }
+            dtable.fnReloadAjax();
+           }
+        },
+        error: function() {
+          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+          $('#data_edit_form').show();
+          $('#data_edit_form_buttons').show();
+          $('#ajax_loading').hide();
         }
-        $('#data_edit_form').show();
-        $('#data_edit_form_buttons').show();
-        $('#ajax_loading').hide();
-        if (data.field) {
-         $('#cg_'+data.field).addClass('error');
-         $('#'+data.field).focus();
-        }
-        $("html, body").animate({ scrollTop: 0 }, "fast");
-       } else { // OK
-        $('#data_edit_form').show();
-        $('#data_edit_form_buttons').show();
-        $('#ajax_loading').hide();
-        resetFormState();
-        edit_mode='ck';
-        $('#eb_imgbrowser').hide();
-        $('#eb_images').hide();
-        $('#data_edit').hide();
-        $('#data_overview').show();
-        if (data.id && flag_open_upload_after_save == 1) {
-          flag_open_upload_after_save=0;
-          var features, w = screen.width-100, h = screen.height-200;
-          var top = (screen.height - h)/2-50, left = (screen.width - w)/2;
-          if (top < 0) { top = 0; }
-          if (left < 0) { left = 0; }
-          features = 'top=' + top + ',left=' +left;
-          features += ',height=' + h + ',width=' + w + ',resizable=no';
-          imgbrowser = open('/admin/catalog/images?dir='+data.id, 'displayWindow', features);
-        }
-        if (edit_id == 0) {
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{add_success_notify} =]", 2500, 'jm_message_success');
-        } else {
-         $.jmessage('[== $lang->{success} =]', "[== $lang->{edit_success_notify} =]", 2500, 'jm_message_success');
-        }
-        dtable.fnReloadAjax();
-       }
-      },
-      error: function() {
-        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
-        $('#data_edit_form').show();
-        $('#data_edit_form_buttons').show();
-        $('#ajax_loading').hide();
-      }
     });
-    
-   }
-});
 
-// "Save and upload" button handler (form mode)
-$('#btn_edit_save_upload').click( function () {
-  flag_open_upload_after_save=1;
-  $('#btn_edit_save').click();  
+   }
 });
 
 // "Abort" button handler
@@ -842,7 +761,6 @@ $('#btn_abort').click( function() {
    resetFormState();
    edit_mode='ck';
    $('#eb_imgbrowser').hide();
-   $('#eb_images').hide();
    $('#data_edit').hide();
    $('#data_overview').show();
 } );
@@ -855,18 +773,14 @@ function editData(id) {
    resetFormState();
    edit_mode='ck';
    $('#eb_imgbrowser').hide();
-   $('#eb_images').show();
    $('#data_edit').show();
    $('#filename').change();
    $('#h_data_actions').html('[== $lang->{edit_page} =]');
    $('#form_notice').html("[== $lang->{form_notice_edit} =]");
    $('#pagetitle').val('');
-   $('#description_short').val('');
-   $('input:checkbox[name=special_flag]').attr('checked', false);
    $('#password').val('');
    $('#password_repeat').val('');
    $('#filename').val('');
-   $('#btn_edit_save_upload').hide();
    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
    $('#data_edit_form').hide();
    $('#data_edit_form_buttons').hide();
@@ -875,76 +789,67 @@ function editData(id) {
    CKEDITOR.instances.wysiwyg_editor.setData('');
 
    $.ajax({
-        type: 'POST',
-        url: '/admin/catalog/data/load',
-        data: { id: edit_id },
-        dataType: "json",
-        success: function(data) {
-          if (data.result == '0') {
-             $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
-             $('#form_error_msg').fadeIn(400);
-             $('#form_error_msg').alert();
-             $('#ajax_loading').hide();
-             $('#data_edit_form').show();
-             $('#form_controls').hide();
-             $('#btn_abort').show();
-             $('#wysiwyg_editor_wrap').hide();
-             $('#html_editor_wrap').hide();
-             $('#editor_buttons').hide();
-           } else { // OK
-             $('#ajax_loading').hide();
-             $('#data_edit_form').show();
-             $('#form_controls').show();
-             $('#data_edit_form_buttons').show();
-             if (data.pagetitle) {
-              $('#pagetitle').val(data.pagetitle);
-             }
-             if (data.filename) {
-              $('#filename').val(data.filename);
-             }
-             if (data.groupid) {
-              $('#groupid').val(data.groupid);
-             }
-             if (data.keywords) {
-              $('#keywords').val(data.keywords);
-             }
-             if (data.description) {
-              $('#description').val(data.description);
-             }
-             if (data.description_short) {
-              $('#description_short').val(data.description_short);
-             }
-             if (data.content) {
-              CKEDITOR.instances.wysiwyg_editor.setData(data.content);
-             }
-             if (data.status) {
-              $('input:radio[name="status"]').filter('[value="'+data.status+'"]').attr('checked', true);
-             }
-             if (data.lang) {
-              $('#lang').val(data.lang);
-             }
-             if (data.layout) {
-              $('#layout').val(data.layout);
-             }
-             if (data.special_flag && data.special_flag != 0) {
-              $('input[name=special_flag]').attr('checked', true);
-             }
-             $('#filename').change();
-             $('#pagetitle').focus();
-           }  
-        },
-        error: function() {
-          $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
-          $('#ajax_loading').hide();
-          $('#data_edit_form').show();
-          $('#form_controls').hide();
-          $('#btn_abort').show();
-          $('#wysiwyg_editor_wrap').hide();
-          $('#html_editor_wrap').hide();
-          $('#editor_buttons').hide();
+       type: 'POST',
+       url: '/admin/pages/data/load',
+       data: { id: edit_id },
+       dataType: "json",
+       success: function(data) {
+        if (data.result == '0') {
+           $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
+           $('#form_error_msg').fadeIn(400);
+           $('#form_error_msg').alert();
+           $('#ajax_loading').hide();
+           $('#data_edit_form').show();
+           $('#form_controls').hide();
+           $('#btn_abort').show();
+           $('#wysiwyg_editor_wrap').hide();
+           $('#html_editor_wrap').hide();
+           $('#editor_buttons').hide();
+        } else { // OK
+           $('#ajax_loading').hide();
+           $('#data_edit_form').show();
+           $('#form_controls').show();
+           $('#data_edit_form_buttons').show();
+           if (data.pagetitle) {
+            $('#pagetitle').val(data.pagetitle);
+           }
+           if (data.filename) {
+            $('#filename').val(data.filename);
+           }
+           if (data.keywords) {
+            $('#keywords').val(data.keywords);
+           }
+           if (data.description) {
+            $('#description').val(data.description);
+           }
+           if (data.content) {
+            CKEDITOR.instances.wysiwyg_editor.setData(data.content);
+           }
+           if (data.status) {
+            $('input:radio[name="status"]').filter('[value="'+data.status+'"]').attr('checked', true);
+           }
+           if (data.lang) {
+            $('#lang').val(data.lang);
+           }
+           if (data.layout) {
+            $('#layout').val(data.layout);
+           }
+           $('#filename').change();
+           $('#pagetitle').focus();
         }
+       },
+       error: function() {
+        $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+        $('#ajax_loading').hide();
+        $('#data_edit_form').show();
+        $('#form_controls').hide();
+        $('#btn_abort').show();
+        $('#wysiwyg_editor_wrap').hide();
+        $('#html_editor_wrap').hide();
+        $('#editor_buttons').hide();
+       }
    });
-   
+
 }
 
 // Button "Cancel" handler (Dialog: "Delete")
@@ -960,41 +865,27 @@ $('#btn_error_dialog_close').click( function () {
 // Button "Delete" handler (Dialog: "Delete")
 $('#btn_delete').click( function() {
   $('#delete_confirmation').modal('hide');
-
   $.ajax({
       type: 'POST',
-      url: '/admin/catalog/data/delete',
+      url: '/admin/pages/data/delete',
       data: { 'delete_data': delete_data },
       dataType: "json",
       success: function(data) {
         if (data.result == '0') {
            $('#error_dialog_msg').html("[== $lang->{delete_error_notify} =]");
            $('#error_dialog').modal({keyboard: true});
-        } else { // OK
+         } else { // OK
            $.jmessage('[== $lang->{success} =]', "[== $lang->{delete_success_notify} =]", 2500, 'jm_message_success');
-        }
-        dtable.fnReloadAjax();
+         }
+         dtable.fnReloadAjax();
       },
       error: function() {
         $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
       }
   });
-
 });
 
 $('#eb_imgbrowser').click(
-  function() {
-   var features, w = screen.width-100, h = screen.height-200;
-   var top = (screen.height - h)/2-50, left = (screen.width - w)/2;
-   if (top < 0) { top = 0; }
-   if (left < 0) { left = 0; }
-   features = 'top=' + top + ',left=' +left;
-   features += ',height=' + h + ',width=' + w + ',resizable=no';
-   imgbrowser = open('/admin/imgbrowser?mode=cm', 'displayWindow', features);
-  }
-);
-
-$('#eb_images').click(
   function() {
    var features, w = screen.width-100, h = screen.height-200;
    var top = (screen.height - h)/2-50, left = (screen.width - w)/2;
@@ -1002,7 +893,7 @@ $('#eb_images').click(
    if(left < 0) left = 0;
    features = 'top=' + top + ',left=' +left;
    features += ',height=' + h + ',width=' + w + ',resizable=no';
-   imgbrowser = open('/admin/catalog/images?dir='+edit_id, 'displayWindow', features);
+   imgbrowser = open('/admin/imgbrowser?mode=cm', 'displayWindow', features);
   }
 );
 
@@ -1041,7 +932,7 @@ $('#eb_switch_cm').click( function() {
 
   $.ajax({
       type: 'POST',
-      url: '/admin/catalog/data/load',
+      url: '/admin/pages/data/load',
       data: { id: edit_id },
       dataType: "json",
       success: function(data) {
@@ -1056,7 +947,7 @@ $('#eb_switch_cm').click( function() {
            $('#wysiwyg_editor_wrap').hide();
            $('#html_editor_wrap').hide();
            $('#editor_buttons').hide();
-         } else { // OK
+        } else { // OK
            edit_mode='cm';
            $('#editor_buttons').show();
            $('#html_editor_wrap').show();
@@ -1119,35 +1010,35 @@ $('#eb_switch_ck').click( function() {
 
   $.ajax({
       type: 'POST',
-      url: '/admin/catalog/data/load',
+      url: '/admin/pages/data/load',
       data: { id: edit_id },
       dataType: "json",
       success: function(data) {
-        if (data.result == '0') {
-         $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
-         $('#form_error_msg').fadeIn(400);
-         $('#form_error_msg').alert();
-         $('#ajax_loading').hide();
-         $('#data_edit_form').show();
-         $('#form_controls').hide();
-         $('#btn_abort').show();
-         $('#wysiwyg_editor_wrap').hide();
-         $('#html_editor_wrap').hide();
-         $('#editor_buttons').hide();
-       } else { // OK
-         edit_mode='ck';
-         $('#editor_buttons').show();
-         $('#wysiwyg_editor_wrap').show();
-         $('#ajax_loading').hide();
-         $('#data_edit_form').show();
-         $('#form_controls').show();
-         $('#data_edit_form_buttons').show();
-         $('#eb_imgbrowser').hide();
-         $(window).scrollTop($('#wysiwyg_editor_wrap').position().top);
-         if (data.content) {
-          CKEDITOR.instances.wysiwyg_editor.setData(data.content);
+          if (data.result == '0') {
+           $('#form_error_msg_text').html("[== $lang->{data_loading_error} =]");
+           $('#form_error_msg').fadeIn(400);
+           $('#form_error_msg').alert();
+           $('#ajax_loading').hide();
+           $('#data_edit_form').show();
+           $('#form_controls').hide();
+           $('#btn_abort').show();
+           $('#wysiwyg_editor_wrap').hide();
+           $('#html_editor_wrap').hide();
+           $('#editor_buttons').hide();
+         } else { // OK
+           edit_mode='ck';
+           $('#editor_buttons').show();
+           $('#wysiwyg_editor_wrap').show();
+           $('#ajax_loading').hide();
+           $('#data_edit_form').show();
+           $('#form_controls').show();
+           $('#data_edit_form_buttons').show();
+           $('#eb_imgbrowser').hide();
+           $(window).scrollTop($('#wysiwyg_editor_wrap').position().top);
+           if (data.content) {
+            CKEDITOR.instances.wysiwyg_editor.setData(data.content);
+           }
          }
-       }        
       },
       error: function() {
         $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
@@ -1160,7 +1051,7 @@ $('#eb_switch_ck').click( function() {
         $('#editor_buttons').hide();
       }
   });
-
+  
 });
 
 // Button "Delete selected" handler
@@ -1214,9 +1105,7 @@ function resetFormState() {
    $('#cg_pagetitle').removeClass('error');
    $('#cg_keywords').removeClass('error');
    $('#cg_description').removeClass('error');
-   $('#cg_description_short').removeClass('error');
    $('#cg_filename').removeClass('error');
-   $('#cg_groupid').removeClass('groupid');
    $('#password_hint').html("[== $lang->{password_hint} =]");
    $('#eb_switch_cm').removeClass('disabled');
    $('#eb_switch_ck').addClass('disabled');
@@ -1226,4 +1115,4 @@ function resetFormState() {
 }
 
 </script>
-<script type="text/javascript">$('#nav_catalog').addClass('active')</script>
+<script type="text/javascript">$('#nav_pages').addClass('active')</script>

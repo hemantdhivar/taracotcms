@@ -69,7 +69,7 @@ get '/' => sub {
    $_cnt++;
   }
   $hash_langs=~s/, //;
-  return template 'settings_index', { lang => $lang, navdata => $navdata, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs, authdata => $taracot::taracot_auth_data }, { layout => 'admin' };
+  return template 'admin_settings_index', { lang => $lang, navdata => $navdata, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs, authdata => $taracot::taracot_auth_data }, { layout => 'admin' };
   
 };
 

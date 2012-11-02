@@ -63,7 +63,7 @@
    </div>
  </div>
  <script type="text/javascript">
-
+$(document).ready(function() {
   function initTree() {
    $('#tree_btns').hide();
    $('#ajax_loading').show();
@@ -293,5 +293,6 @@
   $("#node_url").keypress(function(e){
    if(e.which==13) { $("#node_btn_save").click(); }
   });
+ }); 
  </script>
   <script type="text/javascript">$('#nav_sitemap').addClass('active')</script>

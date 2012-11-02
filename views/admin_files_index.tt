@@ -1,5 +1,5 @@
  <script type="text/javascript" src="/js/jquery.shifty.js"></script>
-  <script type="text/javascript" src="/js/hashtable.js"></script>
+ <script type="text/javascript" src="/js/hashtable.js"></script>
  <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
   <h1>[== $lang->{module_name_long} =]</h1>
  <br />
@@ -30,6 +30,7 @@
    </div>
  </div> 
  <script type="text/javascript">
+ $(document).ready(function() {
   function loadDir() {
    $('#ajax_loading').show();
    $.ajax({
@@ -169,5 +170,6 @@
    $('#files_upload').show();
    uploader.splice(0);
   });
+ }); 
  </script>
  <script type="text/javascript">$('#nav_files').addClass('active')</script>

@@ -11,31 +11,31 @@
 -->
 
 <div id="data_overview">
-	<div class="btn-toolbar">
-		<div class="btn-group">
-			<span id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i>&nbsp;[== $lang->{btn_add} =]</span>
-			<span id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i>&nbsp;[== $lang->{btn_del} =]</span>
-		</div>
-		<div class="btn-group">
-			<span id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');"><i class="icon-ok-circle"></i>&nbsp;[== $lang->{btn_select_all} =]</span>
-			<span id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i>&nbsp;[== $lang->{btn_select_none} =]</span>
-		</div>
-	</div>
-	<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="data_table">
-	<thead>
-	<tr>
-		<th style="width:40px">[== $lang->{id} =]</th>
-		<th style="width:100px">[== $lang->{username} =]</th>
-		<th>[== $lang->{realname} =]</th>
-		<th>[== $lang->{email} =]</th>
+  <div class="btn-toolbar">
+    <div class="btn-group">
+      <span id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i>&nbsp;[== $lang->{btn_add} =]</span>
+      <span id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i>&nbsp;[== $lang->{btn_del} =]</span>
+    </div>
+    <div class="btn-group">
+      <span id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');"><i class="icon-ok-circle"></i>&nbsp;[== $lang->{btn_select_all} =]</span>
+      <span id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i>&nbsp;[== $lang->{btn_select_none} =]</span>
+    </div>
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="data_table">
+  <thead>
+  <tr>
+    <th style="width:40px">[== $lang->{id} =]</th>
+    <th style="width:100px">[== $lang->{username} =]</th>
+    <th>[== $lang->{realname} =]</th>
+    <th>[== $lang->{email} =]</th>
     <th>[== $lang->{phone} =]</th>
-		<th style="width:60px;text-align:center">[== $lang->{status} =]</th>
-		<th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
-	</tr>
-	</thead>
-	<tbody>
-	</tbody>
-	</table>
+    <th style="width:60px;text-align:center">[== $lang->{status} =]</th>
+    <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+  </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  </table>
 </div>
 <!-- data_overview -->
 
@@ -100,8 +100,8 @@
       <label class="radio">
       <input type="radio" name="status_select_status" id="status_select_radio_status_admin" value="2">
       [== $lang->{status2} =] </label>
-  		</div>
-		</div>
+      </div>
+    </div>
   </span>
  </div>
   <div class="modal-footer">
@@ -131,79 +131,79 @@
  Data edit form 
 -->
 <div id="data_edit" style="display:none">
-	<h2 id="h_data_actions">[== $lang->{edit_user} =]</h2>
-	<div id="data_edit_form">
-		<div id="form_notice">
-		</div>
-		<br />
-		<div class="alert alert-block alert-error" id="form_error_msg">
-			<span id="form_error_msg_text"></span>
-		</div>
-		<br />
-		<span class="form-horizontal">
-		  <span id="form_controls">
-    		<div class="control-group" id="cg_username">
-    			<label class="control-label" for="username">[== $lang->{username} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<input type="text" class="input-xlarge" id="username">
-    				<p class="help-block">[== $lang->{username_hint} =]</p>
-    			</div>
-    		</div>
-    		<div class="control-group" id="cg_password">
-    			<label class="control-label" for="password" id="label_password">[== $lang->{password} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<input type="password" class="input-small" id="password">
-    				<input type="password" class="input-small" id="password_repeat">
-    				<p class="help-block" id="password_hint">[== $lang->{password_hint} =]</p>
-    			</div>
-    		</div>
+  <h2 id="h_data_actions">[== $lang->{edit_user} =]</h2>
+  <div id="data_edit_form">
+    <div id="form_notice">
+    </div>
+    <br />
+    <div class="alert alert-block alert-error" id="form_error_msg">
+      <span id="form_error_msg_text"></span>
+    </div>
+    <br />
+    <span class="form-horizontal">
+      <span id="form_controls">
+        <div class="control-group" id="cg_username">
+          <label class="control-label" for="username">[== $lang->{username} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" id="username">
+            <p class="help-block">[== $lang->{username_hint} =]</p>
+          </div>
+        </div>
+        <div class="control-group" id="cg_password">
+          <label class="control-label" for="password" id="label_password">[== $lang->{password} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="controls">
+            <input type="password" class="input-small" id="password">
+            <input type="password" class="input-small" id="password_repeat">
+            <p class="help-block" id="password_hint">[== $lang->{password_hint} =]</p>
+          </div>
+        </div>
         <div class="control-group" id="cg_phone">
           <label class="control-label" for="phone">[== $lang->{phone} =]</label>
           <div class="controls">
             <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium" id="phone"></div>
           </div>
         </div>
-    		<div class="control-group" id="cg_email">
-    			<label class="control-label" for="email">[== $lang->{email} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<input type="text" class="input-xlarge" id="email">
-    			</div>
-    		</div>
-    		<div class="control-group" id="cg_realname">
-    			<label class="control-label" for="realname">[== $lang->{realname} =]</label>
-    			<div class="controls">
-    				<input type="text" class="input-xlarge" id="realname">
-    			</div>
-    		</div>
-    		<div class="control-group">
-    			<label class="control-label">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<label class="radio">
-    				<input type="radio" name="status" id="radio_status_disabled" value="0">
-    				[== $lang->{status0} =] </label>
-    				<label class="radio">
-    				<input type="radio" name="status" id="radio_status_normal" value="1" checked>
-    				[== $lang->{status1} =] </label>
-    				<label class="radio">
-    				<input type="radio" name="status" id="radio_status_admin" value="2">
-    				[== $lang->{status2} =] </label>
-    			</div>
-    		</div>
-  		</span> <!-- form_controls -->
-  	</div>
-  	<!-- data_edit_form -->
-  	<div class="form-actions">
-  		<div id="ajax_loading" style="display:none">
-  			<img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
-  		</div>
-  		<div id="data_edit_form_buttons">
-  			<span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>
-  			<span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
-  		</div>
-  		<span class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</span>
-  		<!-- data_edit_form_buttons -->
-  	</div>
-	</span> <!-- form_horizontal -->                              
+        <div class="control-group" id="cg_email">
+          <label class="control-label" for="email">[== $lang->{email} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" id="email">
+          </div>
+        </div>
+        <div class="control-group" id="cg_realname">
+          <label class="control-label" for="realname">[== $lang->{realname} =]</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" id="realname">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="controls">
+            <label class="radio">
+            <input type="radio" name="status" id="radio_status_disabled" value="0">
+            [== $lang->{status0} =] </label>
+            <label class="radio">
+            <input type="radio" name="status" id="radio_status_normal" value="1" checked>
+            [== $lang->{status1} =] </label>
+            <label class="radio">
+            <input type="radio" name="status" id="radio_status_admin" value="2">
+            [== $lang->{status2} =] </label>
+          </div>
+        </div>
+      </span> <!-- form_controls -->
+    </div>
+    <!-- data_edit_form -->
+    <div class="form-actions">
+      <div id="ajax_loading" style="display:none">
+        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
+      </div>
+      <div id="data_edit_form_buttons">
+        <span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>
+        <span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
+      </div>
+      <span class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</span>
+      <!-- data_edit_form_buttons -->
+    </div>
+  </span> <!-- form_horizontal -->                              
 </div>
 <!-- data_edit -->
 <script type="text/javascript">
@@ -246,14 +246,14 @@ $(document).ready(function() {
     "oLanguage": {
       "oPaginate": {
         "sPrevious":  "[== $lang->{sPrevious} =]",                                
-		    "sNext":  "[== $lang->{sNext} =]"
+        "sNext":  "[== $lang->{sNext} =]"
       },
       "sLengthMenu": "[== $lang->{sLengthMenu} =]",
-		  "sZeroRecords": "[== $lang->{sZeroRecords} =]",
-		  "sInfo": "[== $lang->{sInfo} =]",
-		  "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
-		  "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
-		  "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
+      "sZeroRecords": "[== $lang->{sZeroRecords} =]",
+      "sInfo": "[== $lang->{sInfo} =]",
+      "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
+      "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
+      "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
      }, 
     "aoColumnDefs": [
      { "bSortable": false, "aTargets": [ 5 ] },

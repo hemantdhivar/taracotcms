@@ -611,6 +611,60 @@ post '/account/email/process' => sub {
   return $json_xs->encode(\%res);
 };
 
+post '/account/password/process' => sub {
+  content_type 'application/json';
+  my $auth = &taracot::_auth();
+  my $_current_lang=_load_lang();
+  my %res;
+  $res{status}=1; 
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new();
+  if (!$auth) { 
+    $res{status}=0; 
+    return $json_xs->encode(\%res); 
+  }
+  # first wave validations
+  my $password=param('pwd_password') || '';
+  my $password_old=param('pwd_old_password') || '';
+  if ($password_old !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_single};
+    push @fields, 'old_password';  
+  }  
+  if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_multi};
+    push @fields, 'password';  
+  }
+  if ($password eq $password_old) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_equals};
+    push @fields, 'password';  
+    push @fields, 'old_password';  
+  }
+  if ($res{status} eq 0) {
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  # second wave validations
+  $password_old = md5_hex(config->{salt}.$password_old);
+  my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id}, password => $password_old });
+  if (!$db_data_1->{id}) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_bad};
+    push @fields, 'old_password';  
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  # success  
+  $password = md5_hex(config->{salt}.$password);
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { password => $password, lastchanged => time });   
+  return $json_xs->encode(\%res);
+};
+
 get '/logout' => sub {
   if (!&taracot::_auth()) { redirect '/user/authorize' } 
   session user => ''; 

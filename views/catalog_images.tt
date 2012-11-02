@@ -67,7 +67,7 @@
    $.ajax({
         type: 'GET',
         url: '/admin/catalog/data/images/dirdata',
-        data: { dir: [== $dir =], rnd_num: new Date().getTime() },
+        data: { dir: '[== $dir =]', rnd_num: new Date().getTime() },
         dataType: "json",
         success: function(data) {
           idata.clear();

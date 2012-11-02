@@ -66,6 +66,7 @@
 </div>
 
 <script type="text/javascript">
+$(document).ready(function() {
  var idata = new HashTable({});
  var current_dir='';
  var up_dir='';
@@ -566,4 +567,5 @@
   $('#img_browser').show();
   $('#input_dialog').hide(200);
  });
+}); 
 </script>

@@ -290,7 +290,7 @@
                             }
                             $("#avatar_profile_img").attr("src","/files/avatars/[== $auth_data->{username} =].jpg?"+Math.random());
                             $("#avatar_overview_img").attr("src","/files/avatars/[== $auth_data->{username} =].jpg?"+Math.random());
-                            $('#form_profile_success').show();
+                            $('#form_profile_success').show().delay(2000).fadeOut(400);
                         } else {
                             if (data.errors) {
                                 for (var i = 0; i < data.errors.length; i++) {
@@ -357,7 +357,7 @@
                       success: function(data) {
                         if (data.status == 1) {
                             $('#account_tabs').hide();
-                            $('#account_tabs_content').html("[== $lang->{user_account_profile_saved} =]");
+                            $('#account_tabs_content').html("[== $lang->{user_account_email_saved} =]");
                         } else {
                             if (data.errors) {
                                 for (var i = 0; i < data.errors.length; i++) {
@@ -387,6 +387,78 @@
                       }
                 }); 
             }
-        } ); // btn_submit_profile click
+        } ); // btn_submit_email click
+        $('#btn_submit_password').bind('click', function() {
+            $('#cg_pwd_password').removeClass('error');
+            $('#cg_pwd_old_password').removeClass('error');
+            $('#form_password_errors').hide();
+            $('#form_password_errors').html('');
+            var form_errors=false;
+            if (!$('#pwd_old_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/)) {
+                $('#cg_pwd_old_password').addClass('error');
+                $('#form_password_errors').append("&nbsp;&#9632;&nbsp;&nbsp;[== $lang->{user_register_error_password_single} =]<br/>");
+                form_errors=true;   
+            }
+            if ($('#pwd_password').val().length > 0 && ($('#pwd_password').val() == $('#pwd_old_password').val())) {
+                $('#cg_pwd_new_password').addClass('error');
+                $('#form_password_errors').append("&nbsp;&#9632;&nbsp;&nbsp;[== $lang->{user_register_error_password_equals} =]<br/>");
+                form_errors=true;
+            }
+            if (!$('#pwd_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) || $('#pwd_password').val() != $('#pwd_password_repeat').val()) {
+                $('#cg_pwd_password').addClass('error');
+                $('#form_password_errors').append("&nbsp;&#9632;&nbsp;&nbsp;[== $lang->{user_register_error_password_multi} =]<br/>");
+                form_errors=true;
+            }            
+            if (form_errors) {
+                $('#form_password_errors').fadeIn(400);
+                $('#form_password_errors').alert();
+                $(window).scrollTop($('#form_password_errors').position().top);
+            } else {
+                $('#tab_password_form').hide();
+                $('#tab_password_ajax').show();
+                $.ajax({
+                      type: 'POST',
+                      url: '/user/account/password/process',
+                      data: { pwd_password: $('#pwd_password').val(), pwd_old_password: $('#pwd_old_password').val() },
+                      dataType: "json",
+                      success: function(data) {
+                        if (data.status == 1) {
+                            $('#tab_password_form').show();
+                            $('#tab_password_ajax').hide();
+                            $('#pwd_password').val('');
+                            $('#pwd_password_repeat').val('');
+                            $('#pwd_old_password').val('');
+                            $('#pwd_password').focus();                            
+                            $('#form_password_success').show().delay(2000).fadeOut(400);                            
+                        } else {
+                            if (data.errors) {
+                                for (var i = 0; i < data.errors.length; i++) {
+                                    $('#form_password_errors').append("&nbsp;&#9632;&nbsp;&nbsp;"+data.errors[i]+"<br/>");
+                                }    
+                            }                          
+                            $('#form_password_errors').fadeIn(400);
+                            $(window).scrollTop($('#form_password_errors').position().top);
+                            $('#tab_password_form').show();
+                            $('#tab_password_ajax').hide();
+                            if (data.fields) {
+                                for (var i = 0; i < data.fields.length; i++) {                                
+                                    $('#cg_pwd_'+data.fields[i]).addClass('error');
+                                    if (i == 1) {
+                                        $('#pwd_'+data.fields[i]).focus();
+                                    }
+                                }    
+                            }                  
+                        }
+                      },
+                      error: function() {
+                        $('#form_password_errors').append("&nbsp;&#9632;&nbsp;&nbsp;[== $lang->{error_ajax} =]<br/>");
+                        $('#form_password_errors').fadeIn(400);
+                        $(window).scrollTop($('#form_password_errors').position().top);
+                        $('#tab_password_form').show();
+                        $('#tab_password_ajax').hide();                                                        
+                      }
+                }); 
+            }
+        } ); // btn_submit_password click
     }); // document.ready
 </script>

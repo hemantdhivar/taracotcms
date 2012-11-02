@@ -43,7 +43,7 @@ get '/' => sub {
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
   _load_lang();
   my $navdata=&taracot::admin::_navdata();
-  return template 'users_index', { lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data }, { layout => 'admin' };
+  return template 'admin_users_index', { lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data }, { layout => 'admin' };
 };
 
 get '/data/list' => sub {
