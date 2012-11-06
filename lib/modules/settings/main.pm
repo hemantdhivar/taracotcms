@@ -43,7 +43,8 @@ sub _load_lang {
 prefix $defroute;
 
 get '/' => sub {
-  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
   _load_lang();  
   my $navdata=&taracot::admin::_navdata();
   my $layouts=config->{layouts_available};
@@ -69,7 +70,7 @@ get '/' => sub {
    $_cnt++;
   }
   $hash_langs=~s/, //;
-  return template 'admin_settings_index', { lang => $lang, navdata => $navdata, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs, authdata => $taracot::taracot_auth_data }, { layout => 'admin' };
+  return template 'admin_settings_index', { lang => $lang, navdata => $navdata, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs, authdata => $auth }, { layout => 'admin' };
   
 };
 

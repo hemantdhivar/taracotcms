@@ -44,7 +44,8 @@ sub _load_lang {
 prefix $defroute;
 
 get '/' => sub {
-  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
   _load_lang();
   my $navdata=&taracot::admin::_navdata();
   my $langs=config->{lang_available};
@@ -59,7 +60,7 @@ get '/' => sub {
    $list_langs.=qq~<option value="$item">$a_langs_long[$_cnt]</option>~;
    $_cnt++;
   } 
-  return template 'admin_sitemap_index', { lang => $lang, navdata => $navdata, list_langs => $list_langs, authdata => $taracot::taracot_auth_data }, { layout => 'admin' }; 
+  return template 'admin_sitemap_index', { lang => $lang, navdata => $navdata, list_langs => $list_langs, authdata => $auth }, { layout => 'admin' }; 
 };
 
 get '/data/tree' => sub {

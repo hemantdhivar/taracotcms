@@ -11,6 +11,7 @@
   <meta name="description" content="[== $page_data->{site_description} =]"> 
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <link rel="stylesheet" href="/taracot/main.css">
+  <link rel="shortcut icon" href="/favicon.ico">
   <script src="/js/jquery.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>  
   <!-- IE Fix for HTML5 Tags -->

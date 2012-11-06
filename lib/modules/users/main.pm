@@ -40,10 +40,11 @@ sub _load_lang {
 # Routes
 
 get '/' => sub {
-  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
   _load_lang();
   my $navdata=&taracot::admin::_navdata();
-  return template 'admin_users_index', { lang => $lang, navdata => $navdata, authdata => $taracot::taracot_auth_data }, { layout => 'admin' };
+  return template 'admin_users_index', { lang => $lang, navdata => $navdata, authdata => $auth }, { layout => 'admin' };
 };
 
 get '/data/list' => sub {

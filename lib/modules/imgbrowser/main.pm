@@ -87,9 +87,10 @@ sub getDir {
 prefix $defroute;
 
 get '/' => sub {             
-  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
   my $_current_lang=_load_lang();
-  return template 'imgbrowser_index', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url} }, { layout => 'browser_'.$_current_lang };
+  return template 'imgbrowser_index', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url} }, { layout => 'browser' };
 };
 
 get '/dirdata' => sub {

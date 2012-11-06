@@ -15,13 +15,13 @@
  <div id="files_upload" style="display:none">
    [== $lang->{file_upload_hint} =]<br /><br />
    <div id="upload_container">
-  	<div id="filelist" class="well"></div>
+    <div id="filelist" class="well"></div>
     <div id="uploading" style="display:none"><img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;[== $lang->{file_uploading} =]</div>
     <div class="btn-toolbar">
       <div class="btn-group" id="btn_group_upload">
-      	<span class="btn" id="btn_upload_select">[== $lang->{upload_add} =]</span>
-      	<span class="btn btn-success disabled" id="btn_upload_start">[== $lang->{upload_start} =]</span>
-      	<span class="btn btn-danger disabled" id="btn_upload_clear">[== $lang->{upload_clear} =]</span>
+        <span class="btn" id="btn_upload_select">[== $lang->{upload_add} =]</span>
+        <span class="btn btn-success disabled" id="btn_upload_start">[== $lang->{upload_start} =]</span>
+        <span class="btn btn-danger disabled" id="btn_upload_clear">[== $lang->{upload_clear} =]</span>
       </div>
       <div class="btn-group">
         <span class="btn" id="btn_upload_back">[== $lang->{upload_back} =]</span>
@@ -30,8 +30,7 @@
    </div>
  </div> 
  <script type="text/javascript">
- $(document).ready(function() {
-  function loadDir() {
+ function loadDir() {
    $('#ajax_loading').show();
    $.ajax({
         type: 'POST',
@@ -57,7 +56,6 @@
         }
    });
   }
-  loadDir();
   function deleteFile(file_name) {
    if (!confirm("[== $lang->{confirm_delete} =]:\n\n"+file_name)) {
     return;
@@ -82,16 +80,18 @@
    });
 
   }
+ $(document).ready(function() {  
+  loadDir();  
   var uploader;
   uploader = new plupload.Uploader({
-  		runtimes : 'html5,flash,silverlight,html4',
-  		browse_button : 'btn_upload_select',
-  		container : 'upload_container',
-  		max_file_size : '10mb',
-  		drop_element : "upload_container", 
-  		url : '/admin/files/storage/upload',
-  		flash_swf_url : '/js/plupload/plupload.flash.swf',
-  		silverlight_xap_url : '/js/plupload/plupload.silverlight.xap',
+      runtimes : 'html5,flash,silverlight,html4',
+      browse_button : 'btn_upload_select',
+      container : 'upload_container',
+      max_file_size : '10mb',
+      drop_element : "upload_container", 
+      url : '/admin/files/storage/upload',
+      flash_swf_url : '/js/plupload/plupload.flash.swf',
+      silverlight_xap_url : '/js/plupload/plupload.silverlight.xap',
   });
   uploader.init();
   uploader.bind('FilesAdded', function(up, files) {

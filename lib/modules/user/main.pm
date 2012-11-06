@@ -136,7 +136,7 @@ post '/register/process' => sub {
   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, verification => 'act_'.$verification, regdate => time, lastchanged => time });
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/'.$username.'/'.$verification;
-  my $body = template 'user_mail_register_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
+  my $body = template 'user_mail_register_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
   email {
       to      => $email,
       subject => $lang->{user_register_email_subj}.' '.$db_data->{site_title},
@@ -340,7 +340,7 @@ post '/password/process' => sub {
   database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => 'pwd_'.$verification, lastchanged => time });
   $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/password/reset/'.$username.'/'.$verification;
-  my $body = template 'user_mail_password_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
+  my $body = template 'user_mail_password_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
   email {
       to      => $email,
       subject => $lang->{user_register_email_subj}.' '.$db_data->{site_title},
@@ -586,7 +586,7 @@ post '/account/email/process' => sub {
   database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'act_'.$verification, lastchanged => time });   
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/'.$auth->{username}.'/'.$verification;
-  my $body = template 'user_mail_emailchange_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => config->{site_logo_url} }, { layout => undef };
+  my $body = template 'user_mail_emailchange_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
   email {
       to      => $email,
       subject => $lang->{user_register_emailchange_subj}.' '.$db_data->{site_title},

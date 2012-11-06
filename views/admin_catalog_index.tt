@@ -324,10 +324,7 @@
   	<!-- data_edit_form -->
 
     <div id="editor_buttons" class="controls" style="padding-bottom:5px">
-         <span id="eb_switch_ck" class="btn btn-mini disabled">[== $lang->{wysiwyg} =]</span>
-         <span id="eb_switch_cm" class="btn btn-mini">[== $lang->{html} =]</span>
-         <span id="eb_imgbrowser" class="btn btn-mini btn-success">[== $lang->{imgbrowser} =]</span>
-         <span id="eb_images" class="btn btn-mini btn-success">[== $lang->{catalog_images} =]</span>
+         <span id="eb_switch_ck" class="btn btn-mini disabled">[== $lang->{wysiwyg} =]</span>&nbsp;<span id="eb_switch_cm" class="btn btn-mini">[== $lang->{html} =]</span>&nbsp;<span id="eb_imgbrowser" class="btn btn-mini btn-success">[== $lang->{imgbrowser} =]</span>&nbsp;<span id="eb_images" class="btn btn-mini btn-success">[== $lang->{catalog_images} =]</span>
     </div>
     <div id="wysiwyg_editor_wrap"><div id="wysiwyg_editor"></div></div>
     <div id="html_editor_wrap" class="well" style="display:none;height:300px"><div id="html_editor"></div></div>
@@ -337,9 +334,7 @@
   			<img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
   		</div>
   		<div id="data_edit_form_buttons">
-  			<span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>
-        <span class="btn" id="btn_edit_save_upload">[== $lang->{edit_save_upload} =]</span>
-  			<span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
+  			<span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>&nbsp;<span class="btn" id="btn_edit_save_upload">[== $lang->{edit_save_upload} =]</span>&nbsp;<span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
   		</div>
   		<span class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</span>
   		<!-- data_edit_form_buttons -->

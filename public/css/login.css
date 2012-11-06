@@ -1,5 +1,13 @@
-body {
+body,html {
  height:100%;
+ background-color: #7d7e7d; /* Old browsers */
+ background: -moz-linear-gradient(top,  #7d7e7d 0%, #0e0e0e 100%); /* FF3.6+ */
+ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#7d7e7d), color-stop(100%,#0e0e0e)); /* Chrome,Safari4+ */
+ background: -webkit-linear-gradient(top,  #7d7e7d 0%,#0e0e0e 100%); /* Chrome10+,Safari5.1+ */
+ background: -o-linear-gradient(top,  #7d7e7d 0%,#0e0e0e 100%); /* Opera 11.10+ */
+ background: -ms-linear-gradient(top,  #7d7e7d 0%,#0e0e0e 100%); /* IE10+ */
+ background: linear-gradient(to bottom,  #7d7e7d 0%,#0e0e0e 100%); /* W3C */
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=0 ); /* IE6-9 */
 }          
 #taracot_auth { 
  position: absolute;
@@ -8,14 +16,59 @@ body {
  width: 300px;
  margin-left: -155px;
  margin-top: -105px;
- height: 155px;
+ height: 165px;
  background: #e5e5e5; 
  text-align: left;
  padding: 10px;
+ -moz-box-shadow: 0px 0px 8px #000;
+ -webkit-box-shadow: 0px 0px 8px #000;
+ box-shadow: 0px 0px 8px #000;
+ border: 1px solid #fff;
+ z-index: 200;
+ border-radius: 6px;
+}
+#taracot_old_browser_warning { 
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ width: 500px;
+ margin-left: -300px;
+ margin-top: -105px;
+ height: 165px;
+ background: #CCCCCC; 
+ text-align: left;
+ padding: 10px;
+ z-index: 200;
+ border: 4px solid #660000;
+}
+#taracot_error { 
+ width: 300px;
+ height: 60px;
+ margin-top:44px; 
+ position: absolute;
+ border: 1px solid #fff;
  -moz-box-shadow: 0px 0px 3px #999;
  -webkit-box-shadow: 0px 0px 3px #999;
  box-shadow: 0px 0px 3px #999;
- border: 1px solid #fff;
+ border-radius: 5px;
+ z-index:90;
+ margin-left:-5px;
+ padding-right: 10px;
+ background: #d40d12; /* Old browsers */
+ background: -moz-linear-gradient(top,  #d40d12 0%, #94090d 89%, #5c0002 100%); /* FF3.6+ */
+ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d40d12), color-stop(89%,#94090d), color-stop(100%,#5c0002)); /* Chrome,Safari4+ */
+ background: -webkit-linear-gradient(top,  #d40d12 0%,#94090d 89%,#5c0002 100%); /* Chrome10+,Safari5.1+ */
+ background: -o-linear-gradient(top,  #d40d12 0%,#94090d 89%,#5c0002 100%); /* Opera 11.10+ */
+ background: -ms-linear-gradient(top,  #d40d12 0%,#94090d 89%,#5c0002 100%); /* IE10+ */
+ background: linear-gradient(to bottom,  #d40d12 0%,#94090d 89%,#5c0002 100%); /* W3C */
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d40d12', endColorstr='#5c0002',GradientType=0 ); /* IE6-9 */
+}
+#taracot_error_msg {
+ padding:10px;	
+ padding-top: 20px;
+ text-align: center; 
+ color: #fff;
+ font-weight: bold;
 }
 #taracot_auth_img {
  position: relative;
@@ -24,4 +77,43 @@ body {
 }
 label {
  text-align: left;
+}
+#auth_username {
+ width: 287px;
+}
+#auth_password {
+ width: 287px;
+}
+#taracot_logo {
+ margin-top: -60px;
+ float: right;
+ z-index: 100;
+}
+#taracot_about {
+ color:#888;
+ float:bottom;
+ font-size:70%;
+ margin-top: 20px;
+ text-align: right;
+}
+#taracot_about a {
+ color: #888;
+ text-decoration: none;
+ border-bottom: 1px solid #aaa;
+}
+#taracot_about a:hover {
+ color: #FF8A00;
+ text-decoration: none;
+ border-bottom: 1px solid #FF8A00;
+}
+#taracot_auth_buttons {
+ text-align: right;
+ width:100%;
+}
+#continue_anyway {
+ text-align: right;
+ width: 100%;
+ position: absolute;
+ left:0px;
+ top:148px;
 }

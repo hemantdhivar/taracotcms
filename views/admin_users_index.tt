@@ -152,8 +152,7 @@
         <div class="control-group" id="cg_password">
           <label class="control-label" for="password" id="label_password">[== $lang->{password} =]&nbsp;<span class="required_field">*</span></label>
           <div class="controls">
-            <input type="password" class="input-small" id="password">
-            <input type="password" class="input-small" id="password_repeat">
+            <input type="password" class="input-small" id="password">&nbsp;<input type="password" class="input-small" id="password_repeat">
             <p class="help-block" id="password_hint">[== $lang->{password_hint} =]</p>
           </div>
         </div>
@@ -197,8 +196,7 @@
         <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
       </div>
       <div id="data_edit_form_buttons">
-        <span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>
-        <span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
+        <span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>&nbsp;<span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
       </div>
       <span class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</span>
       <!-- data_edit_form_buttons -->

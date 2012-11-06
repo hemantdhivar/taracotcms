@@ -44,8 +44,7 @@
         </div>
         <div class="control-group" style="padding-top:6px text-align:right; border-top:1px solid #ccc">
          <div class="controls" style="padding-top:15px">
-          <input type="button" class="btn" id="node_btn_save" value="[== $lang->{node_save} =]" />
-          <input type="button" class="btn" id="node_btn_cancel" value="[== $lang->{node_cancel} =]" />
+          <input type="button" class="btn" id="node_btn_save" value="[== $lang->{node_save} =]" />&nbsp;<input type="button" class="btn" id="node_btn_cancel" value="[== $lang->{node_cancel} =]" />
          </div> 
         </div>
       </span>
@@ -56,9 +55,7 @@
   	  <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
  		</div>
  		<div id="tree_btns">
-      <input type="button" id="tree_btn_serialize" class="btn" value="[== $lang->{tree_save} =]" />
-      <input type="button" id="tree_btn_cancel" class="btn" value="[== $lang->{tree_cancel} =]" />
-      <input type="button" id="tree_btn_reset" class="btn btn-danger" value="[== $lang->{tree_reset} =]" />
+      <input type="button" id="tree_btn_serialize" class="btn" value="[== $lang->{tree_save} =]" />&nbsp;<input type="button" id="tree_btn_cancel" class="btn" value="[== $lang->{tree_cancel} =]" />&nbsp;<input type="button" id="tree_btn_reset" class="btn btn-danger" value="[== $lang->{tree_reset} =]" />
     </div>  
    </div>
  </div>

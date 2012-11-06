@@ -42,7 +42,7 @@ user_authorize_hint: Please enter your username (or e-mail) and password to log 
 user_auth_submit: Login
 user_auth_register: Register new account
 user_auth_forgot_password: Forgot your password? Click here
-user_auth_success: You are now logged in.
+user_auth_success: You are now logged in. <a href=/user/account>Click here</a> to see your account page.
 user_auth_invalid: Invalid username (e-mail) or password
 user_auth_already_logged_in: This (or another) user is already logged in
 user_auth_user_disabled: User is currently disabled on this website
