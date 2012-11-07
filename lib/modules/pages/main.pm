@@ -10,6 +10,7 @@ use Text::Unidecode;
 
 my $defroute = '/admin/pages';
 my @columns = ('id','pagetitle','filename','lang','layout','status');
+my @columns_mobile = ('id','pagetitle','lang','status');
 my @columns_ft = ('pagetitle','filename');
 
 # Module core settings 
@@ -192,7 +193,12 @@ get '/data/list' => sub {
   if ($sSortCol) {
    $sortorder=" ORDER BY $sSortCol $sSortDir";
   }
-  my $columns=join(',',@columns);
+  my $columns;
+  if (param('mobile')) {
+    $columns=join(',',@columns_mobile);
+  } else {
+    $columns=join(',',@columns);
+  }
   $columns=~s/,$//;
   $sth = database->prepare(
    'SELECT '.$columns.' FROM '.config->{db_table_prefix}.'_pages WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength

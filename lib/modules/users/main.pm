@@ -8,6 +8,7 @@ use Digest::MD5 qw(md5_hex);
 
 my $defroute = '/admin/users';
 my @columns = ('id','username','realname','email','phone','status');
+my @columns_mobile = ('id','username','status');
 my @columns_ft = ('username','realname','email','phone');
 
 # Module core settings 
@@ -106,7 +107,12 @@ get '/data/list' => sub {
   if ($sSortCol) {
    $sortorder=" ORDER BY $sSortCol $sSortDir";
   }
-  my $columns=join(',',@columns);
+  my $columns;
+  if (param('mobile')) {
+    $columns=join(',',@columns_mobile);
+  } else {
+    $columns=join(',',@columns);
+  }
   $columns=~s/,$//;
   $sth = database->prepare(
    'SELECT '.$columns.' FROM '.config->{db_table_prefix}.'_users WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength

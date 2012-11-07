@@ -43,15 +43,15 @@
          <a class="brand" href="#">[== $lang->{admin_taracot} =]</a>
          <div class="nav-collapse collapse">
           <ul class="nav">
-            [== $navdata =]
-          </ul>
-          <ul class="nav pull-right">
+            [== $navdata =]<li class="visible-tablet visible-phone"><a href="/admin/logout">[== $lang->{admin_logout} =]</a></li>
+          </ul>          
+          <ul class="nav pull-right visible-desktop">
             <li class="dropdown" id="user_actions">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#user_actions">[== $lang->{admin_loggedas} =]: [== $authdata->{username} =] <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/admin/logout">[== $lang->{admin_logout} =]</a></li>
               </ul>
-            </li>
+            </li>            
           </ul>
         </div>
       </div>

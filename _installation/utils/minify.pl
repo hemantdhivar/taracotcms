@@ -20,7 +20,7 @@ foreach my $file (@files) {
 		# close(DATA);	
 	}
 	# workaround 1
-	$js=~s/HashTable\(\{\[== \$hash_langs =\]\}\);/HashTable({re: 'place'});/gm;
+	#$js=~s/HashTable\(\{\[== \$hash_langs =\]\}\);/HashTable({re: 'place'});/gm;
 	open(DATA, ">.temp");
 	binmode(DATA);
 	print DATA $js;
@@ -35,7 +35,7 @@ foreach my $file (@files) {
 	binmode(DATA);
 	my $ugly = join('', <DATA>);
 	# workaround 1
-	$ugly=~s/HashTable\(\{re\: \'place\'\}\);/HashTable({[== $hash_langs =]});/gm;
+	#$ugly=~s/HashTable\(\{re\: \'place\'\}\);/HashTable({[== $hash_langs =]});/gm;
 	close(DATA);
 	$tt=~s/\n//gm;
 	$tt=~s/\s+/ /g;

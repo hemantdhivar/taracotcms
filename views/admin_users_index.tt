@@ -9,33 +9,45 @@
 <!-- 
  Data table 
 -->
-
+<div class="visible-phone visible-tablet" id="mobile_mode"></div>  
 <div id="data_overview">
   <div class="btn-toolbar">
     <div class="btn-group">
-      <span id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i>&nbsp;[== $lang->{btn_add} =]</span>
-      <span id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i>&nbsp;[== $lang->{btn_del} =]</span>
+      <span id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_add} =]</span></span>
+      <span id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_del} =]</span></span>
     </div>
     <div class="btn-group">
-      <span id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');"><i class="icon-ok-circle"></i>&nbsp;[== $lang->{btn_select_all} =]</span>
-      <span id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i>&nbsp;[== $lang->{btn_select_none} =]</span>
+      <span id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');$('#data_table_mobile').checkAll('table_cbx');"><i class="icon-ok-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_all} =]</span></span>
+      <span id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');$('#data_table_mobile').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_none} =]</span></span>
     </div>
-  </div>
-  <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="data_table">
-  <thead>
-  <tr>
-    <th style="width:40px">[== $lang->{id} =]</th>
-    <th style="width:100px">[== $lang->{username} =]</th>
-    <th>[== $lang->{realname} =]</th>
-    <th>[== $lang->{email} =]</th>
-    <th>[== $lang->{phone} =]</th>
-    <th style="width:60px;text-align:center">[== $lang->{status} =]</th>
-    <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
-  </tr>
-  </thead>
-  <tbody>
-  </tbody>
-  </table>
+  </div>  
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" style="display:none" id="data_table">
+    <thead>
+      <tr>
+        <th style="width:40px">[== $lang->{id} =]</th>
+        <th style="width:100px">[== $lang->{username} =]</th>
+        <th>[== $lang->{realname} =]</th>
+        <th>[== $lang->{email} =]</th>
+        <th>[== $lang->{phone} =]</th>
+        <th style="width:60px;text-align:center">[== $lang->{status} =]</th>
+        <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+      </tr>
+      </thead>
+      <tbody>
+      </tbody>
+  </table>  
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" style="display:none" id="data_table_mobile">
+    <thead>
+      <tr>
+        <th style="width:40px">[== $lang->{id} =]</th>
+        <th>[== $lang->{username} =]</th>    
+        <th style="width:60px;text-align:center">[== $lang->{status} =]</th>
+        <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>  
 </div>
 <!-- data_overview -->
 
@@ -230,78 +242,139 @@ jQuery.fn.uncheckAll = function(name){
 
 $(document).ready(function() {
   $().dropdown();
+  var mobile_mode = $('#mobile_mode').is(":visible");
   var row_id=0;
   // Init data table
-  dtable=$('#data_table').dataTable( {
-    "sDom": "frtip",
-    "bLengthChange": false,
-    "bServerSide": true,
-    "bProcessing": true,
-    "sPaginationType": "bootstrap",
-    "iDisplayLength": 10,
-    "bAutoWidth": true,
-    "sAjaxSource": "/admin/users/data/list",
-    "oLanguage": {
-      "oPaginate": {
-        "sPrevious":  "[== $lang->{sPrevious} =]",                                
-        "sNext":  "[== $lang->{sNext} =]"
-      },
-      "sLengthMenu": "[== $lang->{sLengthMenu} =]",
-      "sZeroRecords": "[== $lang->{sZeroRecords} =]",
-      "sInfo": "[== $lang->{sInfo} =]",
-      "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
-      "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
-      "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
-     }, 
-    "aoColumnDefs": [
-     { "bSortable": false, "aTargets": [ 5 ] },
-     { "fnRender": function ( oObj, sVal ) {
-         return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+  if (mobile_mode) {
+    $('#data_table_mobile').show();
+    dtable=$('#data_table_mobile').dataTable( {
+      "sDom": "rtip",
+      "bLengthChange": true,
+      "bServerSide": true,
+      "bProcessing": true,
+      "sPaginationType": "bootstrap",
+      "iDisplayLength": 10,
+      "bAutoWidth": false,
+      "sAjaxSource": "/admin/users/data/list?mobile=true",
+      "oLanguage": {
+        "oPaginate": {
+          "sPrevious":  "[== $lang->{sPrevious} =]",                                
+          "sNext":  "[== $lang->{sNext} =]"
+        },
+        "sLengthMenu": "[== $lang->{sLengthMenu} =]",
+        "sZeroRecords": "[== $lang->{sZeroRecords} =]",
+        "sInfo": "[== $lang->{sInfo} =]",
+        "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
+        "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
+        "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
+       }, 
+      "aoColumnDefs": [
+       { "bSortable": false, "aTargets": [ 3 ] },
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div style="text-align:center;width:100%"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+         },
+         "aTargets": [ 3 ]
        },
-       "aTargets": [ 6 ]
-     },
-     { "fnRender": function ( oObj, sVal ) {
-         var pic='user.png';
-         if (sVal == 0) { pic='user_disabled.png'; }
-         if (sVal == 2) { pic='user_king.png'; }
-         return '<div style="text-align:center;cursor:pointer" class="editable_select" onclick="selectStatus('+row_id+')" id="status_'+row_id+'"><span style="display:none" id="statusval_'+row_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" /></div>';         
+       { "fnRender": function ( oObj, sVal ) {
+           var pic='user.png';
+           if (sVal == 0) { pic='user_disabled.png'; }
+           if (sVal == 2) { pic='user_king.png'; }
+           return '<div style="text-align:center;cursor:pointer" class="editable_select" onclick="selectStatus('+row_id+')" id="status_'+row_id+'"><span style="display:none" id="statusval_'+row_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" /></div>';         
+         },
+         "aTargets": [ 2 ]
        },
-       "aTargets": [ 5 ]
-     },
-     { "fnRender": function ( oObj, sVal ) {
-         row_id=sVal;
-         return '<input type="checkbox" style="float:left" name="cbx_'+sVal+'" id="cbx_'+sVal+'">&nbsp;'+sVal;
+       { "fnRender": function ( oObj, sVal ) {
+           row_id=sVal;
+           return '<div style="width:100%;text-align:center"><input type="checkbox" name="cbx_'+sVal+'" id="cbx_'+sVal+'"></div>';
+         },
+         "aTargets": [ 0 ]
        },
-       "aTargets": [ 0 ]
-     },
-     { "fnRender": function ( oObj, sVal ) {
-         return '<div id="username_'+row_id+'" class="editable_text">'+sVal+'</div';
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div id="username_'+row_id+'">'+sVal+'</div';
+         },
+         "aTargets": [ 1 ]
+       }
+      ],
+      "fnDrawCallback": function() {
+        $('.editable_text').editable( submitEdit, {
+           placeholder : '–',
+           tooltip     : ''
+        });
+      }
+    }); // dtable mobile
+  } else {
+    $('#data_table').show();
+    dtable=$('#data_table').dataTable( {
+      "sDom": "frtip",
+      "bLengthChange": false,
+      "bServerSide": true,
+      "bProcessing": true,
+      "sPaginationType": "bootstrap",
+      "iDisplayLength": 10,
+      "bAutoWidth": true,
+      "sAjaxSource": "/admin/users/data/list",
+      "oLanguage": {
+        "oPaginate": {
+          "sPrevious":  "[== $lang->{sPrevious} =]",                                
+          "sNext":  "[== $lang->{sNext} =]"
+        },
+        "sLengthMenu": "[== $lang->{sLengthMenu} =]",
+        "sZeroRecords": "[== $lang->{sZeroRecords} =]",
+        "sInfo": "[== $lang->{sInfo} =]",
+        "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
+        "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
+        "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
+       }, 
+      "aoColumnDefs": [
+       { "bSortable": false, "aTargets": [ 5 ] },
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+         },
+         "aTargets": [ 6 ]
        },
-       "aTargets": [ 1 ]
-     },
-     { "fnRender": function ( oObj, sVal ) {
-         return '<div id="realname_'+row_id+'" class="editable_text">'+sVal+'</div';
+       { "fnRender": function ( oObj, sVal ) {
+           var pic='user.png';
+           if (sVal == 0) { pic='user_disabled.png'; }
+           if (sVal == 2) { pic='user_king.png'; }
+           return '<div style="text-align:center;cursor:pointer" class="editable_select" onclick="selectStatus('+row_id+')" id="status_'+row_id+'"><span style="display:none" id="statusval_'+row_id+'">'+sVal+'</span><img src="/images/'+pic+'" width="16" height="16" alt="" /></div>';         
+         },
+         "aTargets": [ 5 ]
        },
-       "aTargets": [ 2 ]
-     },
-     { "fnRender": function ( oObj, sVal ) {
-         return '<div id="email_'+row_id+'" class="editable_text">'+sVal+'</div';
+       { "fnRender": function ( oObj, sVal ) {
+           row_id=sVal;
+           return '<input type="checkbox" style="float:left" name="cbx_'+sVal+'" id="cbx_'+sVal+'">&nbsp;'+sVal;
+         },
+         "aTargets": [ 0 ]
        },
-       "aTargets": [ 3 ]
-     },
-     { "fnRender": function ( oObj, sVal ) {
-         return '<div id="phone_'+row_id+'" class="editable_text">'+sVal+'</div';
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div id="username_'+row_id+'" class="editable_text">'+sVal+'</div';
+         },
+         "aTargets": [ 1 ]
        },
-       "aTargets": [ 4 ]
-     }
-    ],
-    "fnDrawCallback": function() {
-      $('.editable_text').editable( submitEdit, {
-         placeholder : '–',
-         tooltip     : ''
-      });
-    }
-  } );
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div id="realname_'+row_id+'" class="editable_text">'+sVal+'</div';
+         },
+         "aTargets": [ 2 ]
+       },
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div id="email_'+row_id+'" class="editable_text">'+sVal+'</div';
+         },
+         "aTargets": [ 3 ]
+       },
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div id="phone_'+row_id+'" class="editable_text">'+sVal+'</div';
+         },
+         "aTargets": [ 4 ]
+       }
+      ],
+      "fnDrawCallback": function() {
+        $('.editable_text').editable( submitEdit, {
+           placeholder : '–',
+           tooltip     : ''
+        });
+      }
+    }); // dtable desktop
+  }
 } );
 
 function selectStatus(row_id) {
@@ -608,11 +681,19 @@ $('#btn_delete').click( function() {
 // Button "Delete selected" handler
 $('#btn_delete_all').click( function() {
   delete_data=[];
-  $('#data_table input:checked').each(function() {
-    var cbx=$(this).attr('name');
-    cbx=cbx.replace('cbx_', '');
-    delete_data.push(cbx);
-  });
+  if (mobile_mode) { 
+    $('#data_table_mobile input:checked').each(function() {
+      var cbx=$(this).attr('name');
+      cbx=cbx.replace('cbx_', '');
+      delete_data.push(cbx);
+    });
+  } else {
+    $('#data_table input:checked').each(function() {
+      var cbx=$(this).attr('name');
+      cbx=cbx.replace('cbx_', '');
+      delete_data.push(cbx);
+    });
+  }  
   if (delete_data.length == 0) {
    $('#none_selected').modal({keyboard: false});
    return;
