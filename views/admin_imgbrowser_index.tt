@@ -461,8 +461,25 @@ $(document).ready(function() {
   }
   if (return_mode == 'ck') {
    window.opener.CKEDITOR.tools.callFunction(getUrlParam('CKEditorFuncNum'), '/files/images'+fn);
-  } else {
+   window.close();
+   return;
+  }
+  if (return_mode == 'cm') {
    window.opener.html_editor.replaceSelection('<img src="/files/images'+fn+'" alt="" />');
+   window.close();
+   return;
+  }
+  if (return_mode == 'mobile') {
+   var editor = window.opener.nicEditors.findEditor('plain_editor');
+   var range = editor.getRng();                    
+   var editorField = editor.selElm();
+   if(editorField.nodeValue == null){ 
+    editor.setContent('<img src="/files/images'+fn+'" alt="" />'); 
+   } else {
+    editorField.nodeValue = editorField.nodeValue.substring(0, range.startOffset) + '<img src="/files/images'+fn+'" alt="" />' + editorField.nodeValue.substring(range.endOffset, editorField.nodeValue.length);
+   }
+   window.close();
+   return;
   }
   window.close();
  });

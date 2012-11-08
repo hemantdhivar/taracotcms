@@ -12,6 +12,7 @@ use Fcntl qw(:flock SEEK_END); # import LOCK_* and SEEK_END constants
 
 my $defroute = '/admin/catalog';
 my @columns = ('id','pagetitle','filename','groupid','lang','layout','status');
+my @columns_mobile = ('id','pagetitle','lang','status');
 my @columns_ft = ('pagetitle','filename');
 
 # Module core settings 
@@ -313,7 +314,12 @@ get '/data/list' => sub {
   if ($sSortCol) {
    $sortorder=" ORDER BY $sSortCol $sSortDir";
   }
-  my $columns=join(',',@columns);
+  my $columns;
+  if (param('mobile')) {
+    $columns=join(',',@columns_mobile);
+  } else {
+    $columns=join(',',@columns);
+  }
   $columns=~s/,$//;
   $sth = database->prepare(
    'SELECT '.$columns.' FROM '.config->{db_table_prefix}.'_catalog WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength

@@ -90,7 +90,7 @@ get '/' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
   my $_current_lang=_load_lang();
-  return template 'imgbrowser_index', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url} }, { layout => 'browser' };
+  return template 'admin_imgbrowser_index', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url} }, { layout => 'browser' };
 };
 
 get '/dirdata' => sub {

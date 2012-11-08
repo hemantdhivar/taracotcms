@@ -334,6 +334,7 @@ var edit_mode='ck';
 var delete_data = new Array();
 var dtable;
 var langs = new HashTable({[== $hash_langs =]});
+var mobile_mode = $('#mobile_mode').is(":visible");
 
 // Init CodeMirror
 
@@ -370,8 +371,7 @@ jQuery.fn.uncheckAll = function(name){
  $(selector,this).removeAttr('checked');
 }
 
-$(document).ready(function() {
-  var mobile_mode = $('#mobile_mode').is(":visible");
+$(document).ready(function() {  
   // Init nicEditor
   $('#plain_editor').css('width', ($('#data_table').width()-50)+'px');
   plain_editor = new nicEditor().panelInstance('plain_editor');    
@@ -650,7 +650,7 @@ $('#btn_add').click( function () {
     $('#data_edit_form_buttons').show();
     $('#eb_switch_cm').hide();
     $('#eb_switch_ck').hide();
-    edit_mode='cm';
+    edit_mode='mobile';
     $('#eb_imgbrowser').show();
     nicEditors.findEditor('plain_editor').setContent('');
    } else {
@@ -877,7 +877,6 @@ function editData(id) {
    $('#data_edit_form_buttons').hide();
    $('#ajax_loading_msg').html("[== $lang->{ajax_loading} =]");
    $('#ajax_loading').show();
-
    if (mobile_mode) {
     $('#wysiwyg_editor_wrap').hide();
     $('#editor_buttons').show();
@@ -885,15 +884,14 @@ function editData(id) {
     $('#data_edit_form').show();
     $('#form_controls').show();
     $('#data_edit_form_buttons').show();
-    $('#eb_switch_cm').addClass('disabled');
+    $('#eb_switch_cm').hide();
     $('#eb_switch_ck').hide();
-    edit_mode='cm';
+    edit_mode='mobile';
     $('#eb_imgbrowser').show();
     nicEditors.findEditor('plain_editor').setContent('');
    } else {
     CKEDITOR.instances.wysiwyg_editor.setData('');
    }
-
    $.ajax({
        type: 'POST',
        url: '/admin/pages/data/load',
@@ -1003,7 +1001,7 @@ $('#eb_imgbrowser').click(
    if(left < 0) left = 0;
    features = 'top=' + top + ',left=' +left;
    features += ',height=' + h + ',width=' + w + ',resizable=no';
-   imgbrowser = open('/admin/imgbrowser?mode=cm', 'displayWindow', features);
+   imgbrowser = open('/admin/imgbrowser?mode='+edit_mode, 'displayWindow', features);
   }
 );
 
