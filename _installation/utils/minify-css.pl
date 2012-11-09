@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use utf8;
 
-get_files('../../public/css');
+get_files('../../public');
 
 sub get_files {
  chdir $_[0];
@@ -9,6 +9,7 @@ sub get_files {
  foreach my $file (@files) {
  	if (-d $file) {
  		&get_files($file);
+ 		chdir('..');
  	}
  	if ($file=~m/\.css/i) {
  		print "File found: $file\n";
@@ -16,5 +17,5 @@ sub get_files {
  		system ('del '.$file);
  		system ('rename '.$file.'.min '.$file);
  	}
- }
+ } 
 }
