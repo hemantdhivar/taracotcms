@@ -470,14 +470,8 @@ $(document).ready(function() {
    return;
   }
   if (return_mode == 'mobile') {
-   var editor = window.opener.nicEditors.findEditor('plain_editor');
-   var range = editor.getRng();                    
-   var editorField = editor.selElm();
-   if(editorField.nodeValue == null){ 
-    editor.setContent('<img src="/files/images'+fn+'" alt="" />'); 
-   } else {
-    editorField.nodeValue = editorField.nodeValue.substring(0, range.startOffset) + '<img src="/files/images'+fn+'" alt="" />' + editorField.nodeValue.substring(range.endOffset, editorField.nodeValue.length);
-   }
+   var instance = window.opener.nicEditors.findEditor('plain_editor');
+   instance.nicCommand('insertHTML', '<img src="/files/images'+fn+'" alt="" />');
    window.close();
    return;
   }

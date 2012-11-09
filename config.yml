@@ -28,6 +28,7 @@ cached_settings: 'block_left, block_right'
 agreement: '/agreement'
 captcha_font: 'ank.ttf'
 site_logo_url: /taracot/logo_white_235.png
+upload_limit_bytes: '3145728'
 
 plugins:
  Database:

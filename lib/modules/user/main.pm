@@ -455,9 +455,10 @@ post '/account/avatar/upload' => sub {
   if (!defined $file) {
    return '{"error":"1"}';
   }
-  if ($file->size > 1048576) { # 1 MB = 1048576 bytes
-   return '{"error":"1"}';
-  }
+  my $maxsize=config->{upload_limit_bytes} || 3145728; # 3 MB by default
+  if ($file->size > $maxsize) {
+    return '{"error":"1"}'; 
+  }  
   my $img = Imager->new(file=>$file->tempname) || return '{"error":"1"}';
   my $x = $img->getwidth();
   my $y = $img->getheight();

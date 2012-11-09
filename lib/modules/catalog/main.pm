@@ -790,6 +790,10 @@ post '/data/images/upload' => sub {
   _load_lang();
   content_type 'application/json';
   my $file=upload('file');
+  my $maxsize=config->{upload_limit_bytes} || 3145728; # 3 MB by default
+  if (defined $file && $file->size > $maxsize) {
+    return '{"error":"1","reason":"bad_upload"}'; 
+  }
   my $dir=param('dir');
   if ($dir !~ /^[\.A-Za-z0-9_\-\/]{0,200}$/ || $dir eq '/' || $dir =~ m/\.\./) {
    return '{"error":"1","reason":"dir_syntax"}';

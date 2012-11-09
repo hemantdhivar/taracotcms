@@ -440,7 +440,7 @@ $(document).ready(function() {
       "aoColumnDefs": [
        { "bSortable": false, "aTargets": [ 4 ] },
        { "fnRender": function ( oObj, sVal ) {
-           return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+           return '<div style="text-align:center;width:92px"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
          },
          "aTargets": [ 4 ]
        },
