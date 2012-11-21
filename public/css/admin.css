@@ -9,6 +9,10 @@
  position:relative;
  padding-top:4px;
 }
+h4 .no-padding-top {
+ padding: 0px;
+ margin: 0px;
+}
 table { 
  border-collapse: collapse;
 } 
@@ -16,6 +20,25 @@ table {
  -moz-user-select: none;
  -webkit-user-select:none;
  user-select:none;
+}
+.large-non-bold-font {
+  font-size:230%;
+  color:#666;
+}
+.taracot-avatar {
+  border-radius: 3px;
+  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+.bg-grey-pad {
+  background-color: #e5e5e5;
+  padding: 10px;  
+  border-radius: 5px;
+}
+.medium-large-non-bold {
+  font-size: 150%;	
+  padding-bottom: 10px;
 }
 /*for FireFox*/
 input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner

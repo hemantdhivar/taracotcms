@@ -4,53 +4,18 @@ id: ID
 username: Username
 username_hint: Latin characters, numbers and "_", "-"
 realname: Real name
-password: Password
-password_hint: Please enter your password twice to verify<br />6 characters at least
-password_hint_edit: Please enter new password if you want to change it<br />6 characters at least
-password_mismatch: Passwords mismatch
 amount: Funds
 email: E-mail
 actions: Actions
-btn_add: Add user
-btn_del: Delete selected
-btn_select_all: Select all
-btn_select_none: Select none
-edit_user: Edit user
+edit_user: User billing data
 add_user: Add user
-form_notice_add: Please fill in the following form to add new user to the database. The required fields are marked with an asterisk.
-edit_user: Edit user
-form_notice_edit: Please fill in the following form to change user data. The required fields are marked with an asterisk.
 edit_save: Save changes
 edit_cancel: Cancel
-form_errors: Form contain errors, please check and try again
+load_error: Error while loading data from server. Please try again later.
 ajax_saving: Saving data, please wait...
 ajax_loading: Loading data, please wait...
-form_error_invalid_username: Invalid username syntax
-form_error_duplicate_username: Duplicate username (user with such username already exists)   
-form_error_invalid_password: Invalid password syntax
-form_error_invalid_email: Invalid e-mail syntax
-form_error_duplicate_email: Duplicate e-mail (user with such e-mail address already exists)
-form_error_invalid_realname: Invalid real name syntax
-form_error_invalid_status: Invalid status
-form_error_invalid_phone: Invalid phone number
-add_success_notify: New user has been added
-edit_success_notify: User data has been changed
-data_loading_error: Error while loading data from server. Please check your connection and try again.
-abort: Abort
-delete_confirmation_title: Delete confirmation
-delete_confirmation_msg1: The following user(s) will be deleted pemanently from system database&#058;
-delete_confirmation_msg2: Are you sure you wish to continue?                    
-delete: Delete                                                  
-delete_cancel: Cancel
-delete_success_notify: User(s) has been deleted
-delete_error_notify: Error while deleting user(s)
-delete_none_selected_title: None selected
-delete_none_selected_msg: No items selected to delete. Please select some billing in the table using checkboxes first.
-btn_close: Close
-field_edit_error_unknown: Unknown error while saving field
 error: Error
 success: Success
-status_select_title: Select user status 
 sLengthMenu: Display _MENU_ records per page
 sZeroRecords: Nothing found - sorry
 sInfo: Showing _START_ to _END_ of _TOTAL_ records
@@ -60,3 +25,14 @@ sPrevious: Previous page
 sNext: Next page   
 sSearch: Search
 error_ajax: Error while connecting to server. Please try again later.
+funds: Funds available
+hosting_accounts: Hosting accounts
+domains: Domains
+services: Services
+no_hosting_accounts: Currently no accounts
+no_domains: Currently no domains
+no_services: Currently no services
+add_account: Add account
+add_domain: Add domain
+add_service: Add service
+return_to_list: Return to list
