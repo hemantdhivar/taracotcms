@@ -40,19 +40,48 @@
 <!-- data_overview -->
 
 <!-- 
- "Error" modal dialog 
+ "Hosting account" modal dialog 
 -->
 
-<div class="modal" style="display:none" id="error_dialog">
+<div class="modal" style="display:none" id="hosting_edit_dialog">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
-  <h3>[== $lang->{error} =]</h3>
+  <h3 id="hosting_edit_dialog_title"></h3>
  </div>
  <div class="modal-body">
-  <span id="error_dialog_msg"></span>
+  <span class="form-horizontal" id="hosting_edit_form">
+    <div class="alert alert-block alert-error" id="hosting_edit_form_error" style="display:none">
+      <span id="hosting_edit_form_error_text"></span>
+    </div>
+    <span id="form_controls"> 
+      <div class="control-group" id="cg_haccount"> 
+        <label class="control-label" for="haccount">[== $lang->{hosting_account} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="haccount" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_hplan"> 
+        <label class="control-label" for="hplan">[== $lang->{hac_plan} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <select id="hplan">
+          </select>
+        </div>
+      </div>
+      <div class="control-group" id="cg_hdays"> 
+        <label class="control-label" for="hdays">[== $lang->{hac_days} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="hdays" />
+        </div>
+      </div>
+    </span>
+  </span>
+  <div id="hosting_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="hosting_edit_ajax_msg"></span>
+  </div>
  </div>
-  <div class="modal-footer">
-    <a class="btn" id="btn_error_dialog_close">[== $lang->{btn_close} =]</a>
+  <div class="modal-footer" id="hosting_edit_buttons">            
+    <a class="btn btn-success" id="btn_hosting_dialog_save">[== $lang->{btn_save} =]</a>
+    <a class="btn" id="btn_hosting_dialog_close">[== $lang->{btn_close} =]</a>
  </div>
 </div>
 
@@ -74,7 +103,7 @@
         <div class="span4" style="margin-bottom:3px">
           <div class="bg-grey-pad">
             <div class="medium-large-non-bold">
-              <span class="btn btn-success btn-mini" style="float:right"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_account} =]</span>
+              <span class="btn btn-success btn-mini" style="float:right" id="btn_add_hosting"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_account} =]</span>
               [== $lang->{hosting_accounts} =]
             </div>
             <div id="data_accounts" style="font-size:90%">[== $lang->{no_hosting_accounts} =]</div>
@@ -86,7 +115,7 @@
               <span class="btn btn-success btn-mini" style="float:right"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_domain} =]</span>
               [== $lang->{domains} =]
             </div>
-            <div id="data_domains" style="font-size:90%">[== $lang->{no_domains} =]</div>
+            <div id="data_domains" style="font-size:90%"><br/>[== $lang->{no_domains} =]</div>
           </div>
         </div>
         <div class="span4">
@@ -95,7 +124,7 @@
               <span class="btn btn-success btn-mini" style="float:right"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_service} =]</span>
               [== $lang->{services} =]
             </div>
-            <div id="data_services" style="font-size:90%">[== $lang->{no_services} =]</div>
+            <div id="data_services" style="font-size:90%"><br/>[== $lang->{no_services} =]</div>
           </div>
         </div>
       </div>
@@ -115,7 +144,7 @@
 <script type="text/javascript">
 
 // Init variables
-var edit_id=0;
+var hosting_edit_id=0;
 var delete_data = new Array();
 var dtable;
 
@@ -262,8 +291,29 @@ function editData(id) {
              $('#data_form').show();
              $('#username').html('<img src="'+data.avatar+'" width="50" height="50" alt="" class="taracot-avatar" />&nbsp;'+data.username);
              $('#funds').html(data.amount);
-             $('#ajax_loading').hide();
+             $('#ajax_loading').hide();             
              $('#data_form_buttons').show();    
+             if (data.hosting) {               
+               var tdata;
+               tdata='<br/><table class="table"><tbody>';               
+               for (var i = 0; i < data.hosting.length; i++) {
+                tdata+="<tr><td>"+data.hosting[i].account+"</td><td>"+data.hosting[i].plan_name+" <small style=\"color:#666\">("+data.hosting[i].plan_cost+"/[== $lang->{hac_per_month} =])</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;"+data.hosting[i].days+"</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
+               }
+               tdata+="</tbody></table>";
+               $('#data_accounts').html(tdata);
+               var hplans='';
+               if (data.hosting_plans) {
+                for (var i = 0; i < data.hosting_plans.length; i++) {
+                  var name = data.hosting_plans[i].name || '';
+                  var id = data.hosting_plans[i].id || '';
+                  var cost = data.hosting_plans[i].cost || 0;
+                  hplans+="<option value=\""+id+"\">"+name+" ("+cost+"/[== $lang->{hac_per_month} =])</option>";
+                }
+               }
+               $('#hplan').html(hplans);
+             } else {
+              $('#data_accounts').html("<br/>[== $lang->{no_hosting_accounts} =]");              
+             }
            }
         },
         error: function() {
@@ -275,15 +325,94 @@ function editData(id) {
    });  //ajax
 }
 
-// Button "Close" handler (Dialog: "Error")
-$('#btn_error_dialog_close').click( function () {
-   $('#error_dialog').modal('hide');
+// Button "Close" handler (Dialog: "Hosting account")
+$('#btn_hosting_dialog_close').click( function () {
+   $('#hosting_edit_dialog').modal('hide');
 });
 
 // Button "Return to list" hanlder
 $('#btn_return_to_list').click( function() {
   $('#data_edit').hide();
   $('#data_overview').show();
+});
+
+// Add hosting account button event handler
+$('#btn_add_hosting').click( function () {
+  $('#hosting_edit_ajax').hide();
+  $('#hosting_edit_form').show();
+  $('#hosting_edit_buttons').show();
+  $('#haccount').val('');
+  $('#hdays').val('');
+  $('#hosting_edit_dialog_title').html("[== $lang->{add_account} =]");
+  $('select option:first-child').attr("selected", "selected");
+  $('#hosting_edit_dialog').modal({keyboard: true}); 
+  $('#haccount').focus();
+  hosting_edit_id=0;
+});
+
+// Add/edit hosting account save button click event
+$('#btn_hosting_dialog_save').click( function () {
+  $('#cg_haccount').removeClass('error');
+  $('#cg_hplan').removeClass('error');
+  $('#cg_hdays').removeClass('error');
+  $('#hosting_edit_form_error').hide();
+  var errors=false;
+  if (!$('#haccount').val().match(/^[A-Za-z0-9_\-]{1,100}$/)) { 
+    $('#cg_haccount').addClass('error');
+    errors=true;   
+  }
+  if (!$('#hdays').val().match(/^[0-9]{1,4}$/)) { 
+    $('#cg_hdays').addClass('error');
+    errors=true;   
+  }
+  if (errors) {
+    $('#hosting_edit_form_error_text').html("[== $lang->{form_errors} =]");
+    $('#hosting_edit_form_error').fadeIn(400);
+    $('#hosting_edit_form_error').alert();
+    $('#haccount').focus();
+  } else {
+    $('#hosting_edit_ajax_msg').html("[== $lang->{ajax_saving} =]");
+    $('#hosting_edit_ajax').show();
+    $('#hosting_edit_form').hide();
+    $('#hosting_edit_buttons').hide();  
+    $.ajax({
+          type: 'POST',
+          url: '/admin/billing/data/hosting/save',
+          data: { id: hosting_edit_id, haccount: $('#haccount').val(), hplan: $('#hplan').val(), hdays: $('#hdays').val() },
+          dataType: "json",
+          success: function(data) {
+            if (data.result == '0') {
+              if (data.error) { // ERROR
+               $('#hosting_edit_form_error_text').html(data.error);
+               $('#hosting_edit_form_error').fadeIn(400);
+               $('#hosting_edit_form_error').alert();
+              }              
+              $('#hosting_edit_ajax').hide();
+              $('#hosting_edit_form').show();
+              $('#hosting_edit_buttons').show(); 
+              $('#ajax_loading').hide();
+              if (data.field) {
+               $('#cg_'+data.field).addClass('error');
+               $('#'+data.field).focus();
+              }
+             } else { // OK
+              $.jmessage("[== $lang->{success} =]", "[== $lang->{data_saved} =]", 2500, 'jm_message_success');
+              var tdata;
+              tdata='<table class="table"><tbody>';               
+              tdata+="<tr><td>"+$('#haccount').val()+"</td><td>"+"PLAN_NAME"+" <small style=\"color:#666\">("+"PLAN_COST"+"/[== $lang->{hac_per_month} =])</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;"+$("#hdays").val()+"</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
+              tdata+="</tbody></table>";
+              $('#data_accounts').append(tdata);
+              $('#hosting_edit_dialog').modal('hide');              
+             }
+          },
+          error: function() {
+            $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+            $('#hosting_edit_ajax').hide();
+            $('#hosting_edit_form').show();
+            $('#hosting_edit_buttons').show(); 
+          }
+      });     
+    }  
 });
 
 </script>

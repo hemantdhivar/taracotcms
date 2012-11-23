@@ -27,6 +27,7 @@ sSearch: Search
 error_ajax: Error while connecting to server. Please try again later.
 funds: Funds available
 hosting_accounts: Hosting accounts
+hosting_account: Hosting account
 domains: Domains
 services: Services
 no_hosting_accounts: Currently no accounts
@@ -36,3 +37,15 @@ add_account: Add account
 add_domain: Add domain
 add_service: Add service
 return_to_list: Return to list
+hac_account: Account
+hac_per_month: month
+hac_plan: Tarification plan
+hac_days: Days remain
+btn_close: Close
+btn_save: Save
+form_errors: Form contain errors, please check the form below and try again
+data_saved: Data has been saved on server
+form_error_invalid_haccount: Invalid hosting account syntax
+form_error_invalid_hplan: Invalid hosting plan selected
+form_error_invalid_hdays: Invalid number of days
+form_error_duplicate_haccount: User account already exists

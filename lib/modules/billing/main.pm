@@ -138,7 +138,7 @@ get '/data/list' => sub {
 
 post '/data/load' => sub {
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
-  _load_lang();
+  my $current_lang = _load_lang();
   content_type 'application/json';
   my $id=param('id') || 0;
   $id=int($id);
@@ -174,8 +174,43 @@ post '/data/load' => sub {
   if (!$response{amount}) {
     $response{amount} = '0';
   }
-  # load hosting plan names from settings
-  
+  # load hosting plan names and IDs from settings
+  my %hosting_plan_names;
+  my @hosting_plan_ids;
+  my $lang = database->quote($current_lang);
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$lang.' AND MATCH (s_name) AGAINST (\'billing_plan_name_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_plan_name_//;
+      $hosting_plan_names{$s_name} = $s_value;
+      push @hosting_plan_ids, $s_name;
+    }
+  }
+  $sth->finish();
+  # load hosting plan costs from settings
+  my %hosting_plan_costs;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_plan_cost_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_plan_cost_//;
+      $hosting_plan_costs{$s_name} = $s_value;
+    }
+  }
+  $sth->finish();
+  # generate hosting plan array
+  my @hosting_plans;
+  foreach my $pid (@hosting_plan_ids) {
+   my %hosting_plan;
+   $hosting_plan{id} = $pid;
+   $hosting_plan{name} = $hosting_plan_names{$pid};
+   $hosting_plan{cost} = $hosting_plan_costs{$pid};
+   push @hosting_plans, \%hosting_plan;
+  }
+  $response{hosting_plans} = \@hosting_plans;
   # select hosting accounts
   $sth = database->prepare(
     'SELECT host_acc,host_plan_id,host_days_remain FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$id
@@ -186,6 +221,8 @@ post '/data/load' => sub {
       my %data;
       $data{account} = $host_acc;
       $data{plan_id} = $host_plan_id;
+      $data{plan_cost} = $hosting_plan_costs{$host_plan_id} || '0';
+      $data{plan_name} = $hosting_plan_names{$host_plan_id} || $host_plan_id;
       $data{days} = $host_days_remain;
       push (@host_accounts, \%data);
     }
@@ -197,6 +234,60 @@ post '/data/load' => sub {
   my $json = $json_xs->encode(\%response);
   return $json;
 };  
+
+post '/data/hosting/save' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();  
+  content_type 'application/json';
+  my $haccount=param('haccount') || '';
+  my $hplan=param('hplan') || '';
+  my $hdays=param('hdays') || 0;
+  my $id=param('id') || 0;
+  $id=int($id);
+  $hdays=int($hdays);
+  $hplan=lc($hplan);
+  $haccount=lc($haccount);
+  if ($haccount !~ /^[A-Za-z0-9_\-]{1,100}$/) {
+   return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_invalid_haccount}.qq~"}~;
+  }
+  if ($hdays > 9999 || $hdays < -9999) {
+   return qq~{"result":"0","field":"hdays","error":"~.$lang->{form_error_invalid_hdays}.qq~"}~;
+  }  
+  my $dupesql='';
+  if ($id > 0) {
+   $dupesql=' AND id != '.$id;
+  }    
+  my $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_hosting WHERE host_acc='.database->quote($haccount).$dupesql
+  );
+  if ($sth->execute()) {
+   my ($tmpid) = $sth->fetchrow_array;
+   if ($tmpid) {
+    $sth->finish();
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_duplicate_haccount}.qq~"}~;
+   }
+  }
+  $sth->finish();
+  $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_name_'.$hplan)
+  );
+  my $tmpid;
+  if ($sth->execute()) {
+   ($tmpid) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$tmpid) {
+    return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_hplan}.qq~"}~;
+  }
+  
+  if ($id > 0) {
+    database->quick_update(config->{db_table_prefix}.'_billing_hosting', { id => $id }, { host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
+  } else {   
+    database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $auth->{id}, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
+  }      
+  return qq~{"result":"1"}~;
+}; 
 
 # End
 

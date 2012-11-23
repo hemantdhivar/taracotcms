@@ -38,7 +38,6 @@ table {
 }
 .medium-large-non-bold {
   font-size: 150%;	
-  padding-bottom: 10px;
 }
 /*for FireFox*/
 input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner
