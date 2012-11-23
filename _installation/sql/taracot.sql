@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Nov 16, 2012 at 07:14 PM
+-- Generation Time: Nov 23, 2012 at 06:44 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -21,7 +21,7 @@ CREATE TABLE ` taracot_billing_funds_history` (
   `user_id` int(11) NOT NULL,
   `trans_amount` float NOT NULL default '0',
   `trans_date` int(11) NOT NULL,
-  `last_modified` int(11) default NULL,
+  `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -41,7 +41,7 @@ CREATE TABLE `taracot_billing_domains` (
   `user_id` int(11) NOT NULL,
   `domain_name` varchar(255) NOT NULL,
   `exp_date` int(11) default NULL,
-  `last_modified` int(11) default NULL,
+  `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `domain_name` (`domain_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
@@ -64,7 +64,7 @@ CREATE TABLE `taracot_billing_funds` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) default NULL,
   `amount` float NOT NULL default '0',
-  `last_modified` int(11) default NULL,
+  `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
@@ -86,17 +86,18 @@ CREATE TABLE `taracot_billing_hosting` (
   `host_acc` varchar(255) default NULL,
   `host_plan_id` varchar(255) default NULL,
   `host_days_remain` int(11) default '0',
-  `last_modified` int(11) default '0',
+  `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `host_acc` (`host_acc`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 -- 
 -- Dumping data for table `taracot_billing_hosting`
 -- 
 
 INSERT INTO `taracot_billing_hosting` VALUES (1, 1, 'medved', 'econom', 30, 0);
-INSERT INTO `taracot_billing_hosting` VALUES (2, 1, 'site2', 'profi', 22, 0);
+INSERT INTO `taracot_billing_hosting` VALUES (2, 1, 'site2', 'profi', 0, 0);
+INSERT INTO `taracot_billing_hosting` VALUES (7, 1, 'test', 'econom', 11, 1353681454);
 
 -- --------------------------------------------------------
 
@@ -111,7 +112,7 @@ CREATE TABLE `taracot_billing_services` (
   `service_days_remaining` int(11) NOT NULL,
   `service_cost` float default '0',
   `service_cost_days` int(11) default '30',
-  `last_modified` int(11) default NULL,
+  `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `service_name` (`service_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
@@ -192,8 +193,9 @@ CREATE TABLE `taracot_settings` (
   `s_value_html` text,
   `lang` varchar(5) NOT NULL default 'en',
   `lastchanged` int(11) default '0',
-  UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=9 ;
+  UNIQUE KEY `id` (`id`),
+  FULLTEXT KEY `s_name` (`s_name`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 PACK_KEYS=0 AUTO_INCREMENT=12 ;
 
 -- 
 -- Dumping data for table `taracot_settings`
@@ -203,6 +205,9 @@ INSERT INTO `taracot_settings` VALUES (1, 'site_title', 'Taracot CMS', '', 'en',
 INSERT INTO `taracot_settings` VALUES (7, 'site_description', 'This is the global site description', '', 'en', 1350564084);
 INSERT INTO `taracot_settings` VALUES (8, 'catalog_title_cat2', 'Ну вот и что за нафиг?', '<p>\n	РћС‚Р°РєРµ С…СѓР№РЅСЏ, РјР°Р»СЏС‚Р°. РўР°РєРёРµ РґРµР»Р°, СЂРµР±СЏС‚РєРё.<br></p>\n', 'en', 1352462803);
 INSERT INTO `taracot_settings` VALUES (6, 'site_keywords', 'these, are, global, site, keywords', '', 'en', 1350564057);
+INSERT INTO `taracot_settings` VALUES (9, 'billing_plan_name_profi', 'Professional', '', 'en', 1353505539);
+INSERT INTO `taracot_settings` VALUES (10, 'billing_plan_cost_profi', '550', '', 'en', 1353505545);
+INSERT INTO `taracot_settings` VALUES (11, 'billing_plan_name_econom', 'Econom', '', 'en', 1353589907);
 
 -- --------------------------------------------------------
 
@@ -229,5 +234,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 'Medved', 'xtreme@rh1.ru', '79217998111', 2, '', NULL, 1352280654);
+INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 'Medved', 'xtreme@rh1.ru', '79217998111', 2, '', NULL, 1353503614);
 INSERT INTO `taracot_users` VALUES (9, 'medved', '2a4dc2662da8f8465d6bc4de5a4a3df8', '', 'medved@medved.com', '', 1, '', NULL, 1351864773);
