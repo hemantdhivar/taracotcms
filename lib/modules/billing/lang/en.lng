@@ -36,6 +36,9 @@ no_services: Currently no services
 add_account: Add account
 add_domain: Add domain
 add_service: Add service
+edit_account: Edit account data
+edit_domain: Edit domain data
+edit_service: Edit service data
 return_to_list: Return to list
 hac_account: Account
 hac_per_month: month
@@ -49,3 +52,23 @@ form_error_invalid_haccount: Invalid hosting account syntax
 form_error_invalid_hplan: Invalid hosting plan selected
 form_error_invalid_hdays: Invalid number of days
 form_error_duplicate_haccount: User account already exists
+db_save_error: Error while saving to database, please try again later
+data_loading_error: Error while loading data from server
+data_delete_error: Error while removing data from server
+data_delete_ok: Item has been deleted successfully
+data_delete_confirm: Are you sure to delete the following item
+domain_name: Domain name
+domain_exp: Expiration date
+domain_exp_hint: Example&#058;&nbsp;YYYY/MM/DD
+domain_date_template: \%Y/\%m/\%d 
+domain_date_picker_template: yyyy/mm/dd 
+domain_date_picker_week_start: 0
+history_datetime_template: \%Y/\%m/\%d \%l:%M %p
+form_error_invalid_domain_name: Invalid domain name
+form_error_invalid_domain_exp: Invalid domain expiration date
+form_error_duplicate_domain: Domain name already exists
+transactions_history: Transactions history
+trans_reason: Reason
+trans_amount: Amount
+trans_date: Date
+btn_add_history_record: Add history record

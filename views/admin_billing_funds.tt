@@ -1,0 +1,103 @@
+<script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="/js/hashtable.js"></script>
+
+<h1>[== $lang->{transactions_history} =]</h1>
+
+<!-- 
+ Data table 
+-->
+<div id="data_overview">  
+  <br/><div class="btn-toolbar">
+    <div class="btn-group">
+      <span id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_add_history_record} =]</span></span>
+    </div>   
+  </div>  
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" style="display:none" id="data_table">
+    <thead>
+      <tr>
+        <th style="width:40px">[== $lang->{id} =]</th>
+        <th>[== $lang->{trans_reason} =]</th>
+        <th style="width:90px">[== $lang->{trans_amount} =]</th>
+        <th style="width:60px">[== $lang->{trans_date} =]</th>
+        <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+      </tr>
+      </thead>
+      <tbody>
+      </tbody>
+  </table>  
+</div>
+<!-- data_overview -->
+
+<script type="text/javascript">
+
+// Init variables
+var dtable;
+
+$(document).ready(function() {
+  $().dropdown();
+  var row_id=0;
+    $('#data_table').show();
+    dtable=$('#data_table').dataTable( {
+      "sDom": "frtip",
+      "bLengthChange": false,
+      "bServerSide": true,
+      "bProcessing": true,
+      "aaSorting": [[ 3, "desc" ]],
+      "sPaginationType": "bootstrap",
+      "iDisplayLength": 10,
+      "bAutoWidth": false,
+      "sAjaxSource": "/admin/billing/funds/data/list?id=[== $user_id =]",
+      "oLanguage": {
+        "oPaginate": {
+          "sPrevious":  "[== $lang->{sPrevious} =]",                                
+          "sNext":  "[== $lang->{sNext} =]"
+        },
+        "sLengthMenu": "[== $lang->{sLengthMenu} =]",
+        "sZeroRecords": "[== $lang->{sZeroRecords} =]",
+        "sInfo": "[== $lang->{sInfo} =]",
+        "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
+        "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
+        "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
+       }, 
+      "aoColumnDefs": [
+       { "bSortable": false, "aTargets": [ 4 ] },
+       { "bVisible": false, "aTargets": [ 0 ] },
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div style="text-align:center"><span class="btn" onclick="editData('+row_id+')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData('+row_id+')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+         },
+         "aTargets": [ 4 ]
+       },       
+       { "fnRender": function ( oObj, sVal ) {
+           row_id=sVal;
+           return sVal;
+         },
+         "aTargets": [ 0 ]
+       },
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div id="reason_'+row_id+'">'+sVal+'</div';
+         },
+         "aTargets": [ 1 ]
+       },
+       { "fnRender": function ( oObj, sVal ) {
+           var pic='/images/up.png';
+           if (sVal < 0) { 
+            pic='/images/down.png';
+            sVal=-sVal;
+           }
+
+           return '<img src="'+pic+'" width="10" height="10" alt="" />&nbsp;<span id="amount_'+row_id+'">'+sVal+'</span>';
+         },
+         "aTargets": [ 2 ]
+       },
+       { "fnRender": function ( oObj, sVal ) {
+           return '<div id="date_'+row_id+'">'+sVal+'</div';
+         },
+         "aTargets": [ 3 ]
+       }
+      ]
+    }); // dtable desktop
+} );
+
+</script>

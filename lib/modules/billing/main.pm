@@ -3,12 +3,15 @@ use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
+use Date::Format;
+use Date::Parse;
 
 # Configuration
 
 my $defroute = '/admin/billing';
 my @columns = ('u.id','u.username','u.realname', 'u.email','f.amount');
 my @columns_mobile = ('u.id','u.username','f.amount');
+my @columns_funds = ('id', 'trans_reason','trans_amount', 'trans_date');
 
 # Module core settings 
 
@@ -45,6 +48,20 @@ get '/' => sub {
   _load_lang();
   my $navdata=&taracot::admin::_navdata();
   return template 'admin_billing_index', { lang => $lang, navdata => $navdata, authdata => $auth }, { layout => 'admin' };
+};
+
+get '/funds' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  my $id=param('id') || 0;
+  $id=int($id);
+  if ($id <= 0) {
+   status 'not_found';
+   return;
+  }
+  _load_lang();
+  my $navdata=&taracot::admin::_navdata();
+  return template 'admin_billing_funds', { lang => $lang, navdata => $navdata, authdata => $auth, user_id => $id }, { layout => 'browser' };
 };
 
 get '/data/list' => sub {
@@ -136,6 +153,94 @@ get '/data/list' => sub {
 }~;
 };
 
+get '/funds/data/list' => sub {
+  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id=int($id);
+  if ($id <= 0) {
+   return qq~{"result":"0"}~;
+  }
+  my $sEcho = param('sEcho') || 0;
+  $sEcho=int($sEcho);
+  my $iDisplayStart = param('iDisplayStart') || 0;
+  $iDisplayStart=int($iDisplayStart);
+  my $iDisplayLength = param('iDisplayLength') || 0;
+  $iDisplayLength=int($iDisplayLength);
+  my $iColumns = param('iColumns') || @columns_funds;
+  $iColumns=int($iColumns);
+  my $sSearch = param('sSearch') || '';
+  $sSearch=~s/^\s+//;
+  $sSearch=~s/\s+$//;
+  my $iSortingCols = param('iSortingCols') || 0;
+  $iSortingCols=int($iSortingCols);
+  my $iSortCol_0 = param('iSortCol_0') || 0;
+  $iSortCol_0=int($iSortCol_0);
+  my $sSortCol = $columns_funds[$iSortCol_0] || 'trans_date';
+  my $sSortDir = param('sSortDir_0') || '';
+  if ($sSortDir ne "asc" && $sSortDir ne "desc") {
+   $sSortDir="asc";
+  }
+  my $where='1';
+  if (length($sSearch) > 2 && length($sSearch) < 250) {
+   $sSearch=database->quote('*'.$sSearch.'*');
+   $where='(MATCH (trans_reason) AGAINST ('.$sSearch.' IN BOOLEAN MODE))';   
+  }
+  my $total=0;
+  my $sth = database->prepare(
+   'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_billing_funds_history WHERE 1'
+  );
+  if ($sth->execute()) {
+   ($total) = $sth -> fetchrow_array;
+  }
+  $sth->finish();
+  my $total_filtered=0;  
+  if ($where ne '1' && $total > 0) {
+   my $sth = database->prepare(    
+    'SELECT COUNT(*) AS cnt FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where
+   );
+   if ($sth->execute()) {
+    ($total_filtered) = $sth -> fetchrow_array;
+   }
+   $sth->finish();
+  } else {
+   $total_filtered=$total;
+  }
+  my $sortorder=' ';  
+  my @data;
+  if ($sSortCol) {
+   $sortorder=" ORDER BY $sSortCol $sSortDir";
+  }
+  my $columns=join(',',@columns_funds);
+  $columns=~s/,$//;
+  open(DTA, ">C:/XTreme/sql.txt");
+  print DTA 'SELECT '.$columns.' FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength;
+  close(DTA);
+  $sth = database->prepare(
+   'SELECT '.$columns.' FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
+  );
+  if ($sth->execute()) {
+   while(my (@ary) = $sth -> fetchrow_array) {
+    $ary[3] =  time2str($lang->{history_datetime_template}, $ary[3]);
+    $ary[3] =~s/\\//gm;
+    push(@ary, '');
+    push(@data, \@ary);
+   }
+  }
+  $sth->finish();
+  
+  my $json_xs = JSON::XS->new();
+  my $json = $json_xs->encode(\@data);
+  # Begin: return JSON data
+  return qq~{
+  "sEcho": $sEcho,
+  "iTotalRecords": "$total",
+  "iTotalDisplayRecords": "$total_filtered",
+  "aaData": $json   
+}~;
+};
+
 post '/data/load' => sub {
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
   my $current_lang = _load_lang();
@@ -177,9 +282,9 @@ post '/data/load' => sub {
   # load hosting plan names and IDs from settings
   my %hosting_plan_names;
   my @hosting_plan_ids;
-  my $lang = database->quote($current_lang);
+  my $curlang = database->quote($current_lang);
   $sth = database->prepare(
-    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$lang.' AND MATCH (s_name) AGAINST (\'billing_plan_name_*\' IN BOOLEAN MODE)'
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_plan_name_*\' IN BOOLEAN MODE)'
   );
   if ($sth->execute()) {
     while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
@@ -213,12 +318,13 @@ post '/data/load' => sub {
   $response{hosting_plans} = \@hosting_plans;
   # select hosting accounts
   $sth = database->prepare(
-    'SELECT host_acc,host_plan_id,host_days_remain FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$id
+    'SELECT id,host_acc,host_plan_id,host_days_remain FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$id
   );
   if ($sth->execute()) {
     my @host_accounts;
-    while (my ($host_acc,$host_plan_id,$host_days_remain) = $sth -> fetchrow_array()) {
+    while (my ($id,$host_acc,$host_plan_id,$host_days_remain) = $sth -> fetchrow_array()) {      
       my %data;
+      $data{id} = $id;
       $data{account} = $host_acc;
       $data{plan_id} = $host_plan_id;
       $data{plan_cost} = $hosting_plan_costs{$host_plan_id} || '0';
@@ -227,6 +333,23 @@ post '/data/load' => sub {
       push (@host_accounts, \%data);
     }
     $response{hosting} = \@host_accounts;
+  }
+  $sth->finish();
+  # select domain names
+  $sth = database->prepare(
+    'SELECT id,domain_name,exp_date FROM `'.config->{db_table_prefix}.'_billing_domains` WHERE user_id='.$id
+  );
+  if ($sth->execute()) {
+    my @domain_names;
+    while (my ($id,$domain_name,$exp_date) = $sth -> fetchrow_array()) {      
+      my %data;
+      $data{id} = $id;
+      $data{domain_name} = $domain_name;
+      $data{exp_date} = time2str($lang->{domain_date_template}, $exp_date);
+      $data{exp_date} =~s/\\//gm;
+      push (@domain_names, \%data);
+    }
+    $response{domains} = \@domain_names;
   }
   $sth->finish();
   # return data
@@ -270,24 +393,208 @@ post '/data/hosting/save' => sub {
   }
   $sth->finish();
   $sth = database->prepare(
-   'SELECT id FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_name_'.$hplan)
+   'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_name_'.$hplan)
   );
-  my $tmpid;
+  my $hplan_name;
   if ($sth->execute()) {
-   ($tmpid) = $sth->fetchrow_array;
+   ($hplan_name) = $sth->fetchrow_array;
   }
   $sth->finish();
-  if (!$tmpid) {
+  if (!$hplan_name) {
     return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_hplan}.qq~"}~;
   }
-  
   if ($id > 0) {
     database->quick_update(config->{db_table_prefix}.'_billing_hosting', { id => $id }, { host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
   } else {   
     database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $auth->{id}, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
-  }      
-  return qq~{"result":"1"}~;
+    $id = database->{q{mysql_insertid}}; 
+  }  
+  if (!$id) {
+   return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  $sth = database->prepare(
+   'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_cost_'.$hplan)
+  );
+  my $hplan_cost;
+  if ($sth->execute()) {
+   ($hplan_cost) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$hplan_cost) { 
+   $hplan_cost="0";
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{id}=$id;
+  $response{haccount}=$haccount;
+  $response{hplan}=$hplan;
+  $response{hplan_name}=$hplan_name;
+  $response{hplan_cost}=$hplan_cost;
+  $response{hdays}=$hdays;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
 }; 
+
+post '/data/domain/save' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();  
+  content_type 'application/json';
+  my $domain_name=param('domain_name') || '';
+  my $domain_exp=param('domain_exp') || '';
+  my $id=param('id') || 0;
+  $id=int($id);
+  $domain_name=lc($domain_name);
+  if ($domain_name !~ /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/) {
+   return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
+  }
+  if ($domain_exp !~ /^[0-9\.\/\-]{1,12}$/) {
+   return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~;
+  }
+  $domain_exp = str2time($domain_exp);
+  if (!$domain_exp) {
+   return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~; 
+  }
+  my $dupesql='';
+  if ($id > 0) {
+   $dupesql=' AND id != '.$id;
+  }    
+  my $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_domains WHERE domain_name='.database->quote($domain_name).$dupesql
+  );
+  if ($sth->execute()) {
+   my ($tmpid) = $sth->fetchrow_array;
+   if ($tmpid) {
+    $sth->finish();
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_duplicate_domain}.qq~"}~;
+   }
+  }
+  $sth->finish();
+  if ($id > 0) {
+    database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { domain_name => $domain_name, exp_date => $domain_exp, lastchanged => time });
+  } else {   
+    database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $auth->{id}, domain_name => $domain_name, exp_date => $domain_exp, lastchanged => time });
+    $id = database->{q{mysql_insertid}}; 
+  }  
+  if (!$id) {
+   return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{id}=$id;
+  $response{domain_name}=$domain_name;
+  $response{domain_exp}=time2str($lang->{domain_date_template}, $domain_exp);
+  $response{domain_exp}=~s/\\//gm;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
+post '/data/hosting/load' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+   'SELECT host_acc, host_plan_id, host_days_remain FROM '.config->{db_table_prefix}.'_billing_hosting WHERE id='.$id
+  );
+  my ($haccount, $hplan, $hdays);
+  if ($sth->execute()) {
+   ($haccount, $hplan, $hdays) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$haccount) {
+   return qq~{"result":"0"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{haccount}=$haccount;
+  $response{hplan}=$hplan;
+  $response{hdays}=$hdays;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
+post '/data/domain/load' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+   'SELECT domain_name,exp_date FROM '.config->{db_table_prefix}.'_billing_domains WHERE id='.$id
+  );
+  my ($domain_name,$exp_date);
+  if ($sth->execute()) {
+   ($domain_name,$exp_date) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$domain_name) {
+   return qq~{"result":"0"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{domain_name}=$domain_name;
+  $response{domain_exp}=time2str($lang->{domain_date_template}, $exp_date);
+  $response{domain_exp}=~s/\\//gm;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
+post '/data/hosting/delete' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+    'DELETE FROM '.config->{db_table_prefix}.'_billing_hosting WHERE id='.$id
+  );
+  my $res;
+  if ($sth->execute()) {
+   $res=qq~{"result":"1"}~;
+  } else {
+   $res=qq~{"result":"0"}~;
+  }
+  $sth->finish();
+  return $res; 
+};
+
+post '/data/domain/delete' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+    'DELETE FROM '.config->{db_table_prefix}.'_billing_domains WHERE id='.$id
+  );
+  my $res;
+  if ($sth->execute()) {
+   $res=qq~{"result":"1"}~;
+  } else {
+   $res=qq~{"result":"0"}~;
+  }
+  $sth->finish();
+  return $res; 
+};
+
 
 # End
 
