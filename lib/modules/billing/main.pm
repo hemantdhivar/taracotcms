@@ -11,7 +11,7 @@ use Date::Parse;
 my $defroute = '/admin/billing';
 my @columns = ('u.id','u.username','u.realname', 'u.email','f.amount');
 my @columns_mobile = ('u.id','u.username','f.amount');
-my @columns_funds = ('id', 'trans_reason','trans_amount', 'trans_date');
+my @columns_funds = ('id', 'trans_objects','trans_amount', 'trans_date');
 
 # Module core settings 
 
@@ -155,7 +155,7 @@ get '/data/list' => sub {
 
 get '/funds/data/list' => sub {
   if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
-  _load_lang();
+  my $clang = _load_lang();
   content_type 'application/json';
   my $id=param('id') || 0;
   $id=int($id);
@@ -185,7 +185,7 @@ get '/funds/data/list' => sub {
   my $where='1';
   if (length($sSearch) > 2 && length($sSearch) < 250) {
    $sSearch=database->quote('*'.$sSearch.'*');
-   $where='(MATCH (trans_reason) AGAINST ('.$sSearch.' IN BOOLEAN MODE))';   
+   $where='(MATCH (trans_objects) AGAINST ('.$sSearch.' IN BOOLEAN MODE))';   
   }
   my $total=0;
   my $sth = database->prepare(
@@ -212,16 +212,42 @@ get '/funds/data/list' => sub {
   if ($sSortCol) {
    $sortorder=" ORDER BY $sSortCol $sSortDir";
   }
+    
+  my %history_values;
+  my @history_id;
+  my @history_val;
+  $sth = database->prepare(
+   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE (MATCH (s_name) AGAINST (\'billing_history_*\' IN BOOLEAN MODE)) AND lang='.database->quote($clang)
+  );
+  if ($sth->execute()) {
+   while (my ($sname, $svalue) = $sth -> fetchrow_array) {
+     $sname=~s/billing_history_//;
+     $history_values{$sname} = $svalue;
+     push @history_id, $sname;
+     push @history_val, $svalue;
+   }
+  }
+  $sth->finish();
+
   my $columns=join(',',@columns_funds);
   $columns=~s/,$//;
-  open(DTA, ">C:/XTreme/sql.txt");
-  print DTA 'SELECT '.$columns.' FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength;
-  close(DTA);
   $sth = database->prepare(
-   'SELECT '.$columns.' FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
+   'SELECT '.$columns.',trans_id FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
   );
   if ($sth->execute()) {
    while(my (@ary) = $sth -> fetchrow_array) {
+    my $trans_id = $ary[4];
+    splice(@ary, 4, 1);
+    if ($trans_id) {
+      if ($history_values{$trans_id}) {
+        $trans_id=$history_values{$trans_id};
+      }
+      if ($ary[1]) {
+        $ary[1] = $trans_id." (".$ary[1].")"
+      } else {
+        $ary[1] = $trans_id;
+      }
+    }
     $ary[3] =  time2str($lang->{history_datetime_template}, $ary[3]);
     $ary[3] =~s/\\//gm;
     push(@ary, '');
@@ -230,15 +256,16 @@ get '/funds/data/list' => sub {
   }
   $sth->finish();
   
+  my %response;
+  $response{sEcho}=$sEcho;
+  $response{iTotalRecords}=$total;
+  $response{iTotalDisplayRecords}=$total_filtered;
+  $response{aaData}=\@data;
+  $response{history_ids} = \@history_id;
+  $response{history_names} = \@history_val;
   my $json_xs = JSON::XS->new();
-  my $json = $json_xs->encode(\@data);
-  # Begin: return JSON data
-  return qq~{
-  "sEcho": $sEcho,
-  "iTotalRecords": "$total",
-  "iTotalDisplayRecords": "$total_filtered",
-  "aaData": $json   
-}~;
+  my $json = $json_xs->encode(\%response);
+  return $json;
 };
 
 post '/data/load' => sub {
@@ -434,6 +461,66 @@ post '/data/hosting/save' => sub {
   $response{hdays}=$hdays;
   my $json = $json_xs->encode(\%response);
   return $json;    
+}; 
+
+post '/data/funds/history/save' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();  
+  content_type 'application/json';
+  my $user_id=param('user_id') || 0;
+  $user_id=int($user_id);
+  if ($user_id <= 0) {
+   return qq~{"result":"0"}~;
+  }
+  my $trans_id=param('trans_id') || '';
+  my $trans_objects=param('trans_objects') || '';
+  my $trans_amount=param('trans_amount') || 0;
+  my $trans_date=param('trans_date') || '';
+  my $id=param('id') || 0;
+  $id=int($id);
+  $trans_amount=int($trans_amount);
+  $trans_id=lc($trans_id);
+  if ($trans_id !~ /^[a-z_]{0,250}$/) {
+   return qq~{"result":"0","field":"trans_id","error":"~.$lang->{form_error_invalid_trans_id}.qq~"}~;
+  }
+  if ($trans_amount !~ /^[-+]?[0-9]*\.?[0-9]+$/) {
+   return qq~{"result":"0","field":"trans_amount","error":"~.$lang->{form_error_invalid_trans_amount}.qq~"}~;
+  }
+  if ($trans_objects !~ /^.{0,250}$/) {
+   return qq~{"result":"0","field":"trans_objects","error":"~.$lang->{form_error_invalid_trans_objects}.qq~"}~;
+  }
+  if ($trans_date !~ /^[0-9\.\/\-\: ]{1,20}$/) {
+   return qq~{"result":"0","field":"trans_date","error":"~.$lang->{form_error_invalid_trans_date}.qq~"}~;
+  }
+  $trans_date = str2time($trans_date);
+  if (!$trans_date) {
+   return qq~{"result":"0","field":"trans_date","error":"~.$lang->{form_error_invalid_trans_date}.qq~"}~; 
+  }
+  my $sth;
+  my $trans_id_name;
+  if ($trans_id) {
+    $sth = database->prepare(
+     'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_history_'.$trans_id)
+    );
+    if ($sth->execute()) {
+     ($trans_id_name) = $sth->fetchrow_array;
+    }
+    $sth->finish();
+  }
+  if ($trans_id && !$trans_id_name) {
+    return qq~{"result":"0","field":"trans_id","error":"~.$lang->{form_error_invalid_trans_id}.qq~"}~;
+  }
+  if ($id > 0) {
+    database->quick_update(config->{db_table_prefix}.'_billing_funds_history', { id => $id }, { trans_id => $trans_id, trans_amount => $trans_amount, trans_objects => $trans_objects, trans_date => $trans_date, lastchanged => time });
+  } else {   
+    database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => $trans_id, trans_amount => $trans_amount, trans_objects => $trans_objects, trans_date => $trans_date, lastchanged => time });
+    $id = database->{q{mysql_insertid}}; 
+  }  
+  if (!$id) {
+   return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  return qq~{"result":"1"}~;
 }; 
 
 post '/data/domain/save' => sub {

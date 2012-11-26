@@ -2,6 +2,7 @@
 <script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/js/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="/js/hashtable.js"></script>
+<script type="text/javascript" src="/js/bootstrap.datepicker.min.js"></script>
 
 <h1>[== $lang->{transactions_history} =]</h1>
 
@@ -30,17 +31,75 @@
 </div>
 <!-- data_overview -->
 
+<!-- 
+ "History" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="history_edit_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3 id="history_edit_dialog_title"></h3>
+ </div>
+ <div class="modal-body">
+  <span class="form-horizontal" id="history_edit_form">
+    <div class="alert alert-block alert-error" id="history_edit_form_error" style="display:none">
+      <span id="history_edit_form_error_text"></span>
+    </div>
+    <span id="form_controls"> 
+      <div class="control-group" id="cg_trans_id"> 
+        <label class="control-label" for="trans_id">[== $lang->{trans_id} =]</label> 
+        <div class="controls">
+          <select id="trans_id">
+          </select>
+        </div>
+      </div>
+      <div class="control-group" id="cg_trans_objects"> 
+        <label class="control-label" for="trans_objects">[== $lang->{trans_objects} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="trans_objects" />
+        </div>
+      </div>      
+      <div class="control-group" id="cg_trans_amount"> 
+        <label class="control-label" for="trans_amount">[== $lang->{trans_amount} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="trans_amount" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_trans_date"> 
+        <label class="control-label" for="trans_date">[== $lang->{trans_date} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input" id="trans_date" />
+        </div>
+      </div>
+    </span>
+  </span>
+  <div id="history_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="history_edit_ajax_msg"></span>
+  </div>
+ </div>
+  <div class="modal-footer" id="history_edit_buttons">            
+    <a class="btn btn-success" id="btn_history_dialog_save">[== $lang->{btn_save} =]</a>
+    <a class="btn" id="btn_history_dialog_close">[== $lang->{btn_close} =]</a>
+ </div>
+</div>
+
 <script type="text/javascript">
+
+$("#trans_date").datepicker({
+  format: '[== $lang->{trans_datetime_picker_template} =]',
+  weekStart: '[== $lang->{trans_datetime_picker_week_start} =]'
+});
 
 // Init variables
 var dtable;
+var history_edit_id=0;
 
 $(document).ready(function() {
   $().dropdown();
   var row_id=0;
     $('#data_table').show();
     dtable=$('#data_table').dataTable( {
-      "sDom": "frtip",
+      "sDom": "frtip",      
       "bLengthChange": false,
       "bServerSide": true,
       "bProcessing": true,
@@ -49,6 +108,18 @@ $(document).ready(function() {
       "iDisplayLength": 10,
       "bAutoWidth": false,
       "sAjaxSource": "/admin/billing/funds/data/list?id=[== $user_id =]",
+      "fnServerData": function ( sSource, aoData, fnCallback ) {
+            $.getJSON( sSource, aoData, function (json) {
+                if (json.history_ids) {
+                  var trans_ids='<option value="">&mdash;</option>';
+                  for (var i=0; i<json.history_ids.length; i++) {
+                    trans_ids+='<option value="'+json.history_ids[0]+'">'+json.history_names[i]+'</option>';
+                  }
+                  $('#trans_id').html(trans_ids);
+                }
+                fnCallback(json);
+            } );
+      },
       "oLanguage": {
         "oPaginate": {
           "sPrevious":  "[== $lang->{sPrevious} =]",                                
@@ -60,7 +131,7 @@ $(document).ready(function() {
         "sInfoEmpty": "[== $lang->{sInfoEmpty} =]",
         "sInfoFiltered": "[== $lang->{sInfoFiltered} =]",
         "sSearch": "[== $lang->{sSearch} =]:&nbsp;",
-       }, 
+      },       
       "aoColumnDefs": [
        { "bSortable": false, "aTargets": [ 4 ] },
        { "bVisible": false, "aTargets": [ 0 ] },
@@ -81,13 +152,13 @@ $(document).ready(function() {
          "aTargets": [ 1 ]
        },
        { "fnRender": function ( oObj, sVal ) {
-           var pic='/images/up.png';
+           var pic='/images/plus.png';
            if (sVal < 0) { 
-            pic='/images/down.png';
+            pic='/images/minus.png';
             sVal=-sVal;
            }
 
-           return '<img src="'+pic+'" width="10" height="10" alt="" />&nbsp;<span id="amount_'+row_id+'">'+sVal+'</span>';
+           return '<img src="'+pic+'" width="16" height="16" alt="" />&nbsp;<span id="amount_'+row_id+'">'+sVal+'</span>';
          },
          "aTargets": [ 2 ]
        },
@@ -99,5 +170,96 @@ $(document).ready(function() {
       ]
     }); // dtable desktop
 } );
+
+// Button "Close" handler (Dialog: "History edit")
+$('#btn_history_dialog_close').click( function () {
+   $('#history_edit_dialog').modal('hide');
+});
+
+// Add history account button event handler
+$('#btn_add').click( function () {
+  $('#cg_trans_id').removeClass('error');
+  $('#cg_trans_objects').removeClass('error');
+  $('#cg_trans_amount').removeClass('error');
+  $('#cg_trans_date').removeClass('error');
+  $('#history_edit_form_error').hide();
+  $('#history_edit_ajax').hide();
+  $('#history_edit_form').show();
+  $('#history_edit_buttons').show();
+  $('#trans_objects').val('');
+  $('#trans_amount').val('');
+  $('#trans_date').val('');
+  $('select option:first-child').attr("selected", "selected");
+  $('#history_edit_dialog_title').html("[== $lang->{add_history_record} =]");
+  $('#history_edit_dialog').modal({keyboard: true}); 
+  $('#trans_id').focus();
+  history_edit_id=0;
+});
+
+// Add/edit history record save button click event
+$('#btn_history_dialog_save').click( function () {
+  $('#cg_trans_id').removeClass('error');
+  $('#cg_trans_objects').removeClass('error');
+  $('#cg_trans_amount').removeClass('error');
+  $('#cg_trans_date').removeClass('error');
+  $('#history_edit_form_error').hide();
+  var errors=false;
+  if (!$('#trans_objects').val().match(/^.{0,250}$/)) { 
+    $('#cg_trans_objects').addClass('error');
+    errors=true;   
+  }
+  if (!$('#trans_amount').val().match(/^[0-9\.\-]{1,7}$/)) { 
+    $('#cg_trans_amount').addClass('error');
+    errors=true;   
+  }
+  if (!$('#trans_date').val().match(/^[0-9\.\/\-\: ]{1,20}$/)) { 
+    $('#cg_trans_date').addClass('error');
+    errors=true;   
+  }
+  if (errors) {
+    $('#history_edit_form_error_text').html("[== $lang->{form_errors} =]");
+    $('#history_edit_form_error').fadeIn(400);
+    $('#history_edit_form_error').alert();
+    $('#history_name').focus();
+  } else {
+    $('#history_edit_ajax_msg').html("[== $lang->{ajax_saving} =]");
+    $('#history_edit_ajax').show();
+    $('#history_edit_form').hide();
+    $('#history_edit_buttons').hide();  
+    $.ajax({
+          type: 'POST',
+          url: '/admin/billing/data/funds/history/save',
+          data: { id: history_edit_id, user_id: '[== $user_id =]', trans_id: $('#trans_id').val(), trans_objects: $('#trans_objects').val(), trans_amount: $('#trans_amount').val(), trans_date: $('#trans_date').val()  },
+          dataType: "json",
+          success: function(data) {
+            if (data.result == '0') {
+              if (data.error) { // ERROR
+               $('#history_edit_form_error_text').html(data.error);
+               $('#history_edit_form_error').fadeIn(400);
+               $('#history_edit_form_error').alert();
+              }              
+              $('#history_edit_ajax').hide();
+              $('#history_edit_form').show();
+              $('#history_edit_buttons').show(); 
+              $('#ajax_loading').hide();
+              if (data.field) {
+               $('#cg_'+data.field).addClass('error');
+               $('#'+data.field).focus();
+              }
+             } else { // OK
+              $.jmessage("[== $lang->{success} =]", "[== $lang->{data_saved} =]", 2500, 'jm_message_success');
+              dtable.fnReloadAjax(); 
+              $('#history_edit_dialog').modal('hide');
+             }
+          },
+          error: function() {
+            $.jmessage("[== $lang->{error} =]", "[== $lang->{error_ajax} =]", 2500, 'jm_message_error');
+            $('#history_edit_ajax').hide();
+            $('#history_edit_form').show();
+            $('#history_edit_buttons').show(); 
+          }
+      });     
+    }  
+});
 
 </script>

@@ -63,12 +63,22 @@ domain_exp_hint: Example&#058;&nbsp;YYYY/MM/DD
 domain_date_template: \%Y/\%m/\%d 
 domain_date_picker_template: yyyy/mm/dd 
 domain_date_picker_week_start: 0
+trans_datetime_picker_template: yyyy/mm/dd hh:ii:ss
+trans_datetime_picker_week_start: 0
 history_datetime_template: \%Y/\%m/\%d \%l:%M %p
 form_error_invalid_domain_name: Invalid domain name
 form_error_invalid_domain_exp: Invalid domain expiration date
 form_error_duplicate_domain: Domain name already exists
 transactions_history: Transactions history
-trans_reason: Reason
+trans_reason: Reason and/or objects
+trans_objects: Objects
 trans_amount: Amount
 trans_date: Date
 btn_add_history_record: Add history record
+trans_id: Transaction ID
+add_history_record: Add history record
+edit_history_record: Edit history record
+form_error_invalid_trans_id: Invalid transaction ID
+form_error_invalid_trans_amount: Invalid amount
+form_error_invalid_trans_objects: Invalid objects data
+form_error_invalid_trans_date: Invalid date/time
