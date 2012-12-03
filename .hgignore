@@ -3,6 +3,7 @@ tmp/sessions/.*\.stor$
 views/.*\.cache$
 views/layouts/.*\.cache$
 public/files/images/*
+public/files/storage/*
+public/files/avatars/*
+public/files/images_catalog/*
 data/.*\.html$
-public/3rdp/*
-views/layouts/3rdp*.tt

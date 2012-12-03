@@ -1,7 +1,8 @@
-div.catalog_special_item {
-	cursor:pointer;
-	width:85px;
-	text-align:center;
-	padding:5px;
-	border: 1px solid #ddd;
+div.catalog_special_item
+{
+  cursor:pointer;
+  width:85px;
+  text-align:center;
+  border:1px solid #ddd;
+  padding:5px;
 }

@@ -254,10 +254,13 @@ post '/data/save' => sub {
    # remove slash at the end
    $filename = $1 if ($filename=~/(.*)\/$/);
    # remove slash at the beginning
-   $filename = $1 if ($filename=~/^\/(.*)/);
+   # $filename = $1 if ($filename=~/^\/(.*)/);
   }
   if ($filename !~ /^[A-Za-z0-9_\.\-\/]{1,254}$/) {
    return qq~{"result":"0","field":"filename","error":"~.$lang->{form_error_invalid_filename}.qq~"}~;
+  }
+  if ($filename !~ /^\//) {
+    $filename = '/'.$filename;
   }
   $keywords=~s/[\n\r]//gm;
   $keywords=~s/\"/&quot;/gm;
@@ -417,12 +420,14 @@ post '/data/save/field' => sub {
     # remove slash at the end
     $filename = $1 if ($filename=~/(.*)\/$/);
     # remove slash at the beginning
-    $filename = $1 if ($filename=~/^\/(.*)/);
+    # $filename = $1 if ($filename=~/^\/(.*)/);
    }
    if ($filename !~ /^[A-Za-z0-9_\.\-\/]{1,254}$/) {
     return qq~{"result":"0","field":"filename","error":"~.$lang->{form_error_invalid_filename}.qq~"}~;
    }
-   
+   if ($filename !~ /^\//) {
+    $filename = '/'.$filename;
+   }
    my $page_data  = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
    
    my $sth = database->prepare(

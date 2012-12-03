@@ -1,7 +1,6 @@
 <script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/js/jquery.jeditable.min.js"></script>
-<script type="text/javascript" src="/js/hashtable.js"></script>
 <script type="text/javascript" src="/js/bootstrap.datepicker.min.js"></script>
 
 <h1>[== $lang->{module_name_long} =]</h1>
@@ -10,7 +9,7 @@
  Data table 
 -->
 <div class="visible-phone visible-tablet" id="mobile_mode"></div>  
-<div id="data_overview">  
+<div id="data_overview">    
   <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" style="display:none" id="data_table">
     <thead>
       <tr>

@@ -3,7 +3,7 @@ use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
-use Fcntl qw(:flock SEEK_END); # import LOCK_* and SEEK_END constants 
+use Fcntl qw(:flock SEEK_END);
 
 # Configuration
 

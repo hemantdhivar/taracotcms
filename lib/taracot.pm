@@ -166,6 +166,8 @@ get '/captcha_img' => sub {
 };
 
 any qr{.*} => sub { 
+ &_detect_lang;
+ &_load_lang;
  status 'not_found';
  my $render_404 = template 'error_404', { lang => $lang }, { layout => undef };
  return $render_404;

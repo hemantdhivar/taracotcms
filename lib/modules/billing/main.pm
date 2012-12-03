@@ -57,11 +57,11 @@ get '/funds' => sub {
   $id=int($id);
   if ($id <= 0) {
    status 'not_found';
-   return;
+   pass();
   }
   _load_lang();
   my $navdata=&taracot::admin::_navdata();
-  return template 'admin_billing_funds', { lang => $lang, navdata => $navdata, authdata => $auth, user_id => $id }, { layout => 'browser' };
+  return template 'admin_billing_funds', { lang => $lang, navdata => $navdata, authdata => $auth, user_id => $id, pagetitle => $lang->{transactions_history} }, { layout => 'browser' };
 };
 
 get '/data/list' => sub {

@@ -103,10 +103,10 @@ get qr{(.*)} => sub {
   # remove slash at the end
   $url = $1 if ($url=~/(.*)\/$/);
   # remove slash at the beginning
-  $url = $1 if ($url=~/^\/(.*)/);
-  if (!$url) { 
-   $url='/'; 
-  }
+  # $url = $1 if ($url=~/^\/(.*)/);
+  if ($url !~ /^\//) {
+    $url = '/'.$url;
+   }
   my ($groupid) = split(/\//, $url);
   $url=~s/$groupid(\/?)//;
   if (!$url || !$groupid) {
@@ -147,8 +147,7 @@ get qr{(.*)} => sub {
     $sth->finish();
     if (!$items) {
       status 'not_found';
-      my $render_404 = template 'error_404', { lang => $lang }, { layout => undef };
-      return $render_404; 
+      pass();
     }
     my $var1="catalog_title";
     if ($groupid) {
@@ -201,7 +200,7 @@ get qr{(.*)} => sub {
     $page_description=~s/\. $//;
     $page_data->{site_keywords}=$page_keywords;
     $page_data->{site_description}=$page_description;
-    my $grid=template 'catalog_images_grid', { id => $db_data->{id}, img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
+    my $grid=template 'admin_catalog_images_grid', { id => $db_data->{id}, img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
     my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => "catalog_title_".$groupid, lang => $_current_lang });
     my $groupid_title = $db_var1->{s_value} || $groupid;
     $render_template = &taracot::_process_template( template 'catalog_view', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => $db_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title, pagetitle => $db_data->{pagetitle} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
@@ -383,11 +382,14 @@ post '/data/save' => sub {
    # remove slash at the end
    $filename = $1 if ($filename=~/(.*)\/$/);
    # remove slash at the beginning
-   $filename = $1 if ($filename=~/^\/(.*)/);
+   # $filename = $1 if ($filename=~/^\/(.*)/);
   }
-  if ($filename !~ /^[A-Za-z0-9_\-\/]{1,254}$/) {
+  if ($filename !~ /^[A-Za-z0-9_\-\/\.]{1,254}$/) {
    return qq~{"result":"0","field":"filename","error":"~.$lang->{form_error_invalid_filename}.qq~"}~;
   }  
+  if ($filename !~ /^\//) {
+    $filename = '/'.$filename;
+  }
   if ($groupid !~ /^[A-Za-z0-9_\-]{1,80}$/) {
    return qq~{"result":"0","field":"groupid","error":"~.$lang->{form_error_invalid_groupid}.qq~"}~;
   }
@@ -589,12 +591,15 @@ post '/data/save/field' => sub {
     # remove slash at the end
     $filename = $1 if ($filename=~/(.*)\/$/);
     # remove slash at the beginning
-    $filename = $1 if ($filename=~/^\/(.*)/);
+    # $filename = $1 if ($filename=~/^\/(.*)/);
    }
-   if ($filename !~ /^[A-Za-z0-9_\-\/]{1,254}$/) {
+   if ($filename !~ /^[A-Za-z0-9\._\-\/]{1,254}$/) {
     return qq~{"result":"0","field":"filename","error":"~.$lang->{form_error_invalid_filename}.qq~"}~;
    }
-   
+   if ($filename !~ /^\//) {
+    $filename = '/'.$filename;
+   }
+
    my $page_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { id => $field_id });
    
    my $sth = database->prepare(
@@ -757,7 +762,7 @@ get '/images' => sub {
   if ($dir eq 0) {
     return;
   }
-  return template 'catalog_images', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url}, dir => $dir }, { layout => 'browser' };
+  return template 'admin_catalog_images', { lang => $lang, pagetitle => $lang->{pagetitle}, files_url => config->{files_url}, dir => $dir, pagetitle => $lang->{imgbrowser} }, { layout => 'browser' };
 };
 
 get '/data/images/dirdata' => sub {

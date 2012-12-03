@@ -1,382 +1,534 @@
-#data_table_processing {
- margin-bottom: 10px;
- color:#444;
- padding-left:20px;
- background-image:url(/images/white_loading.gif);
- background-repeat:no-repeat;
- background-position: bottom left;
- margin-top:5px;
- position:relative;
- padding-top:4px;
+#data_table_processing
+{
+  margin-bottom:10px;
+  color:#444;
+  padding-left:20px;
+  background-image:url(/images/white_loading.gif);
+  background-repeat:no-repeat;
+  background-position:bottom left;
+  margin-top:5px;
+  position:relative;
+  padding-top:4px;
 }
-h4 .no-padding-top {
- padding: 0px;
- margin: 0px;
+
+h4 .no-padding-top
+{
+  margin:0;
+  padding:0;
 }
-table { 
- border-collapse: collapse;
-} 
-.btn{
- -moz-user-select: none;
- -webkit-user-select:none;
- user-select:none;
+
+table
+{
+  border-collapse:collapse;
 }
-.large-non-bold-font {
+
+.btn
+{
+  -moz-user-select:none;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+.large-non-bold-font
+{
   font-size:230%;
   color:#666;
 }
-.taracot-avatar {
-  border-radius: 3px;
-  -o-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-}
-.bg-grey-pad {
-  background-color: #e5e5e5;
-  padding: 10px;  
-  border-radius: 5px;
-}
-.medium-large-non-bold {
-  font-size: 150%;	
-}
-/*for FireFox*/
-input[type="submit"]::-moz-focus-inner, input[type="button"]::-moz-focus-inner
-    {   
-        border : 0px;
-    } 
-/*for IE8 */
-input[type="submit"]:focus, input[type="button"]:focus
-    {     
-        outline : none; 
-    }
 
-table.table thead .sorting,
-table.table thead .sorting_asc,
-table.table thead .sorting_desc,
-table.table thead .sorting_asc_disabled,
-table.table thead .sorting_desc_disabled {
- cursor: pointer;
- *cursor: hand;
-}
-table.table thead .sorting_asc { 
- background: #cdcdcd url('/images/sort_asc.png') no-repeat center right;
-}
-table.table thead .sorting_desc { 
- background: #cdcdcd url('/images/sort_desc.png') no-repeat center right; 
-}
-#data_table_filter {
- float:right;
- position:relative;
-}
-#data_table_info {
- float:right;
-}
-#data_table>tbody>tr>td { 
- vertical-align: middle;
+.taracot-avatar
+{
+  border-radius:3px;
+  -o-border-radius:3px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
 }
 
-#jm_stack_box {
-	position: fixed; top: 15px; right: 15px;
-	width: 220px; 
-  z-index:3000;
+.bg-grey-pad
+{
+  background-color:#e5e5e5;
+  border-radius:5px;
+  padding:10px;
 }
 
-#jm_stack_box .jm_message { 
-	background-color: #000;
-	background: rgba(0, 0, 0, .7);
-	padding: 10px; margin: 0 0 15px 0;
-	font-family: Tahoma;
-	font-size: 11px;
-	color: #fff;
-	cursor: pointer;
-	border-radius: 3px;
-	-o-border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
+.medium-large-non-bold
+{
+  font-size:150%;
 }
 
-#jm_stack_box .jm_message h3 {
-	font-size: 15px; font-weight: normal;
-	padding: 0; margin: 0 0 5px 0;
-  color: #fff;
+input[type="submit"]::-moz-focus-inner,input[type="button"]::-moz-focus-inner
+{
+  border:0;
 }
 
-
-#jm_stack_box .jm_message_error {
-	background-color: #c00;
-	background: rgba(125, 0, 0, .95);
+input[type="submit"]:focus,input[type="button"]:focus
+{
+  outline:none;
 }
 
-#jm_stack_box .jm_message_success {
-	background-color: #0c0;
-	background: rgba(0, 125, 0, .95);
+table.table thead .sorting,table.table thead .sorting_asc,table.table thead .sorting_desc,table.table thead .sorting_asc_disabled,table.table thead .sorting_desc_disabled
+{
+  cursor:hand;
 }
 
-.admin_action_link {
- text-decoration: none;
- border-bottom: 1px solid #AAA;
+table.table thead .sorting_asc
+{
+  background:#cdcdcd url(/images/sort_asc.png) no-repeat center right;
 }
-.admin_action_link:hover {
- text-decoration: none;
-}
-th {
- background-color:#e5e5e5;
-}
-#admin_actions {
- padding-bottom: 10px;
-}
-#form_notice {
- border-bottom: 1px solid #ccc;
- padding-bottom: 10px;
- padding-top: 20px;
-}
-.required_field {
- color: red;
- font-weight: bold;
-}
-.thumbnail_font {
- color: #fff;
- font-size:9px;
- margin-top:6px;
- margin-bottom:2px;
- padding:3px;
- background:#444;
- border-radius:2px;
- width:94px;
- overflow:hidden;
-}
-.node_selected {
- background-color:#ffc54e;
-} 
-.browser_thumbnail {
- cursor:pointer;
- text-align:center;
- -moz-user-select: none;
- -webkit-user-select:none;
- user-select:none;
-}
-.browser_thumbnail_pic {
- background-repeat:none;
- width:100px;
- height:100px
-}
-.browser_thumbnail_pic_type {
- position:relative;left:50px
-}
-[class^="browser-i-"]{
- display:inline-block;
- width:16px;
- height:16px;
- vertical-align:text-top;
- background-image:url(/images/glyphicons-browser.png);
- background-position:16px 16px;
- background-repeat:no-repeat;*margin-right:.3em;
-}
-[class^="browser-i-"]:last-child{*margin-left:0;}
-.browser-i-chdir {background-position:0px 0px;}
-.browser-i-copy {background-position:-16px 0px;}
-.browser-i-cut {background-position:-32px 0px;}
-.browser-i-delete {background-position:-48px 0px;}
-.browser-i-newdir {background-position:-64px 0px;}
-.browser-i-paste {background-position:-80px 0px;}
-.browser-i-rename {background-position:-96px 0px;}
-.browser-i-select {background-position:-112px 0px;}
-.browser-i-updir {background-position:-128px 0px;}
-.browser-i-upload {background-position:-144px 0px;}
 
-[class^="filetypes-i-"] {
- display:inline-block;
- width:20px;
- height:20px;
- vertical-align:text-top;
- background-image:url(/images/filetypes.png);
- background-position:20px 20px;
- background-repeat:no-repeat;*margin-right:.3em;
+table.table thead .sorting_desc
+{
+  background:#cdcdcd url(/images/sort_desc.png) no-repeat center right;
 }
-[class^="filetypes-i-"]:last-child{*margin-left:0;}
-.filetypes-i-avi {background-position:0px 0px;} 
-.filetypes-i-bmp {background-position:-20px 0px;} 
-.filetypes-i-css {background-position:-40px 0px;} 
-.filetypes-i-doc {background-position:-60px 0px;} 
-.filetypes-i-docx {background-position:-60px 0px;}
-.filetypes-i-gif {background-position:-80px 0px;} 
-.filetypes-i-htm {background-position:-100px 0px;} 
-.filetypes-i-jpg {background-position:-120px 0px;} 
-.filetypes-i-jpeg {background-position:-120px 0px;}
-.filetypes-i-js {background-position:-140px 0px;} 
-.filetypes-i-mov {background-position:0px -20px;} 
-.filetypes-i-mp3 {background-position:-20px -20px;} 
-.filetypes-i-mp4 {background-position:-40px -20px;} 
-.filetypes-i-mpg {background-position:-60px -20px;} 
-.filetypes-i-pdf {background-position:-80px -20px;} 
-.filetypes-i-php {background-position:-100px -20px;} 
-.filetypes-i-png {background-position:-120px -20px;} 
-.filetypes-i-ppt {background-position:-140px -20px;} 
-.filetypes-i-pptx {background-position:-140px -20px;}
-.filetypes-i-rar {background-position:0px -40px;} 
-.filetypes-i-txt {background-position:-20px -40px;} 
-.filetypes-i-unknown {background-position:-40px -40px;} 
-.filetypes-i-xls {background-position:-60px -40px;} 
-.filetypes-i-xlsx {background-position:-60px -40px;}
-.filetypes-i-xml {background-position:-80px -40px;} 
-.filetypes-i-zip {background-position:-100px -40px;}
- 
- /*
-	Datepicker for Bootstrap
-	Copyright 2012 Stefan Petre
-	Licensed under the Apache License v2.0
-	http://www.apache.org/licenses/LICENSE-2.0
-*/
-/* =========================================================
-* tweaked by gus
-* ========================================================= */
-.bs-sc-datepicker.dropdown-menu {
-max-width: inherit;
+
+#data_table_filter
+{
+  float:right;
+  position:relative;
 }
-.bs-sc-datepicker {
-top: 0;
-left: 0;
-padding: 4px;
-margin-top: 1px;
--webkit-border-radius: 4px;
--moz-border-radius: 4px;
-border-radius: 4px;
-z-index: 5000;
+
+#data_table_info
+{
+  float:right;
 }
-.bs-sc-datepicker:before {
-content: '';
-display: inline-block;
-border-left: 7px solid transparent;
-border-right: 7px solid transparent;
-border-bottom: 7px solid #ccc;
-border-bottom-color: rgba(0, 0, 0, 0.2);
-position: absolute;
-top: -7px;
-left: 6px;
+
+#data_table>tbody>tr>td
+{
+  vertical-align:middle;
 }
-.bs-sc-datepicker:after {
-content: '';
-display: inline-block;
-border-left: 6px solid transparent;
-border-right: 6px solid transparent;
-border-bottom: 6px solid #ffffff;
-position: absolute;
-top: -6px;
-left: 7px;
+
+#jm_stack_box
+{
+  position:fixed;
+  top:15px;
+  right:15px;
+  width:220px;
+  z-index:6000;
 }
-.bs-sc-datepicker table {
-width: 100%;
-margin: 0;
+
+#jm_stack_box .jm_message
+{
+  background-color:#000;
+  background:rgba(0,0,0,.7);
+  font-family:Tahoma;
+  font-size:11px;
+  color:#fff;
+  cursor:pointer;
+  border-radius:3px;
+  -o-border-radius:3px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  margin:0 0 15px;
+  padding:10px;
 }
-.bs-sc-datepicker th {
-border-bottom: 1px solid #efefef;
+
+#jm_stack_box .jm_message h3
+{
+  font-size:15px;
+  font-weight:400;
+  color:#fff;
+  margin:0 0 5px;
+  padding:0;
 }
-.bs-sc-datepicker td, .bs-sc-datepicker th {
-text-align: center;
-width: 20px;
-height: 20px;
--webkit-border-radius: 4px;
--moz-border-radius: 4px;
-border-radius: 4px;
-padding: 5px !important;
+
+#jm_stack_box .jm_message_error
+{
+  background-color:#c00;
+  background:rgba(125,0,0,.95);
 }
-.bs-sc-datepicker td.day:hover {
-background: #eeeeee;
-cursor: pointer;
+
+#jm_stack_box .jm_message_success
+{
+  background-color:#0c0;
+  background:rgba(0,125,0,.95);
 }
-.bs-sc-datepicker td.old, .bs-sc-datepicker td.new {
-color: #DDDDDD;
+
+.admin_action_link
+{
+  text-decoration:none;
+  border-bottom:1px solid #AAA;
 }
-.bs-sc-datepicker td.active, .bs-sc-datepicker td.active:hover {
-background-color: #006dcc;
-background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-background-image: -ms-linear-gradient(top, #0088cc, #0044cc);
-background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-background-image: linear-gradient(top, #0088cc, #0044cc);
-background-repeat: repeat-x;
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0088cc', endColorstr='#0044cc', GradientType=0);
-border-color: #0044cc #0044cc #002a80;
-border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-color: #fff;
-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+.admin_action_link:hover
+{
+  text-decoration:none;
 }
-.bs-sc-datepicker td.active:hover,
-.bs-sc-datepicker td.active:hover:hover,
-.bs-sc-datepicker td.active:active,
-.bs-sc-datepicker td.active:hover:active,
-.bs-sc-datepicker td.active.active,
-.bs-sc-datepicker td.active:hover.active,
-.bs-sc-datepicker td.active.disabled,
-.bs-sc-datepicker td.active:hover.disabled,
-.bs-sc-datepicker td.active[disabled],
-.bs-sc-datepicker td.active:hover[disabled] {
-background-color: #0044cc;
+
+th
+{
+  background-color:#e5e5e5;
 }
-.bs-sc-datepicker td.active:active,
-.bs-sc-datepicker td.active:hover:active,
-.bs-sc-datepicker td.active.active,
-.bs-sc-datepicker td.active:hover.active {
-background-color: #003399 \9;
+
+#admin_actions
+{
+  padding-bottom:10px;
 }
-.bs-sc-datepicker td span {
-display: block;
-width: 47px;
-height: 54px;
-line-height: 54px;
-float: left;
-margin: 2px;
-cursor: pointer;
--webkit-border-radius: 4px;
--moz-border-radius: 4px;
-border-radius: 4px;
+
+#form_notice
+{
+  border-bottom:1px solid #ccc;
+  padding-bottom:10px;
+  padding-top:20px;
 }
-.bs-sc-datepicker td span:hover {
-background: #eeeeee;
+
+.required_field
+{
+  color:red;
+  font-weight:700;
 }
-.bs-sc-datepicker td span.active {
-background-color: #006dcc;
-background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-background-image: -ms-linear-gradient(top, #0088cc, #0044cc);
-background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-background-image: linear-gradient(top, #0088cc, #0044cc);
-background-repeat: repeat-x;
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0088cc', endColorstr='#0044cc', GradientType=0);
-border-color: #0044cc #0044cc #002a80;
-border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
-color: #fff;
-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+.thumbnail_font
+{
+  color:#fff;
+  font-size:9px;
+  margin-top:6px;
+  margin-bottom:2px;
+  background:#444;
+  border-radius:2px;
+  width:94px;
+  overflow:hidden;
+  padding:3px;
 }
-.bs-sc-datepicker td span.active:hover,
-.bs-sc-datepicker td span.active:active,
-.bs-sc-datepicker td span.active.active,
-.bs-sc-datepicker td span.active.disabled,
-.bs-sc-datepicker td span.active[disabled] {
-background-color: #0044cc;
+
+.node_selected
+{
+  background-color:#ffc54e;
 }
-.bs-sc-datepicker td span.active:active, .bs-sc-datepicker td span.active.active {
-background-color: #003399 \9;
+
+.browser_thumbnail
+{
+  cursor:pointer;
+  text-align:center;
+  -moz-user-select:none;
+  -webkit-user-select:none;
+  user-select:none;
 }
-.bs-sc-datepicker td span.old {
-color: #999999;
+
+.browser_thumbnail_pic
+{
+  background-repeat:none;
+  width:100px;
+  height:100px;
 }
-.bs-sc-datepicker th.switch {
-width: 145px;
+
+.browser_thumbnail_pic_type
+{
+  position:relative;
+  left:50px;
 }
-.bs-sc-datepicker thead tr:first-child th {
-cursor: pointer;
+
+[class^="browser-i-"]
+{
+  display:inline-block;
+  width:16px;
+  height:16px;
+  vertical-align:text-top;
+  background-image:url(/images/glyphicons-browser.png);
+  background-position:16px 16px;
+  background-repeat:no-repeat;
+  margin-right:.3em;
 }
-.bs-sc-datepicker thead tr:first-child th:hover {
-background: #eeeeee;
+
+.browser-i-copy
+{
+  background-position:-16px 0;
 }
-.input-append.date .add-on i, .input-prepend.date .add-on i {
-display: block;
-cursor: pointer;
-width: 16px;
-height: 16px;
+
+.browser-i-cut
+{
+  background-position:-32px 0;
+}
+
+.browser-i-delete
+{
+  background-position:-48px 0;
+}
+
+.browser-i-newdir
+{
+  background-position:-64px 0;
+}
+
+.browser-i-rename
+{
+  background-position:-96px 0;
+}
+
+.browser-i-select
+{
+  background-position:-112px 0;
+}
+
+.browser-i-updir
+{
+  background-position:-128px 0;
+}
+
+.browser-i-upload
+{
+  background-position:-144px 0;
+}
+
+[class^="filetypes-i-"]
+{
+  display:inline-block;
+  width:20px;
+  height:20px;
+  vertical-align:text-top;
+  background-image:url(/images/filetypes.png);
+  background-position:20px 20px;
+  background-repeat:no-repeat;
+  margin-right:.3em;
+}
+
+.filetypes-i-bmp
+{
+  background-position:-20px 0;
+}
+
+.filetypes-i-css
+{
+  background-position:-40px 0;
+}
+
+.filetypes-i-htm
+{
+  background-position:-100px 0;
+}
+
+.filetypes-i-js
+{
+  background-position:-140px 0;
+}
+
+.filetypes-i-mov
+{
+  background-position:0 -20px;
+}
+
+.filetypes-i-mp3
+{
+  background-position:-20px -20px;
+}
+
+.filetypes-i-mp4
+{
+  background-position:-40px -20px;
+}
+
+.filetypes-i-mpg
+{
+  background-position:-60px -20px;
+}
+
+.filetypes-i-pdf
+{
+  background-position:-80px -20px;
+}
+
+.filetypes-i-php
+{
+  background-position:-100px -20px;
+}
+
+.filetypes-i-png
+{
+  background-position:-120px -20px;
+}
+
+.filetypes-i-rar
+{
+  background-position:0 -40px;
+}
+
+.filetypes-i-txt
+{
+  background-position:-20px -40px;
+}
+
+.filetypes-i-unknown
+{
+  background-position:-40px -40px;
+}
+
+.filetypes-i-xml
+{
+  background-position:-80px -40px;
+}
+
+.filetypes-i-zip
+{
+  background-position:-100px -40px;
+}
+
+.bs-sc-datepicker.dropdown-menu
+{
+  max-width:inherit;
+}
+
+.bs-sc-datepicker
+{
+  top:0;
+  left:0;
+  margin-top:1px;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  z-index:5000;
+  padding:4px;
+}
+
+.bs-sc-datepicker:before
+{
+  content:'';
+  display:inline-block;
+  border-left:7px solid transparent;
+  border-right:7px solid transparent;
+  border-bottom:7px solid #ccc;
+  border-bottom-color:rgba(0,0,0,0.2);
+  position:absolute;
+  top:-7px;
+  left:6px;
+}
+
+.bs-sc-datepicker:after
+{
+  content:'';
+  display:inline-block;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-bottom:6px solid #fff;
+  position:absolute;
+  top:-6px;
+  left:7px;
+}
+
+.bs-sc-datepicker table
+{
+  width:100%;
+  margin:0;
+}
+
+.bs-sc-datepicker th
+{
+  border-bottom:1px solid #efefef;
+}
+
+.bs-sc-datepicker td,.bs-sc-datepicker th
+{
+  text-align:center;
+  width:20px;
+  height:20px;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  padding:5px!important;
+}
+
+.bs-sc-datepicker td.day:hover
+{
+  background:#eee;
+  cursor:pointer;
+}
+
+.bs-sc-datepicker td.old,.bs-sc-datepicker td.new
+{
+  color:#DDD;
+}
+
+.bs-sc-datepicker td span
+{
+  display:block;
+  width:47px;
+  height:54px;
+  line-height:54px;
+  float:left;
+  cursor:pointer;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  margin:2px;
+}
+
+.bs-sc-datepicker td span.old
+{
+  color:#999;
+}
+
+.bs-sc-datepicker th.switch
+{
+  width:145px;
+}
+
+.bs-sc-datepicker thead tr:first-child th
+{
+  cursor:pointer;
+}
+
+.input-append.date .add-on i,.input-prepend.date .add-on i
+{
+  display:block;
+  cursor:pointer;
+  width:16px;
+  height:16px;
+}
+
+[class^="browser-i-"]:last-child,[class^="filetypes-i-"]:last-child
+{
+  margin-left:0;
+}
+
+.browser-i-chdir,.filetypes-i-avi
+{
+  background-position:0 0;
+}
+
+.browser-i-paste,.filetypes-i-gif
+{
+  background-position:-80px 0;
+}
+
+.filetypes-i-doc,.filetypes-i-docx
+{
+  background-position:-60px 0;
+}
+
+.filetypes-i-jpg,.filetypes-i-jpeg
+{
+  background-position:-120px 0;
+}
+
+.filetypes-i-ppt,.filetypes-i-pptx
+{
+  background-position:-140px -20px;
+}
+
+.filetypes-i-xls,.filetypes-i-xlsx
+{
+  background-position:-60px -40px;
+}
+
+.bs-sc-datepicker td.active,.bs-sc-datepicker td.active:hover,.bs-sc-datepicker td span.active
+{
+  background-color:#006dcc;
+  background-image:linear-gradient(top,#0088cc,#0044cc);
+  background-repeat:repeat-x;
+  filter:progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  color:#fff;
+  text-shadow:0 -1px 0 rgba(0,0,0,0.25);
+  border-color:rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+}
+
+.bs-sc-datepicker td.active:hover,.bs-sc-datepicker td.active:hover:hover,.bs-sc-datepicker td.active:active,.bs-sc-datepicker td.active:hover:active,.bs-sc-datepicker td.active.active,.bs-sc-datepicker td.active:hover.active,.bs-sc-datepicker td.active.disabled,.bs-sc-datepicker td.active:hover.disabled,.bs-sc-datepicker td.active[disabled],.bs-sc-datepicker td.active:hover[disabled],.bs-sc-datepicker td span.active:hover,.bs-sc-datepicker td span.active:active,.bs-sc-datepicker td span.active.active,.bs-sc-datepicker td span.active.disabled,.bs-sc-datepicker td span.active[disabled]
+{
+  background-color:#04c;
+}
+
+.bs-sc-datepicker td.active:active,.bs-sc-datepicker td.active:hover:active,.bs-sc-datepicker td.active.active,.bs-sc-datepicker td.active:hover.active,.bs-sc-datepicker td span.active:active,.bs-sc-datepicker td span.active.active
+{
+  background-color:#039 \9;
+}
+
+.bs-sc-datepicker td span:hover,.bs-sc-datepicker thead tr:first-child th:hover
+{
+  background:#eee;
 }

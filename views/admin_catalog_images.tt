@@ -1,0 +1,79 @@
+<script type="text/javascript" src="/js/jquery.shifty.js"></script>
+<script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
+<script type="text/javascript" src="/js/hashtable.js"></script>
+
+<h1 style="padding-top:6px">[== $lang->{images_title} =]</h1>
+
+<div style="display:none" id="input_dialog">
+ <h3 id="id_title" style="padding-bottom:10px"></h3>
+ <span class="form-horizontal">
+  <div class="control-group" style="padding-top:6px" id="id_cg_msg">
+   <label class="control-label" for="id_if" id="id_msg"></label>
+   <div class="controls">
+   <input type="text" class="input-xlarge" id="id_if">
+   </div>
+  </div>
+ </span>
+ <div class="form-actions">
+  <a class="btn" id="btn_id_cancel">[== $lang->{cancel} =]</a>
+  <a class="btn btn-success" id="btn_id_save">[== $lang->{save} =]</a>
+ </div>
+</div>
+
+<div id="img_browser">
+  <div class="btn-toolbar">
+    <div class="btn-group">
+     <span class="btn buttons-tooltip" id="btn_upload" rel="tooltip" data-placement="bottom" title="[== $lang->{upload} =]"><i class="browser-i-upload"></i></span>
+    </div>
+    <div class="btn-group">
+     <span class="btn disabled buttons-tooltip" id="btn_rename" rel="tooltip" data-placement="bottom" title="[== $lang->{rename} =]"><i class="browser-i-rename"></i></span>
+     <span class="btn btn-danger disabled buttons-tooltip" id="btn_delete" rel="tooltip" data-placement="bottom" title="[== $lang->{delete} =]"><i class="browser-i-delete"></i></span>
+    </div>
+  </div>
+  <ul class="thumbnails" id="files"></ul>
+</div> <!-- img_browser -->
+
+<div id="upload_form" style="display:none">
+ <h3 style="margin-top:6px">[== $lang->{file_upload} =]</h3>
+ [== $lang->{file_upload_hint} =]<br /><br />
+ <div id="upload_container">
+	<div id="filelist" class="well"></div>
+  <div id="uploading" style="display:none"><img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;[== $lang->{file_uploading} =]</div>
+  <div class="btn-toolbar">
+    <div class="btn-group" id="btn_group_upload">
+    	<span class="btn" id="btn_upload_select">[== $lang->{upload_add} =]</span>
+    	<span class="btn btn-success disabled" id="btn_upload_start">[== $lang->{upload_start} =]</span>
+    	<span class="btn btn-danger disabled" id="btn_upload_clear">[== $lang->{upload_clear} =]</span>
+    </div>
+    <div class="btn-group">
+      <span class="btn" id="btn_upload_back">[== $lang->{upload_back} =]</span>
+    </div>
+  </div>
+ </div>
+ 
+</div>
+
+<script type="text/javascript">
+  var js_lang_images_title = "[== $lang->{images_title} =]";
+  var js_lang_cancel = "[== $lang->{cancel} =]";
+  var js_lang_save = "[== $lang->{save} =]";
+  var js_lang_upload = "[== $lang->{upload} =]";
+  var js_lang_rename = "[== $lang->{rename} =]";
+  var js_lang_delete = "[== $lang->{delete} =]";
+  var js_lang_file_upload = "[== $lang->{file_upload} =]";
+  var js_lang_file_upload_hint = "[== $lang->{file_upload_hint} =]";
+  var js_lang_file_uploading = "[== $lang->{file_uploading} =]";
+  var js_lang_upload_add = "[== $lang->{upload_add} =]";
+  var js_lang_upload_start = "[== $lang->{upload_start} =]";
+  var js_lang_upload_clear = "[== $lang->{upload_clear} =]";
+  var js_lang_upload_back = "[== $lang->{upload_back} =]";
+  var js_lang_loading_folder = "[== $lang->{loading_folder} =]";
+  var js_dir = "[== $dir =]";
+  var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
+  var js_lang_image_files = "[== $lang->{image_files} =]";
+  var js_lang_rename_title = "[== $lang->{rename_title} =]";
+  var js_lang_rename_new = "[== $lang->{rename_new} =]";
+  var js_lang_delete_confirm = "[== $lang->{delete_confirm} =]";
+  var js_lang_error = "[== $lang->{error} =]";
+</script>
+<script type="text/javascript" src="/js/modules/admin_catalog_images.js"></script>
