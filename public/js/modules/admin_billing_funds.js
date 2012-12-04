@@ -1,6 +1,12 @@
 $("#trans_date").datepicker({
     format: js_lang_trans_datetime_picker_template,
-    weekStart: js_lang_trans_datetime_picker_week_start
+    weekStart: js_lang_trans_datetime_picker_week_start    
+}).on('changeDate', function(ev){
+    $("#trans_date").datepicker('hide');
+});
+$("#trans_time").timepicker({
+    defaultTime: 'current',
+    showMeridian: js_lang_trans_time_picker_show_meridian
 });
 // Init variables
 var dtable;
@@ -37,7 +43,7 @@ $(document).ready(function () {
                 if (json.history_ids) {
                     var trans_ids = '<option value="">&mdash;</option>';
                     for (var i = 0; i < json.history_ids.length; i++) {
-                        trans_ids += '<option value="' + json.history_ids[0] + '">' + json.history_names[i] + '</option>';
+                        trans_ids += '<option value="' + json.history_ids[i] + '">' + json.history_names[i] + '</option>';
                     }
                     $('#trans_id').html(trans_ids);
                 }
@@ -85,12 +91,12 @@ $(document).ready(function () {
                     pic = '/images/minus.png';
                     sVal = -sVal;
                 }
-                return '<img src="' + pic + '" width="16" height="16" alt="" />&nbsp;<span id="amount_' + row_id + '">' + sVal + '</span>';
+                return '<div style="text-align:center"><img src="' + pic + '" width="16" height="16" alt="" />&nbsp;<span id="amount_' + row_id + '">' + sVal + '</span></div>';
             },
             "aTargets": [2]
         }, {
             "fnRender": function (oObj, sVal) {
-                return '<div id="date_' + row_id + '">' + sVal + '</div';
+                return '<div id="date_' + row_id + '" style="text-align:center">' + sVal + '</div';
             },
             "aTargets": [3]
         }]
@@ -106,6 +112,7 @@ $('#btn_add').click(function () {
     $('#cg_trans_objects').removeClass('error');
     $('#cg_trans_amount').removeClass('error');
     $('#cg_trans_date').removeClass('error');
+    $('#cg_trans_time').removeClass('error');
     $('#history_edit_form_error').hide();
     $('#history_edit_ajax').hide();
     $('#history_edit_form').show();
@@ -113,6 +120,7 @@ $('#btn_add').click(function () {
     $('#trans_objects').val('');
     $('#trans_amount').val('');
     $('#trans_date').val('');
+    $('#trans_time').val('');
     $('select option:first-child').attr("selected", "selected");
     $('#history_edit_dialog_title').html(js_lang_add_history_record);
     $('#history_edit_dialog').modal({
@@ -121,12 +129,75 @@ $('#btn_add').click(function () {
     $('#trans_id').focus();
     history_edit_id = 0;
 });
+// Edit history
+function editData(id) {
+    $('#cg_trans_id').removeClass('error');
+    $('#cg_trans_objects').removeClass('error');
+    $('#cg_trans_amount').removeClass('error');
+    $('#cg_trans_date').removeClass('error');
+    $('#cg_trans_time').removeClass('error');
+    $('#history_edit_form_error').hide();
+    $('#history_edit_form').hide();
+    $('#history_edit_buttons').hide();
+    $('#trans_objects').val('');
+    $('#trans_amount').val('');
+    $('#trans_date').val('');
+    $('#trans_time').val('');
+    $('select option:first-child').attr("selected", "selected");
+    $('#history_edit_dialog_title').html(js_lang_btn_edit_history_record);
+    $('#history_edit_ajax_msg').html(js_lang_ajax_loading);
+    $('#history_edit_ajax').show();
+    $('#history_edit_dialog').modal({
+        keyboard: true
+    });
+    history_edit_id = id;
+    $.ajax({
+        type: 'POST',
+        url: '/admin/billing/data/funds/history/load',
+        data: {
+            id: history_edit_id
+        },
+        dataType: "json",
+        success: function (data) {
+            if (data.result == '0') {
+                $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+                $('#history_edit_dialog').modal('hide');
+            } else { // OK
+                if (data.trans_id) {
+                    $("#trans_id option[value='" + data.trans_id + "']").attr("selected", true);
+                }
+                if (data.trans_objects) {
+                    $('#trans_objects').val(data.trans_objects);
+                }
+                if (data.trans_amount) {
+                    $('#trans_amount').val(data.trans_amount);
+                }
+                if (data.trans_date) {
+                    $('#trans_date').val(data.trans_date);
+                }
+                if (data.trans_time) {
+                    $('#trans_time').val(data.trans_time);
+                }
+                $('#history_edit_ajax').hide();
+                $('#history_edit_form').show();
+                $('#history_edit_buttons').show();
+                $('#ajax_loading').hide();
+                $('#trans_id').focus();
+            }
+        },
+        error: function () {
+            $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+            $('#history_edit_dialog').modal('hide');
+        }
+    });
+};
 // Add/edit history record save button click event
 $('#btn_history_dialog_save').click(function () {
     $('#cg_trans_id').removeClass('error');
     $('#cg_trans_objects').removeClass('error');
     $('#cg_trans_amount').removeClass('error');
     $('#cg_trans_date').removeClass('error');
+    $('#cg_trans_time').removeClass('error');
     $('#history_edit_form_error').hide();
     var errors = false;
     if (!$('#trans_objects').val().match(/^.{0,250}$/)) {
@@ -137,8 +208,12 @@ $('#btn_history_dialog_save').click(function () {
         $('#cg_trans_amount').addClass('error');
         errors = true;
     }
-    if (!$('#trans_date').val().match(/^[0-9\.\/\-\: ]{1,20}$/)) {
+    if (!$('#trans_date').val().match(/^[0-9\.\/\-]{1,20}$/)) {
         $('#cg_trans_date').addClass('error');
+        errors = true;
+    }
+    if (!$('#trans_time').val().match(/^[0-9APM\.\: ]{1,11}$/)) {
+        $('#cg_trans_time').addClass('error');
         errors = true;
     }
     if (errors) {
@@ -160,7 +235,7 @@ $('#btn_history_dialog_save').click(function () {
                 trans_id: $('#trans_id').val(),
                 trans_objects: $('#trans_objects').val(),
                 trans_amount: $('#trans_amount').val(),
-                trans_date: $('#trans_date').val()
+                trans_date: $('#trans_date').val() + ' ' + $('#trans_time').val()
             },
             dataType: "json",
             success: function (data) {
@@ -193,10 +268,54 @@ $('#btn_history_dialog_save').click(function () {
         });
     }
 });
-// dataTable ajax fix
+
+function deleteData(id) {
+    if (!confirm(js_lang_data_delete_confirm + ":\n\n" + $('#reason_' + id).html())) {
+        return false;
+    }
+    $('#data_table_cover').css('left', $('#data_table').position().left+'px');
+    $('#data_table_cover').css('top', $('#data_table').position().top+'px');
+    $('#data_table_cover').css('width', $('#data_table').width()+'px');
+    $('#data_table_cover').css('height', $('#data_table').height()+2+'px');
+    $('#data_table_cover').fadeIn(300);
+    dtable.fnProcessingIndicator();
+    $.ajax({
+        type: 'POST',
+        url: '/admin/billing/data/funds/history/delete',
+        data: {
+            id: id
+        },
+        dataType: "json",
+        success: function (data) {
+            $('#data_table_cover').fadeOut(300);
+            dtable.fnProcessingIndicator('off');
+            if (data.result == '0') {
+                $.jmessage(js_lang_error, js_lang_data_delete_error, 2500, 'jm_message_error');
+            } else { // OK         
+                $.jmessage(js_lang_success, js_lang_data_delete_ok, 2500, 'jm_message_success');
+                dtable.fnReloadAjax();
+            }
+        },
+        error: function () {
+            $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+            $('#data_table_cover').fadeOut(300);
+            dtable.fnProcessingIndicator('off');
+        }
+    });
+}
+
+// dataTable extensions
 jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {
     if ( typeof( onoff ) == 'undefined' ) {
         onoff = true;
+    }
+    this.oApi._fnProcessingDisplay( oSettings, onoff );
+};
+jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff )
+{
+    if( typeof(onoff) == 'undefined' )
+    {
+        onoff=true;
     }
     this.oApi._fnProcessingDisplay( oSettings, onoff );
 };

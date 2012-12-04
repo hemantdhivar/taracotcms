@@ -209,7 +209,7 @@ var js_lang_add_service = "[== $lang->{add_service} =]";
 var js_lang_services = "[== $lang->{services} =]";
 var js_lang_no_services = "[== $lang->{no_services} =]";
 var js_lang_return_to_list = "[== $lang->{return_to_list} =]";
-var js_lang_domain_date_picker_week_start = "[== $lang->{domain_date_picker_week_start} =]";
+var js_lang_domain_date_picker_week_start = [== $lang->{domain_date_picker_week_start} =];
 var js_lang_sPrevious = "[== $lang->{sPrevious} =]";
 var js_lang_sNext = "[== $lang->{sNext} =]";
 var js_lang_sLengthMenu = "[== $lang->{sLengthMenu} =]";

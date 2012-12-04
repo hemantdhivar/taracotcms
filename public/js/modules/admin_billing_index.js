@@ -1,5 +1,7 @@
 $('#domain_exp').datepicker({
     weekStart: js_lang_domain_date_picker_week_start
+}).on('changeDate', function(ev){
+    $("#domain_exp").datepicker('hide');
 });
 // Init variables
 var hosting_edit_id = 0;
@@ -323,10 +325,10 @@ $('#btn_hosting_dialog_save').click(function () {
                     $.jmessage(js_lang_success, js_lang_data_saved, 2500, 'jm_message_success');
                     if (!hosting_edit_id) {
                         var tdata;
-                        tdata += "<tr id=\"hosting_row_" + data.id + "\"><td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/js_lang_hac_per_month)</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
+                        tdata += "<tr id=\"hosting_row_" + data.id + "\"><td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" + js_lang_hac_per_month + ")</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
                         $('#hosting_table tr:last').after(tdata);
                     } else {
-                        $("#hosting_row_" + data.id).html("<td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/js_lang_hac_per_month)</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td>")
+                        $("#hosting_row_" + data.id).html("<td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" +js_lang_hac_per_month +")</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td>")
                     }
                     $('#hosting_edit_dialog').modal('hide');
                 }
@@ -556,6 +558,17 @@ function deleteDomain(id) {
         }
     });
 }
+
+$('#btn_funds').click(function() {
+    var features, w = screen.width - 100, h = screen.height - 200;
+    var top = (screen.height - h) / 2 - 50,
+    left = (screen.width - w) / 2;
+    if (top < 0) top = 0;
+    if (left < 0) left = 0;
+    features = 'top=' + top + ',left=' + left;
+    features += ',height=' + h + ',width=' + w + ',resizable=no';
+    imgbrowser = open('/admin/billing/funds?id=' + edit_id, 'displayWindow', features);
+});
 
 // dataTable ajax fix
 jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {

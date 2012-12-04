@@ -36,7 +36,7 @@ $(document).ready(function () {
                         alert(js_lang_user_account_avatar_uploading_error);
                     } else {
                         $('#avatar_loading').hide();
-                        $("#avatar_profile_img").attr("src", "/files/avatars/js_auth_data_username.tmp.jpg?" + Math.random());
+                        $("#avatar_profile_img").attr("src", "/files/avatars/"+ js_auth_data_username +".tmp.jpg?" + Math.random());
                         $('#avatar_profile_img').show();
                     }
                 });
@@ -103,8 +103,8 @@ $(document).ready(function () {
                         } else {
                             $('#overview_realname').html(js_auth_data_username);
                         }
-                        $("#avatar_profile_img").attr("src", "/files/avatars/js_auth_data_username.jpg?" + Math.random());
-                        $("#avatar_overview_img").attr("src", "/files/avatars/js_auth_data_username.jpg?" + Math.random());
+                        $("#avatar_profile_img").attr("src", "/files/avatars/"+js_auth_data_username+".jpg?" + Math.random());
+                        $("#avatar_overview_img").attr("src", "/files/avatars/"+js_auth_data_username+".jpg?" + Math.random());
                         $('#form_profile_success').show().delay(2000).fadeOut(400);
                     } else {
                         if (data.errors) {

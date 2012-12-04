@@ -189,7 +189,7 @@ get '/funds/data/list' => sub {
   }
   my $total=0;
   my $sth = database->prepare(
-   'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_billing_funds_history WHERE 1'
+   'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_billing_funds_history WHERE user_id='.$id
   );
   if ($sth->execute()) {
    ($total) = $sth -> fetchrow_array;
@@ -198,7 +198,7 @@ get '/funds/data/list' => sub {
   my $total_filtered=0;  
   if ($where ne '1' && $total > 0) {
    my $sth = database->prepare(    
-    'SELECT COUNT(*) AS cnt FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where
+    'SELECT COUNT(*) AS cnt FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.' AND user_id='.$id
    );
    if ($sth->execute()) {
     ($total_filtered) = $sth -> fetchrow_array;
@@ -232,7 +232,7 @@ get '/funds/data/list' => sub {
   my $columns=join(',',@columns_funds);
   $columns=~s/,$//;
   $sth = database->prepare(
-   'SELECT '.$columns.',trans_id FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
+   'SELECT '.$columns.',trans_id FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE '.$where.' AND user_id='.$id.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
   );
   if ($sth->execute()) {
    while(my (@ary) = $sth -> fetchrow_array) {
@@ -490,7 +490,7 @@ post '/data/funds/history/save' => sub {
   if ($trans_objects !~ /^.{0,250}$/) {
    return qq~{"result":"0","field":"trans_objects","error":"~.$lang->{form_error_invalid_trans_objects}.qq~"}~;
   }
-  if ($trans_date !~ /^[0-9\.\/\-\: ]{1,20}$/) {
+  if ($trans_date !~ /^[0-9AMP\.\/\-\: ]{1,20}$/) {
    return qq~{"result":"0","field":"trans_date","error":"~.$lang->{form_error_invalid_trans_date}.qq~"}~;
   }
   $trans_date = str2time($trans_date);
@@ -638,6 +638,40 @@ post '/data/domain/load' => sub {
   return $json;    
 };
 
+post '/data/funds/history/load' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+   'SELECT trans_id, trans_objects, trans_amount, trans_date FROM '.config->{db_table_prefix}.'_billing_funds_history WHERE id='.$id
+  );
+  my ($trans_id, $trans_objects, $trans_amount, $trans_date);
+  if ($sth->execute()) {
+   ($trans_id, $trans_objects, $trans_amount, $trans_date) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$trans_date) {
+   return qq~{"result":"0"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{trans_id}=$trans_id;
+  $response{trans_objects}=$trans_objects;
+  $response{trans_amount}=$trans_amount;
+  $response{trans_date}=time2str($lang->{trans_date_template}, $trans_date);
+  $response{trans_date}=~s/\\//gm;
+  $response{trans_time}=time2str($lang->{trans_time_template}, $trans_date);
+  $response{trans_time}=~s/\\//gm;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
 post '/data/hosting/delete' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
@@ -682,6 +716,27 @@ post '/data/domain/delete' => sub {
   return $res; 
 };
 
+post '/data/funds/history/delete' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+    'DELETE FROM '.config->{db_table_prefix}.'_billing_funds_history WHERE id='.$id
+  );
+  my $res;
+  if ($sth->execute()) {
+   $res=qq~{"result":"1"}~;
+  } else {
+   $res=qq~{"result":"0"}~;
+  }
+  $sth->finish();
+  return $res; 
+};
 
 # End
 

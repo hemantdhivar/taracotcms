@@ -63,8 +63,11 @@ domain_exp_hint: Example&#058;&nbsp;YYYY/MM/DD
 domain_date_template: \%Y/\%m/\%d 
 domain_date_picker_template: yyyy/mm/dd 
 domain_date_picker_week_start: 0
-trans_datetime_picker_template: yyyy/mm/dd hh:ii:ss
+trans_datetime_picker_template: yyyy/mm/dd
 trans_datetime_picker_week_start: 0
+trans_date_template: \%Y/\%m/\%d 
+trans_time_template: \%I\:\%M %p
+trans_time_picker_show_meridian: true
 history_datetime_template: \%Y/\%m/\%d \%l:%M %p
 form_error_invalid_domain_name: Invalid domain name
 form_error_invalid_domain_exp: Invalid domain expiration date
@@ -74,7 +77,9 @@ trans_reason: Reason and/or objects
 trans_objects: Objects
 trans_amount: Amount
 trans_date: Date
+trans_time: Time
 btn_add_history_record: Add history record
+btn_edit_history_record: Edit history record
 trans_id: Transaction ID
 add_history_record: Add history record
 edit_history_record: Edit history record
