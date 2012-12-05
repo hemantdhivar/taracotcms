@@ -3,9 +3,19 @@ $('#domain_exp').datepicker({
 }).on('changeDate', function(ev){
     $("#domain_exp").datepicker('hide');
 });
+// Populate countries list
+var cntrs = js_lang_countries.split('=');
+for (var i=0; i<cntrs.length; i++) {
+    var cntr = cntrs[i].split(',');
+    $('#country').append('<option value="'+cntr[0]+'">'+cntr[1]+'</option>');
+}
 // Init variables
 var hosting_edit_id = 0;
 var domain_edit_id = 0;
+var service_edit_id = 0;
+var hosting_count = 0;
+var domains_count = 0;
+var services_count = 0;
 var dtable;
 $(document).ready(function () {
     $().dropdown();
@@ -179,30 +189,34 @@ function editData(id) {
                 $('#ajax_loading').hide();
                 $('#data_form_buttons').show();
                 // Show hosting accounts
-                if (data.hosting) {
-                    var tdata;
+                hosting_count = 0;
+                if (data.hosting && data.hosting.length > 0) {
+                    hosting_count = data.hosting.length;
+                    var tdata='';
                     tdata = '<br/><table class="table" id="hosting_table"><tbody>';
                     for (var i = 0; i < data.hosting.length; i++) {
                         tdata += "<tr id=\"hosting_row_" + data.hosting[i].id + "\"><td><span id=\"hosting_account_name_" + data.hosting[i].id + "\">" + data.hosting[i].account + "</span></td><td>" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + "/" + js_lang_hac_per_month + ")</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;" + data.hosting[i].days + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editHosting('" + data.hosting[i].id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteHosting('" + data.hosting[i].id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
                     }
                     tdata += "</tbody></table>";
-                    $('#data_accounts').html(tdata);
-                    var hplans = '';
-                    if (data.hosting_plans) {
-                        for (var i = 0; i < data.hosting_plans.length; i++) {
-                            var name = data.hosting_plans[i].name || '';
-                            var id = data.hosting_plans[i].id || '';
-                            var cost = data.hosting_plans[i].cost || 0;
-                            hplans += "<option value=\"" + id + "\">" + name + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
-                        }
-                    }
-                    $('#hplan').html(hplans);
+                    $('#data_accounts').html(tdata);                    
                 } else {
-                    $('#data_accounts').html("<br/>js_lang_no_hosting_accounts");
+                    $('#data_accounts').html('<br/>'+js_lang_no_hosting_accounts);
                 }
+                var hplans = '';                
+                if (data.hosting_plans) {                    
+                    for (var i = 0; i < data.hosting_plans.length; i++) {
+                        var name = data.hosting_plans[i].name || '';
+                        var id = data.hosting_plans[i].id || '';
+                        var cost = data.hosting_plans[i].cost || 0;
+                        hplans += "<option value=\"" + id + "\">" + name + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
+                    }
+                }
+                $('#hplan').html(hplans);
                 // Show domains
-                if (data.domains) {
-                    var ddata;
+                domains_count = 0;
+                if (data.domains && data.domains.length > 0) {
+                    domains_count = data.domains.length;
+                    var ddata='';
                     ddata = '<br/><table class="table" id="domain_table"><tbody>';
                     for (var i = 0; i < data.domains.length; i++) {
                         ddata += "<tr id=\"domain_row_" + data.domains[i].id + "\"><td><span id=\"domain_name_" + data.domains[i].id + "\">" + data.domains[i].domain_name + "</span></td><td width=\"100\"><i class=\" icon-calendar\"></i>&nbsp;" + data.domains[i].exp_date + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editDomain('" + data.domains[i].id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteDomain('" + data.domains[i].id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
@@ -210,8 +224,32 @@ function editData(id) {
                     ddata += "</tbody></table>";
                     $('#data_domains').html(ddata);
                 } else {
-                    $('#data_domains').html("<br/>js_lang_no_domains");
+                    $('#data_domains').html("<br/>"+js_lang_no_domains);
                 }
+                // Show services
+                services_count = 0;
+                if (data.services && data.services.length > 0) {
+                    services_count = data.services.length;
+                    var sdata='';
+                    sdata = '<br/><table class="table" id="services_table"><tbody>';
+                    for (var i = 0; i < data.services.length; i++) {
+                        sdata += "<tr id=\"service_row_" + data.services[i].id + "\"><td><span id=\"service_name_" + data.services[i].id + "\">" + data.services[i].service_name + " <small style=\"color:#666\">(" + data.services[i].service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" icon-time\"></i>&nbsp;" + data.services[i].service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editService('" + data.services[i].id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteService('" + data.services[i].id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
+                    }
+                    sdata += "</tbody></table>";
+                    $('#data_services').html(sdata);
+                } else {
+                    $('#data_services').html("<br/>"+js_lang_no_services);
+                }
+                var sid = '';
+                if (data.service_plans) {
+                    for (var i = 0; i < data.service_plans.length; i++) {
+                        var name = data.service_plans[i].name || '';
+                        var id = data.service_plans[i].id || '';
+                        var cost = data.service_plans[i].cost || 0;
+                        sid += "<option value=\"" + id + "\">" + name + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
+                    }
+                }
+                $('#sid').html(sid);
             }
         },
         error: function () {
@@ -229,6 +267,14 @@ $('#btn_hosting_dialog_close').click(function () {
 // Button "Close" handler (Dialog: "Domain")
 $('#btn_domain_dialog_close').click(function () {
     $('#domain_edit_dialog').modal('hide');
+});
+// Button "Close" handler (Dialog: "Services")
+$('#btn_service_dialog_close').click(function () {
+    $('#service_edit_dialog').modal('hide');
+});
+// Button "Close" handler (Dialog: "Profile")
+$('#btn_profile_dialog_close').click(function () {
+    $('#profile_edit_dialog').modal('hide');
 });
 // Button "Return to list" hanlder
 $('#btn_return_to_list').click(function () {
@@ -271,6 +317,23 @@ $('#btn_add_domain').click(function () {
     $('#domain_name').focus();
     domain_edit_id = 0;
 });
+// Add service button event handler
+$('#btn_add_service').click(function () {
+    $('#cg_sid').removeClass('error');
+    $('#cg_sdays').removeClass('error');
+    $('#service_edit_form_error').hide();
+    $('#service_edit_ajax').hide();
+    $('#service_edit_form').show();
+    $('#service_edit_buttons').show();
+    $('select option:first-child').attr("selected", "selected");
+    $('#sdays').val('');
+    $('#service_edit_dialog_title').html(js_lang_add_service);
+    $('#service_edit_dialog').modal({
+        keyboard: true
+    });
+    $('#service_name').focus();
+    service_edit_id = 0;
+});
 // Add/edit hosting account save button click event
 $('#btn_hosting_dialog_save').click(function () {
     $('#cg_haccount').removeClass('error');
@@ -301,6 +364,7 @@ $('#btn_hosting_dialog_save').click(function () {
             url: '/admin/billing/data/hosting/save',
             data: {
                 id: hosting_edit_id,
+                user_id: edit_id,
                 haccount: $('#haccount').val(),
                 hplan: $('#hplan').val(),
                 hdays: $('#hdays').val()
@@ -324,9 +388,15 @@ $('#btn_hosting_dialog_save').click(function () {
                 } else { // OK
                     $.jmessage(js_lang_success, js_lang_data_saved, 2500, 'jm_message_success');
                     if (!hosting_edit_id) {
-                        var tdata;
+                        hosting_count++;
+                        var tdata='';
                         tdata += "<tr id=\"hosting_row_" + data.id + "\"><td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" + js_lang_hac_per_month + ")</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
-                        $('#hosting_table tr:last').after(tdata);
+                        if ($('#hosting_table tr:last').size() > 0) {
+                            $('#hosting_table tr:last').after(tdata);
+                        } else {
+                            var ndata = '<br/><table class="table" id="hosting_table"><tbody>'+tdata+"</tbody></table>";
+                            $('#data_accounts').html(ndata);
+                        }
                     } else {
                         $("#hosting_row_" + data.id).html("<td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" +js_lang_hac_per_month +")</small></td><td width=\"60\"><i class=\" icon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"icon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td>")
                     }
@@ -371,6 +441,7 @@ $('#btn_domain_dialog_save').click(function () {
             url: '/admin/billing/data/domain/save',
             data: {
                 id: domain_edit_id,
+                user_id: edit_id,
                 domain_name: $('#domain_name').val(),
                 domain_exp: $('#domain_exp').val()
             },
@@ -393,9 +464,15 @@ $('#btn_domain_dialog_save').click(function () {
                 } else { // OK
                     $.jmessage(js_lang_success, js_lang_data_saved, 2500, 'jm_message_success');
                     if (!domain_edit_id) {
-                        var ddata;
+                        domains_count++;
+                        var ddata='';
                         ddata += "<tr id=\"domain_row_" + data.id + "\"><td><span id=\"domain_name_" + data.id + "\">" + data.domain_name + "</span></td><td width=\"100\"><i class=\" icon-calendar\"></i>&nbsp;" + data.domain_exp + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editDomain('" + data.id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteDomain('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
-                        $('#domain_table tr:last').after(ddata);
+                        if ($('#domain_table tr:last').size() > 0) {
+                            $('#domain_table tr:last').after(ddata);
+                        } else {
+                            var ndata = '<br/><table class="table" id="domain_table"><tbody>'+ddata+"</tbody></table>";
+                            $('#data_domains').html(ndata);
+                        }
                     } else {
                         $("#domain_row_" + data.id).html("<td><span id=\"domain_name_" + data.id + "\">" + data.domain_name + "</span></td><td width=\"100\"><i class=\" icon-calendar\"></i>&nbsp;" + data.domain_exp + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editDomain('" + data.id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteDomain('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td>");
                     }
@@ -407,6 +484,78 @@ $('#btn_domain_dialog_save').click(function () {
                 $('#domain_edit_ajax').hide();
                 $('#domain_edit_form').show();
                 $('#domain_edit_buttons').show();
+            }
+        });
+    }
+});
+// Add/edit service save button click event
+$('#btn_service_dialog_save').click(function () {
+    $('#cg_sid').removeClass('error');
+    $('#cg_sdays').removeClass('error');
+    $('#service_edit_form_error').hide();
+    var errors = false;
+    if (!$('#sdays').val().match(/^[0-9]{1,5}$/)) {
+        $('#cg_sdays').addClass('error');
+        errors = true;
+    }
+    if (errors) {
+        $('#service_edit_form_error_text').html(js_lang_form_errors);
+        $('#service_edit_form_error').fadeIn(400);
+        $('#service_edit_form_error').alert();
+        $('#service_name').focus();
+    } else {
+        $('#service_edit_ajax_msg').html(js_lang_ajax_saving);
+        $('#service_edit_ajax').show();
+        $('#service_edit_form').hide();
+        $('#service_edit_buttons').hide();
+        $.ajax({
+            type: 'POST',
+            url: '/admin/billing/data/service/save',
+            data: {
+                id: service_edit_id,
+                user_id: edit_id,
+                sid: $('#sid').val(),
+                sdays: $('#sdays').val()
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.result == '0') {
+                    if (data.error) { // ERROR
+                        $('#service_edit_form_error_text').html(data.error);
+                        $('#service_edit_form_error').fadeIn(400);
+                        $('#service_edit_form_error').alert();
+                    }
+                    $('#service_edit_ajax').hide();
+                    $('#service_edit_form').show();
+                    $('#service_edit_buttons').show();
+                    $('#ajax_loading').hide();
+                    if (data.field) {
+                        $('#cg_' + data.field).addClass('error');
+                        $('#' + data.field).focus();
+                    }
+                } else { // OK
+                    $.jmessage(js_lang_success, js_lang_data_saved, 2500, 'jm_message_success');
+                    if (!service_edit_id) {
+                        services_count++;
+                        var ddata='';                        
+                        ddata += "<tr id=\"service_row_" + data.id + "\"><td><span id=\"service_name_" + data.id + "\">" + data.service_name + " <small style=\"color:#666\">(" + data.service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" icon-time\"></i>&nbsp;" + data.service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editService('" + data.id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteService('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
+                        if ($('#services_table tr:last').size() > 0) {
+                            $('#services_table tr:last').after(ddata);
+                        } else {
+                            var ndata = '<br/><table class="table" id="services_table"><tbody>'+ddata+"</tbody></table>";
+                            $('#data_services').html(ndata);
+                        }
+                    } else {
+                        $("#service_row_" + data.id).html("<td><span id=\"service_name_" + data.id + "\">" + data.service_name + " <small style=\"color:#666\">(" + data.service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" icon-time\"></i>&nbsp;" + data.service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editService('" + data.id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteService('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td>");
+                    }
+                    $('#service_edit_dialog').modal('hide');
+                }
+            },
+            error: function () {
+                $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+                $('#service_edit_ajax').hide();
+                $('#service_edit_form').show();
+                $('#service_edit_buttons').show();
             }
         });
     }
@@ -454,6 +603,7 @@ function editHosting(id) {
             $('#hosting_edit_ajax').hide();
             $('#hosting_edit_form').show();
             $('#hosting_edit_buttons').show();
+            $('#hosting_edit_dialog').modal('hide');
         }
     });
 }
@@ -497,6 +647,51 @@ function editDomain(id) {
             $('#domain_edit_ajax').hide();
             $('#domain_edit_form').show();
             $('#domain_edit_buttons').show();
+            $('#domain_edit_dialog').modal('hide');
+        }
+    });
+}
+
+function editService(id) {
+    $('#service_edit_dialog_title').html(js_lang_edit_service);
+    $('#cg_sid').removeClass('error');
+    $('#cg_sdays').removeClass('error');
+    $('#service_edit_form_error').hide();
+    service_edit_id = id;
+    $('#service_edit_dialog').modal({
+        keyboard: true
+    });
+    $('#service_edit_ajax_msg').html(js_lang_ajax_loading);
+    $('#service_edit_ajax').show();
+    $('#service_edit_form').hide();
+    $('#service_edit_buttons').hide();
+    $.ajax({
+        type: 'POST',
+        url: '/admin/billing/data/service/load',
+        data: {
+            id: service_edit_id
+        },
+        dataType: "json",
+        success: function (data) {
+            if (data.result == '0') {
+                $('#service_edit_dialog').modal('hide');
+                $.jmessage(js_lang_error, js_lang_data_loading_error, 2500, 'jm_message_error');
+            } else { // OK
+                var sid = data.sid || '';
+                var sdays = data.sdays || '';
+                $('#sid').val(sid);
+                $('#sdays').val(sdays);
+                $('#service_edit_ajax').hide();
+                $('#service_edit_form').show();
+                $('#service_edit_buttons').show();
+            }
+        },
+        error: function () {
+            $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+            $('#service_edit_ajax').hide();
+            $('#service_edit_form').show();
+            $('#service_edit_buttons').show();
+            $('#service_edit_dialog').modal('hide');
         }
     });
 }
@@ -521,6 +716,10 @@ function deleteHosting(id) {
             } else { // OK         
                 $("#hosting_row_" + id).html('');
                 $.jmessage(js_lang_success, js_lang_data_delete_ok, 2500, 'jm_message_success');
+                hosting_count--;
+                if (hosting_count == 0) {
+                    $('#data_accounts').html('<br/>'+js_lang_no_hosting_accounts);
+                }
             }
         },
         error: function () {
@@ -550,11 +749,48 @@ function deleteDomain(id) {
             } else { // OK         
                 $("#domain_row_" + id).html('');
                 $.jmessage(js_lang_success, js_lang_data_delete_ok, 2500, 'jm_message_success');
+                domains_count--;
+                if (domains_count == 0) {
+                    $('#data_domains').html('<br/>'+js_lang_no_domains);
+                }
             }
         },
         error: function () {
             $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
             $("#domain_row_" + id).fadeIn(400);
+        }
+    });
+}
+
+function deleteService(id) {
+    if (!confirm(js_lang_data_delete_confirm + ":\n\n" + $('#service_name_' + id).text())) {
+        return false;
+    }
+    $("#service_row_" + id).fadeOut(400);
+    $.ajax({
+        type: 'POST',
+        url: '/admin/billing/data/service/delete',
+        data: {
+            id: id
+        },
+        dataType: "json",
+        success: function (data) {
+            if (data.result == '0') {
+                $('#service_edit_dialog').modal('hide');
+                $.jmessage(js_lang_error, js_lang_data_delete_error, 2500, 'jm_message_error');
+                $("#service_row_" + id).fadeIn(400);
+            } else { // OK         
+                $("#service_row_" + id).html('');
+                $.jmessage(js_lang_success, js_lang_data_delete_ok, 2500, 'jm_message_success');
+                services_count--;
+                if (services_count == 0) {
+                    $('#data_services').html('<br/>'+js_lang_no_services);
+                }
+            }
+        },
+        error: function () {
+            $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+            $("#service_row_" + id).fadeIn(400);
         }
     });
 }
@@ -568,6 +804,14 @@ $('#btn_funds').click(function() {
     features = 'top=' + top + ',left=' + left;
     features += ',height=' + h + ',width=' + w + ',resizable=no';
     imgbrowser = open('/admin/billing/funds?id=' + edit_id, 'displayWindow', features);
+});
+
+$('#btn_profile').click(function() {    
+    $('#profile_edit_dialog').modal({
+        keyboard: true
+    });  
+    $('#profile_form_top').focus();
+    $('#n1r').focus();
 });
 
 // dataTable ajax fix

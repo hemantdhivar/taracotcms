@@ -97,7 +97,7 @@ get '/data/list' => sub {
     (MATCH (u.email) AGAINST ('.$sSearch.' IN BOOLEAN MODE)) OR 
     (MATCH (d.domain_name) AGAINST ('.$sSearch.' IN BOOLEAN MODE) AND d.user_id = u.id) OR 
     (MATCH (h.host_acc) AGAINST ('.$sSearch.' IN BOOLEAN MODE) AND h.user_id = u.id) OR 
-    (MATCH (s.service_name) AGAINST ('.$sSearch.' IN BOOLEAN MODE) AND h.user_id = u.id))';   
+    (MATCH (s.service_id) AGAINST ('.$sSearch.' IN BOOLEAN MODE) AND h.user_id = u.id))';   
   }
   my $total=0;
   my $sth = database->prepare(
@@ -343,6 +343,42 @@ post '/data/load' => sub {
    push @hosting_plans, \%hosting_plan;
   }
   $response{hosting_plans} = \@hosting_plans;
+  # load service plan names and IDs from settings
+  my %service_plan_names;
+  my @service_plan_ids;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_service_name_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_service_name_//;
+      $service_plan_names{$s_name} = $s_value;
+      push @service_plan_ids, $s_name;
+    }
+  }
+  $sth->finish();
+  # load service plan costs from settings
+  my %service_plan_costs;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_service_cost_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_service_cost_//;
+      $service_plan_costs{$s_name} = $s_value;
+    }
+  }
+  $sth->finish();
+  # generate service plan array
+  my @service_plans;
+  foreach my $pid (@service_plan_ids) {
+   my %service_plan;
+   $service_plan{id} = $pid;
+   $service_plan{name} = $service_plan_names{$pid};
+   $service_plan{cost} = $service_plan_costs{$pid};
+   push @service_plans, \%service_plan;
+  }
+  $response{service_plans} = \@service_plans;
   # select hosting accounts
   $sth = database->prepare(
     'SELECT id,host_acc,host_plan_id,host_days_remain FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$id
@@ -379,6 +415,24 @@ post '/data/load' => sub {
     $response{domains} = \@domain_names;
   }
   $sth->finish();
+  # select services
+  $sth = database->prepare(
+    'SELECT id, service_id, service_days_remaining FROM `'.config->{db_table_prefix}.'_billing_services` WHERE user_id='.$id
+  );
+  if ($sth->execute()) {
+    my @services;
+    while (my ($id, $service_id, $service_days_remaining) = $sth -> fetchrow_array()) {      
+      my %data;
+      $data{id} = $id;
+      $data{service_id} = $service_id;
+      $data{service_days_remaining} = $service_days_remaining;
+      $data{service_cost} = $service_plan_costs{$service_id} || '0';
+      $data{service_name} = $service_plan_names{$service_id} || $service_id;
+      push (@services, \%data);
+    }
+    $response{services} = \@services;
+  }
+  $sth->finish();
   # return data
   my $json_xs = JSON::XS->new();
   my $json = $json_xs->encode(\%response);
@@ -394,7 +448,9 @@ post '/data/hosting/save' => sub {
   my $hplan=param('hplan') || '';
   my $hdays=param('hdays') || 0;
   my $id=param('id') || 0;
-  $id=int($id);
+  my $user_id=param('user_id') || 0;
+  $user_id=int($user_id);
+  $id=int($id);  
   $hdays=int($hdays);
   $hplan=lc($hplan);
   $haccount=lc($haccount);
@@ -433,7 +489,7 @@ post '/data/hosting/save' => sub {
   if ($id > 0) {
     database->quick_update(config->{db_table_prefix}.'_billing_hosting', { id => $id }, { host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
   } else {   
-    database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $auth->{id}, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
+    database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $user_id, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
     $id = database->{q{mysql_insertid}}; 
   }  
   if (!$id) {
@@ -462,6 +518,68 @@ post '/data/hosting/save' => sub {
   my $json = $json_xs->encode(\%response);
   return $json;    
 }; 
+
+post '/data/service/save' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();  
+  content_type 'application/json';
+  my $sid=param('sid') || '';
+  my $sdays=param('sdays') || 0;
+  my $id=param('id') || 0;
+  my $user_id=param('user_id') || 0;
+  $user_id=int($user_id);
+  $id=int($id);
+  $sdays=int($sdays);
+  $sid=lc($sid);
+  if ($sid !~ /^[A-Za-z0-9_\-]{1,100}$/) {
+   return qq~{"result":"0","field":"sid","error":"~.$lang->{form_error_invalid_sid}.qq~"}~;
+  }
+  if ($sdays > 9999 || $sdays < -9999) {
+   return qq~{"result":"0","field":"sdays","error":"~.$lang->{form_error_invalid_sdays}.qq~"}~;
+  }  
+  my $sth = database->prepare(
+   'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_service_name_'.$sid)
+  );
+  my $splan_name;
+  if ($sth->execute()) {
+   ($splan_name) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$splan_name) {
+    return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_sid}.qq~"}~;
+  }
+  if ($id > 0) {
+    database->quick_update(config->{db_table_prefix}.'_billing_services', { id => $id }, { service_id => $sid, service_days_remaining => $sdays, lastchanged => time });
+  } else {   
+    database->quick_insert(config->{db_table_prefix}.'_billing_services', { user_id => $user_id, service_id => $sid, service_days_remaining => $sdays, lastchanged => time });
+    $id = database->{q{mysql_insertid}}; 
+  }  
+  if (!$id) {
+   return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  $sth = database->prepare(
+   'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_service_cost_'.$sid)
+  );
+  my $splan_cost;
+  if ($sth->execute()) {
+   ($splan_cost) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$splan_cost) { 
+   $splan_cost="0";
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{id}=$id;
+  $response{service_id}=$sid;
+  $response{service_days_remaining}=$sdays;
+  $response{service_name}=$splan_name;
+  $response{service_cost}=$splan_cost;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
 
 post '/data/funds/history/save' => sub {
   my $auth = &taracot::admin::_auth();
@@ -531,6 +649,8 @@ post '/data/domain/save' => sub {
   my $domain_name=param('domain_name') || '';
   my $domain_exp=param('domain_exp') || '';
   my $id=param('id') || 0;
+  my $user_id=param('user_id') || 0;
+  $user_id=int($user_id);
   $id=int($id);
   $domain_name=lc($domain_name);
   if ($domain_name !~ /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/) {
@@ -561,7 +681,7 @@ post '/data/domain/save' => sub {
   if ($id > 0) {
     database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { domain_name => $domain_name, exp_date => $domain_exp, lastchanged => time });
   } else {   
-    database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $auth->{id}, domain_name => $domain_name, exp_date => $domain_exp, lastchanged => time });
+    database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name, exp_date => $domain_exp, lastchanged => time });
     $id = database->{q{mysql_insertid}}; 
   }  
   if (!$id) {
@@ -638,6 +758,35 @@ post '/data/domain/load' => sub {
   return $json;    
 };
 
+post '/data/service/load' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+   'SELECT service_id, service_days_remaining FROM '.config->{db_table_prefix}.'_billing_services WHERE id='.$id
+  );
+  my ($service_id, $service_days_remaining);
+  if ($sth->execute()) {
+   ($service_id, $service_days_remaining) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$service_id) {
+   return qq~{"result":"0"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{sid}=$service_id;
+  $response{sdays}=$service_days_remaining;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
 post '/data/funds/history/load' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
@@ -705,6 +854,28 @@ post '/data/domain/delete' => sub {
   }
   my $sth = database->prepare(
     'DELETE FROM '.config->{db_table_prefix}.'_billing_domains WHERE id='.$id
+  );
+  my $res;
+  if ($sth->execute()) {
+   $res=qq~{"result":"1"}~;
+  } else {
+   $res=qq~{"result":"0"}~;
+  }
+  $sth->finish();
+  return $res; 
+};
+
+post '/data/service/delete' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+    'DELETE FROM '.config->{db_table_prefix}.'_billing_services WHERE id='.$id
   );
   my $res;
   if ($sth->execute()) {

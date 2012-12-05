@@ -18,7 +18,7 @@
         <th>[== $lang->{realname} =]</th>
         <th>[== $lang->{email} =]</th>
         <th style="width:90px;text-align:center">[== $lang->{amount} =]</th>
-        <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+        <th style="width:50px;text-align:center">[== $lang->{actions} =]</th>
       </tr>
       </thead>
       <tbody>
@@ -30,7 +30,7 @@
         <th style="width:40px">[== $lang->{id} =]</th>
         <th>[== $lang->{username} =]</th>    
         <th style="width:60px;text-align:center">[== $lang->{funds} =]</th>
-        <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+        <th style="width:50px;text-align:center">[== $lang->{actions} =]</th>
       </tr>
     </thead>
     <tbody>
@@ -38,6 +38,197 @@
   </table>  
 </div>
 <!-- data_overview -->
+
+<!-- 
+ Profile dialog
+-->
+
+<div class="modal hide" id="profile_edit_dialog">
+ <div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h3>[== $lang->{profile} =]</h3>
+ </div>
+ <div class="modal-body">
+  <span class="form-horizontal" id="profile_edit_form">
+    <div class="alert alert-block alert-error" id="profile_edit_form_error" style="display:none">
+      <span id="profile_edit_form_error_text"></span>
+    </div>
+    <blockquote id="profile_form_top">
+      <p class="lead">[== $lang->{russian_lang_data} =]</p>
+    </blockquote>
+    <span id="form_controls"> 
+      <div class="control-group" id="cg_n1r"> 
+        <label class="control-label" for="n1r">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="n1r" />
+          <p class="help-block"><small>[== $lang->{p_last_name_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_n2r"> 
+        <label class="control-label" for="n2r">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="n2r" />
+          <p class="help-block"><small>[== $lang->{p_first_name_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_n3r"> 
+        <label class="control-label" for="n3r">[== $lang->{p_patronym} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="n3r" />
+          <p class="help-block"><small>[== $lang->{p_patronym_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_passport"> 
+        <label class="control-label" for="passport">[== $lang->{p_passport} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="passport" />
+          <p class="help-block"><small>[== $lang->{p_passport_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_birth_date"> 
+        <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="birth_date" />
+          <p class="help-block"><small>[== $lang->{p_birth_date_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_addr_ru"> 
+        <label class="control-label" for="addr_ru">[== $lang->{p_addr_ru} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="addr_ru" />
+          <p class="help-block"><small>[== $lang->{p_addr_ru_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_private"> 
+        <label class="control-label" for="private">[== $lang->{p_private} =]</label> 
+        <div class="controls">
+          <input type="checkbox" id="private" />
+        </div>
+      </div>      
+    </span>
+    <blockquote>
+      <p class="lead">[== $lang->{russian_org_lang_data} =]<br/><small>[== $lang->{russian_org_lang_data_filled_hint} =]</small></p>      
+    </blockquote>
+    <span id="form_controls"> 
+      <div class="control-group" id="cg_org_r"> 
+        <label class="control-label" for="org_r">[== $lang->{p_org_r} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-large" id="org_r" />
+          <p class="help-block"><small>[== $lang->{p_org_ru_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_org"> 
+        <label class="control-label" for="org">[== $lang->{p_org} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-large" id="org" />
+          <p class="help-block"><small>[== $lang->{p_org_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_code"> 
+        <label class="control-label" for="code">[== $lang->{p_code} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="code" />
+          <p class="help-block"><small>[== $lang->{p_code_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_kpp"> 
+        <label class="control-label" for="kpp">[== $lang->{p_kpp} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="kpp" />
+          <p class="help-block"><small>[== $lang->{p_kpp_hint} =]</small></p>
+        </div>
+      </div>
+    </span>
+    <blockquote>
+      <p class="lead">[== $lang->{int_lang_data} =]</p>
+    </blockquote>
+    <span id="form_controls"> 
+      <div class="control-group" id="cg_n1e"> 
+        <label class="control-label" for="n1e">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="n1e" />
+          <p class="help-block"><small>[== $lang->{p_last_name_en_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_n2e"> 
+        <label class="control-label" for="n2e">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="n2e" />
+          <p class="help-block"><small>[== $lang->{p_first_name_en_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_n3e"> 
+        <label class="control-label" for="n3e">[== $lang->{p_patronym_first} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="span1" id="n3e" />
+          <p class="help-block"><small>[== $lang->{p_patronym_first_en_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_country"> 
+        <label class="control-label" for="country">[== $lang->{p_country} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <select id="country">
+          </select>
+        </div>
+      </div>  
+      <div class="control-group" id="cg_city"> 
+        <label class="control-label" for="n2e">[== $lang->{p_city} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-large" id="city" />
+          <p class="help-block"><small>[== $lang->{p_city_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_state"> 
+        <label class="control-label" for="n2e">[== $lang->{p_state} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-large" id="state" />
+          <p class="help-block"><small>[== $lang->{p_state_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_addr"> 
+        <label class="control-label" for="n2e">[== $lang->{p_addr} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="addr" />
+          <p class="help-block"><small>[== $lang->{p_addr_hint} =]</small></p>
+        </div>
+      </div>
+    </span>
+    <blockquote>
+      <p class="lead">[== $lang->{int_cont_data} =]</p>
+    </blockquote>
+    <span id="form_controls"> 
+      <div class="control-group" id="cg_phone"> 
+        <label class="control-label" for="phone">[== $lang->{p_phone} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="phone" />
+          <p class="help-block"><small>[== $lang->{p_phone_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_fax"> 
+        <label class="control-label" for="fax">[== $lang->{p_fax} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="fax" />
+          <p class="help-block"><small>[== $lang->{p_fax_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_email"> 
+        <label class="control-label" for="email">[== $lang->{p_email} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-large" id="email" />
+          <p class="help-block"><small>[== $lang->{p_email_hint} =]</small></p>
+        </div>
+      </div>
+    </span>
+  </span>
+  <div id="profile_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="profile_edit_ajax_msg"></span>
+  </div>
+ </div>
+  <div class="modal-footer" id="profile_edit_buttons">            
+    <a class="btn btn-success" id="btn_profile_dialog_save">[== $lang->{btn_save} =]</a>
+    <a class="btn" id="btn_profile_dialog_close">[== $lang->{btn_close} =]</a>
+ </div>
+</div>
 
 <!-- 
  "Hosting account" modal dialog 
@@ -82,6 +273,46 @@
   <div class="modal-footer" id="hosting_edit_buttons">            
     <a class="btn btn-success" id="btn_hosting_dialog_save">[== $lang->{btn_save} =]</a>
     <a class="btn" id="btn_hosting_dialog_close">[== $lang->{btn_close} =]</a>
+ </div>
+</div>
+
+<!-- 
+ "Services" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="service_edit_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3 id="service_edit_dialog_title"></h3>
+ </div>
+ <div class="modal-body">
+  <span class="form-horizontal" id="service_edit_form">
+    <div class="alert alert-block alert-error" id="service_edit_form_error" style="display:none">
+      <span id="service_edit_form_error_text"></span>
+    </div>
+    <span id="form_controls"> 
+      <div class="control-group" id="cg_sid"> 
+        <label class="control-label" for="sid">[== $lang->{service_id} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <select id="sid">
+          </select>
+        </div>
+      </div>
+      <div class="control-group" id="cg_sdays"> 
+        <label class="control-label" for="sdays">[== $lang->{service_days} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="sdays" />
+        </div>
+      </div>
+    </span>
+  </span>
+  <div id="service_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="service_edit_ajax_msg"></span>
+  </div>
+ </div>
+  <div class="modal-footer" id="service_edit_buttons">            
+    <a class="btn btn-success" id="btn_service_dialog_save">[== $lang->{btn_save} =]</a>
+    <a class="btn" id="btn_service_dialog_close">[== $lang->{btn_close} =]</a>
  </div>
 </div>
 
@@ -132,16 +363,16 @@
     <div id="container-fluid">
       <div class="row-fluid">
         <div class="span6">
-          <div id="username" class="large-non-bold-font"></div><img src="/images/blank.gif" width="10" height="6" alt=" " /><br />
+          <div id="username" class="large-non-bold-font"></div><br />
         </div>  
         <div class="span6" style="text-align:right">
-          <img src="/images/blank.gif" width="1" height="40" alt="" class="visible-desktop" /><br/><span class="btn btn-primary btn-small" id="btn_funds"><img src="/images/coins.png" width="16" height="16" alt="" /></span>&nbsp;&nbsp;<b>[== $lang->{funds} =]:</b> <span id="funds"></span>&nbsp;&nbsp;
+          <img src="/images/blank.gif" width="1" height="40" alt="" class="visible-desktop" /><br/><span class="btn btn-small" id="btn_profile"><img src="/images/profile.png" width="16" height="16" alt="[== $lang->{profile} =]" /></span><img src="/images/blank.gif" width="5" height="6" alt=" " /><span class="btn btn-small" id="btn_funds"><img src="/images/coins.png" width="16" height="16" alt="" /></span>&nbsp;&nbsp;<b>[== $lang->{funds} =]:</b> <span id="funds"></span>&nbsp;&nbsp;
           <span class="visible-phone visible-tablet"><br /></span>
         </div>
       </div>
       <div class="row-fluid">      
         <div class="span4" style="margin-bottom:3px">
-          <div class="bg-grey-pad">
+          <div class="bg-grey-pad column">
             <div class="medium-large-non-bold">
               <span class="btn btn-success btn-small" style="float:right" id="btn_add_hosting"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_account} =]</span>
               [== $lang->{hosting_accounts} =]
@@ -150,7 +381,7 @@
           </div>
         </div>
         <div class="span4" style="margin-bottom:3px">
-          <div class="bg-grey-pad">
+          <div class="bg-grey-pad column">
             <div class="medium-large-non-bold">
               <span class="btn btn-success btn-small" style="float:right" id="btn_add_domain"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_domain} =]</span>
               [== $lang->{domains} =]
@@ -159,7 +390,7 @@
           </div>
         </div>
         <div class="span4">
-          <div class="bg-grey-pad">
+          <div class="bg-grey-pad column">
             <div class="medium-large-non-bold">
               <span class="btn btn-success btn-small" style="float:right" id="btn_add_service"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_service} =]</span>
               [== $lang->{services} =]
@@ -206,6 +437,7 @@ var js_lang_add_domain = "[== $lang->{add_domain} =]";
 var js_lang_domains = "[== $lang->{domains} =]";
 var js_lang_no_domains = "[== $lang->{no_domains} =]";
 var js_lang_add_service = "[== $lang->{add_service} =]";
+var js_lang_edit_service = "[== $lang->{edit_service} =]";
 var js_lang_services = "[== $lang->{services} =]";
 var js_lang_no_services = "[== $lang->{no_services} =]";
 var js_lang_return_to_list = "[== $lang->{return_to_list} =]";
@@ -233,6 +465,7 @@ var js_lang_edit_domain = "[== $lang->{edit_domain} =]";
 var js_lang_data_delete_confirm = "[== $lang->{data_delete_confirm} =]";
 var js_lang_data_delete_error = "[== $lang->{data_delete_error} =]";
 var js_lang_data_delete_ok = "[== $lang->{data_delete_ok} =]";
+var js_lang_countries = "[== $lang->{countries} =]";
 </script>
 <script type="text/javascript" src="/js//modules/admin_billing_index.js"></script>
 <script type="text/javascript">$('#nav_billing').addClass('active')</script>

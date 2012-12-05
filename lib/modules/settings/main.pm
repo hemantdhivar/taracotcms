@@ -48,13 +48,6 @@ get '/' => sub {
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
   _load_lang();  
   my $navdata=&taracot::admin::_navdata();
-  my $layouts=config->{layouts_available};
-  $layouts=~s/ //gm;
-  my @a_layouts=split(/,/, $layouts);
-  my $list_layouts;
-  foreach my $item (@a_layouts) {
-   $list_layouts.=qq~<option value="$item">$item</option>~;
-  }
   my $langs=config->{lang_available};
   $langs=~s/ //gm;
   my @a_langs=split(/,/, $langs);
@@ -64,14 +57,14 @@ get '/' => sub {
   my $list_langs;
   my $_cnt;
   my $hash_langs;
-  # one: 1, two: 2, three: 3, "i'm no 4": 4
+  $list_langs.=qq~<option value="">&mdash;</option>~;
   foreach my $item (@a_langs) {
    $list_langs.=qq~<option value="$item">$a_langs_long[$_cnt]</option>~;
    $hash_langs.=qq~, $item: "$a_langs_long[$_cnt]"~;
    $_cnt++;
   }
   $hash_langs=~s/, //;
-  return template 'admin_settings_index', { lang => $lang, navdata => $navdata, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs, authdata => $auth }, { layout => 'admin' };
+  return template 'admin_settings_index', { lang => $lang, navdata => $navdata, list_langs => $list_langs, hash_langs => $hash_langs, authdata => $auth }, { layout => 'admin' };
   
 };
 
@@ -191,7 +184,7 @@ post '/data/save' => sub {
   my $lang_avail=lc config->{lang_available};
   $lang_avail=~s/ //gm;
   my (@langs)=split(/,/, $lang_avail);
-  if (!exists {map { $_ => 1 } @langs}->{$plang}) {
+  if ($plang && !exists {map { $_ => 1 } @langs}->{$plang}) {
    return qq~{"result":"0","error":"~.$lang->{form_error_invalid_lang}.qq~"}~;
   }
   my $sth;
@@ -257,7 +250,7 @@ post '/data/save/field' => sub {
    my $lang_avail=lc config->{lang_available};
    $lang_avail=~s/ //gm;
    my (@langs)=split(/,/, $lang_avail);
-   if (!exists {map { $_ => 1 } @langs}->{$field_value}) {
+   if ($field_value && !exists {map { $_ => 1 } @langs}->{$field_value}) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_lang}.qq~"}~;
    }
    my $sth;
