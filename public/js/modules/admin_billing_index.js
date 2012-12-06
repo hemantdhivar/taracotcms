@@ -560,6 +560,173 @@ $('#btn_service_dialog_save').click(function () {
         });
     }
 });
+// Add/edit profile save button click event
+$('#btn_profile_dialog_save').click(function () {
+    $(".prcg").each(function() {
+        $(this).removeClass('error');
+    });
+    $('#profile_edit_form_error').hide();
+    var errors = false;
+    if (!$('#n1r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
+        $('#cg_n1r').addClass('error');
+        errors = true;
+    }
+    if (!$('#n2r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
+        $('#cg_n2r').addClass('error');
+        errors = true;
+    }
+    if (!$('#n3r').val().match(/^[А-Яа-я\-]{1,24}$/)) {
+        $('#cg_n3r').addClass('error');
+        errors = true;
+    }
+    if (!$('#n1e').val().match(/^[A-Za-z\-]{1,30}$/)) {
+        $('#cg_n1e').addClass('error');
+        errors = true;
+    }
+    if (!$('#n2e').val().match(/^[A-Za-z\-]{1,30}$/)) {
+        $('#cg_n2e').addClass('error');
+        errors = true;
+    }
+    if (!$('#n3e').val().match(/^[A-Z]{1}$/)) {
+        $('#cg_n3e').addClass('error');
+        errors = true;
+    }
+    if (!$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+        $('#cg_email').addClass('error');
+        errors = true;
+    }
+    if (!$('#phone').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
+        $('#cg_phone').addClass('error');
+        errors = true;
+    }
+    if ($('#fax').val() && !$('#fax').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
+        $('#cg_fax').addClass('error');
+        errors = true;
+    }
+    if (!$('#passport').val().match(/^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
+        $('#cg_passport').addClass('error');
+        errors = true;
+    }
+    if (!$('#birth_date').val().match(/^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
+        $('#cg_birth_date').addClass('error');
+        errors = true;
+    }    
+    if (!$('#addr_ru').val().match(/^([0-9]{6}),(\s)(.*)$/)) {
+        $('#cg_addr_ru').addClass('error');
+        errors = true;
+    }
+    if ($('#org_r').val() || $('#org').val() || $('#code').val() || $('#kpp').val()) {
+        if (!$('#org_r').val().match(/^(.{1,80})$/)) {
+            $('#cg_org_r').addClass('error');
+            errors = true;
+        }
+        if (!$('#org').val().match(/^(.{1,80})$/)) {
+            $('#cg_org').addClass('error');
+            errors = true;
+        }
+        if (!$('#code').val().match(/^([0-9]{10})$/)) {
+            $('#cg_code').addClass('error');
+            errors = true;
+        }
+        if (!$('#kpp').val().match(/^([0-9]{9})$/)) {
+            $('#cg_kpp').addClass('error');
+            errors = true;
+        }
+    }   
+    if (!$('#city').val().match(/^([A-Za-z\-\. ]{2,64})$/)) {
+        $('#cg_city').addClass('error');
+        errors = true;
+    }
+    if (!$('#state').val().match(/^([A-Za-z\-\. ]{2,40})$/)) {
+        $('#cg_state').addClass('error');
+        errors = true;
+    }
+    if (!$('#addr').val().match(/^(.{2,80})$/)) {
+        $('#cg_addr').addClass('error');
+        errors = true;
+    }
+    if (errors) {
+        $('#profile_edit_form_error_text').html(js_lang_form_errors);
+        $('#profile_edit_form_error').fadeIn(400);
+        $('#profile_edit_form_error').alert();
+        $('#profile_modal_body').scrollTop(0);
+        $('#n1r').focus();
+    } else {
+        $('#profile_edit_ajax_msg').html(js_lang_ajax_saving);
+        $('#profile_edit_ajax').show();
+        $('#profile_edit_form').hide();
+        $('#profile_edit_buttons').hide();
+        $.ajax({
+            type: 'POST',
+            url: '/admin/billing/data/profile/save',
+            data: {
+                id: edit_id,
+                n1r: $('#n1r').val(),
+                n1e: $('#n1e').val(),
+                n2r: $('#n2r').val(),
+                n2e: $('#n2e').val(),
+                n3r: $('#n3r').val(),
+                n3e: $('#n3e').val(),
+                email: $('#email').val(),
+                phone: $('#phone').val(),
+                fax: $('#fax').val(),
+                country: $('#country').val(),
+                city: $('#city').val(),
+                state: $('#state').val(),
+                addr: $('#addr').val(),
+                postcode: $('#postcode').val(),
+                passport: $('#passport').val(),
+                birth_date: $('#birth_date').val(),
+                addr_ru: $('#addr_ru').val(),
+                org: $('#org').val(),
+                org_r: $('#org_r').val(),
+                code: $('#code').val(),
+                kpp: $('#kpp').val(),
+                private: $('#private').val()
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.result == '0') {
+                    if (data.error) { // ERROR
+                        $('#profile_edit_form_error_text').html(data.error);
+                        $('#profile_edit_form_error').fadeIn(400);
+                        $('#profile_edit_form_error').alert();
+                    }
+                    $('#profile_edit_ajax').hide();
+                    $('#profile_edit_form').show();
+                    $('#profile_edit_buttons').show();
+                    $('#ajax_loading').hide();
+                    if (data.field) {
+                        $('#cg_' + data.field).addClass('error');
+                        $('#' + data.field).focus();
+                    }
+                } else { // OK
+                    $.jmessage(js_lang_success, js_lang_data_saved, 2500, 'jm_message_success');
+                    if (!profile_edit_id) {
+                        profiles_count++;
+                        var ddata='';                        
+                        ddata += "<tr id=\"profile_row_" + data.id + "\"><td><span id=\"profile_name_" + data.id + "\">" + data.profile_name + " <small style=\"color:#666\">(" + data.profile_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" icon-time\"></i>&nbsp;" + data.profile_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editprofile('" + data.id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteprofile('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td></tr>";
+                        if ($('#profiles_table tr:last').size() > 0) {
+                            $('#profiles_table tr:last').after(ddata);
+                        } else {
+                            var ndata = '<br/><table class="table" id="profiles_table"><tbody>'+ddata+"</tbody></table>";
+                            $('#data_profiles').html(ndata);
+                        }
+                    } else {
+                        $("#profile_row_" + data.id).html("<td><span id=\"profile_name_" + data.id + "\">" + data.profile_name + " <small style=\"color:#666\">(" + data.profile_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" icon-time\"></i>&nbsp;" + data.profile_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editprofile('" + data.id + "')\"><i class=\"icon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteprofile('" + data.id + "')\"><i class=\"icon-trash icon-white\"></i></span></td>");
+                    }
+                    $('#profile_edit_dialog').modal('hide');
+                }
+            },
+            error: function () {
+                $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+                $('#profile_edit_ajax').hide();
+                $('#profile_edit_form').show();
+                $('#profile_edit_buttons').show();
+            }
+        });
+    }
+});
 
 function editHosting(id) {
     $('#hosting_edit_dialog_title').html(js_lang_edit_account);
@@ -810,8 +977,16 @@ $('#btn_profile').click(function() {
     $('#profile_edit_dialog').modal({
         keyboard: true
     });  
-    $('#profile_form_top').focus();
+    $(".prif").each(function() {
+        $(this).val('');
+    });
+    $(".prcg").each(function() {
+        $(this).removeClass('error');
+    });
+    $('#profile_edit_form_error').hide();
+    $('#profile_modal_body').scrollTop(0);
     $('#n1r').focus();
+    $('#country').val('AF');
 });
 
 // dataTable ajax fix

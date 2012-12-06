@@ -2,7 +2,7 @@ module_name: Billing
 module_name_long: Billing management
 id: ID
 username: Username
-username_hint: Latin characters= numbers and "_"= "-"
+username_hint: Latin characters&#058; numbers and "_"= "-"
 realname: Real name
 amount: Funds
 email: E-mail
@@ -12,8 +12,8 @@ add_user: Add user
 edit_save: Save changes
 edit_cancel: Cancel
 load_error: Error while loading data from server. Please try again later.
-ajax_saving: Saving data= please wait...
-ajax_loading: Loading data= please wait...
+ajax_saving: Saving data&#058; please wait...
+ajax_loading: Loading data&#058; please wait...
 error: Error
 success: Success
 sLengthMenu: Display _MENU_ records per page
@@ -46,13 +46,13 @@ hac_plan: Tarification plan
 hac_days: Days remain
 btn_close: Close
 btn_save: Save
-form_errors: Form contain errors= please check the form below and try again
+form_errors: Form contain errors&#058; please check the form below and try again
 data_saved: Data has been saved on server
 form_error_invalid_haccount: Invalid hosting account syntax
 form_error_invalid_hplan: Invalid hosting plan selected
 form_error_invalid_hdays: Invalid number of days
 form_error_duplicate_haccount: User account already exists
-db_save_error: Error while saving to database= please try again later
+db_save_error: Error while saving to database&#058; please try again later
 data_loading_error: Error while loading data from server
 data_delete_error: Error while removing data from server
 data_delete_ok: Item has been deleted successfully
@@ -136,3 +136,4 @@ p_code: Tax reference number
 p_code_hint: Example&#058;&nbsp;7701107259
 p_kpp: CRTR
 p_kpp_hint: Example&#058;&nbsp;632946014
+invalid_field: Invalid field

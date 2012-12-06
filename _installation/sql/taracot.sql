@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 05, 2012 at 07:35 PM
+-- Generation Time: Dec 06, 2012 at 06:21 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -137,7 +137,6 @@ CREATE TABLE `taracot_billing_profiles` (
   `code` varchar(12) default NULL,
   `kpp` varchar(9) default NULL,
   `private` int(11) default NULL,
-  `reg4org` int(11) default '0',
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

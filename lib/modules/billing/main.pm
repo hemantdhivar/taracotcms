@@ -698,6 +698,75 @@ post '/data/domain/save' => sub {
   return $json;    
 };
 
+post '/data/profile/save' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~;   
+  }
+  _load_lang();  
+  content_type 'application/json';
+  my $n1r = param('n1r');
+  my $n1e = param('n1e');
+  my $n2r = param('n2r');
+  my $n2e = param('n2e');
+  my $n3r = param('n3r');
+  my $n3e = param('n3e');
+  my $email = param('email');
+  my $phone = param('phone');
+  my $fax = param('fax');
+  my $country = param('country');
+  my $city = param('city');
+  my $state = param('state');
+  my $addr = param('addr');
+  my $postcode = param('postcode');
+  my $passport = param('passport');
+  my $birth_date = param('birth_date');
+  my $addr_ru = param('addr_ru');
+  my $org = param('org');
+  my $org_r = param('org_r');
+  my $code = param('code');
+  my $kpp = param('kpp');
+  my $private = param('private');  
+  # verify using regexp
+  if ($n1r !~ /^[А-Яа-я\-]{1,19}$/) {
+   return qq~{"result":"0","field":"n1r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_last_name}.')"}';
+  }
+  if ($n2r !~ /^[А-Яа-я\-]{1,19}$/) {
+   return qq~{"result":"0","field":"n2r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_first_name}.')"}';
+  }
+  if ($n3r !~ /^[А-Яа-я\-]{1,24}$/) {
+   return qq~{"result":"0","field":"n3r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_patronym}.')"}';
+  }
+  if ($n1e !~ /^[A-Za-z\-]{1,30}$/) {
+   return qq~{"result":"0","field":"n1e","error":"~.$lang->{invalid_field}.' ('.$lang->{p_last_name}.')"}';
+  }
+  if ($n2e !~ /^[A-Za-z\-]{1,30}$/) {
+   return qq~{"result":"0","field":"n2e","error":"~.$lang->{invalid_field}.' ('.$lang->{p_first_name}.')"}';
+  }
+  if ($n3e !~ /^[A-Z]{1}$/) {
+   return qq~{"result":"0","field":"n3e","error":"~.$lang->{invalid_field}.' ('.$lang->{p_patronym_first}.')"}';
+  }
+  if ($email !~ /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/ || length($email) > 80) {
+   return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_email}.qq~"}~;
+  } 
+  if ($phone !~ /^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/ || length($phone) > 20) {
+   return qq~{"result":"0","field":"phone","error":"~.$lang->{invalid_field}.' ('.$lang->{p_phone}.')"}';
+  } 
+  if ($fax && ($fax !~ /^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/ || length($fax) > 20)) {
+   return qq~{"result":"0","field":"fax","error":"~.$lang->{invalid_field}.' ('.$lang->{p_fax}.')"}';
+  }
+  if ($country !~ /^[A-Z]{2}$/) {
+   return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();    
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
 post '/data/hosting/load' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
@@ -784,6 +853,32 @@ post '/data/service/load' => sub {
   $response{sid}=$service_id;
   $response{sdays}=$service_days_remaining;
   my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
+post '/data/profile/load' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  content_type 'application/json';
+  my $id=param('id') || 0;
+  $id = int($id);
+  if (!$id) {
+   return qq~{"result":"0"}~; 
+  }
+  my $sth = database->prepare(
+   'SELECT id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private FROM '.config->{db_table_prefix}.'_billing_profiles WHERE user_id='.$id
+  );
+  my %resp;
+  if ($sth->execute()) {
+   %resp = $sth->fetchrow_hash;
+  }
+  $sth->finish();
+  if (!$resp{id}) {
+   return qq~{"result":"0"}~; 
+  }
+  my $json_xs = JSON::XS->new();  
+  $resp{result}="1";
+  my $json = $json_xs->encode(\%resp);
   return $json;    
 };
 

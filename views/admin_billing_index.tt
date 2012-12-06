@@ -48,7 +48,7 @@
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
   <h3>[== $lang->{profile} =]</h3>
  </div>
- <div class="modal-body">
+ <div class="modal-body" id="profile_modal_body">
   <span class="form-horizontal" id="profile_edit_form">
     <div class="alert alert-block alert-error" id="profile_edit_form_error" style="display:none">
       <span id="profile_edit_form_error_text"></span>
@@ -57,49 +57,49 @@
       <p class="lead">[== $lang->{russian_lang_data} =]</p>
     </blockquote>
     <span id="form_controls"> 
-      <div class="control-group" id="cg_n1r"> 
+      <div class="control-group prcg" id="cg_n1r"> 
         <label class="control-label" for="n1r">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-medium" id="n1r" />
+          <input type="text" class="prif input-medium" id="n1r" />
           <p class="help-block"><small>[== $lang->{p_last_name_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_n2r"> 
+      <div class="control-group prcg" id="cg_n2r"> 
         <label class="control-label" for="n2r">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-medium" id="n2r" />
+          <input type="text" class="prif input-medium" id="n2r" />
           <p class="help-block"><small>[== $lang->{p_first_name_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_n3r"> 
+      <div class="control-group prcg" id="cg_n3r"> 
         <label class="control-label" for="n3r">[== $lang->{p_patronym} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-medium" id="n3r" />
+          <input type="text" class="prif input-medium" id="n3r" />
           <p class="help-block"><small>[== $lang->{p_patronym_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_passport"> 
+      <div class="control-group prcg" id="cg_passport"> 
         <label class="control-label" for="passport">[== $lang->{p_passport} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-xlarge" id="passport" />
+          <input type="text" class="prif input-xlarge" id="passport" />
           <p class="help-block"><small>[== $lang->{p_passport_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_birth_date"> 
+      <div class="control-group prcg" id="cg_birth_date"> 
         <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-small" id="birth_date" />
+          <input type="text" class="prif input-small" id="birth_date" />
           <p class="help-block"><small>[== $lang->{p_birth_date_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_addr_ru"> 
+      <div class="control-group prcg" id="cg_addr_ru"> 
         <label class="control-label" for="addr_ru">[== $lang->{p_addr_ru} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-xlarge" id="addr_ru" />
+          <input type="text" class="prif input-xlarge" id="addr_ru" />
           <p class="help-block"><small>[== $lang->{p_addr_ru_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_private"> 
+      <div class="control-group prcg" id="cg_private"> 
         <label class="control-label" for="private">[== $lang->{p_private} =]</label> 
         <div class="controls">
           <input type="checkbox" id="private" />
@@ -110,31 +110,31 @@
       <p class="lead">[== $lang->{russian_org_lang_data} =]<br/><small>[== $lang->{russian_org_lang_data_filled_hint} =]</small></p>      
     </blockquote>
     <span id="form_controls"> 
-      <div class="control-group" id="cg_org_r"> 
+      <div class="control-group prcg" id="cg_org_r"> 
         <label class="control-label" for="org_r">[== $lang->{p_org_r} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-large" id="org_r" />
+          <input type="text" class="prif input-large" id="org_r" />
           <p class="help-block"><small>[== $lang->{p_org_ru_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_org"> 
+      <div class="control-group prcg" id="cg_org"> 
         <label class="control-label" for="org">[== $lang->{p_org} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-large" id="org" />
+          <input type="text" class="prif input-large" id="org" />
           <p class="help-block"><small>[== $lang->{p_org_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_code"> 
+      <div class="control-group prcg" id="cg_code"> 
         <label class="control-label" for="code">[== $lang->{p_code} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-small" id="code" />
+          <input type="text" class="prif input-small" id="code" />
           <p class="help-block"><small>[== $lang->{p_code_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_kpp"> 
+      <div class="control-group prcg" id="cg_kpp"> 
         <label class="control-label" for="kpp">[== $lang->{p_kpp} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-small" id="kpp" />
+          <input type="text" class="prif input-small" id="kpp" />
           <p class="help-block"><small>[== $lang->{p_kpp_hint} =]</small></p>
         </div>
       </div>
@@ -143,52 +143,52 @@
       <p class="lead">[== $lang->{int_lang_data} =]</p>
     </blockquote>
     <span id="form_controls"> 
-      <div class="control-group" id="cg_n1e"> 
+      <div class="control-group prcg" id="cg_n1e"> 
         <label class="control-label" for="n1e">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-medium" id="n1e" />
+          <input type="text" class="prif input-medium" id="n1e" />
           <p class="help-block"><small>[== $lang->{p_last_name_en_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_n2e"> 
+      <div class="control-group prcg" id="cg_n2e"> 
         <label class="control-label" for="n2e">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-medium" id="n2e" />
+          <input type="text" class="prif input-medium" id="n2e" />
           <p class="help-block"><small>[== $lang->{p_first_name_en_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_n3e"> 
+      <div class="control-group prcg" id="cg_n3e"> 
         <label class="control-label" for="n3e">[== $lang->{p_patronym_first} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="span1" id="n3e" />
+          <input type="text" class="prif span1" id="n3e" />
           <p class="help-block"><small>[== $lang->{p_patronym_first_en_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_country"> 
+      <div class="control-group prcg" id="cg_country"> 
         <label class="control-label" for="country">[== $lang->{p_country} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <select id="country">
+          <select id="country" class="prif">
           </select>
         </div>
       </div>  
-      <div class="control-group" id="cg_city"> 
+      <div class="control-group prcg" id="cg_city"> 
         <label class="control-label" for="n2e">[== $lang->{p_city} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-large" id="city" />
+          <input type="text" class="prif input-large" id="city" />
           <p class="help-block"><small>[== $lang->{p_city_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_state"> 
+      <div class="control-group prcg" id="cg_state"> 
         <label class="control-label" for="n2e">[== $lang->{p_state} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-large" id="state" />
+          <input type="text" class="prif input-large" id="state" />
           <p class="help-block"><small>[== $lang->{p_state_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_addr"> 
+      <div class="control-group prcg" id="cg_addr"> 
         <label class="control-label" for="n2e">[== $lang->{p_addr} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-xlarge" id="addr" />
+          <input type="text" class="prif input-xlarge" id="addr" />
           <p class="help-block"><small>[== $lang->{p_addr_hint} =]</small></p>
         </div>
       </div>
@@ -197,24 +197,24 @@
       <p class="lead">[== $lang->{int_cont_data} =]</p>
     </blockquote>
     <span id="form_controls"> 
-      <div class="control-group" id="cg_phone"> 
+      <div class="control-group prcg" id="cg_phone"> 
         <label class="control-label" for="phone">[== $lang->{p_phone} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-medium" id="phone" />
+          <input type="text" class="prif input-medium" id="phone" />
           <p class="help-block"><small>[== $lang->{p_phone_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_fax"> 
+      <div class="control-group prcg" id="cg_fax"> 
         <label class="control-label" for="fax">[== $lang->{p_fax} =]</label> 
         <div class="controls">
-          <input type="text" class="input-medium" id="fax" />
+          <input type="text" class="prif input-medium" id="fax" />
           <p class="help-block"><small>[== $lang->{p_fax_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group" id="cg_email"> 
+      <div class="control-group prcg" id="cg_email"> 
         <label class="control-label" for="email">[== $lang->{p_email} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-large" id="email" />
+          <input type="text" class="prif input-large" id="email" />
           <p class="help-block"><small>[== $lang->{p_email_hint} =]</small></p>
         </div>
       </div>
@@ -248,7 +248,7 @@
       <div class="control-group" id="cg_haccount"> 
         <label class="control-label" for="haccount">[== $lang->{hosting_account} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-xlarge" id="haccount" />
+          <input type="text" class="prif input-xlarge" id="haccount" />
         </div>
       </div>
       <div class="control-group" id="cg_hplan"> 
@@ -261,7 +261,7 @@
       <div class="control-group" id="cg_hdays"> 
         <label class="control-label" for="hdays">[== $lang->{hac_days} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-small" id="hdays" />
+          <input type="text" class="prif input-small" id="hdays" />
         </div>
       </div>
     </span>
