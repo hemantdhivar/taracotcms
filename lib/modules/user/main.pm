@@ -42,10 +42,11 @@ sub _load_lang {
 # Routes
 
 get '/register' => sub {
-  if (&taracot::_auth()) { redirect '/user/account' } 
+  my $auth_data = &taracot::_auth();
+  if ($auth_data) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
-  my $render_template = &taracot::_process_template( template 'user_register', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_register', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -148,11 +149,12 @@ post '/register/process' => sub {
 };
 
 get '/authorize' => sub {
-  if (&taracot::_auth()) { redirect '/user/account' } 
+  my $auth_data = &taracot::_auth();
+  if ($auth_data) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $taracot::taracot_auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }

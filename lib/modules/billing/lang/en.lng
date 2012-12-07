@@ -30,9 +30,11 @@ hosting_accounts: Hosting accounts
 hosting_account: Hosting account
 domains: Domains
 services: Services
-no_hosting_accounts: Currently no accounts
-no_domains: Currently no domains
-no_services: Currently no services
+no_hosting_accounts: Currently no accounts.
+no_domains: Currently no domains.
+no_services: Currently no services.
+no_history_records: Currently no history records available.
+no_add_by_click: You can add some by clicking the button above.
 add_account: Add account
 add_domain: Add domain
 add_service: Add service
@@ -137,3 +139,13 @@ p_code_hint: Example&#058;&nbsp;7701107259
 p_kpp: CRTR
 p_kpp_hint: Example&#058;&nbsp;632946014
 invalid_field: Invalid field
+billing_customer: Customer panel
+c_hosting: Hosting
+c_domains: Domains
+c_services: Services
+c_account: Deposit
+c_profile: Proile
+с_history: History
+btn_add_hosting: New hosting account
+label_funds: Funds deposited
+btn_add_domain: Register domain

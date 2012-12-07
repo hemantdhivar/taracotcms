@@ -1,0 +1,59 @@
+<h1>[== $lang->{billing_customer} =]</h1>
+    <div id="billing_customer_wrap" style="display:none">
+        <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail">0</span>&nbsp;[== $page_data->{billing_currency} =]</span>
+        <br/><br/>
+        <ul class="nav nav-tabs" id="customer_tabs">
+            <li class="active">
+                <a href="#tab_hosting">[== $lang->{c_hosting} =]</a>
+            </li>
+            <li>
+                <a href="#tab_domains">[== $lang->{c_domains} =]</a>
+            </li>
+            <li>
+                <a href="#tab_services">[== $lang->{c_services} =]</a>
+            </li>
+            <li>
+                <a href="#tab_account">[== $lang->{c_account} =]</a>
+            </li>
+            <li>
+                <a href="#tab_profile">[== $lang->{c_profile} =]</a>
+            </li>
+            <li>
+                <a href="#tab_history">[== $lang->{с_history} =]</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="customer_tabs_content">
+            <div class="tab-pane active" id="tab_hosting">
+                <span class="btn btn-small btn-success" id="btn_add_hosting">[== $lang->{btn_add_hosting} =]</span>
+                <br/><br/>
+                <div id="data_hosting">[== $lang->{no_hosting_accounts} =]&nbsp;[== $lang->{no_add_by_click} =]</div>
+            </div>
+            <div class="tab-pane" id="tab_domains">
+                <span class="btn btn-small btn-success" id="btn_add_domain">[== $lang->{btn_add_domain} =]</span>
+                <br/><br/>
+                <div id="data_domains">[== $lang->{no_domains} =]&nbsp;[== $lang->{no_add_by_click} =]</div>
+            </div>
+            <div class="tab-pane" id="tab_services">
+                <div id="data_services">[== $lang->{no_services} =]</div>
+            </div>
+            <div class="tab-pane" id="tab_account">
+            </div>
+            <div class="tab-pane" id="tab_profile">
+            </div>        
+            <div class="tab-pane" id="tab_history">
+                <div id="data_history">[== $lang->{no_history_records} =]</div>
+            </div>
+        </div>
+    </div>
+    <div id="billing_customer_wrap_ajax" style="display:none">
+        <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]
+    </div>
+    <script type="text/javascript">    
+    var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
+    var js_lang_no_hosting_accounts = "[== $lang->{no_hosting_accounts} =]"; 
+    var js_lang_no_domains = "[== $lang->{no_domains} =]"; 
+    var js_lang_no_services = "[== $lang->{no_services} =]"; 
+    var js_lang_no_add_by_click = "[== $lang->{no_add_by_click} =]";
+    var js_lang_hac_per_month = "[== $lang->{hac_per_month} =]"; 
+    </script>
+    <script src="/js/modules/billing_customer.js"></script>

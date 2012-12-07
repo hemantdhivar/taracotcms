@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 06, 2012 at 06:21 PM
+-- Generation Time: Dec 07, 2012 at 06:50 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -102,7 +102,7 @@ CREATE TABLE `taracot_billing_hosting` (
 -- Dumping data for table `taracot_billing_hosting`
 -- 
 
-INSERT INTO `taracot_billing_hosting` VALUES (20, 1, 'zhopa', 'econom', 1, 1354707503);
+INSERT INTO `taracot_billing_hosting` VALUES (20, 1, 'zhopa', 'econom', 0, 1354883145);
 INSERT INTO `taracot_billing_hosting` VALUES (21, 1, 'adsds', 'econom', 1, 1354707511);
 INSERT INTO `taracot_billing_hosting` VALUES (30, 1, 'ok', 'econom', 12, 1354708280);
 
@@ -136,15 +136,18 @@ CREATE TABLE `taracot_billing_profiles` (
   `org_r` varchar(80) default NULL,
   `code` varchar(12) default NULL,
   `kpp` varchar(9) default NULL,
-  `private` int(11) default NULL,
+  `private` tinyint(4) default NULL,
   `lastchanged` int(11) default NULL,
+  PRIMARY KEY  (`user_id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- 
 -- Dumping data for table `taracot_billing_profiles`
 -- 
 
+INSERT INTO `taracot_billing_profiles` VALUES (1, 1, 'Матвеев', 'Matveev', 'Михаил', 'Michael', 'Александрович', 'A', 'xtreme@rh1.ru', '+7 921 7998111', '', 'RU', 'St. Petersburg', 'St. Petersburg', 'Michmanskaya Str. 2-1-212', NULL, '40 05 559303 выдан 15 о/м Калининского р-на г. Санкт-Петербурга 30.03.2005', '16.02.1985', '199226, Санкт-Петербург, ул. Мичманская, 2-1-212, Матвееву М.А.', '', '', '', '', 0, 1354882790);
+INSERT INTO `taracot_billing_profiles` VALUES (2, 9, 'Петров', 'Smith', 'Иван', 'John', 'Иванович', 'I', 'john.smith@domain.com', '+7 495 1234567', '+7 495 1234589', 'RE', 'New York', 'New York', 'Tverskaya St., 2-1-234', NULL, '34 02 651241 выдан 48 о/м г. Москвы 26.12.1990', '30.11.1985', '101000, Москва, ул. Воробьянинова, 15, кв. 22, В. Лоханкину', 'ROGA I KOPYTA, LTD.', 'Общество с ограниченной ответственностью "Рога и Копыта"', '7701107259', '632946014', 0, 1354883028);
 
 -- --------------------------------------------------------
 
@@ -167,8 +170,7 @@ CREATE TABLE `taracot_billing_services` (
 -- 
 
 INSERT INTO `taracot_billing_services` VALUES (2, 1, 'vps', 323, NULL);
-INSERT INTO `taracot_billing_services` VALUES (4, 1, 'backup', 14, 1354704463);
-INSERT INTO `taracot_billing_services` VALUES (5, 1, 'backup', 1, 1354706634);
+INSERT INTO `taracot_billing_services` VALUES (4, 1, 'backup', 0, 1354883149);
 
 -- --------------------------------------------------------
 
@@ -243,7 +245,7 @@ CREATE TABLE `taracot_settings` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=18 ;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=19 ;
 
 -- 
 -- Dumping data for table `taracot_settings`
@@ -262,6 +264,7 @@ INSERT INTO `taracot_settings` VALUES (14, 'billing_service_name_vps', 'VPS mana
 INSERT INTO `taracot_settings` VALUES (15, 'billing_service_cost_vps', '123', '', '', 1354698726);
 INSERT INTO `taracot_settings` VALUES (16, 'billing_service_name_backup', 'Managed backup', '', 'en', 1354701386);
 INSERT INTO `taracot_settings` VALUES (17, 'billing_service_cost_backup', '666', '', '', 1354701407);
+INSERT INTO `taracot_settings` VALUES (18, 'billing_currency', 'USD', '', 'en', 1354887248);
 
 -- --------------------------------------------------------
 

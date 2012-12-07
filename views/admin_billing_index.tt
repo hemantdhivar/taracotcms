@@ -88,7 +88,7 @@
       <div class="control-group prcg" id="cg_birth_date"> 
         <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="prif input-small" id="birth_date" />
+          <input type="text" class="prif input-small" id="birth_date" data-date-format="dd.mm.yyyy" />
           <p class="help-block"><small>[== $lang->{p_birth_date_hint} =]</small></p>
         </div>
       </div>
@@ -102,7 +102,7 @@
       <div class="control-group prcg" id="cg_private"> 
         <label class="control-label" for="private">[== $lang->{p_private} =]</label> 
         <div class="controls">
-          <input type="checkbox" id="private" />
+          <input type="checkbox" id="private" name="private" />
         </div>
       </div>      
     </span>
@@ -114,7 +114,7 @@
         <label class="control-label" for="org_r">[== $lang->{p_org_r} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
           <input type="text" class="prif input-large" id="org_r" />
-          <p class="help-block"><small>[== $lang->{p_org_ru_hint} =]</small></p>
+          <p class="help-block"><small>[== $lang->{p_org_r_hint} =]</small></p>
         </div>
       </div>
       <div class="control-group prcg" id="cg_org"> 

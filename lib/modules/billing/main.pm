@@ -761,6 +761,71 @@ post '/data/profile/save' => sub {
   if ($country !~ /^[A-Z]{2}$/) {
    return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
   }
+  $passport=~s/\</&lt;/gm;
+  $passport=~s/\>/&gt;/gm;
+  if ($passport !~ /^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/) {
+   return qq~{"result":"0","field":"passport","error":"~.$lang->{invalid_field}.' ('.$lang->{p_passport}.')"}';
+  }
+  if ($birth_date !~ /^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/) {
+   return qq~{"result":"0","field":"birth_date","error":"~.$lang->{invalid_field}.' ('.$lang->{p_birth_date}.')"}';
+  }
+  $addr_ru=~s/\</&lt;/gm;
+  $addr_ru=~s/\>/&gt;/gm;
+  if ($addr_ru !~ /^([0-9]{6}),(\s)(.*)$/) {
+   return qq~{"result":"0","field":"addr_ru","error":"~.$lang->{invalid_field}.' ('.$lang->{p_addr_ru}.')"}';
+  }
+  if ($org_r || $org || $code || $kpp) {
+    $org_r=~s/\</&lt;/gm;
+    $org_r=~s/\>/&gt;/gm;
+    if ($org_r !~ /^(.{1,80})$/) {
+      return qq~{"result":"0","field":"org_r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_org_r}.')"}';
+    }
+    $org=~s/\</&lt;/gm;
+    $org=~s/\>/&gt;/gm;
+    if ($org !~ /^(.{1,80})$/) {
+      return qq~{"result":"0","field":"org","error":"~.$lang->{invalid_field}.' ('.$lang->{p_org}.')"}';
+    }
+    if ($code !~ /^([0-9]{10})$/) {
+      return qq~{"result":"0","field":"code","error":"~.$lang->{invalid_field}.' ('.$lang->{p_code}.')"}';
+    }
+    if ($kpp !~ /^([0-9]{9})$/) {
+      return qq~{"result":"0","field":"kpp","error":"~.$lang->{invalid_field}.' ('.$lang->{p_kpp}.')"}';
+    }
+  }
+  if ($city !~ /^([A-Za-z\-\. ]{2,64})$/) {
+   return qq~{"result":"0","field":"city","error":"~.$lang->{invalid_field}.' ('.$lang->{p_city}.')"}';
+  }
+  if ($state !~ /^([A-Za-z\-\. ]{2,40})$/) {
+   return qq~{"result":"0","field":"state","error":"~.$lang->{invalid_field}.' ('.$lang->{p_state}.')"}';
+  }
+  $addr=~s/\</&lt;/gm;
+  $addr=~s/\>/&gt;/gm;
+  if ($addr !~ /^(.{2,80})$/) {
+   return qq~{"result":"0","field":"addr","error":"~.$lang->{invalid_field}.' ('.$lang->{p_addr}.')"}';
+  }
+  if ($private) {
+    $private='1';
+  } else {
+    $private='0';
+  }
+  my $countries = $lang->{countries};
+  my @countries_list = split(/\=/, $countries);
+  my $country_exists=0;
+  foreach my $crec (@countries_list) {
+    my ($cn) = split(/\,/, $crec);
+    if ($cn eq $country) {
+      $country_exists=1;
+    }
+  }
+  if (!$country_exists) {
+   return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
+  }
+  my $sth = database->prepare(
+   'INSERT INTO '.config->{db_table_prefix}.'_billing_profiles (user_id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private,lastchanged) VALUES ('.database->quote($id).','.database->quote($n1r).','.database->quote($n1e).','.database->quote($n2r).','.database->quote($n2e).','.database->quote($n3r).','.database->quote($n3e).','.database->quote($email).','.database->quote($phone).','.database->quote($fax).','.database->quote($country).','.database->quote($city).','.database->quote($state).','.database->quote($addr).','.database->quote($postcode).','.database->quote($passport).','.database->quote($birth_date).','.database->quote($addr_ru).','.database->quote($org).','.database->quote($org_r).','.database->quote($code).','.database->quote($kpp).','.database->quote($private).','.time.') ON DUPLICATE KEY UPDATE n1r='.database->quote($n1r).',n1e='.database->quote($n1e).',n2r='.database->quote($n2r).',n2e='.database->quote($n2e).',n3r='.database->quote($n3r).',n3e='.database->quote($n3e).',email='.database->quote($email).',phone='.database->quote($phone).',fax='.database->quote($fax).',country='.database->quote($country).',city='.database->quote($city).',state='.database->quote($state).',addr='.database->quote($addr).',postcode='.database->quote($postcode).',passport='.database->quote($passport).',birth_date='.database->quote($birth_date).',addr_ru='.database->quote($addr_ru).',org='.database->quote($org).',org_r='.database->quote($org_r).',code='.database->quote($code).',kpp='.database->quote($kpp).',private='.database->quote($private).',lastchanged='.time
+  );
+  if ($sth->execute()) {   
+  }
+  $sth->finish();
   my %response;
   my $json_xs = JSON::XS->new();    
   my $json = $json_xs->encode(\%response);
@@ -868,17 +933,16 @@ post '/data/profile/load' => sub {
   my $sth = database->prepare(
    'SELECT id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private FROM '.config->{db_table_prefix}.'_billing_profiles WHERE user_id='.$id
   );
-  my %resp;
+  my $resp;
   if ($sth->execute()) {
-   %resp = $sth->fetchrow_hash;
+   $resp = $sth->fetchrow_hashref;
   }
   $sth->finish();
-  if (!$resp{id}) {
-   return qq~{"result":"0"}~; 
-  }
+  my %response;
   my $json_xs = JSON::XS->new();  
-  $resp{result}="1";
-  my $json = $json_xs->encode(\%resp);
+  $response{result}="1";
+  $response{db}=$resp;
+  my $json = $json_xs->encode(\%response);
   return $json;    
 };
 
@@ -1003,6 +1067,163 @@ post '/data/funds/history/delete' => sub {
   $sth->finish();
   return $res; 
 };
+
+# Frontend begins here
+#####################################################
+
+prefix '/customer';
+
+get '/' => sub {
+  my $auth_data = &taracot::_auth();
+  if (!$auth_data) { redirect '/user/authorize' } 
+  my $_current_lang=_load_lang();
+  my $page_data = &taracot::_load_settings('site_title,keywords,description,billing_currency', $_current_lang);
+  my $render_template = &taracot::_process_template( template 'billing_customer', { head_html => '<link href="'.config->{modules_css_url}.'billing_customer.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{billing_customer}, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  if ($render_template) {
+    return $render_template;
+  }
+  pass();
+}; 
+
+post '/data/load' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  } 
+  my %response;
+  my $current_lang = _load_lang();  
+  # load hosting plan names and IDs from settings
+  my %hosting_plan_names;
+  my @hosting_plan_ids;
+  my $curlang = database->quote($current_lang);
+  my $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_plan_name_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_plan_name_//;
+      $hosting_plan_names{$s_name} = $s_value;
+      push @hosting_plan_ids, $s_name;
+    }
+  }
+  $sth->finish();
+  # load hosting plan costs from settings
+  my %hosting_plan_costs;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_plan_cost_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_plan_cost_//;
+      $hosting_plan_costs{$s_name} = $s_value;
+    }
+  }
+  $sth->finish();
+  # generate hosting plan array
+  my @hosting_plans;
+  foreach my $pid (@hosting_plan_ids) {
+   my %hosting_plan;
+   $hosting_plan{id} = $pid;
+   $hosting_plan{name} = $hosting_plan_names{$pid};
+   $hosting_plan{cost} = $hosting_plan_costs{$pid};
+   push @hosting_plans, \%hosting_plan;
+  }
+  $response{hosting_plans} = \@hosting_plans;
+  # load service plan names and IDs from settings
+  my %service_plan_names;
+  my @service_plan_ids;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_service_name_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_service_name_//;
+      $service_plan_names{$s_name} = $s_value;
+      push @service_plan_ids, $s_name;
+    }
+  }
+  $sth->finish();
+  # load service plan costs from settings
+  my %service_plan_costs;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_service_cost_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_service_cost_//;
+      $service_plan_costs{$s_name} = $s_value;
+    }
+  }
+  $sth->finish();
+  # generate service plan array
+  my @service_plans;
+  foreach my $pid (@service_plan_ids) {
+   my %service_plan;
+   $service_plan{id} = $pid;
+   $service_plan{name} = $service_plan_names{$pid};
+   $service_plan{cost} = $service_plan_costs{$pid};
+   push @service_plans, \%service_plan;
+  }
+  $response{service_plans} = \@service_plans;
+  # select hosting accounts
+  $sth = database->prepare(
+    'SELECT id,host_acc,host_plan_id,host_days_remain FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    my @host_accounts;
+    while (my ($id,$host_acc,$host_plan_id,$host_days_remain) = $sth -> fetchrow_array()) {      
+      my %data;
+      $data{id} = $id;
+      $data{account} = $host_acc;
+      $data{plan_id} = $host_plan_id;
+      $data{plan_cost} = $hosting_plan_costs{$host_plan_id} || '0';
+      $data{plan_name} = $hosting_plan_names{$host_plan_id} || $host_plan_id;
+      $data{days} = $host_days_remain;
+      push (@host_accounts, \%data);
+    }
+    $response{hosting} = \@host_accounts;
+  }
+  $sth->finish();
+  # select domain names
+  $sth = database->prepare(
+    'SELECT id,domain_name,exp_date FROM `'.config->{db_table_prefix}.'_billing_domains` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    my @domain_names;
+    while (my ($id,$domain_name,$exp_date) = $sth -> fetchrow_array()) {      
+      my %data;
+      $data{id} = $id;
+      $data{domain_name} = $domain_name;
+      $data{exp_date} = time2str($lang->{domain_date_template}, $exp_date);
+      $data{exp_date} =~s/\\//gm;
+      push (@domain_names, \%data);
+    }
+    $response{domains} = \@domain_names;
+  }
+  $sth->finish();
+  # select services
+  $sth = database->prepare(
+    'SELECT id, service_id, service_days_remaining FROM `'.config->{db_table_prefix}.'_billing_services` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    my @services;
+    while (my ($id, $service_id, $service_days_remaining) = $sth -> fetchrow_array()) {      
+      my %data;
+      $data{id} = $id;
+      $data{service_id} = $service_id;
+      $data{service_days_remaining} = $service_days_remaining;
+      $data{service_cost} = $service_plan_costs{$service_id} || '0';
+      $data{service_name} = $service_plan_names{$service_id} || $service_id;
+      push (@services, \%data);
+    }
+    $response{services} = \@services;
+  }
+  $sth->finish();
+  # return data
+  $response{result} = 1;
+  my $json_xs = JSON::XS->new();
+  my $json = $json_xs->encode(\%response);
+  return $json;
+};  
 
 # End
 
