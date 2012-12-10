@@ -309,14 +309,14 @@ $('#btn_add_hosting').click(function () {
 $('#btn_add_domain').click(function () {
     $('#cg_domain_name').removeClass('error');
     $('#cg_domain_exp').removeClass('error');
-    $('#ns1').removeClass('error');
-    $('#ns2').removeClass('error');
-    $('#ns3').removeClass('error');
-    $('#ns4').removeClass('error');
-    $('#ns1_ip').removeClass('error');
-    $('#ns2_ip').removeClass('error');
-    $('#ns3_ip').removeClass('error');
-    $('#ns4_ip').removeClass('error');
+    $('#cg_ns1').removeClass('error');
+    $('#cg_ns2').removeClass('error');
+    $('#cg_ns3').removeClass('error');
+    $('#cg_ns4').removeClass('error');
+    $('#cg_ns1_ip').removeClass('error');
+    $('#cg_ns2_ip').removeClass('error');
+    $('#cg_ns3_ip').removeClass('error');
+    $('#cg_ns4_ip').removeClass('error');
     $('#domain_edit_form_error').hide();
     $('#domain_edit_ajax').hide();
     $('#domain_edit_form').show();
@@ -438,14 +438,14 @@ $('#btn_hosting_dialog_save').click(function () {
 $('#btn_domain_dialog_save').click(function () {
     $('#cg_domain_name').removeClass('error');
     $('#cg_domain_exp').removeClass('error');
-    $('#ns1').removeClass('error');
-    $('#ns2').removeClass('error');
-    $('#ns3').removeClass('error');
-    $('#ns4').removeClass('error');
-    $('#ns1_ip').removeClass('error');
-    $('#ns2_ip').removeClass('error');
-    $('#ns3_ip').removeClass('error');
-    $('#ns4_ip').removeClass('error');
+    $('#cg_ns1').removeClass('error');
+    $('#cg_ns2').removeClass('error');
+    $('#cg_ns3').removeClass('error');
+    $('#cg_ns4').removeClass('error');
+    $('#cg_ns1_ip').removeClass('error');
+    $('#cg_ns2_ip').removeClass('error');
+    $('#cg_ns3_ip').removeClass('error');
+    $('#cg_ns4_ip').removeClass('error');
     $('#domain_edit_form_error').hide();
     var errors = false;
     if (!$('#domain_name').val().match(/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/)) {
@@ -841,14 +841,14 @@ function editDomain(id) {
     $('#domain_edit_dialog_title').html(js_lang_edit_domain);
     $('#cg_domain_name').removeClass('error');
     $('#cg_domain_exp').removeClass('error');
-    $('#ns1').removeClass('error');
-    $('#ns2').removeClass('error');
-    $('#ns3').removeClass('error');
-    $('#ns4').removeClass('error');
-    $('#ns1_ip').removeClass('error');
-    $('#ns2_ip').removeClass('error');
-    $('#ns3_ip').removeClass('error');
-    $('#ns4_ip').removeClass('error');
+    $('#cg_ns1').removeClass('error');
+    $('#cg_ns2').removeClass('error');
+    $('#cg_ns3').removeClass('error');
+    $('#cg_ns4').removeClass('error');
+    $('#cg_ns1_ip').removeClass('error');
+    $('#cg_ns2_ip').removeClass('error');
+    $('#cg_ns3_ip').removeClass('error');
+    $('#cg_ns4_ip').removeClass('error');
     $('#domain_edit_form_error').hide();
     domain_edit_id = id;
     $('#domain_edit_dialog').modal({

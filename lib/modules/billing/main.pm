@@ -1229,12 +1229,28 @@ post '/data/load' => sub {
   );
   if ($sth->execute()) {
     my @domain_names;
-    while (my ($id,$domain_name,$exp_date) = $sth -> fetchrow_array()) {      
+    while (my ($id, $domain_name, $exp_date) = $sth -> fetchrow_array()) {      
+      if (time - $exp_date + 864000 < 0) { # 10 days
+        next;
+      }
+      my $zone=lc $domain_name;
+      $zone=~s/^[^\.]*\.//;
+      my $allow_update='0';
+      my $expired='0';
+      if ((($zone eq 'ru' || $zone eq 'su') && ( time-$exp_date < 4838400)) || ($zone ne 'ru' && $zone ne 'su')) {
+        $allow_update='1';
+      }
+      if (time - $exp_date < 0) {
+        $expired=1;
+      }
       my %data;
       $data{id} = $id;
       $data{domain_name} = $domain_name;
       $data{exp_date} = time2str($lang->{domain_date_template}, $exp_date);
       $data{exp_date} =~s/\\//gm;
+      $data{update} = $allow_update;
+      $data{expired} = $expired;
+      $data{zone} = $zone;
       push (@domain_names, \%data);
     }
     $response{domains} = \@domain_names;
