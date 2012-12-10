@@ -149,3 +149,13 @@ c_profile: Proile
 btn_add_hosting: New hosting account
 label_funds: Funds deposited
 btn_add_domain: Register domain
+ns1: NS 1
+ns2: NS 2
+ns3: NS 3
+ns4: NS 4
+ns1_ip: NS 1 IP
+ns2_ip: NS 2 IP
+ns3_ip: NS 3 IP
+ns4_ip: NS 4 IP
+form_error_invalid_ns: Invalid name server
+form_error_invalid_ip: Invalid IP address

@@ -12,8 +12,7 @@
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <link rel="stylesheet" href="/taracot/main.css">
   <link rel="shortcut icon" href="/favicon.ico">
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>  
+  <script src="/js/taracot.min.js"></script>
   <!-- IE Fix for HTML5 Tags -->
   <!--[if lt IE 9]>
     <script src="/js/html5.js"></script>

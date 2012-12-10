@@ -1,6 +1,6 @@
-<script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
-<script type="text/javascript" src="/js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.datepicker.min.js"></script>
 
 <h1>[== $lang->{module_name_long} =]</h1>
@@ -325,7 +325,7 @@
   <a class="close" data-dismiss="modal"></a>
   <h3 id="domain_edit_dialog_title"></h3>
  </div>
- <div class="modal-body">
+ <div class="modal-body" id="domain_modal_body">
   <span class="form-horizontal" id="domain_edit_form">
     <div class="alert alert-block alert-error" id="domain_edit_form_error" style="display:none">
       <span id="domain_edit_form_error_text"></span>
@@ -342,6 +342,54 @@
         <div class="controls">
           <input type="text" class="input" id="domain_exp" data-date-format="[== $lang->{domain_date_picker_template} =]" />
           <p class="help-block">[== $lang->{domain_exp_hint} =]</p>
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns1"> 
+        <label class="control-label" for="ns1">[== $lang->{ns1} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="ns1" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns1_ip"> 
+        <label class="control-label" for="ns1_ip">[== $lang->{ns1_ip} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="ns1_ip" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns2"> 
+        <label class="control-label" for="ns2">[== $lang->{ns2} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="ns2" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns2_ip"> 
+        <label class="control-label" for="ns2_ip">[== $lang->{ns2_ip} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="ns2_ip" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns3"> 
+        <label class="control-label" for="ns3">[== $lang->{ns3} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="ns3" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns3_ip"> 
+        <label class="control-label" for="ns3_ip">[== $lang->{ns3_ip} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="ns3_ip" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns4"> 
+        <label class="control-label" for="ns4">[== $lang->{ns4} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-medium" id="ns4" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_ns4_ip"> 
+        <label class="control-label" for="ns4_ip">[== $lang->{ns4_ip} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-small" id="ns4_ip" />
         </div>
       </div>
     </span>

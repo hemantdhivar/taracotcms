@@ -648,6 +648,14 @@ post '/data/domain/save' => sub {
   content_type 'application/json';
   my $domain_name=param('domain_name') || '';
   my $domain_exp=param('domain_exp') || '';
+  my $ns1=param('ns1') || '';
+  my $ns2=param('ns2') || '';
+  my $ns3=param('ns3') || '';
+  my $ns4=param('ns4') || '';
+  my $ns1_ip=param('ns1_ip') || '';
+  my $ns2_ip=param('ns2_ip') || '';
+  my $ns3_ip=param('ns3_ip') || '';
+  my $ns4_ip=param('ns4_ip') || '';
   my $id=param('id') || 0;
   my $user_id=param('user_id') || 0;
   $user_id=int($user_id);
@@ -662,6 +670,30 @@ post '/data/domain/save' => sub {
   $domain_exp = str2time($domain_exp);
   if (!$domain_exp) {
    return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~; 
+  }
+  if ($ns1 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns1) > 80) {
+   return qq~{"result":"0","field":"ns1","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns2 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns2) > 80) {
+   return qq~{"result":"0","field":"ns2","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns3 && $ns3 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns3) > 80) {
+   return qq~{"result":"0","field":"ns3","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns4 && $ns4 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns4) > 80) {
+   return qq~{"result":"0","field":"ns4","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns1_ip && $ns1_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns1_ip) > 42) {
+   return qq~{"result":"0","field":"ns1_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns2_ip && $ns2_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns2_ip) > 42) {
+   return qq~{"result":"0","field":"ns2_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns3_ip && $ns3_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns3_ip) > 42) {
+   return qq~{"result":"0","field":"ns3_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns4_ip && $ns4_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns4_ip) > 42) {
+   return qq~{"result":"0","field":"ns4_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
   my $dupesql='';
   if ($id > 0) {
@@ -679,9 +711,9 @@ post '/data/domain/save' => sub {
   }
   $sth->finish();
   if ($id > 0) {
-    database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { domain_name => $domain_name, exp_date => $domain_exp, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { domain_name => $domain_name, exp_date => $domain_exp, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, lastchanged => time });
   } else {   
-    database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name, exp_date => $domain_exp, lastchanged => time });
+    database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name, exp_date => $domain_exp, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, lastchanged => time });
     $id = database->{q{mysql_insertid}}; 
   }  
   if (!$id) {
@@ -872,11 +904,11 @@ post '/data/domain/load' => sub {
    return qq~{"result":"0"}~; 
   }
   my $sth = database->prepare(
-   'SELECT domain_name,exp_date FROM '.config->{db_table_prefix}.'_billing_domains WHERE id='.$id
+   'SELECT domain_name,exp_date,ns1,ns2,ns3,ns4,ns1_ip,ns2_ip,ns3_ip,ns4_ip FROM '.config->{db_table_prefix}.'_billing_domains WHERE id='.$id
   );
-  my ($domain_name,$exp_date);
+  my ($domain_name,$exp_date,$ns1,$ns2,$ns3,$ns4,$ns1_ip,$ns2_ip,$ns3_ip,$ns4_ip);
   if ($sth->execute()) {
-   ($domain_name,$exp_date) = $sth->fetchrow_array;
+   ($domain_name,$exp_date,$ns1,$ns2,$ns3,$ns4,$ns1_ip,$ns2_ip,$ns3_ip,$ns4_ip) = $sth->fetchrow_array;
   }
   $sth->finish();
   if (!$domain_name) {
@@ -888,6 +920,14 @@ post '/data/domain/load' => sub {
   $response{domain_name}=$domain_name;
   $response{domain_exp}=time2str($lang->{domain_date_template}, $exp_date);
   $response{domain_exp}=~s/\\//gm;
+  $response{ns1}=$ns1;
+  $response{ns2}=$ns2;
+  $response{ns3}=$ns3;
+  $response{ns4}=$ns4;
+  $response{ns1_ip}=$ns1_ip;
+  $response{ns2_ip}=$ns2_ip;
+  $response{ns3_ip}=$ns3_ip;
+  $response{ns4_ip}=$ns4_ip;
   my $json = $json_xs->encode(\%response);
   return $json;    
 };

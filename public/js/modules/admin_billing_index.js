@@ -309,16 +309,33 @@ $('#btn_add_hosting').click(function () {
 $('#btn_add_domain').click(function () {
     $('#cg_domain_name').removeClass('error');
     $('#cg_domain_exp').removeClass('error');
+    $('#ns1').removeClass('error');
+    $('#ns2').removeClass('error');
+    $('#ns3').removeClass('error');
+    $('#ns4').removeClass('error');
+    $('#ns1_ip').removeClass('error');
+    $('#ns2_ip').removeClass('error');
+    $('#ns3_ip').removeClass('error');
+    $('#ns4_ip').removeClass('error');
     $('#domain_edit_form_error').hide();
     $('#domain_edit_ajax').hide();
     $('#domain_edit_form').show();
     $('#domain_edit_buttons').show();
     $('#domain_name').val('');
     $('#domain_exp').val('');
+    $('#ns1').val('');
+    $('#ns2').val('');
+    $('#ns3').val('');
+    $('#ns4').val('');
+    $('#ns1_ip').val('');
+    $('#ns2_ip').val('');
+    $('#ns3_ip').val('');
+    $('#ns4_ip').val('');
     $('#domain_edit_dialog_title').html(js_lang_add_domain);
     $('#domain_edit_dialog').modal({
         keyboard: true
     });
+    $('#domain_modal_body').scrollTop(0);
     $('#domain_name').focus();
     domain_edit_id = 0;
 });
@@ -421,6 +438,14 @@ $('#btn_hosting_dialog_save').click(function () {
 $('#btn_domain_dialog_save').click(function () {
     $('#cg_domain_name').removeClass('error');
     $('#cg_domain_exp').removeClass('error');
+    $('#ns1').removeClass('error');
+    $('#ns2').removeClass('error');
+    $('#ns3').removeClass('error');
+    $('#ns4').removeClass('error');
+    $('#ns1_ip').removeClass('error');
+    $('#ns2_ip').removeClass('error');
+    $('#ns3_ip').removeClass('error');
+    $('#ns4_ip').removeClass('error');
     $('#domain_edit_form_error').hide();
     var errors = false;
     if (!$('#domain_name').val().match(/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/)) {
@@ -431,10 +456,43 @@ $('#btn_domain_dialog_save').click(function () {
         $('#cg_domain_exp').addClass('error');
         errors = true;
     }
+    if (!$('#ns1').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        $('#cg_ns1').addClass('error');
+        errors = true;
+    }
+    if (!$('#ns2').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        $('#cg_ns2').addClass('error');
+        errors = true;
+    }
+    if ($('#ns3').val() && !$('#ns3').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        $('#cg_ns3').addClass('error');
+        errors = true;
+    }
+    if ($('#ns4').val() && !$('#ns4').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        $('#cg_ns4').addClass('error');
+        errors = true;
+    }
+    if ($('#ns1_ip').val() && !$('#ns1_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+        $('#cg_ns1_ip').addClass('error');
+        errors = true;
+    }
+    if ($('#ns2_ip').val() && !$('#ns2_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+        $('#cg_ns2_ip').addClass('error');
+        errors = true;
+    }
+    if ($('#ns3_ip').val() && !$('#ns3_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+        $('#cg_ns3_ip').addClass('error');
+        errors = true;
+    }
+    if ($('#ns4_ip').val() && !$('#ns4_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+        $('#cg_ns4_ip').addClass('error');
+        errors = true;
+    }
     if (errors) {
         $('#domain_edit_form_error_text').html(js_lang_form_errors);
         $('#domain_edit_form_error').fadeIn(400);
         $('#domain_edit_form_error').alert();
+        $('#domain_modal_body').scrollTop(0);
         $('#domain_name').focus();
     } else {
         $('#domain_edit_ajax_msg').html(js_lang_ajax_saving);
@@ -448,7 +506,15 @@ $('#btn_domain_dialog_save').click(function () {
                 id: domain_edit_id,
                 user_id: edit_id,
                 domain_name: $('#domain_name').val(),
-                domain_exp: $('#domain_exp').val()
+                domain_exp: $('#domain_exp').val(),
+                ns1: $('#ns1').val(),
+                ns2: $('#ns2').val(),
+                ns3: $('#ns3').val(),
+                ns4: $('#ns4').val(),
+                ns1_ip: $('#ns1_ip').val(),
+                ns2_ip: $('#ns2_ip').val(),
+                ns3_ip: $('#ns3_ip').val(),
+                ns4_ip: $('#ns4_ip').val()
             },
             dataType: "json",
             success: function (data) {
@@ -775,6 +841,14 @@ function editDomain(id) {
     $('#domain_edit_dialog_title').html(js_lang_edit_domain);
     $('#cg_domain_name').removeClass('error');
     $('#cg_domain_exp').removeClass('error');
+    $('#ns1').removeClass('error');
+    $('#ns2').removeClass('error');
+    $('#ns3').removeClass('error');
+    $('#ns4').removeClass('error');
+    $('#ns1_ip').removeClass('error');
+    $('#ns2_ip').removeClass('error');
+    $('#ns3_ip').removeClass('error');
+    $('#ns4_ip').removeClass('error');
     $('#domain_edit_form_error').hide();
     domain_edit_id = id;
     $('#domain_edit_dialog').modal({
@@ -783,7 +857,7 @@ function editDomain(id) {
     $('#domain_edit_ajax_msg').html(js_lang_ajax_loading);
     $('#domain_edit_ajax').show();
     $('#domain_edit_form').hide();
-    $('#domain_edit_buttons').hide();
+    $('#domain_edit_buttons').hide();    
     $.ajax({
         type: 'POST',
         url: '/admin/billing/data/domain/load',
@@ -798,8 +872,24 @@ function editDomain(id) {
             } else { // OK
                 var domain_name = data.domain_name || '';
                 var domain_exp = data.domain_exp || '';
-                $('#domain_name').val(domain_name);
+                var ns1 = data.ns1 || '';
+                var ns2 = data.ns2 || '';
+                var ns3 = data.ns3 || '';
+                var ns4 = data.ns4 || '';
+                var ns1_ip = data.ns1_ip || '';
+                var ns2_ip = data.ns2_ip || '';
+                var ns3_ip = data.ns3_ip || '';
+                var ns4_ip = data.ns4_ip || '';
+                $('#domain_name').val(domain_name);                
                 $('#domain_exp').val(domain_exp);
+                $('#ns1').val(ns1);
+                $('#ns2').val(ns2);
+                $('#ns3').val(ns3);
+                $('#ns4').val(ns4);
+                $('#ns1_ip').val(ns1_ip);
+                $('#ns2_ip').val(ns2_ip);
+                $('#ns3_ip').val(ns3_ip);
+                $('#ns4_ip').val(ns4_ip);
                 $('#domain_edit_ajax').hide();
                 $('#domain_edit_form').show();
                 $('#domain_edit_buttons').show();

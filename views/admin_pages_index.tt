@@ -1,9 +1,9 @@
-<script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/js/jquery.dataTables.bootstrap.js"></script>
-<script type="text/javascript" src="/js/jquery.jeditable.min.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.jeditable.min.js"></script>
 <script type="text/javascript" src="/js/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="/js/ckeditor/adapters/jquery.js"></script>
-<script type="text/javascript" src="/js/hashtable.js"></script>
+<script type="text/javascript" src="/js/admin/hashtable.js"></script>
 <script src="/js/codemirror/lib/codemirror.js"></script>
 <script src="/js/codemirror/mode/javascript/javascript.js"></script>
 <script src="/js/codemirror/mode/xml/xml.js"></script>

@@ -1,6 +1,6 @@
-<script type="text/javascript" src="/js/jquery.shifty.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.shifty.js"></script>
 <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
-<script type="text/javascript" src="/js/hashtable.js"></script>
+<script type="text/javascript" src="/js/admin/hashtable.js"></script>
 
 <h1 style="padding-top:6px">[== $lang->{pagetitle} =]</h1>
 
