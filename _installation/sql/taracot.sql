@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 10, 2012 at 10:45 PM
+-- Generation Time: Dec 11, 2012 at 06:43 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -38,11 +38,9 @@ CREATE TABLE `taracot_billing_domains` (
 -- Dumping data for table `taracot_billing_domains`
 -- 
 
-INSERT INTO `taracot_billing_domains` VALUES (1, 1, 're-hash.ru', 1352750400, 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 1355156516);
-INSERT INTO `taracot_billing_domains` VALUES (16, 1, 'domain.ru', 1354651200, NULL, NULL, NULL, NULL, '', '', '', '', 1354707052);
-INSERT INTO `taracot_billing_domains` VALUES (3, 1, 're-hash.com', 132837843, NULL, NULL, NULL, NULL, '', '', '', '', NULL);
-INSERT INTO `taracot_billing_domains` VALUES (15, 1, 'medved.ru', 477345600, NULL, NULL, NULL, NULL, '', '', '', '', 1354630388);
-INSERT INTO `taracot_billing_domains` VALUES (21, 1, 'spb.ru', 1356724800, 'ns1.re-hash.org', 'ns2.re-hash.org', 'ns3.re-hash.org', 'ns4.re-hash.org', '123.123.111.56', '12.12.12.12', '13.13.13.13', '14.14.14.14', 1355156503);
+INSERT INTO `taracot_billing_domains` VALUES (1, 1, 're-hash.ru', 1352750400, 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 1355212535);
+INSERT INTO `taracot_billing_domains` VALUES (16, 1, 'domain.ru', 1355342400, 'ns1', 'ns2', '', '', '', '', '', '', 1355215706);
+INSERT INTO `taracot_billing_domains` VALUES (21, 1, 'domain.com', 1359403200, 'ns1.re-hash.org', 'ns2.re-hash.org', 'ns3.re-hash.org', 'ns4.re-hash.org', '123.123.111.56', '12.12.12.12', '13.13.13.13', '14.14.14.14', 1355212528);
 
 -- --------------------------------------------------------
 
@@ -112,7 +110,7 @@ CREATE TABLE `taracot_billing_hosting` (
 -- 
 
 INSERT INTO `taracot_billing_hosting` VALUES (20, 1, 'zhopa', 'econom', 0, 1354883145);
-INSERT INTO `taracot_billing_hosting` VALUES (21, 1, 'adsds', 'econom', 1, 1354707511);
+INSERT INTO `taracot_billing_hosting` VALUES (21, 1, 'adsds', 'profi', 1, 1355217265);
 INSERT INTO `taracot_billing_hosting` VALUES (30, 1, 'ok', 'econom', 12, 1354708280);
 
 -- --------------------------------------------------------
@@ -155,7 +153,7 @@ CREATE TABLE `taracot_billing_profiles` (
 -- Dumping data for table `taracot_billing_profiles`
 -- 
 
-INSERT INTO `taracot_billing_profiles` VALUES (1, 1, 'Матвеев', 'Matveev', 'Михаил', 'Michael', 'Александрович', 'A', 'xtreme@rh1.ru', '+7 921 7998111', '', 'RU', 'St. Petersburg', 'St. Petersburg', 'Michmanskaya Str. 2-1-212', NULL, '40 05 559303 выдан 15 о/м Калининского р-на г. Санкт-Петербурга 30.03.2005', '16.02.1985', '199226, Санкт-Петербург, ул. Мичманская, 2-1-212, Матвееву М.А.', '', '', '', '', 0, 1355149239);
+INSERT INTO `taracot_billing_profiles` VALUES (1, 1, '', 'Matveev', '', 'Michael', '', 'A', 'xtreme@rh1.ru', '+7 921 7998111', '+7 812 9883535', 'RU', 'St. Petersburg', 'St. Petersburg', 'Michmanskaya Str. 2-1-212', '199226', '', '16.02.1985', '', '', '', '', '', 0, 1355231622);
 INSERT INTO `taracot_billing_profiles` VALUES (2, 9, 'Петров', 'Smith', 'Иван', 'John', 'Иванович', 'I', 'john.smith@domain.com', '+7 495 1234567', '+7 495 1234589', 'RE', 'New York', 'New York', 'Tverskaya St., 2-1-234', NULL, '34 02 651241 выдан 48 о/м г. Москвы 26.12.1990', '30.11.1985', '101000, Москва, ул. Воробьянинова, 15, кв. 22, В. Лоханкину', 'ROGA I KOPYTA, LTD.', 'Общество с ограниченной ответственностью "Рога и Копыта"', '7701107259', '632946014', 0, 1354883028);
 
 -- --------------------------------------------------------
@@ -254,7 +252,7 @@ CREATE TABLE `taracot_settings` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=21 ;
 
 -- 
 -- Dumping data for table `taracot_settings`
@@ -274,6 +272,8 @@ INSERT INTO `taracot_settings` VALUES (15, 'billing_service_cost_vps', '123', ''
 INSERT INTO `taracot_settings` VALUES (16, 'billing_service_name_backup', 'Managed backup', '', 'en', 1354701386);
 INSERT INTO `taracot_settings` VALUES (17, 'billing_service_cost_backup', '666', '', '', 1354701407);
 INSERT INTO `taracot_settings` VALUES (18, 'billing_currency', 'USD', '', 'en', 1354887248);
+INSERT INTO `taracot_settings` VALUES (19, 'billing_payment_webmoney', 'Webmoney', '<p>\n	A multifunctional payment tool that provides secure and immediate transactions online</p>\n', 'en', 1355232452);
+INSERT INTO `taracot_settings` VALUES (20, 'billing_payment_robokassa', 'Robokassa', '<p>\n	Payments in every e-currency, using mobile commerce services (MTS, Megafon, Beeline), e-invoicing via leading banks in Russia, through ATMs, through instant payment terminals, through Contact remittances, and with the iPhone application</p>\n', 'en', 1355232538);
 
 -- --------------------------------------------------------
 
