@@ -638,17 +638,27 @@ $('#btn_profile_dialog_save').click(function () {
     });
     $('#profile_edit_form_error').hide();
     var errors = false;
-    if (!$('#n1r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
-        $('#cg_n1r').addClass('error');
-        errors = true;
-    }
-    if (!$('#n2r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
-        $('#cg_n2r').addClass('error');
-        errors = true;
-    }
-    if (!$('#n3r').val().match(/^[А-Яа-я\-]{1,24}$/)) {
-        $('#cg_n3r').addClass('error');
-        errors = true;
+    if ($('#n1r').val() || $('#n2r').val() || $('#n3r').val() || $('#passport').val() || $('#addr_ru').val()) {
+        if (!$('#n1r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
+            $('#cg_n1r').addClass('error');
+            errors = true;
+        }
+        if (!$('#n2r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
+            $('#cg_n2r').addClass('error');
+            errors = true;
+        }
+        if (!$('#n3r').val().match(/^[А-Яа-я\-]{1,24}$/)) {
+            $('#cg_n3r').addClass('error');
+            errors = true;
+        }
+        if (!$('#passport').val().match(/^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
+            $('#cg_passport').addClass('error');
+            errors = true;
+        }
+        if (!$('#addr_ru').val().match(/^([0-9]{6}),(\s)(.*)$/)) {
+            $('#cg_addr_ru').addClass('error');
+            errors = true;
+        }
     }
     if (!$('#n1e').val().match(/^[A-Za-z\-]{1,30}$/)) {
         $('#cg_n1e').addClass('error');
@@ -673,17 +683,13 @@ $('#btn_profile_dialog_save').click(function () {
     if ($('#fax').val() && !$('#fax').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
         $('#cg_fax').addClass('error');
         errors = true;
-    }
-    if (!$('#passport').val().match(/^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
-        $('#cg_passport').addClass('error');
-        errors = true;
-    }
+    }    
     if (!$('#birth_date').val().match(/^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
         $('#cg_birth_date').addClass('error');
         errors = true;
-    }    
-    if (!$('#addr_ru').val().match(/^([0-9]{6}),(\s)(.*)$/)) {
-        $('#cg_addr_ru').addClass('error');
+    }        
+    if (!$('#postcode').val().match(/^([0-9]{5,6})$/)) {
+        $('#cg_postcode').addClass('error');
         errors = true;
     }
     if ($('#org_r').val() || $('#org').val() || $('#code').val() || $('#kpp').val()) {

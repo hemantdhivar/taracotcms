@@ -763,14 +763,26 @@ post '/data/profile/save' => sub {
   my $kpp = param('kpp');
   my $private = param('private');  
   # verify using regexp
-  if ($n1r !~ /^[А-Яа-я\-]{1,19}$/) {
-   return qq~{"result":"0","field":"n1r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_last_name}.')"}';
-  }
-  if ($n2r !~ /^[А-Яа-я\-]{1,19}$/) {
-   return qq~{"result":"0","field":"n2r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_first_name}.')"}';
-  }
-  if ($n3r !~ /^[А-Яа-я\-]{1,24}$/) {
-   return qq~{"result":"0","field":"n3r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_patronym}.')"}';
+  if ($n1r || $n2r || $n3r || $passport || $addr_ru) {
+    if ($n1r !~ /^[А-Яа-я\-]{1,19}$/) {
+     return qq~{"result":"0","field":"n1r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_last_name}.')"}';
+    }
+    if ($n2r !~ /^[А-Яа-я\-]{1,19}$/) {
+     return qq~{"result":"0","field":"n2r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_first_name}.')"}';
+    }
+    if ($n3r !~ /^[А-Яа-я\-]{1,24}$/) {
+     return qq~{"result":"0","field":"n3r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_patronym}.')"}';
+    }
+    $passport=~s/\</&lt;/gm;
+    $passport=~s/\>/&gt;/gm;
+    if ($passport !~ /^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/) {
+     return qq~{"result":"0","field":"passport","error":"~.$lang->{invalid_field}.' ('.$lang->{p_passport}.')"}';
+    }
+    $addr_ru=~s/\</&lt;/gm;
+    $addr_ru=~s/\>/&gt;/gm;
+    if ($addr_ru !~ /^([0-9]{6}),(\s)(.*)$/) {
+     return qq~{"result":"0","field":"addr_ru","error":"~.$lang->{invalid_field}.' ('.$lang->{p_addr_ru}.')"}';
+    }
   }
   if ($n1e !~ /^[A-Za-z\-]{1,30}$/) {
    return qq~{"result":"0","field":"n1e","error":"~.$lang->{invalid_field}.' ('.$lang->{p_last_name}.')"}';
@@ -793,19 +805,12 @@ post '/data/profile/save' => sub {
   if ($country !~ /^[A-Z]{2}$/) {
    return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
   }
-  $passport=~s/\</&lt;/gm;
-  $passport=~s/\>/&gt;/gm;
-  if ($passport !~ /^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/) {
-   return qq~{"result":"0","field":"passport","error":"~.$lang->{invalid_field}.' ('.$lang->{p_passport}.')"}';
-  }
+  if ($postcode !~ /^([0-9]{5,6})$/) {
+    return qq~{"result":"0","field":"postcode","error":"~.$lang->{invalid_field}.' ('.$lang->{p_postcode}.')"}';
+  }  
   if ($birth_date !~ /^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/) {
    return qq~{"result":"0","field":"birth_date","error":"~.$lang->{invalid_field}.' ('.$lang->{p_birth_date}.')"}';
-  }
-  $addr_ru=~s/\</&lt;/gm;
-  $addr_ru=~s/\>/&gt;/gm;
-  if ($addr_ru !~ /^([0-9]{6}),(\s)(.*)$/) {
-   return qq~{"result":"0","field":"addr_ru","error":"~.$lang->{invalid_field}.' ('.$lang->{p_addr_ru}.')"}';
-  }
+  }  
   if ($org_r || $org || $code || $kpp) {
     $org_r=~s/\</&lt;/gm;
     $org_r=~s/\>/&gt;/gm;
@@ -1204,6 +1209,27 @@ post '/data/load' => sub {
    push @service_plans, \%service_plan;
   }
   $response{service_plans} = \@service_plans;
+  # load payment methods
+  my @payment_methods;
+  $sth = database->prepare(
+    'SELECT s_name, s_value, s_value_html FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_payment_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value, $s_value_html) = $sth -> fetchrow_array()) {
+      my %payment_method;
+      $s_name=~s/^billing_payment_//;
+      $s_value_html=~s/<.+?>//g;
+      $s_value_html=~s/[\n\r]//g;
+      $s_value_html=~s/^\s+//g;
+      $s_value_html=~s/\s+$//g;
+      $payment_method{id} = $s_name;
+      $payment_method{name} = $s_value;
+      $payment_method{desc} = $s_value_html;
+      push @payment_methods, \%payment_method;
+    }
+  }
+  $response{payment_methods} = \@payment_methods;
+  $sth->finish();
   # select hosting accounts
   $sth = database->prepare(
     'SELECT id,host_acc,host_plan_id,host_days_remain FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}
@@ -1230,18 +1256,18 @@ post '/data/load' => sub {
   if ($sth->execute()) {
     my @domain_names;
     while (my ($id, $domain_name, $exp_date) = $sth -> fetchrow_array()) {      
-      if (time - $exp_date + 864000 < 0) { # 10 days
+      if ($exp_date - time + 864000 < 0) { # 10 days
         next;
       }
       my $zone=lc $domain_name;
       $zone=~s/^[^\.]*\.//;
       my $allow_update='0';
       my $expired='0';
-      if ((($zone eq 'ru' || $zone eq 'su') && ( time-$exp_date < 4838400)) || ($zone ne 'ru' && $zone ne 'su')) {
+      if ((($zone eq 'ru' || $zone eq 'su') && ( $exp_date - time < 4838400)) || ($zone ne 'ru' && $zone ne 'su')) {
         $allow_update='1';
       }
-      if (time - $exp_date < 0) {
-        $expired=1;
+      if ($exp_date - time < 0) {
+        $expired='1';
       }
       my %data;
       $data{id} = $id;
@@ -1266,14 +1292,81 @@ post '/data/load' => sub {
       my %data;
       $data{id} = $id;
       $data{service_id} = $service_id;
-      $data{service_days_remaining} = $service_days_remaining;
-      $data{service_cost} = $service_plan_costs{$service_id} || '0';
-      $data{service_name} = $service_plan_names{$service_id} || $service_id;
+      $data{days} = $service_days_remaining;
+      $data{cost} = $service_plan_costs{$service_id} || '0';
+      $data{name} = $service_plan_names{$service_id} || $service_id;
       push (@services, \%data);
     }
     $response{services} = \@services;
   }
   $sth->finish();
+  # select funds amount
+  $sth = database->prepare(
+    'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    my ($amount) = $sth -> fetchrow_array();
+    $response{amount} = $amount;
+  }
+  $sth->finish();
+  if (!$response{amount}) {
+    $response{amount}='0';
+  }
+  # select history
+  my %history_values;
+  $sth = database->prepare(
+   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE (MATCH (s_name) AGAINST (\'billing_history_*\' IN BOOLEAN MODE)) AND lang='.database->quote($current_lang)
+  );
+  if ($sth->execute()) {
+   while (my ($sname, $svalue) = $sth -> fetchrow_array) {
+     $sname=~s/billing_history_//;
+     $history_values{$sname} = $svalue;
+   }
+  }
+  $sth->finish();
+  my @history;
+  $sth = database->prepare(
+   'SELECT trans_id, trans_objects, trans_amount, trans_date FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE user_id='.$auth_data->{id}.' ORDER BY trans_date DESC LIMIT 50'
+  );
+  if ($sth->execute()) {
+   while(my ($trans_id, $trans_objects, $trans_amount, $trans_date) = $sth -> fetchrow_array) {
+    my %hr;
+    my $event;
+    if ($trans_id) {
+      if ($history_values{$trans_id}) {
+        $event=$history_values{$trans_id}.' ';
+      } else {
+        $event=$trans_id.' ';
+      }
+    }
+    if ($trans_objects) {
+      if ($event) {
+        $event.=' ('.$trans_objects.')';
+      } else {
+        $event.=$trans_objects;
+      }
+    }
+    $trans_date =  time2str($lang->{history_datetime_template}, $trans_date);
+    $trans_date =~s/\\//gm;
+    $hr{event}=$event;
+    $hr{date}=$trans_date;
+    $hr{amount}=$trans_amount;
+    push @history, \%hr;
+   }
+   $response{history} = \@history;
+  }
+  $sth->finish();
+  # select profile
+  my $profile_hash;
+  $sth = database->prepare(
+   'SELECT id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private FROM '.config->{db_table_prefix}.'_billing_profiles WHERE user_id='.$auth_data->{id}
+  );
+  my $resp;
+  if ($sth->execute()) {
+   $profile_hash = $sth->fetchrow_hashref;
+  }
+  $sth->finish();
+  $response{profile}=$profile_hash;
   # return data
   $response{result} = 1;
   my $json_xs = JSON::XS->new();

@@ -1,6 +1,6 @@
 <h1>[== $lang->{billing_customer} =]</h1>
     <div id="billing_customer_wrap" style="display:none">
-        <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail">0</span>&nbsp;[== $page_data->{billing_currency} =]</span>
+        <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail"></span>&nbsp;[== $page_data->{billing_currency} =]</span>
         <br/><br/>
         <ul class="nav nav-tabs" id="customer_tabs">
             <li class="active">
@@ -37,8 +37,347 @@
                 <div id="data_services">[== $lang->{no_services} =]</div>
             </div>
             <div class="tab-pane" id="tab_account">
+                [== $lang->{tab_account_hint} =]
+                <hr/>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span3">
+                      <fieldset>
+                          <div class="control-group" id="cg_amnt">
+                            <label class="control-label" for="amnt">[== $lang->{amnt} =]</label>
+                            <div class="controls">
+                                <div class="input-append">
+                                    <input class="input-small" id="amnt" type="text">
+                                    <span class="add-on" id="amnt_currency">[== $page_data->{billing_currency} =]</span>
+                                </div>
+                                <p class="help-block"><small>[== $lang->{amnt_hint} =]</small></p>
+                            </div>
+                          </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div id="payment_methods"></div>
+                <div class="form-actions"> 
+                    <div id="ajax_funds_loading" style="display:none">
+                        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_funds_loading_msg"></span>
+                    </div>
+                    <div id="profile_buttons">
+                        <span class="btn btn-primary" id="btn_save_funds">[== $lang->{continue} =]</span>
+                    </div>  
+                </div> 
             </div>
-            <div class="tab-pane" id="tab_profile">
+            <div class="tab-pane" id="tab_profile">                
+                <h3>[== $lang->{profile_int_head} =]</h3>
+                [== $lang->{profile_int_hint} =]
+                <hr/>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span3">
+                      <fieldset>
+                      <div class="control-group" id="cg_n1e">
+                        <label class="control-label" for="n1e">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-medium" id="n1e">
+                          <p class="help-block"><small>[== $lang->{p_last_name_en_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_n2e">
+                          <label class="control-label" for="n2e">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="n2e">
+                            <p class="help-block"><small>[== $lang->{p_first_name_en_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_n3e">
+                          <label class="control-label" for="n3e">[== $lang->{p_patronym_first_br} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="span1" id="n3e" style="text-align:center">
+                            <p class="help-block"><small>[== $lang->{p_patronym_first_en_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span3">
+                      <fieldset>
+                      <div class="control-group" id="cg_country">
+                        <label class="control-label" for="country">[== $lang->{p_country} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <select class="input-medium" id="country"></select>
+                          <p class="help-block"><small>[== $lang->{p_country_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_city">
+                          <label class="control-label" for="city">[== $lang->{p_city} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="city">
+                            <p class="help-block"><small>[== $lang->{p_city_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_state">
+                          <label class="control-label" for="state">[== $lang->{p_state} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="state">
+                            <p class="help-block"><small>[== $lang->{p_state_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>                    
+                  </form>
+                </div>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span3">
+                      <fieldset>
+                          <div class="control-group" id="cg_postcode">
+                            <label class="control-label" for="postcode">[== $lang->{p_postcode} =]&nbsp;<span class="required_field">*</span></label>
+                            <div class="controls">
+                              <input type="text" class="input-small" id="postcode">
+                              <p class="help-block"><small>[== $lang->{p_postcode_hint} =]</small></p>
+                            </div>
+                          </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                          <div class="control-group" id="cg_addr">
+                            <label class="control-label" for="addr">[== $lang->{p_addr} =]&nbsp;<span class="required_field">*</span></label>
+                            <div class="controls">
+                              <input type="text" class="input-medium" id="addr">
+                              <p class="help-block"><small>[== $lang->{p_addr_hint} =]</small></p>
+                            </div>
+                          </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                          <div class="control-group" id="cg_birth_date">
+                            <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label>
+                            <div class="controls">
+                              <input type="text" class="input-small" id="birth_date">
+                              <p class="help-block"><small>[== $lang->{p_birth_date_hint} =]</small></p>
+                            </div>
+                          </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span6">
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                          <div class="control-group" id="cg_private">
+                            <label class="control-label" for="private">[== $lang->{p_private} =]</label>
+                            <div class="controls">
+                              <input type="checkbox" id="private" name="private" /> 
+                            </div>
+                          </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <h3>[== $lang->{profile_russian_head} =]</h3>
+                [== $lang->{profile_russian_hint} =]
+                <hr/>
+                <div class="alert alert-block alert-error" id="profile_edit_form_error" style="display:none">
+                    <span id="profile_edit_form_error_text"></span>
+                </div>                
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span3">
+                      <fieldset>
+                      <div class="control-group" id="cg_n1r">
+                        <label class="control-label" for="n1r">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-medium" id="n1r">
+                          <p class="help-block"><small>[== $lang->{p_last_name_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_n2r">
+                          <label class="control-label" for="n2r">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="n2r">
+                            <p class="help-block"><small>[== $lang->{p_first_name_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_n3r">
+                          <label class="control-label" for="n3r">[== $lang->{p_patronym} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="n3r">
+                            <p class="help-block"><small>[== $lang->{p_patronym_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span9">
+                      <fieldset>
+                      <div class="control-group" id="cg_passport">
+                        <label class="control-label" for="passport">[== $lang->{p_passport} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-xxlarge" id="passport">
+                          <p class="help-block"><small>[== $lang->{p_passport_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span9">
+                      <fieldset>
+                      <div class="control-group" id="cg_addr_ru">
+                        <label class="control-label" for="addr_ru">[== $lang->{p_addr_ru} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-xxlarge" id="addr_ru">
+                          <p class="help-block"><small>[== $lang->{p_addr_ru_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <h3>[== $lang->{profile_cont_head} =]</h3>
+                [== $lang->{profile_cont_hint} =]
+                <hr/>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span3">
+                      <fieldset>
+                      <div class="control-group" id="cg_phone">
+                        <label class="control-label" for="phone">[== $lang->{p_phone} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-medium" id="phone">
+                          <p class="help-block"><small>[== $lang->{p_phone_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_fax">
+                          <label class="control-label" for="fax">[== $lang->{p_fax} =]</label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="fax">
+                            <p class="help-block"><small>[== $lang->{p_fax_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_email">
+                          <label class="control-label" for="email">[== $lang->{p_email} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="email">
+                            <p class="help-block"><small>[== $lang->{p_email_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>                    
+                  </form>
+                </div>
+                <h3>[== $lang->{profile_org_head} =]</h3>
+                [== $lang->{profile_org_hint} =]
+                <hr/>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span9">
+                      <fieldset>
+                      <div class="control-group" id="cg_org_r">
+                        <label class="control-label" for="org_r">[== $lang->{p_org_r} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-xxlarge" id="org_r">
+                          <p class="help-block"><small>[== $lang->{p_org_r_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span9">
+                      <fieldset>
+                      <div class="control-group" id="cg_org">
+                        <label class="control-label" for="org">[== $lang->{p_org} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-xxlarge" id="org">
+                          <p class="help-block"><small>[== $lang->{p_org_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div class="row">
+                  <form class="form-horizontal">
+                    <div class="span3">
+                      <fieldset>
+                      <div class="control-group" id="cg_code">
+                        <label class="control-label" for="code">[== $lang->{p_code} =]&nbsp;<span class="required_field">*</span></label>
+                        <div class="controls">
+                          <input type="text" class="input-medium" id="code">
+                          <p class="help-block"><small>[== $lang->{p_code_hint} =]</small></p>
+                        </div>
+                      </div>
+                      </fieldset>
+                    </div>
+                    <div class="span3">
+                      <fieldset>
+                        <div class="control-group" id="cg_kpp">
+                          <label class="control-label" for="kpp">[== $lang->{p_kpp} =]&nbsp;<span class="required_field">*</span></label>
+                          <div class="controls">
+                            <input type="text" class="input-medium" id="kpp">
+                            <p class="help-block"><small>[== $lang->{p_kpp_hint} =]</small></p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
+                <div class="form-actions"> 
+                    <div id="ajax_profile_loading" style="display:none">
+                        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_profile_loading_msg"></span>
+                    </div>
+                    <div id="profile_buttons">
+                        <span class="btn btn-primary" id="btn_save_profile">[== $lang->{edit_save} =]</span>
+                    </div>  
+                </div> 
             </div>        
             <div class="tab-pane" id="tab_history">
                 <div id="data_history">[== $lang->{no_history_records} =]</div>
@@ -53,7 +392,10 @@
     var js_lang_no_hosting_accounts = "[== $lang->{no_hosting_accounts} =]"; 
     var js_lang_no_domains = "[== $lang->{no_domains} =]"; 
     var js_lang_no_services = "[== $lang->{no_services} =]"; 
+    var js_lang_no_history_records = "[== $lang->{no_history_records} =]"; 
     var js_lang_no_add_by_click = "[== $lang->{no_add_by_click} =]";
     var js_lang_hac_per_month = "[== $lang->{hac_per_month} =]"; 
+    var js_lang_history_hint = "[== $lang->{history_hint} =]";
+    var js_lang_countries = "[== $lang->{countries} =]";
     </script>
     <script src="/js/modules/billing_customer.js"></script>

@@ -84,25 +84,12 @@
           <input type="text" class="prif input-xlarge" id="passport" />
           <p class="help-block"><small>[== $lang->{p_passport_hint} =]</small></p>
         </div>
-      </div>
-      <div class="control-group prcg" id="cg_birth_date"> 
-        <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-small" id="birth_date" data-date-format="dd.mm.yyyy" />
-          <p class="help-block"><small>[== $lang->{p_birth_date_hint} =]</small></p>
-        </div>
-      </div>
+      </div>      
       <div class="control-group prcg" id="cg_addr_ru"> 
         <label class="control-label" for="addr_ru">[== $lang->{p_addr_ru} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
           <input type="text" class="prif input-xlarge" id="addr_ru" />
           <p class="help-block"><small>[== $lang->{p_addr_ru_hint} =]</small></p>
-        </div>
-      </div>
-      <div class="control-group prcg" id="cg_private"> 
-        <label class="control-label" for="private">[== $lang->{p_private} =]</label> 
-        <div class="controls">
-          <input type="checkbox" id="private" name="private" />
         </div>
       </div>      
     </span>
@@ -164,6 +151,13 @@
           <p class="help-block"><small>[== $lang->{p_patronym_first_en_hint} =]</small></p>
         </div>
       </div>
+      <div class="control-group prcg" id="cg_birth_date"> 
+        <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="prif input-small" id="birth_date" data-date-format="dd.mm.yyyy" />
+          <p class="help-block"><small>[== $lang->{p_birth_date_hint} =]</small></p>
+        </div>
+      </div>
       <div class="control-group prcg" id="cg_country"> 
         <label class="control-label" for="country">[== $lang->{p_country} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
@@ -185,11 +179,24 @@
           <p class="help-block"><small>[== $lang->{p_state_hint} =]</small></p>
         </div>
       </div>
+      <div class="control-group prcg" id="cg_postcode"> 
+        <label class="control-label" for="n2e">[== $lang->{p_postcode} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="prif span1" id="postcode" />
+          <p class="help-block"><small>[== $lang->{p_postcode_hint} =]</small></p>
+        </div>
+      </div>
       <div class="control-group prcg" id="cg_addr"> 
         <label class="control-label" for="n2e">[== $lang->{p_addr} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
           <input type="text" class="prif input-xlarge" id="addr" />
           <p class="help-block"><small>[== $lang->{p_addr_hint} =]</small></p>
+        </div>
+      </div>
+      <div class="control-group prcg" id="cg_private"> 
+        <label class="control-label" for="private">[== $lang->{p_private} =]</label> 
+        <div class="controls">
+          <input type="checkbox" id="private" name="private" />
         </div>
       </div>
     </span>
