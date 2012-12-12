@@ -197,4 +197,60 @@ $(document).ready(function () {
             $('#billing_customer_wrap_ajax').hide();
         }
     });
+    $('#btn_save_funds').click(function() {
+        $('#form_error_msg').hide();
+        $('#form_error_msg_text').html('');
+        $('#cg_amnt').removeClass('error');
+        var form_errors = false;
+        if (!$('#amnt').val().match(/^[0-9]*\.?[0-9]+$/) || $('#amnt').val() <= 0) {
+            $('#cg_amnt').addClass('error');
+            $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_form_error_invalid_amount + "<br/>");
+            form_errors = true;
+        }
+        if (form_errors) {
+            $('#form_error_msg').fadeIn(200);
+            $('#amnt').focus();
+        } else {
+            $('#funds_buttons').hide();
+            $('#account_form_1').hide();
+            $('#ajax_funds_loading').show();
+            $.ajax({
+                    type: 'POST',
+                    url: '/customer/data/get_bill?'+Math.random(),
+                    data: {
+                        amount: $('#amnt').val(),
+                        plugin: $('input[name=payment_method_id]:checked').val()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.result == '0') { // error
+                            $('#ajax_funds_loading').hide();
+                            $('#funds_buttons').show();
+                            $('#account_form_1').show();
+                            $('#amnt').focus();
+                            if (data.error) {
+                                $('#form_error_msg_text').html(data.error);
+                                $('#form_error_msg').fadeIn(400);
+                                $('#form_error_msg').alert();
+                            }
+                            if (data.field) {
+                                $('#cg_' + data.field).addClass('error');
+                                $('#' + data.field).focus();
+                            }  
+                        } else { // ok
+                            $('#account_form_2').show();    
+                            $('#ajax_funds_loading').hide();
+                        }
+                    },
+                    error: function () {
+                        $('#ajax_funds_loading').hide();
+                        $('#funds_buttons').show();
+                        $('#account_form_1').show();
+                        $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_error_ajax + "<br/>");
+                        $('#form_error_msg').fadeIn(200);
+                        $('#amnt').focus();
+                    }
+                });            
+        }
+    });
 }); // document.ready

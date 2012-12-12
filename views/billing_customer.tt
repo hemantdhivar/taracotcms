@@ -37,35 +37,43 @@
                 <div id="data_services">[== $lang->{no_services} =]</div>
             </div>
             <div class="tab-pane" id="tab_account">
-                [== $lang->{tab_account_hint} =]
-                <hr/>
-                <div class="row">
-                  <form class="form-horizontal">
-                    <div class="span3">
-                      <fieldset>
-                          <div class="control-group" id="cg_amnt">
-                            <label class="control-label" for="amnt">[== $lang->{amnt} =]</label>
-                            <div class="controls">
-                                <div class="input-append">
-                                    <input class="input-small" id="amnt" type="text">
-                                    <span class="add-on" id="amnt_currency">[== $page_data->{billing_currency} =]</span>
-                                </div>
-                                <p class="help-block"><small>[== $lang->{amnt_hint} =]</small></p>
+                <div id="account_form_1">
+                  [== $lang->{tab_account_hint} =]
+                  <hr/>
+                  <div class="alert alert-block alert-error hide" id="form_error_msg">
+                    <span id="form_error_msg_text"></span>
+                  </div>
+                  <div class="row">
+                    <form class="form-horizontal">
+                      <div class="span3">
+                        <fieldset>
+                            <div class="control-group" id="cg_amnt">
+                              <label class="control-label" for="amnt">[== $lang->{amnt} =]</label>
+                              <div class="controls">
+                                  <div class="input-append">
+                                      <input class="input-small" id="amnt" type="text">
+                                      <span class="add-on" id="amnt_currency">[== $page_data->{billing_currency} =]</span>
+                                  </div>
+                                  <p class="help-block"><small>[== $lang->{amnt_hint} =]</small></p>
+                              </div>
                             </div>
-                          </div>
-                      </fieldset>
-                    </div>
-                  </form>
+                        </fieldset>
+                      </div>
+                    </form>
+                  </div>
+                  <div id="payment_methods"></div>
                 </div>
-                <div id="payment_methods"></div>
+                <div id="account_form_2">
+                  [== $lang->{tab_account_hint_2} =]  
+                </div>
                 <div class="form-actions"> 
                     <div id="ajax_funds_loading" style="display:none">
-                        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_funds_loading_msg"></span>
+                        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]
                     </div>
-                    <div id="profile_buttons">
+                    <div id="funds_buttons">
                         <span class="btn btn-primary" id="btn_save_funds">[== $lang->{continue} =]</span>
                     </div>  
-                </div> 
+                </div>                 
             </div>
             <div class="tab-pane" id="tab_profile">                
                 <h3>[== $lang->{profile_int_head} =]</h3>
@@ -397,5 +405,6 @@
     var js_lang_hac_per_month = "[== $lang->{hac_per_month} =]"; 
     var js_lang_history_hint = "[== $lang->{history_hint} =]";
     var js_lang_countries = "[== $lang->{countries} =]";
+    var js_lang_form_error_invalid_amount = "[== $lang->{form_error_invalid_amount} =]";
     </script>
     <script src="/js/modules/billing_customer.js"></script>

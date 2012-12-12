@@ -173,5 +173,9 @@ profile_cont_hint: The information below is required for all domain zones. All f
 profile_org_head: Organization information
 profile_org_hint: The information below is required for all domain zones, but only if you wish to register your domains for an organization (otherwise leave them blank). Note&#058; if you don't have a Russian organziation name, use English.
 tab_account_hint: You can deposit your account here. Please fill the form below to continue.
+tab_account_hint_2: Please check your payment data and confirm to continue.
 amnt: Amount
 amnt_hint: Example&#058;&nbsp;14.95
+form_error_invalid_amount: Invalid deposit amount
+form_error_invalid_paysys: Invalid payment system ID
+form_error_invalid_plugin: Error while loading payment system plugin

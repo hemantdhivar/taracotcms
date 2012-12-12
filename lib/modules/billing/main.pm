@@ -1374,6 +1374,54 @@ post '/data/load' => sub {
   return $json;
 };  
 
+post '/data/get_bill' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  } 
+  my $curlang=_load_lang();
+  my $amount=param('amount');
+  my $plugin=param('plugin');
+  if ($amount !~ /^[0-9]*\.?[0-9]+$/) {
+   return qq~{"result":"0","field":"amnt","error":"~.$lang->{form_error_invalid_amount}.qq~"}~;
+  }
+  if ($plugin !~ /^[a-z]{1,40}$/) {
+   return qq~{"result":"0","error":"~.$lang->{form_error_invalid_paysys}.qq~"}~;
+  }
+  my $pay_sys;
+  my $sth = database->prepare(
+    'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.database->quote($curlang).' AND s_name=\'billing_payment_'.$plugin.'\''
+  );
+  if ($sth->execute()) {
+    ($pay_sys) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  if (!$pay_sys) {
+   return qq~{"result":"0","error":"~.$lang->{form_error_invalid_paysys}.qq~"}~;
+  }
+  my $json_xs = JSON::XS->new();
+  my %response;
+  eval { require "api/$plugin.pm"; };
+  if ($@) {   
+   $response{result} = 0;
+   $response{error} = $lang->{form_error_invalid_plugin};  
+   my $json = $json_xs->encode(\%response);
+   return $json;
+  }
+  database->quick_insert(config->{db_table_prefix}.'_billing_bills', { user_id => $auth_data->{id}, amount => $amount, created => time });
+  my $id = database->{q{mysql_insertid}};
+  if (!$id) {
+    $response{result} = 0;
+    $response{error} = $lang->{form_error_creating_bill};  
+    my $json = $json_xs->encode(\%response);
+    return $json;  
+  }
+  my $pdata = &getFieldsAPI($amount, $id);
+  $response{result} = 1;  
+  $response{pdata} = $pdata;
+  my $json = $json_xs->encode(\%response);
+  return $json;
+}; 
+
 # End
 
 true;
