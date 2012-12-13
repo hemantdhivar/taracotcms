@@ -11,6 +11,8 @@ edit_user: User billing data
 add_user: Add user
 edit_save: Save changes
 continue: Continue
+confirm: Confirm
+go_back: Go back
 edit_cancel: Cancel
 load_error: Error while loading data from server. Please try again later.
 ajax_saving: Saving data&#058; please wait...
@@ -179,3 +181,7 @@ amnt_hint: Example&#058;&nbsp;14.95
 form_error_invalid_amount: Invalid deposit amount
 form_error_invalid_paysys: Invalid payment system ID
 form_error_invalid_plugin: Error while loading payment system plugin
+form_error_creating_bill: Error while creating new bill, please try again later
+preview_amount: Amount
+preview_paysys: Payment system
+preview_billid: Bill ID

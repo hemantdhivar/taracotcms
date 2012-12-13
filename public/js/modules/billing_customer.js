@@ -239,6 +239,16 @@ $(document).ready(function () {
                             }  
                         } else { // ok
                             $('#account_form_2').show();    
+                            $('#funds_buttons_step2').show();
+                            var frm='<form action="'+data.pdata.url+'" method="'+data.pdata.method+'" id="funds_submit_form">';
+                            for (var i=0; i<data.pdata.fields.length; i++) {
+                                frm+='<input type="hidden" name="'+data.pdata.fields[i].name+'" value="'+data.pdata.fields[i].value+'">';
+                            }
+                            frm+='<strong>'+js_lang_preview_amount+':</strong>&nbsp;'+data.amount+' '+js_lang_billing_currency+'<br/>';
+                            frm+='<strong>'+js_lang_preview_paysys+':</strong>&nbsp;'+data.paysys+'<br/>';
+                            frm+='<strong>'+js_lang_preview_billid+':</strong>&nbsp;'+data.id+'<br/>';
+                            frm+='</form>';
+                            $('#account_ext_form').html(frm);
                             $('#ajax_funds_loading').hide();
                         }
                     },
@@ -251,6 +261,123 @@ $(document).ready(function () {
                         $('#amnt').focus();
                     }
                 });            
+        }
+    });
+    $('#btn_funds_back').click(function(){
+        $('#funds_buttons').show();
+        $('#funds_buttons_step2').hide();
+        $('#account_form_1').show();
+        $('#account_form_2').hide();
+        $('#amnt').focus();
+    });
+    $('#btn_funds_submit').click(function(){
+        $('#funds_submit_form').submit();
+    });
+    $('#btn_save_profile').click(function() {
+        $(".pr_input").each(function() {
+            $(this).attr('disabled', 'disabled');
+        });
+        $('#ajax_profile_loading').show();
+        $('#profile_buttons').hide();
+        $('#profile_edit_form_error').hide();
+        var errors = false;
+        if ($('#n1r').val() || $('#n2r').val() || $('#n3r').val() || $('#passport').val() || $('#addr_ru').val()) {
+            if (!$('#n1r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
+                $('#cg_n1r').addClass('error');
+                errors = true;
+            }
+            if (!$('#n2r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
+                $('#cg_n2r').addClass('error');
+                errors = true;
+            }
+            if (!$('#n3r').val().match(/^[А-Яа-я\-]{1,24}$/)) {
+                $('#cg_n3r').addClass('error');
+                errors = true;
+            }
+            if (!$('#passport').val().match(/^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
+                $('#cg_passport').addClass('error');
+                errors = true;
+            }
+            if (!$('#addr_ru').val().match(/^([0-9]{6}),(\s)(.*)$/)) {
+                $('#cg_addr_ru').addClass('error');
+                errors = true;
+            }
+        }
+        if (!$('#n1e').val().match(/^[A-Za-z\-]{1,30}$/)) {
+            $('#cg_n1e').addClass('error');
+            errors = true;
+        }
+        if (!$('#n2e').val().match(/^[A-Za-z\-]{1,30}$/)) {
+            $('#cg_n2e').addClass('error');
+            errors = true;
+        }
+        if (!$('#n3e').val().match(/^[A-Z]{1}$/)) {
+            $('#cg_n3e').addClass('error');
+            errors = true;
+        }
+        if (!$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+            $('#cg_email').addClass('error');
+            errors = true;
+        }
+        if (!$('#phone').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
+            $('#cg_phone').addClass('error');
+            errors = true;
+        }
+        if ($('#fax').val() && !$('#fax').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
+            $('#cg_fax').addClass('error');
+            errors = true;
+        }    
+        if (!$('#birth_date').val().match(/^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
+            $('#cg_birth_date').addClass('error');
+            errors = true;
+        }        
+        if (!$('#postcode').val().match(/^([0-9]{5,6})$/)) {
+            $('#cg_postcode').addClass('error');
+            errors = true;
+        }
+        if ($('#org_r').val() || $('#org').val() || $('#code').val() || $('#kpp').val()) {
+            if (!$('#org_r').val().match(/^(.{1,80})$/)) {
+                $('#cg_org_r').addClass('error');
+                errors = true;
+            }
+            if (!$('#org').val().match(/^(.{1,80})$/)) {
+                $('#cg_org').addClass('error');
+                errors = true;
+            }
+            if (!$('#code').val().match(/^([0-9]{10})$/)) {
+                $('#cg_code').addClass('error');
+                errors = true;
+            }
+            if (!$('#kpp').val().match(/^([0-9]{9})$/)) {
+                $('#cg_kpp').addClass('error');
+                errors = true;
+            }
+        }   
+        if (!$('#city').val().match(/^([A-Za-z\-\. ]{2,64})$/)) {
+            $('#cg_city').addClass('error');
+            errors = true;
+        }
+        if (!$('#state').val().match(/^([A-Za-z\-\. ]{2,40})$/)) {
+            $('#cg_state').addClass('error');
+            errors = true;
+        }
+        if (!$('#addr').val().match(/^(.{2,80})$/)) {
+            $('#cg_addr').addClass('error');
+            errors = true;
+        } 
+        if (errors) {
+            $('#profile_edit_form_error_text').html(js_lang_form_errors);
+            $('#profile_edit_form_error').fadeIn(400);
+            $('#profile_edit_form_error').alert();
+            $(window).scrollTop(0);
+            $(".pr_input").each(function() {
+                $(this).removeAttr('disabled');
+            });
+            $('#n1e').focus();
+            $('#ajax_profile_loading').hide();
+            $('#profile_buttons').show();
+        } else { 
+            
         }
     });
 }); // document.ready

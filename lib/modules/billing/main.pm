@@ -1400,7 +1400,7 @@ post '/data/get_bill' => sub {
   }
   my $json_xs = JSON::XS->new();
   my %response;
-  eval { require "api/$plugin.pm"; };
+  eval { require "api/$plugin.pl"; };
   if ($@) {   
    $response{result} = 0;
    $response{error} = $lang->{form_error_invalid_plugin};  
@@ -1417,6 +1417,9 @@ post '/data/get_bill' => sub {
   }
   my $pdata = &getFieldsAPI($amount, $id);
   $response{result} = 1;  
+  $response{amount} = $amount;
+  $response{id} = $id;
+  $response{paysys} = $pay_sys;
   $response{pdata} = $pdata;
   my $json = $json_xs->encode(\%response);
   return $json;
