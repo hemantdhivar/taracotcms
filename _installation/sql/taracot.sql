@@ -3,12 +3,67 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 11, 2012 at 06:43 PM
+-- Generation Time: Dec 13, 2012 at 03:39 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
 -- Database: `taracot`
 -- 
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `taracot_billing_bills`
+-- 
+
+CREATE TABLE `taracot_billing_bills` (
+  `id` int(11) NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `amount` float NOT NULL,
+  `created` int(11) NOT NULL,
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 AUTO_INCREMENT=39 ;
+
+-- 
+-- Dumping data for table `taracot_billing_bills`
+-- 
+
+INSERT INTO `taracot_billing_bills` VALUES (38, 1, 12, 1355394567);
+INSERT INTO `taracot_billing_bills` VALUES (3, 1, 12, 1355324166);
+INSERT INTO `taracot_billing_bills` VALUES (4, 1, 12, 1355324224);
+INSERT INTO `taracot_billing_bills` VALUES (5, 1, 12, 1355324375);
+INSERT INTO `taracot_billing_bills` VALUES (6, 1, 12, 1355324414);
+INSERT INTO `taracot_billing_bills` VALUES (7, 1, 12, 1355384698);
+INSERT INTO `taracot_billing_bills` VALUES (8, 1, 12, 1355384715);
+INSERT INTO `taracot_billing_bills` VALUES (9, 1, 12, 1355385157);
+INSERT INTO `taracot_billing_bills` VALUES (10, 1, 12.95, 1355385332);
+INSERT INTO `taracot_billing_bills` VALUES (11, 1, 12.95, 1355385457);
+INSERT INTO `taracot_billing_bills` VALUES (12, 1, 12.95, 1355385470);
+INSERT INTO `taracot_billing_bills` VALUES (13, 1, 12.95, 1355385488);
+INSERT INTO `taracot_billing_bills` VALUES (14, 1, 12.95, 1355385875);
+INSERT INTO `taracot_billing_bills` VALUES (15, 1, 12.95, 1355385889);
+INSERT INTO `taracot_billing_bills` VALUES (16, 1, 12.95, 1355385910);
+INSERT INTO `taracot_billing_bills` VALUES (17, 1, 12.95, 1355385919);
+INSERT INTO `taracot_billing_bills` VALUES (18, 1, 1, 1355385930);
+INSERT INTO `taracot_billing_bills` VALUES (19, 1, 1, 1355385959);
+INSERT INTO `taracot_billing_bills` VALUES (20, 1, 12, 1355386060);
+INSERT INTO `taracot_billing_bills` VALUES (21, 1, 1212, 1355386100);
+INSERT INTO `taracot_billing_bills` VALUES (22, 1, 12, 1355386113);
+INSERT INTO `taracot_billing_bills` VALUES (23, 1, 12, 1355386302);
+INSERT INTO `taracot_billing_bills` VALUES (24, 1, 12, 1355386309);
+INSERT INTO `taracot_billing_bills` VALUES (25, 1, 456, 1355386319);
+INSERT INTO `taracot_billing_bills` VALUES (26, 1, 134, 1355386431);
+INSERT INTO `taracot_billing_bills` VALUES (27, 1, 134, 1355386442);
+INSERT INTO `taracot_billing_bills` VALUES (28, 1, 111, 1355386450);
+INSERT INTO `taracot_billing_bills` VALUES (29, 1, 111, 1355386533);
+INSERT INTO `taracot_billing_bills` VALUES (30, 1, 111, 1355386591);
+INSERT INTO `taracot_billing_bills` VALUES (31, 1, 12, 1355386596);
+INSERT INTO `taracot_billing_bills` VALUES (32, 1, 12, 1355386622);
+INSERT INTO `taracot_billing_bills` VALUES (33, 1, 12, 1355386629);
+INSERT INTO `taracot_billing_bills` VALUES (34, 1, 12, 1355386632);
+INSERT INTO `taracot_billing_bills` VALUES (35, 1, 12, 1355387138);
+INSERT INTO `taracot_billing_bills` VALUES (36, 1, 12, 1355387860);
+INSERT INTO `taracot_billing_bills` VALUES (37, 1, 12, 1355387867);
 
 -- --------------------------------------------------------
 
@@ -50,9 +105,10 @@ INSERT INTO `taracot_billing_domains` VALUES (21, 1, 'domain.com', 1359403200, '
 
 CREATE TABLE `taracot_billing_funds` (
   `id` int(11) NOT NULL auto_increment,
-  `user_id` int(11) default NULL,
+  `user_id` int(11) NOT NULL default '0',
   `amount` float NOT NULL default '0',
   `lastchanged` int(11) default NULL,
+  PRIMARY KEY  (`user_id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=17 AUTO_INCREMENT=3 ;
 
@@ -60,7 +116,7 @@ CREATE TABLE `taracot_billing_funds` (
 -- Dumping data for table `taracot_billing_funds`
 -- 
 
-INSERT INTO `taracot_billing_funds` VALUES (1, 1, 100, NULL);
+INSERT INTO `taracot_billing_funds` VALUES (1, 1, 244, 1355394530);
 
 -- --------------------------------------------------------
 
@@ -78,12 +134,14 @@ CREATE TABLE `taracot_billing_funds_history` (
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `trans_amount` (`trans_objects`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=60 AUTO_INCREMENT=12 ;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=60 AUTO_INCREMENT=14 ;
 
 -- 
 -- Dumping data for table `taracot_billing_funds_history`
 -- 
 
+INSERT INTO `taracot_billing_funds_history` VALUES (12, 1, 'addfunds', 'Webmoney', 12, 1355393580, 1355393580);
+INSERT INTO `taracot_billing_funds_history` VALUES (13, 1, 'addfunds', 'Robokassa', 12, 1355394530, 1355394530);
 INSERT INTO `taracot_billing_funds_history` VALUES (9, 1, '', 'Test', 100, 1354630500, 1354629686);
 INSERT INTO `taracot_billing_funds_history` VALUES (6, 1, 'domainregister', 'microsoft.com', 666, 1354614300, 1354616483);
 INSERT INTO `taracot_billing_funds_history` VALUES (8, 9, 'domainupdate', 'test.ru', 1234, 1354625100, 1354625568);
@@ -252,7 +310,7 @@ CREATE TABLE `taracot_settings` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=21 ;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=22 ;
 
 -- 
 -- Dumping data for table `taracot_settings`
@@ -274,6 +332,7 @@ INSERT INTO `taracot_settings` VALUES (17, 'billing_service_cost_backup', '666',
 INSERT INTO `taracot_settings` VALUES (18, 'billing_currency', 'USD', '', 'en', 1354887248);
 INSERT INTO `taracot_settings` VALUES (19, 'billing_payment_webmoney', 'Webmoney', '<p>\n	A multifunctional payment tool that provides secure and immediate transactions online</p>\n', 'en', 1355232452);
 INSERT INTO `taracot_settings` VALUES (20, 'billing_payment_robokassa', 'Robokassa', '<p>\n	Payments in every e-currency, using mobile commerce services (MTS, Megafon, Beeline), e-invoicing via leading banks in Russia, through ATMs, through instant payment terminals, through Contact remittances, and with the iPhone application</p>\n', 'en', 1355232538);
+INSERT INTO `taracot_settings` VALUES (21, 'billing_history_addfunds', 'Funds deposit', '', 'en', 1355393623);
 
 -- --------------------------------------------------------
 
