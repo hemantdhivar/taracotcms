@@ -1185,3 +1185,39 @@ function handleDTAjaxError( xhr, textStatus, error ) {
     $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');   
     dtable.fnProcessingIndicator( false );
 }
+function submitEdit(value, settings) {
+    var value_old = this.revert;
+    if (value_old == value) {
+        return (value);
+    }
+    value = value.replace(/\</g, '&lt;');
+    value = value.replace(/\>/g, '&gt;');
+    value = value.replace(/\"/g, '&quot;');
+    $.ajax({
+        type: 'POST',
+        url: '/admin/billing/data/funds/save',
+        data: {
+            user_id: edit_id,
+            amount: value
+        },
+        dataType: "json",
+        success: function (data) {
+            if (data.result != '1') {
+                $('#funds').html(value_old);
+            } else {
+                if (data.value) {
+                    $('#funds').html(value);
+                }
+            }
+        },
+        error: function () {
+            $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+            $('#funds').html(value_old);
+        }
+    });
+    return (value);
+}
+$('#funds').editable(submitEdit, {
+    placeholder: '—',
+    tooltip: ''
+});

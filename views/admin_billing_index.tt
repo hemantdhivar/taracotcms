@@ -421,7 +421,7 @@
           <div id="username" class="large-non-bold-font"></div><br />
         </div>  
         <div class="span6" style="text-align:right">
-          <img src="/images/blank.gif" width="1" height="40" alt="" class="visible-desktop" /><br/><span class="btn btn-small" id="btn_profile"><img src="/images/profile.png" width="16" height="16" alt="[== $lang->{profile} =]" /></span><img src="/images/blank.gif" width="5" height="6" alt=" " /><span class="btn btn-small" id="btn_funds"><img src="/images/coins.png" width="16" height="16" alt="" /></span>&nbsp;&nbsp;<b>[== $lang->{funds} =]:</b> <span id="funds"></span>&nbsp;&nbsp;
+          <img src="/images/blank.gif" width="1" height="40" alt="" class="visible-desktop" /><br/><span class="btn btn-small" id="btn_profile"><img src="/images/profile.png" width="16" height="16" alt="[== $lang->{profile} =]" /></span><img src="/images/blank.gif" width="5" height="6" alt=" " /><span class="btn btn-small" id="btn_funds"><img src="/images/coins.png" width="16" height="16" alt="" /></span>&nbsp;&nbsp;<b>[== $lang->{funds} =]:</b>&nbsp;<span id="funds" style="cursor:pointer"></span>&nbsp;&nbsp;
           <span class="visible-phone visible-tablet"><br /></span>
         </div>
       </div>

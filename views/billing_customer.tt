@@ -88,8 +88,11 @@
                 [== $lang->{profile_int_hint} =]
                 <hr/>
                 <div class="alert alert-block alert-error hide" id="form_profile_error_msg">
-                    <span id="form_profile_error_msg_text"></span>
-                  </div>
+                  <span id="form_profile_error_msg_text"></span>
+                </div>
+                <div class="alert alert-block alert-success hide" id="form_profile_success_msg">
+                  [== $lang->{profile_saved} =]
+                </div>
                 <div class="row">
                   <form class="form-horizontal">
                     <div class="span3">

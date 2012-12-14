@@ -185,3 +185,4 @@ form_error_creating_bill: Error while creating new bill, please try again later
 preview_amount: Amount
 preview_paysys: Payment system
 preview_billid: Bill ID
+profile_saved: Profile data has been saved

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 13, 2012 at 03:39 PM
+-- Generation Time: Dec 14, 2012 at 07:46 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -116,7 +116,7 @@ CREATE TABLE `taracot_billing_funds` (
 -- Dumping data for table `taracot_billing_funds`
 -- 
 
-INSERT INTO `taracot_billing_funds` VALUES (1, 1, 244, 1355394530);
+INSERT INTO `taracot_billing_funds` VALUES (1, 1, 666, 1355499985);
 
 -- --------------------------------------------------------
 
@@ -211,7 +211,7 @@ CREATE TABLE `taracot_billing_profiles` (
 -- Dumping data for table `taracot_billing_profiles`
 -- 
 
-INSERT INTO `taracot_billing_profiles` VALUES (1, 1, '', 'Matveev', '', 'Michael', '', 'A', 'xtreme@rh1.ru', '+7 921 7998111', '+7 812 9883535', 'RU', 'St. Petersburg', 'St. Petersburg', 'Michmanskaya Str. 2-1-212', '199226', '', '16.02.1985', '', '', '', '', '', 0, 1355231622);
+INSERT INTO `taracot_billing_profiles` VALUES (1, 1, '', 'Petrov', '', 'Vasily', '', 'A', 'xtreme@rh1.ru', '+7 921 7998111', '+7 812 9883535', 'RU', 'St. Petersburg', 'St. Petersburg', 'Michmanskaya Str. 2-1-212', '199226', '', '16.02.1985', '', '', '', '', '', 0, 1355497304);
 INSERT INTO `taracot_billing_profiles` VALUES (2, 9, 'Петров', 'Smith', 'Иван', 'John', 'Иванович', 'I', 'john.smith@domain.com', '+7 495 1234567', '+7 495 1234589', 'RE', 'New York', 'New York', 'Tverskaya St., 2-1-234', NULL, '34 02 651241 выдан 48 о/м г. Москвы 26.12.1990', '30.11.1985', '101000, Москва, ул. Воробьянинова, 15, кв. 22, В. Лоханкину', 'ROGA I KOPYTA, LTD.', 'Общество с ограниченной ответственностью "Рога и Копыта"', '7701107259', '632946014', 0, 1354883028);
 
 -- --------------------------------------------------------

@@ -377,7 +377,74 @@ $(document).ready(function () {
             $('#ajax_profile_loading').hide();
             $('#profile_buttons').show();
         } else { 
-            
+            var private_flag = '';
+            if ($('input[name=private]').is(':checked')) {
+                private_flag = 1;
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/customer/data/profile/save',
+                data: {
+                    n1r: $('#n1r').val(),
+                    n1e: $('#n1e').val(),
+                    n2r: $('#n2r').val(),
+                    n2e: $('#n2e').val(),
+                    n3r: $('#n3r').val(),
+                    n3e: $('#n3e').val(),
+                    email: $('#email').val(),
+                    phone: $('#phone').val(),
+                    fax: $('#fax').val(),
+                    country: $('#country').val(),
+                    city: $('#city').val(),
+                    state: $('#state').val(),
+                    addr: $('#addr').val(),
+                    postcode: $('#postcode').val(),
+                    passport: $('#passport').val(),
+                    birth_date: $('#birth_date').val(),
+                    addr_ru: $('#addr_ru').val(),
+                    org: $('#org').val(),
+                    org_r: $('#org_r').val(),
+                    code: $('#code').val(),
+                    kpp: $('#kpp').val(),
+                    private: private_flag
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.result == '0') {
+                        if (data.error) { // ERROR
+                            $('#profile_edit_form_error_text').html(data.error);
+                            $('#profile_edit_form_error').fadeIn(400);
+                            $('#profile_edit_form_error').alert();
+                        }
+                        $('#ajax_profile_loading').hide();
+                        $('#profile_buttons').show();
+                        $('#ajax_loading').hide();
+                        $(window).scrollTop(0);
+                        $(".pr_input").each(function() {
+                            $(this).removeAttr('disabled');
+                        });
+                        if (data.field) {
+                            $('#cg_' + data.field).addClass('error');
+                            $('#' + data.field).focus();
+                        }
+                    } else { // OK
+                        $('#ajax_profile_loading').hide();
+                        $('#profile_buttons').show();
+                        $('#ajax_loading').hide();
+                        $(window).scrollTop(0);
+                        $(".pr_input").each(function() {
+                            $(this).removeAttr('disabled');
+                        });
+                        $('#form_profile_success_msg').fadeIn(300).delay(2000).fadeOut(300);
+                    }
+                },
+                error: function () {
+                    $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+                    $('#profile_edit_ajax').hide();
+                    $('#profile_edit_form').show();
+                    $('#profile_edit_buttons').show();
+                }
+            });  
         }
     });
 }); // document.ready

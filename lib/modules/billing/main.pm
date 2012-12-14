@@ -581,6 +581,27 @@ post '/data/service/save' => sub {
   return $json;    
 };
 
+post '/data/funds/save' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();  
+  content_type 'application/json';
+  my $user_id=param('user_id') || 0;
+  $user_id=int($user_id);
+  my $amount=param('amount') || 0;
+  if (!$user_id) {
+   return qq~{"result":"0"}~; 
+  }
+  if ($amount !~ /^[-+]?[0-9]*\.?[0-9]+$/) {
+   return qq~{"result":"0"}~;
+  } 
+  if (database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $amount, lastchanged => time })) {
+      return qq~{"result":"1"}~;
+    } else {
+      return qq~{"result":"0"}~;
+    }
+};
+
 post '/data/funds/history/save' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
@@ -1424,6 +1445,145 @@ post '/data/get_bill' => sub {
   my $json = $json_xs->encode(\%response);
   return $json;
 }; 
+
+post '/data/profile/save' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  } 
+  my $id=$auth_data->{id} || 0;
+  if (!$id) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~;   
+  }
+  _load_lang();  
+  content_type 'application/json';
+  my $n1r = param('n1r');
+  my $n1e = param('n1e');
+  my $n2r = param('n2r');
+  my $n2e = param('n2e');
+  my $n3r = param('n3r');
+  my $n3e = param('n3e');
+  my $email = param('email');
+  my $phone = param('phone');
+  my $fax = param('fax');
+  my $country = param('country');
+  my $city = param('city');
+  my $state = param('state');
+  my $addr = param('addr');
+  my $postcode = param('postcode');
+  my $passport = param('passport');
+  my $birth_date = param('birth_date');
+  my $addr_ru = param('addr_ru');
+  my $org = param('org');
+  my $org_r = param('org_r');
+  my $code = param('code');
+  my $kpp = param('kpp');
+  my $private = param('private');  
+  # verify using regexp
+  if ($n1r || $n2r || $n3r || $passport || $addr_ru) {
+    if ($n1r !~ /^[А-Яа-я\-]{1,19}$/) {
+     return qq~{"result":"0","field":"n1r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_last_name}.')"}';
+    }
+    if ($n2r !~ /^[А-Яа-я\-]{1,19}$/) {
+     return qq~{"result":"0","field":"n2r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_first_name}.')"}';
+    }
+    if ($n3r !~ /^[А-Яа-я\-]{1,24}$/) {
+     return qq~{"result":"0","field":"n3r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_patronym}.')"}';
+    }
+    $passport=~s/\</&lt;/gm;
+    $passport=~s/\>/&gt;/gm;
+    if ($passport !~ /^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/) {
+     return qq~{"result":"0","field":"passport","error":"~.$lang->{invalid_field}.' ('.$lang->{p_passport}.')"}';
+    }
+    $addr_ru=~s/\</&lt;/gm;
+    $addr_ru=~s/\>/&gt;/gm;
+    if ($addr_ru !~ /^([0-9]{6}),(\s)(.*)$/) {
+     return qq~{"result":"0","field":"addr_ru","error":"~.$lang->{invalid_field}.' ('.$lang->{p_addr_ru}.')"}';
+    }
+  }
+  if ($n1e !~ /^[A-Za-z\-]{1,30}$/) {
+   return qq~{"result":"0","field":"n1e","error":"~.$lang->{invalid_field}.' ('.$lang->{p_last_name}.')"}';
+  }
+  if ($n2e !~ /^[A-Za-z\-]{1,30}$/) {
+   return qq~{"result":"0","field":"n2e","error":"~.$lang->{invalid_field}.' ('.$lang->{p_first_name}.')"}';
+  }
+  if ($n3e !~ /^[A-Z]{1}$/) {
+   return qq~{"result":"0","field":"n3e","error":"~.$lang->{invalid_field}.' ('.$lang->{p_patronym_first}.')"}';
+  }
+  if ($email !~ /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/ || length($email) > 80) {
+   return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_email}.qq~"}~;
+  } 
+  if ($phone !~ /^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/ || length($phone) > 20) {
+   return qq~{"result":"0","field":"phone","error":"~.$lang->{invalid_field}.' ('.$lang->{p_phone}.')"}';
+  } 
+  if ($fax && ($fax !~ /^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/ || length($fax) > 20)) {
+   return qq~{"result":"0","field":"fax","error":"~.$lang->{invalid_field}.' ('.$lang->{p_fax}.')"}';
+  }
+  if ($country !~ /^[A-Z]{2}$/) {
+   return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
+  }
+  if ($postcode !~ /^([0-9]{5,6})$/) {
+    return qq~{"result":"0","field":"postcode","error":"~.$lang->{invalid_field}.' ('.$lang->{p_postcode}.')"}';
+  }  
+  if ($birth_date !~ /^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/) {
+   return qq~{"result":"0","field":"birth_date","error":"~.$lang->{invalid_field}.' ('.$lang->{p_birth_date}.')"}';
+  }  
+  if ($org_r || $org || $code || $kpp) {
+    $org_r=~s/\</&lt;/gm;
+    $org_r=~s/\>/&gt;/gm;
+    if ($org_r !~ /^(.{1,80})$/) {
+      return qq~{"result":"0","field":"org_r","error":"~.$lang->{invalid_field}.' ('.$lang->{p_org_r}.')"}';
+    }
+    $org=~s/\</&lt;/gm;
+    $org=~s/\>/&gt;/gm;
+    if ($org !~ /^(.{1,80})$/) {
+      return qq~{"result":"0","field":"org","error":"~.$lang->{invalid_field}.' ('.$lang->{p_org}.')"}';
+    }
+    if ($code !~ /^([0-9]{10})$/) {
+      return qq~{"result":"0","field":"code","error":"~.$lang->{invalid_field}.' ('.$lang->{p_code}.')"}';
+    }
+    if ($kpp !~ /^([0-9]{9})$/) {
+      return qq~{"result":"0","field":"kpp","error":"~.$lang->{invalid_field}.' ('.$lang->{p_kpp}.')"}';
+    }
+  }
+  if ($city !~ /^([A-Za-z\-\. ]{2,64})$/) {
+   return qq~{"result":"0","field":"city","error":"~.$lang->{invalid_field}.' ('.$lang->{p_city}.')"}';
+  }
+  if ($state !~ /^([A-Za-z\-\. ]{2,40})$/) {
+   return qq~{"result":"0","field":"state","error":"~.$lang->{invalid_field}.' ('.$lang->{p_state}.')"}';
+  }
+  $addr=~s/\</&lt;/gm;
+  $addr=~s/\>/&gt;/gm;
+  if ($addr !~ /^(.{2,80})$/) {
+   return qq~{"result":"0","field":"addr","error":"~.$lang->{invalid_field}.' ('.$lang->{p_addr}.')"}';
+  }
+  if ($private) {
+    $private='1';
+  } else {
+    $private='0';
+  }
+  my $countries = $lang->{countries};
+  my @countries_list = split(/\=/, $countries);
+  my $country_exists=0;
+  foreach my $crec (@countries_list) {
+    my ($cn) = split(/\,/, $crec);
+    if ($cn eq $country) {
+      $country_exists=1;
+    }
+  }
+  if (!$country_exists) {
+   return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
+  }
+  my $sth = database->prepare(
+   'INSERT INTO '.config->{db_table_prefix}.'_billing_profiles (user_id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private,lastchanged) VALUES ('.database->quote($id).','.database->quote($n1r).','.database->quote($n1e).','.database->quote($n2r).','.database->quote($n2e).','.database->quote($n3r).','.database->quote($n3e).','.database->quote($email).','.database->quote($phone).','.database->quote($fax).','.database->quote($country).','.database->quote($city).','.database->quote($state).','.database->quote($addr).','.database->quote($postcode).','.database->quote($passport).','.database->quote($birth_date).','.database->quote($addr_ru).','.database->quote($org).','.database->quote($org_r).','.database->quote($code).','.database->quote($kpp).','.database->quote($private).','.time.') ON DUPLICATE KEY UPDATE n1r='.database->quote($n1r).',n1e='.database->quote($n1e).',n2r='.database->quote($n2r).',n2e='.database->quote($n2e).',n3r='.database->quote($n3r).',n3e='.database->quote($n3e).',email='.database->quote($email).',phone='.database->quote($phone).',fax='.database->quote($fax).',country='.database->quote($country).',city='.database->quote($city).',state='.database->quote($state).',addr='.database->quote($addr).',postcode='.database->quote($postcode).',passport='.database->quote($passport).',birth_date='.database->quote($birth_date).',addr_ru='.database->quote($addr_ru).',org='.database->quote($org).',org_r='.database->quote($org_r).',code='.database->quote($code).',kpp='.database->quote($kpp).',private='.database->quote($private).',lastchanged='.time
+  );
+  my $res=$sth->execute();
+  $sth->finish();
+  if (!$res) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~;   
+  } else {
+    return qq~{"result":"1"}~;   
+  }
+};
 
 # End
 
