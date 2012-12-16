@@ -1,3 +1,96 @@
+<div class="modal hide" id="hosting_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3 id="hosting_dialog_head"></h3>
+ </div>
+ <div class="modal-body">
+  <span class="form-horizontal" id="hosting_edit_form">
+    <div class="alert alert-block alert-error" id="hosting_edit_form_error" style="display:none">
+      <span id="hosting_edit_form_error_text"></span>
+    </div>
+    <span id="form_controls_hosting"> 
+      <div class="control-group" id="cg_haccount"> 
+        <label class="control-label" for="haccount">[== $lang->{hosting_account} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="haccount" />
+          <p class="help-block"><small>[== $lang->{hosting_account_hint} =]</small></p> 
+        </div>
+      </div>
+      <div class="control-group" id="cg_hpwd"> 
+        <label class="control-label" for="hpwd">[== $lang->{hpwd} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="password" class="input-small" id="hpwd" />&nbsp;<input type="password" class="input-small" id="hpwd_repeat" />
+          <p class="help-block"><small>[== $lang->{hpwd_hint} =]</small></p> 
+        </div>
+      </div>
+      <div class="control-group" id="cg_hplan"> 
+        <label class="control-label" for="hplan">[== $lang->{hac_plan} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <select id="hplan">
+          </select>
+        </div>
+      </div>
+      <div class="control-group" id="cg_hdays"> 
+        <label class="control-label" for="hdays">[== $lang->{months} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <select name="hdays" id="hdays" class="span1" /><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+        </div>
+      </div>
+      <div class="control-group" id="cg_haddcost"> 
+        <div class="controls">
+          [== $lang->{add_cost} =]:&nbsp;<span id="haddcost"></span>&nbsp;[== $page_data->{billing_currency} =]
+        </div>
+      </div>
+    </span>
+  </span>
+  <div id="hosting_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="hosting_edit_ajax_msg"></span>
+  </div>
+ </div>
+  <div class="modal-footer">
+     <a class="btn" id="btn_hosting_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_hosting_save">[== $lang->{btn_save} =]</a>
+ </div>
+</div>
+
+<div class="modal hide" id="hosting_update_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{hosting_update} =]</h3>
+ </div>
+ <div class="modal-body">
+  <span class="form-horizontal" id="hosting_update_edit_form">
+    <div class="alert alert-block alert-error" id="hosting_update_edit_form_error" style="display:none">
+      <span id="hosting_update_edit_form_error_text"></span>
+    </div>
+    <span id="form_controls_hosting_update">       
+      <div class="control-group" id="cg_hacnt"> 
+        <label class="control-label" for="hacnt">[== $lang->{acnt_up} =]</label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="hacnt" disabled="disabled" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_hdaysup"> 
+        <label class="control-label" for="hdaysup">[== $lang->{months} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <select name="hdaysup" id="hdaysup" class="span1" /><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+        </div>
+      </div>
+      <div class="control-group" id="cg_hupcost"> 
+        <div class="controls">
+          [== $lang->{up_cost} =]:&nbsp;<span id="hupcost"></span>&nbsp;[== $page_data->{billing_currency} =]
+        </div>
+      </div>
+    </span>
+  </span>
+  <div id="hosting_update_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="hosting_update_edit_ajax_msg"></span>
+  </div>
+ </div>
+  <div class="modal-footer">
+     <a class="btn" id="btn_hosting_update_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_hosting_update_save">[== $lang->{btn_save} =]</a>
+ </div>
+</div>
+
 <h1>[== $lang->{billing_customer} =]</h1>
     <div id="billing_customer_wrap" style="display:none">
         <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail"></span>&nbsp;[== $page_data->{billing_currency} =]</span>
@@ -26,6 +119,9 @@
             <div class="tab-pane active" id="tab_hosting">
                 <span class="btn btn-small btn-success" id="btn_add_hosting">[== $lang->{btn_add_hosting} =]</span>
                 <br/><br/>
+                <div class="alert alert-block alert-success hide" id="hosting_success_msg">
+                  [== $lang->{action_queue_success} =]
+                </div>
                 <div id="data_hosting">[== $lang->{no_hosting_accounts} =]&nbsp;[== $lang->{no_add_by_click} =]</div>
             </div>
             <div class="tab-pane" id="tab_domains">
@@ -421,6 +517,10 @@
     var js_lang_preview_paysys = "[== $lang->{preview_paysys} =]";
     var js_lang_preview_billid = "[== $lang->{preview_billid} =]";
     var js_lang_billing_currency = "[== $page_data->{billing_currency} =]";
-    var js_lang_form_errors = "[== $lang->{form_errors} =]"
+    var js_lang_form_errors = "[== $lang->{form_errors} =]";
+    var js_lang_add_hosting = "[== $lang->{btn_add_hosting} =]";
+    var js_lang_ajax_saving = "[== $lang->{ajax_saving} =]";
+    var js_lang_ajax_loading = "[== $lang->{ajax_loading} =]";
+    var js_lang_pay_action_confirm = "[== $lang->{pay_action_confirm} =]";
     </script>
     <script src="/js/modules/billing_customer.js"></script>

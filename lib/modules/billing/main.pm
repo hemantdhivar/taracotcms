@@ -342,7 +342,8 @@ post '/data/load' => sub {
    $hosting_plan{cost} = $hosting_plan_costs{$pid};
    push @hosting_plans, \%hosting_plan;
   }
-  $response{hosting_plans} = \@hosting_plans;
+  my @sorted_hosting_plans = sort { $a->{cost} <=> $b->{cost} } @hosting_plans;
+  $response{hosting_plans} = \@sorted_hosting_plans;
   # load service plan names and IDs from settings
   my %service_plan_names;
   my @service_plan_ids;
@@ -448,6 +449,12 @@ post '/data/hosting/save' => sub {
   my $hplan=param('hplan') || '';
   my $hdays=param('hdays') || 0;
   my $id=param('id') || 0;
+  my $h_queue=param('h_queue') || 0;
+  if ($h_queue) {
+    $h_queue=1;
+  } else {
+    $h_queue=0;
+  }
   my $user_id=param('user_id') || 0;
   $user_id=int($user_id);
   $id=int($id);  
@@ -487,9 +494,9 @@ post '/data/hosting/save' => sub {
     return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_hplan}.qq~"}~;
   }
   if ($id > 0) {
-    database->quick_update(config->{db_table_prefix}.'_billing_hosting', { id => $id }, { host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_billing_hosting', { id => $id }, { host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, in_queue => $h_queue, lastchanged => time });
   } else {   
-    database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $user_id, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, lastchanged => time });
+    database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $user_id, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, in_queue => $h_queue, lastchanged => time });
     $id = database->{q{mysql_insertid}}; 
   }  
   if (!$id) {
@@ -900,11 +907,11 @@ post '/data/hosting/load' => sub {
    return qq~{"result":"0"}~; 
   }
   my $sth = database->prepare(
-   'SELECT host_acc, host_plan_id, host_days_remain FROM '.config->{db_table_prefix}.'_billing_hosting WHERE id='.$id
+   'SELECT host_acc, host_plan_id, host_days_remain, in_queue FROM '.config->{db_table_prefix}.'_billing_hosting WHERE id='.$id
   );
-  my ($haccount, $hplan, $hdays);
+  my ($haccount, $hplan, $hdays, $h_queue);
   if ($sth->execute()) {
-   ($haccount, $hplan, $hdays) = $sth->fetchrow_array;
+   ($haccount, $hplan, $hdays, $h_queue) = $sth->fetchrow_array;
   }
   $sth->finish();
   if (!$haccount) {
@@ -916,6 +923,7 @@ post '/data/hosting/load' => sub {
   $response{haccount}=$haccount;
   $response{hplan}=$hplan;
   $response{hdays}=$hdays;
+  $response{h_queue}=$h_queue;
   my $json = $json_xs->encode(\%response);
   return $json;    
 };
@@ -930,11 +938,11 @@ post '/data/domain/load' => sub {
    return qq~{"result":"0"}~; 
   }
   my $sth = database->prepare(
-   'SELECT domain_name,exp_date,ns1,ns2,ns3,ns4,ns1_ip,ns2_ip,ns3_ip,ns4_ip FROM '.config->{db_table_prefix}.'_billing_domains WHERE id='.$id
+   'SELECT domain_name,exp_date,ns1,ns2,ns3,ns4,ns1_ip,ns2_ip,ns3_ip,ns4_ip,in_queue FROM '.config->{db_table_prefix}.'_billing_domains WHERE id='.$id
   );
-  my ($domain_name,$exp_date,$ns1,$ns2,$ns3,$ns4,$ns1_ip,$ns2_ip,$ns3_ip,$ns4_ip);
+  my ($domain_name,$exp_date,$ns1,$ns2,$ns3,$ns4,$ns1_ip,$ns2_ip,$ns3_ip,$ns4_ip,$d_queue);
   if ($sth->execute()) {
-   ($domain_name,$exp_date,$ns1,$ns2,$ns3,$ns4,$ns1_ip,$ns2_ip,$ns3_ip,$ns4_ip) = $sth->fetchrow_array;
+   ($domain_name,$exp_date,$ns1,$ns2,$ns3,$ns4,$ns1_ip,$ns2_ip,$ns3_ip,$ns4_ip,$d_queue) = $sth->fetchrow_array;
   }
   $sth->finish();
   if (!$domain_name) {
@@ -954,6 +962,7 @@ post '/data/domain/load' => sub {
   $response{ns2_ip}=$ns2_ip;
   $response{ns3_ip}=$ns3_ip;
   $response{ns4_ip}=$ns4_ip;
+  $response{d_queue}=$d_queue;
   my $json = $json_xs->encode(\%response);
   return $json;    
 };
@@ -1193,7 +1202,8 @@ post '/data/load' => sub {
    $hosting_plan{cost} = $hosting_plan_costs{$pid};
    push @hosting_plans, \%hosting_plan;
   }
-  $response{hosting_plans} = \@hosting_plans;
+  my @sorted_hosting_plans = sort { $a->{cost} <=> $b->{cost} } @hosting_plans;
+  $response{hosting_plans} = \@sorted_hosting_plans;
   # load service plan names and IDs from settings
   my %service_plan_names;
   my @service_plan_ids;
@@ -1253,17 +1263,18 @@ post '/data/load' => sub {
   $sth->finish();
   # select hosting accounts
   $sth = database->prepare(
-    'SELECT id,host_acc,host_plan_id,host_days_remain FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}
+    'SELECT id,host_acc,host_plan_id,host_days_remain,in_queue FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}.' ORDER BY id'
   );
   if ($sth->execute()) {
     my @host_accounts;
-    while (my ($id,$host_acc,$host_plan_id,$host_days_remain) = $sth -> fetchrow_array()) {      
+    while (my ($id,$host_acc,$host_plan_id,$host_days_remain,$in_queue) = $sth -> fetchrow_array()) {      
       my %data;
       $data{id} = $id;
       $data{account} = $host_acc;
       $data{plan_id} = $host_plan_id;
       $data{plan_cost} = $hosting_plan_costs{$host_plan_id} || '0';
       $data{plan_name} = $hosting_plan_names{$host_plan_id} || $host_plan_id;
+      $data{in_queue} = $in_queue;
       $data{days} = $host_days_remain;
       push (@host_accounts, \%data);
     }
@@ -1393,7 +1404,64 @@ post '/data/load' => sub {
   my $json_xs = JSON::XS->new();
   my $json = $json_xs->encode(\%response);
   return $json;
-};  
+};
+
+post '/data/load/history' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  } 
+  my %response;
+  my $current_lang = _load_lang();  
+  # select history
+  my %history_values;
+  my $sth = database->prepare(
+   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE (MATCH (s_name) AGAINST (\'billing_history_*\' IN BOOLEAN MODE)) AND lang='.database->quote($current_lang)
+  );
+  if ($sth->execute()) {
+   while (my ($sname, $svalue) = $sth -> fetchrow_array) {
+     $sname=~s/billing_history_//;
+     $history_values{$sname} = $svalue;
+   }
+  }
+  $sth->finish();
+  my @history;
+  $sth = database->prepare(
+   'SELECT trans_id, trans_objects, trans_amount, trans_date FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE user_id='.$auth_data->{id}.' ORDER BY trans_date DESC LIMIT 50'
+  );
+  if ($sth->execute()) {
+   while(my ($trans_id, $trans_objects, $trans_amount, $trans_date) = $sth -> fetchrow_array) {
+    my %hr;
+    my $event;
+    if ($trans_id) {
+      if ($history_values{$trans_id}) {
+        $event=$history_values{$trans_id}.' ';
+      } else {
+        $event=$trans_id.' ';
+      }
+    }
+    if ($trans_objects) {
+      if ($event) {
+        $event.=' ('.$trans_objects.')';
+      } else {
+        $event.=$trans_objects;
+      }
+    }
+    $trans_date =  time2str($lang->{history_datetime_template}, $trans_date);
+    $trans_date =~s/\\//gm;
+    $hr{event}=$event;
+    $hr{date}=$trans_date;
+    $hr{amount}=$trans_amount;
+    push @history, \%hr;
+   }
+   $response{history} = \@history;
+  }
+  $sth->finish();  
+  # return data
+  $response{result} = 1;
+  my $json_xs = JSON::XS->new();
+  my $json = $json_xs->encode(\%response);
+  return $json;
+};
 
 post '/data/get_bill' => sub {
   my $auth_data = &taracot::_auth();
@@ -1573,7 +1641,18 @@ post '/data/profile/save' => sub {
   if (!$country_exists) {
    return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
   }
+  my $in_queue=0;
   my $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
+  );
+  if ($sth->execute()) {
+    ($in_queue) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if ($in_queue) {
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{queue_active}.qq~"}~; 
+  }
+  $sth = database->prepare(
    'INSERT INTO '.config->{db_table_prefix}.'_billing_profiles (user_id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private,lastchanged) VALUES ('.database->quote($id).','.database->quote($n1r).','.database->quote($n1e).','.database->quote($n2r).','.database->quote($n2e).','.database->quote($n3r).','.database->quote($n3e).','.database->quote($email).','.database->quote($phone).','.database->quote($fax).','.database->quote($country).','.database->quote($city).','.database->quote($state).','.database->quote($addr).','.database->quote($postcode).','.database->quote($passport).','.database->quote($birth_date).','.database->quote($addr_ru).','.database->quote($org).','.database->quote($org_r).','.database->quote($code).','.database->quote($kpp).','.database->quote($private).','.time.') ON DUPLICATE KEY UPDATE n1r='.database->quote($n1r).',n1e='.database->quote($n1e).',n2r='.database->quote($n2r).',n2e='.database->quote($n2e).',n3r='.database->quote($n3r).',n3e='.database->quote($n3e).',email='.database->quote($email).',phone='.database->quote($phone).',fax='.database->quote($fax).',country='.database->quote($country).',city='.database->quote($city).',state='.database->quote($state).',addr='.database->quote($addr).',postcode='.database->quote($postcode).',passport='.database->quote($passport).',birth_date='.database->quote($birth_date).',addr_ru='.database->quote($addr_ru).',org='.database->quote($org).',org_r='.database->quote($org_r).',code='.database->quote($code).',kpp='.database->quote($kpp).',private='.database->quote($private).',lastchanged='.time
   );
   my $res=$sth->execute();
@@ -1583,6 +1662,219 @@ post '/data/profile/save' => sub {
   } else {
     return qq~{"result":"1"}~;   
   }
+};
+
+post '/data/hosting/save' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  }
+  _load_lang();  
+  content_type 'application/json';
+  my $haccount=param('haccount') || '';
+  my $hplan=param('hplan') || '';
+  my $hdays=param('hdays') || 0;
+  my $h_queue=param('h_queue') || 0;
+  my $hpwd=param('hpwd') || '';
+  my $user_id=$auth_data->{id};
+  $hdays=int($hdays);
+  $hplan=lc($hplan);
+  $haccount=lc($haccount);
+  if ($haccount !~ /^[A-Za-z0-9]{4,8}$/) {
+   return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_invalid_haccount}.qq~"}~;
+  }
+  if ($hpwd !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) { 
+    return qq~{"result":"0","field":"hpwd","error":"~.$lang->{invalid_password}.qq~"}~;
+  }   
+  my $hmonths = $hdays;
+  $hdays=$hdays*30; 
+  if (!$hdays || $hdays > 9999) {
+   return qq~{"result":"0","field":"hdays","error":"~.$lang->{form_error_invalid_hdays}.qq~"}~;
+  }  
+  my $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_hosting WHERE host_acc='.database->quote($haccount)
+  );
+  if ($sth->execute()) {
+   my ($tmpid) = $sth->fetchrow_array;
+   if ($tmpid) {
+    $sth->finish();
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_duplicate_haccount}.qq~"}~;
+   }
+  }
+  $sth->finish();
+  my $in_queue=0;
+  $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
+  );
+  if ($sth->execute()) {
+    ($in_queue) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if ($in_queue) {
+    return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
+  }
+  $sth = database->prepare(
+   'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_name_'.$hplan)
+  );
+  my $hplan_name;
+  if ($sth->execute()) {
+   ($hplan_name) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$hplan_name) {
+    return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_hplan}.qq~"}~;
+  }
+  my $month_cost=0;
+  $sth = database->prepare(
+    'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE s_name=\'billing_plan_cost_'.$hplan.'\''
+  );
+  if ($sth->execute()) {
+    ($month_cost) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  my $funds_avail=0;
+  $sth = database->prepare(
+    'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    ($funds_avail) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  if (($month_cost * $hmonths) > $funds_avail) {
+    return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
+  }
+  my $funds_remain = $funds_avail - ($month_cost * $hmonths);
+  my $total_cost = $month_cost * $hmonths;
+  if ($total_cost > $funds_avail) {
+    return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
+  }
+  if (!database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $user_id, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, in_queue => 1, lastchanged => time })) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  my $id = database->{q{mysql_insertid}}; 
+  if (!$id) {
+      return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~1"}~; 
+  }
+  if (
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingregister', object => $haccount, amount => $total_cost, pwd => $hpwd, tstamp => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'hostingregister', trans_objects => $haccount, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
+       ||
+      !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+     ) 
+  {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }  
+  $sth = database->prepare(
+   'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_cost_'.$hplan)
+  );
+  my $hplan_cost;
+  if ($sth->execute()) {
+   ($hplan_cost) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$hplan_cost) { 
+   $hplan_cost="0";
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{id}=$id;
+  $response{haccount}=$haccount;
+  $response{hplan}=$hplan;
+  $response{hplan_name}=$hplan_name;
+  $response{hplan_cost}=$hplan_cost;
+  $response{funds_remain} = $funds_remain;
+  $response{hdays}=$hdays;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
+post '/data/hosting/update/save' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  }
+  _load_lang();  
+  content_type 'application/json';
+  my $haccount=param('haccount') || '';
+  my $hdays=param('hdays') || 0;
+  my $user_id=$auth_data->{id};
+  $hdays=int($hdays);
+  $haccount=lc($haccount);
+  if ($haccount !~ /^[A-Za-z0-9]{4,8}$/) {
+   return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_invalid_haccount}.qq~"}~;
+  }
+  my $hmonths = $hdays; 
+  $hdays=$hdays*30; 
+  if (!$hdays || $hdays > 9999) {
+   return qq~{"result":"0","field":"hdays","error":"~.$lang->{form_error_invalid_hdays}.qq~"}~;
+  }  
+  my $sth = database->prepare(
+   'SELECT id, user_id, host_days_remain, host_plan_id FROM '.config->{db_table_prefix}.'_billing_hosting WHERE host_acc='.database->quote($haccount)
+  );
+  my $old_days=0;
+  my ($db_user_id, $id, $plan_id);
+  if ($sth->execute()) {
+   ($id, $db_user_id, $old_days, $plan_id) = $sth->fetchrow_array;
+   if (!$db_user_id || $db_user_id ne $user_id) {
+    $sth->finish();
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
+   }
+  } else {
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
+  }
+  $sth->finish();
+  my $in_queue=0;
+  $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
+  );
+  if ($sth->execute()) {
+    ($in_queue) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if ($in_queue) {
+    return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
+  }
+  my $month_cost=0;
+  $sth = database->prepare(
+    'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE s_name=\'billing_plan_cost_'.$plan_id.'\''
+  );
+  if ($sth->execute()) {
+    ($month_cost) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  my $funds_avail=0;
+  $sth = database->prepare(
+    'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    ($funds_avail) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  my $total_cost = $month_cost * $hmonths;
+  if ($total_cost > $funds_avail) {
+    return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
+  }
+  my $funds_remain = $funds_avail - $total_cost;
+  if (
+      !database->quick_update(config->{db_table_prefix}.'_billing_hosting', { host_acc => $haccount }, { host_days_remain => $hdays + $old_days, in_queue => 1, lastchanged => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingupdate', object => $haccount, amount => $total_cost, tstamp => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'hostingupdate', trans_objects => $haccount, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
+       ||
+      !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+     ) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{id}=$id;
+  $response{haccount}=$haccount;
+  $response{hdays}=$hdays+$old_days;
+  $response{funds_remain} = $funds_remain;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
 };
 
 # End

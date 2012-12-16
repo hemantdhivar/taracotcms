@@ -271,6 +271,12 @@
           <input type="text" class="prif input-small" id="hdays" />
         </div>
       </div>
+      <div class="control-group" id="cg_h_queue"> 
+        <label class="control-label" for="h_queue">[== $lang->{in_queue} =]</label> 
+        <div class="controls">
+          <input type="checkbox" id="h_queue" name="h_queue" />
+        </div>
+      </div>
     </span>
   </span>
   <div id="hosting_edit_ajax" style="display:none">
@@ -397,6 +403,12 @@
         <label class="control-label" for="ns4_ip">[== $lang->{ns4_ip} =]</label> 
         <div class="controls">
           <input type="text" class="input-small" id="ns4_ip" />
+        </div>
+      </div>
+      <div class="control-group" id="cg_d_queue"> 
+        <label class="control-label" for="d_queue">[== $lang->{in_queue} =]</label> 
+        <div class="controls">
+          <input type="checkbox" id="d_queue" name="d_queue" />
         </div>
       </div>
     </span>

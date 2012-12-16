@@ -186,3 +186,18 @@ preview_amount: Amount
 preview_paysys: Payment system
 preview_billid: Bill ID
 profile_saved: Profile data has been saved
+in_queue: In queue (not created)
+months: Months
+hosting_account_hint: Latin characters and numbers only, 4-8 characters, example&#058;&nbsp;myaccount
+hosting_update: Update hosting account
+acnt_up: Account
+up_cost: Update cost
+add_cost: Cost
+access_denied: Access denied
+insufficent_funds: Insufficent account funds
+pay_action_confirm: Are you sure you wish to continue?\n\nYou will be subcharged to
+action_queue_success: Task has been queued sucessfully. Operation is now in progress and will be done in several minutes.
+queue_active: There is an active task in queue (hosting account create/update, domain register etc.). Please try again in a few minutes.
+hpwd: Password
+hpwd_hint: 8 characters and more (latin characters, numbers, special chars etc), repeat twice to verify
+invalid_password: Invalid password

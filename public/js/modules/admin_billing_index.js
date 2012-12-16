@@ -297,6 +297,7 @@ $('#btn_add_hosting').click(function () {
     $('#hosting_edit_buttons').show();
     $('#haccount').val('');
     $('#hdays').val('');
+    $('#h_queue').removeAttr('checked');
     $('#hosting_edit_dialog_title').html(js_lang_add_account);
     $('select option:first-child').attr("selected", "selected");
     $('#hosting_edit_dialog').modal({
@@ -323,6 +324,7 @@ $('#btn_add_domain').click(function () {
     $('#domain_edit_buttons').show();
     $('#domain_name').val('');
     $('#domain_exp').val('');
+    $('#d_queue').removeAttr('checked');
     $('#ns1').val('');
     $('#ns2').val('');
     $('#ns3').val('');
@@ -381,6 +383,10 @@ $('#btn_hosting_dialog_save').click(function () {
         $('#hosting_edit_ajax').show();
         $('#hosting_edit_form').hide();
         $('#hosting_edit_buttons').hide();
+        var h_queue = 0;
+        if ($('input[name=h_queue]').is(':checked')) {
+            h_queue = 1;
+        }
         $.ajax({
             type: 'POST',
             url: '/admin/billing/data/hosting/save',
@@ -389,7 +395,8 @@ $('#btn_hosting_dialog_save').click(function () {
                 user_id: edit_id,
                 haccount: $('#haccount').val(),
                 hplan: $('#hplan').val(),
-                hdays: $('#hdays').val()
+                hdays: $('#hdays').val(),
+                h_queue: h_queue
             },
             dataType: "json",
             success: function (data) {
@@ -499,6 +506,10 @@ $('#btn_domain_dialog_save').click(function () {
         $('#domain_edit_ajax').show();
         $('#domain_edit_form').hide();
         $('#domain_edit_buttons').hide();
+        var d_queue = 0;
+        if ($('input[name=d_queue]').is(':checked')) {
+            d_queue = 1;
+        }
         $.ajax({
             type: 'POST',
             url: '/admin/billing/data/domain/save',
@@ -514,7 +525,8 @@ $('#btn_domain_dialog_save').click(function () {
                 ns1_ip: $('#ns1_ip').val(),
                 ns2_ip: $('#ns2_ip').val(),
                 ns3_ip: $('#ns3_ip').val(),
-                ns4_ip: $('#ns4_ip').val()
+                ns4_ip: $('#ns4_ip').val(),
+                d_queue: d_queue
             },
             dataType: "json",
             success: function (data) {
@@ -733,7 +745,7 @@ $('#btn_profile_dialog_save').click(function () {
         $('#profile_edit_ajax').show();
         $('#profile_edit_form').hide();
         $('#profile_edit_buttons').hide();
-        var private_flag = '';
+        var private_flag = 0;
         if ($('input[name=private]').is(':checked')) {
             private_flag = 1;
         }
@@ -831,6 +843,11 @@ function editHosting(id) {
                 $('#hosting_edit_ajax').hide();
                 $('#hosting_edit_form').show();
                 $('#hosting_edit_buttons').show();
+                if (data.h_queue && data.h_queue == 1) {
+                    $('#h_queue').attr('checked', 'checked');
+                } else {
+                    $('#h_queue').removeAttr('checked');
+                }
             }
         },
         error: function () {
@@ -899,6 +916,11 @@ function editDomain(id) {
                 $('#domain_edit_ajax').hide();
                 $('#domain_edit_form').show();
                 $('#domain_edit_buttons').show();
+                if (data.d_queue && data.d_queue == 1) {
+                    $('#d_queue').attr('checked', 'checked');
+                } else {
+                    $('#d_queue').removeAttr('checked');
+                }
             }
         },
         error: function () {
@@ -1066,6 +1088,7 @@ $('#btn_funds').click(function() {
 });
 
 $('#btn_profile').click(function() {    
+    $('#private').removeAttr('checked');
     $('#profile_edit_dialog').modal({
         keyboard: true
     });  
@@ -1154,10 +1177,10 @@ $('#btn_profile').click(function() {
                 if (data.db.kpp) {
                     $('#kpp').val(data.db.kpp);
                 }
-                if (data.db.private) {
-                    $('input[name=private]').attr(':checked', true);
+                if (data.db.private && data.db.private == 1) {
+                    $('#private').attr('checked', 'checked');
                 } else {
-                    $('input[name=private]').attr(':checked', false);
+                    $('#private').removeAttr('checked');
                 }
             }
             $('#profile_edit_form_error').hide();            
