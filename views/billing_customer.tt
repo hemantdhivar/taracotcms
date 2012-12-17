@@ -522,5 +522,9 @@
     var js_lang_ajax_saving = "[== $lang->{ajax_saving} =]";
     var js_lang_ajax_loading = "[== $lang->{ajax_loading} =]";
     var js_lang_pay_action_confirm = "[== $lang->{pay_action_confirm} =]";
+    var js_lang_progress_popup_text = "[== $lang->{progress_popup_text} =]";
+    var js_lang_progress_popup_title = "[== $lang->{progress_popup_title} =]";
+    var js_lang_error_popup_text = "[== $lang->{error_popup_text} =]";
+    var js_lang_error_popup_title = "[== $lang->{error_popup_title} =]";
     </script>
     <script src="/js/modules/billing_customer.js"></script>

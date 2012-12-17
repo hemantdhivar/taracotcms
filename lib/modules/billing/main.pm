@@ -1641,18 +1641,18 @@ post '/data/profile/save' => sub {
   if (!$country_exists) {
    return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
   }
-  my $in_queue=0;
+  # my $in_queue=0;
+  # my $sth = database->prepare(
+  #  'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
+  # );
+  # if ($sth->execute()) {
+  #   ($in_queue) = $sth->fetchrow_array;
+  # }
+  # $sth->finish();
+  # if ($in_queue) {
+  #   return qq~{"result":"0","field":"haccount","error":"~.$lang->{queue_active}.qq~"}~; 
+  # }
   my $sth = database->prepare(
-   'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
-  );
-  if ($sth->execute()) {
-    ($in_queue) = $sth->fetchrow_array;
-  }
-  $sth->finish();
-  if ($in_queue) {
-    return qq~{"result":"0","field":"haccount","error":"~.$lang->{queue_active}.qq~"}~; 
-  }
-  $sth = database->prepare(
    'INSERT INTO '.config->{db_table_prefix}.'_billing_profiles (user_id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private,lastchanged) VALUES ('.database->quote($id).','.database->quote($n1r).','.database->quote($n1e).','.database->quote($n2r).','.database->quote($n2e).','.database->quote($n3r).','.database->quote($n3e).','.database->quote($email).','.database->quote($phone).','.database->quote($fax).','.database->quote($country).','.database->quote($city).','.database->quote($state).','.database->quote($addr).','.database->quote($postcode).','.database->quote($passport).','.database->quote($birth_date).','.database->quote($addr_ru).','.database->quote($org).','.database->quote($org_r).','.database->quote($code).','.database->quote($kpp).','.database->quote($private).','.time.') ON DUPLICATE KEY UPDATE n1r='.database->quote($n1r).',n1e='.database->quote($n1e).',n2r='.database->quote($n2r).',n2e='.database->quote($n2e).',n3r='.database->quote($n3r).',n3e='.database->quote($n3e).',email='.database->quote($email).',phone='.database->quote($phone).',fax='.database->quote($fax).',country='.database->quote($country).',city='.database->quote($city).',state='.database->quote($state).',addr='.database->quote($addr).',postcode='.database->quote($postcode).',passport='.database->quote($passport).',birth_date='.database->quote($birth_date).',addr_ru='.database->quote($addr_ru).',org='.database->quote($org).',org_r='.database->quote($org_r).',code='.database->quote($code).',kpp='.database->quote($kpp).',private='.database->quote($private).',lastchanged='.time
   );
   my $res=$sth->execute();
@@ -1701,17 +1701,17 @@ post '/data/hosting/save' => sub {
    }
   }
   $sth->finish();
-  my $in_queue=0;
-  $sth = database->prepare(
-   'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
-  );
-  if ($sth->execute()) {
-    ($in_queue) = $sth->fetchrow_array;
-  }
-  $sth->finish();
-  if ($in_queue) {
-    return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
-  }
+  # my $in_queue=0;
+  # $sth = database->prepare(
+  #  'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
+  # );
+  # if ($sth->execute()) {
+  #   ($in_queue) = $sth->fetchrow_array;
+  # }
+  # $sth->finish();
+  # if ($in_queue) {
+  #   return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
+  # }
   $sth = database->prepare(
    'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_name_'.$hplan)
   );
@@ -1823,17 +1823,17 @@ post '/data/hosting/update/save' => sub {
     return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
   }
   $sth->finish();
-  my $in_queue=0;
-  $sth = database->prepare(
-   'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
-  );
-  if ($sth->execute()) {
-    ($in_queue) = $sth->fetchrow_array;
-  }
-  $sth->finish();
-  if ($in_queue) {
-    return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
-  }
+  # my $in_queue=0;
+  # $sth = database->prepare(
+  #  'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
+  # );
+  # if ($sth->execute()) {
+  #   ($in_queue) = $sth->fetchrow_array;
+  # }
+  # $sth->finish();
+  # if ($in_queue) {
+  #   return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
+  # }
   my $month_cost=0;
   $sth = database->prepare(
     'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE s_name=\'billing_plan_cost_'.$plan_id.'\''
@@ -1873,6 +1873,52 @@ post '/data/hosting/update/save' => sub {
   $response{haccount}=$haccount;
   $response{hdays}=$hdays+$old_days;
   $response{funds_remain} = $funds_remain;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
+any '/data/queue' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  }
+  _load_lang();  
+  content_type 'application/json';  
+  my @qdata;
+  my @hosting;
+  my @domains;
+  my $data;
+  my $sth = database->prepare(
+   'SELECT id, action, object, tstamp FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+   while (my $data = $sth->fetchrow_hashref) {
+    push @qdata, $data;
+   }
+  }
+  $sth->finish();
+  $sth = database->prepare(
+   'SELECT host_acc FROM '.config->{db_table_prefix}.'_billing_hosting WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+   while (my ($data) = $sth->fetchrow_array) {
+    push @hosting, $data;
+   }
+  }
+  $sth->finish();
+  $sth = database->prepare(
+   'SELECT domain_name FROM '.config->{db_table_prefix}.'_billing_domains WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+   while (my ($data) = $sth->fetchrow_array) {
+    push @domains, $data;
+   }
+  }
+  $sth->finish();
+  my %response;
+  $response{queue}=\@qdata;
+  $response{hosting}=\@hosting;
+  $response{domains}=\@domains;
+  my $json_xs = JSON::XS->new();  
   my $json = $json_xs->encode(\%response);
   return $json;    
 };

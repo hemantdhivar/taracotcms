@@ -1,7 +1,7 @@
 var hosting_plans_cost = {};
 var hosting_plans_id = {};
 var hosting_planid_cost = {};
-var hosting_queued = [];
+var queue_internal=[];
 
 $(document).ready(function () {
     $('#customer_tabs a').click(function (e) {
@@ -23,204 +23,214 @@ $(document).ready(function () {
             $('#amnt').focus();
         }
     });
-    $('#billing_customer_wrap_ajax').fadeIn(200);
-    $.ajax({
-        type: 'POST',
-        url: '/customer/data/load?'+Math.random(),
-        dataType: "json",
-        success: function (data) {
-            if (data.result == '0') {                
+    function loadData() {
+        $('#billing_customer_wrap_ajax').fadeIn(200);
+        $('#billing_customer_wrap').hide();
+        $.ajax({
+            type: 'POST',
+            url: '/customer/data/load?'+Math.random(),
+            dataType: "json",
+            success: function (data) {
+                if (data.result == '0') {                
+                    $('#billing_customer_wrap').html(js_lang_error_ajax);
+                    $('#billing_customer_wrap').fadeIn(200);
+                    $('#billing_customer_wrap_ajax').hide();
+                } else { // OK
+                    if (data.amount) {
+                        $('#funds_avail').html(data.amount);
+                    } else {
+                        $('#funds_avail').html('0');
+                    }
+                    if (data.hosting && data.hosting.length > 0) {                    
+                        var tdata='';
+                        tdata = '<table class="table table-striped table-bordered" id="hosting_table"><tbody>';
+                        var queue = false;
+                        for (var i = 0; i < data.hosting.length; i++) {
+                            hosting_plans_id[data.hosting[i].account] = data.hosting[i].plan_id;
+                            hosting_plans_cost[data.hosting[i].account] = data.hosting[i].plan_cost;
+                            var tr_class='';
+                            if (data.hosting[i].days <= 0) {
+                                tr_class=' class="error"';
+                            }
+                            var hidepr='hide';
+                            if (data.hosting[i].in_queue && data.hosting[i].in_queue == 1) {
+                                hidepr='';
+                                queue_internal.push(data.hosting[i].account);
+                                queue = true;
+                            }
+                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td style=\"width:100px\"><strong>" + data.hosting[i].account + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.hosting[i].account+"\" class=\"hide\" /></span></td><td style=\"text-align:right\">" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";                            
+                        }
+                        tdata += "</tbody></table>";
+                        if (queue) {
+                            setTimeout(function() { loadQueue() }, 6000);
+                        }                                                
+                        $('body').popover({animation:true, html: false, trigger: 'hover', selector: '[rel=progress_img]', title: js_lang_progress_popup_title, content: js_lang_progress_popup_text});
+                        $('body').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', selector: '[rel=error_img]', title: js_lang_error_popup_text});
+                        $('#data_hosting').html(tdata);                    
+                    } else {
+                        $('#data_hosting').html('<br/>'+js_lang_no_hosting_accounts+'&nbsp;'+js_lang_no_add_by_click);
+                    }
+                    if (data.domains && data.domains.length > 0) {
+                        var tdata='';                    
+                        tdata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>';                    
+                        for (var i = 0; i < data.domains.length; i++) {
+                            var update_icon='';
+                            var update_class='';
+                            if (data.domains[i].update && data.domains[i].update == 1) {
+                                update_icon = '<span class="btn btn-mini"><i class="icon-refresh"></i></span>';
+                                if (data.domains[i].zone == "ru" || data.domains[i].zone == "su") {
+                                    update_class = ' class="warning"';
+                                }
+                            }
+                            if (data.domains[i].expired && data.domains[i].expired == 1) {
+                                update_class = ' class="error"';
+                            }
+                            tdata += "<tr"+update_class+"><td><strong>" + data.domains[i].domain_name + "</strong></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;" + data.domains[i].exp_date + "</td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                        }
+                        tdata += "</tbody></table>";
+                        $('#data_domains').html(tdata);                    
+                    } else {
+                        $('#data_domains').html('<br/>'+js_lang_no_domains_accounts+'&nbsp;'+js_lang_no_add_by_click);
+                    }
+                    if (data.services && data.services.length > 0) {
+                        var tdata='';
+                        tdata = '<table class="table table-striped table-bordered" id="services_table"><tbody>';
+                        for (var i = 0; i < data.services.length; i++) {
+                            var tr_class='';
+                            if (data.services[i].days <= 0) {
+                                tr_class=' class="error"';
+                            }
+                            tdata += "<tr"+tr_class+"><td><strong>" + data.services[i].name + "</strong></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;" + data.services[i].days + "</td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                        }
+                        tdata += "</tbody></table>";
+                        $('#data_services').html(tdata);                    
+                    } else {
+                        $('#data_services').html('<br/>'+js_lang_no_services_accounts);
+                    }
+                    if (data.history && data.history.length > 0) {
+                        var tdata='';
+                        tdata = js_lang_history_hint+'<br/><br/><table class="table table-striped table-bordered" id="history_table"><tbody>';
+                        for (var i = 0; i < data.history.length; i++) {
+                            var tr_class='';
+                            if (data.history[i].days <= 0) {
+                                tr_class=' class="error"';
+                            }
+                            var pic = '/images/plus.png';
+                            if (data.history[i].amount && data.history[i].amount < 0) {
+                                pic = '/images/minus.png';
+                                data.history[i].amount = data.history[i].amount * -1;
+                            }                        
+                            tdata += "<tr"+tr_class+"><td>" + data.history[i].event + "</strong></td><td style=\"width:90px\"><img src=\""+pic+"\" width=\"16\" height=\"16\" alt=\"\" />&nbsp;" + data.history[i].amount + "</td><td style=\"width:160px;text-align:center\">"+data.history[i].date+"</td></tr>";
+                        }
+                        tdata += "</tbody></table>";
+                        $('#data_history').html(tdata);
+                    } else {
+                        $('#data_history').html('<br/>'+js_lang_no_history_records);
+                    }
+                    if (data.profile) {
+                        if (data.profile.n1r) {
+                            $('#n1r').val(data.profile.n1r);
+                        }
+                        if (data.profile.n2r) {
+                            $('#n2r').val(data.profile.n2r);
+                        }
+                        if (data.profile.n3r) {
+                            $('#n3r').val(data.profile.n3r);
+                        }
+                        if (data.profile.n1e) {
+                            $('#n1e').val(data.profile.n1e);
+                        }
+                        if (data.profile.n2e) {
+                            $('#n2e').val(data.profile.n2e);
+                        }
+                        if (data.profile.n3e) {
+                            $('#n3e').val(data.profile.n3e);
+                        }
+                        if (data.profile.email) {
+                            $('#email').val(data.profile.email);
+                        }
+                        if (data.profile.phone) {
+                            $('#phone').val(data.profile.phone);
+                        }
+                        if (data.profile.fax) {
+                            $('#fax').val(data.profile.fax);
+                        }
+                        if (data.profile.country) {
+                            $('#country').val(data.profile.country);
+                        }
+                        if (data.profile.city) {
+                            $('#city').val(data.profile.city);
+                        }
+                        if (data.profile.state) {
+                            $('#state').val(data.profile.state);
+                        }
+                        if (data.profile.addr) {
+                            $('#addr').val(data.profile.addr);
+                        }
+                        if (data.profile.postcode) {
+                            $('#postcode').val(data.profile.postcode);
+                        }
+                        if (data.profile.passport) {
+                            $('#passport').val(data.profile.passport);
+                        }
+                        if (data.profile.birth_date) {
+                            $('#birth_date').val(data.profile.birth_date);
+                        }
+                        if (data.profile.addr_ru) {
+                            $('#addr_ru').val(data.profile.addr_ru);
+                        }
+                        if (data.profile.org) {
+                            $('#org').val(data.profile.org);
+                        }
+                        if (data.profile.org_r) {
+                            $('#org_r').val(data.profile.org_r);
+                        }
+                        if (data.profile.code) {
+                            $('#code').val(data.profile.code);
+                        }
+                        if (data.profile.kpp) {
+                            $('#kpp').val(data.profile.kpp);
+                        }
+                        if (data.profile.private) {
+                            $('#private').attr('checked', 'checked');
+                        } else {
+                            $('#private').removeAttr('checked');
+                        } 
+                    }
+                    if (data.payment_methods && data.payment_methods.length > 0) {
+                        var pdata='<table class="table">';
+                        for (var i = 0; i < data.payment_methods.length; i++) {
+                            var chk='';
+                            if (i == 0) {
+                                chk=" checked";
+                            }
+                            pdata += '<tr style="cursor:pointer" onclick="$(\'#payment_method_\'+'+i+').attr(\'checked\', \'checked\');"><td style="width:20px;text-align:center;vertical-align:middle"><input type="radio" name="payment_method_id" id="payment_method_'+i+'" value="'+data.payment_methods[i].id+'"'+chk+'></td><td><h4>'+data.payment_methods[i].name+'</h4>'+data.payment_methods[i].desc+'</td></tr>';
+                        }
+                        pdata += '</table>';
+                        $('#payment_methods').html(pdata);
+                    }
+                    var hplans = ''; 
+                    if (data.hosting_plans) {                    
+                        for (var i = 0; i < data.hosting_plans.length; i++) {
+                            var name = data.hosting_plans[i].name || '';
+                            var id = data.hosting_plans[i].id || '';
+                            var cost = data.hosting_plans[i].cost || 0;
+                            hosting_planid_cost[id]=cost;
+                            hplans += "<option value=\"" + id + "\">" + name + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
+                        }
+                    }
+                    $('#hplan').html(hplans);
+                    $('#billing_customer_wrap_ajax').hide();
+                    $('#billing_customer_wrap').show();
+                }
+            },
+            error: function () {
                 $('#billing_customer_wrap').html(js_lang_error_ajax);
                 $('#billing_customer_wrap').fadeIn(200);
                 $('#billing_customer_wrap_ajax').hide();
-            } else { // OK
-                if (data.amount) {
-                    $('#funds_avail').html(data.amount);
-                } else {
-                    $('#funds_avail').html('0');
-                }
-                if (data.hosting && data.hosting.length > 0) {                    
-                    var tdata='';
-                    tdata = '<table class="table table-striped table-bordered" id="hosting_table"><tbody>';
-                    for (var i = 0; i < data.hosting.length; i++) {
-                        hosting_plans_id[data.hosting[i].account] = data.hosting[i].plan_id;
-                        hosting_plans_cost[data.hosting[i].account] = data.hosting[i].plan_cost;
-                        var tr_class='';
-                        if (data.hosting[i].days <= 0) {
-                            tr_class=' class="error"';
-                        }
-                        var hidepr='hide';
-                        if (data.hosting[i].in_queue && data.hosting[i].in_queue == 1) {
-                            hidepr='';
-                            hosting_queued.push(data.hosting[i].account);
-                        }
-                        tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td style=\"width:100px\"><strong>" + data.hosting[i].account + "</strong>&nbsp;<img src=\"/images/red_loading.gif\" width=\"16\" height=\"11\" alt=\"\" id=\"hosting_progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /></span></td><td style=\"text-align:right\">" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
-                    }
-                    tdata += "</tbody></table>";
-                    $('#data_hosting').html(tdata);                    
-                } else {
-                    $('#data_hosting').html('<br/>'+js_lang_no_hosting_accounts+'&nbsp;'+js_lang_no_add_by_click);
-                }
-                if (data.domains && data.domains.length > 0) {
-                    var tdata='';                    
-                    tdata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>';                    
-                    for (var i = 0; i < data.domains.length; i++) {
-                        var update_icon='';
-                        var update_class='';
-                        if (data.domains[i].update && data.domains[i].update == 1) {
-                            update_icon = '<span class="btn btn-mini"><i class="icon-refresh"></i></span>';
-                            if (data.domains[i].zone == "ru" || data.domains[i].zone == "su") {
-                                update_class = ' class="warning"';
-                            }
-                        }
-                        if (data.domains[i].expired && data.domains[i].expired == 1) {
-                            update_class = ' class="error"';
-                        }
-                        tdata += "<tr"+update_class+"><td><strong>" + data.domains[i].domain_name + "</strong></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;" + data.domains[i].exp_date + "</td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
-                    }
-                    tdata += "</tbody></table>";
-                    $('#data_domains').html(tdata);                    
-                } else {
-                    $('#data_domains').html('<br/>'+js_lang_no_domains_accounts+'&nbsp;'+js_lang_no_add_by_click);
-                }
-                if (data.services && data.services.length > 0) {
-                    var tdata='';
-                    tdata = '<table class="table table-striped table-bordered" id="services_table"><tbody>';
-                    for (var i = 0; i < data.services.length; i++) {
-                        var tr_class='';
-                        if (data.services[i].days <= 0) {
-                            tr_class=' class="error"';
-                        }
-                        tdata += "<tr"+tr_class+"><td><strong>" + data.services[i].name + "</strong></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;" + data.services[i].days + "</td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
-                    }
-                    tdata += "</tbody></table>";
-                    $('#data_services').html(tdata);                    
-                } else {
-                    $('#data_services').html('<br/>'+js_lang_no_services_accounts);
-                }
-                if (data.history && data.history.length > 0) {
-                    var tdata='';
-                    tdata = js_lang_history_hint+'<br/><br/><table class="table table-striped table-bordered" id="history_table"><tbody>';
-                    for (var i = 0; i < data.history.length; i++) {
-                        var tr_class='';
-                        if (data.history[i].days <= 0) {
-                            tr_class=' class="error"';
-                        }
-                        var pic = '/images/plus.png';
-                        if (data.history[i].amount && data.history[i].amount < 0) {
-                            pic = '/images/minus.png';
-                            data.history[i].amount = data.history[i].amount * -1;
-                        }                        
-                        tdata += "<tr"+tr_class+"><td>" + data.history[i].event + "</strong></td><td style=\"width:90px\"><img src=\""+pic+"\" width=\"16\" height=\"16\" alt=\"\" />&nbsp;" + data.history[i].amount + "</td><td style=\"width:160px;text-align:center\">"+data.history[i].date+"</td></tr>";
-                    }
-                    tdata += "</tbody></table>";
-                    $('#data_history').html(tdata);
-                } else {
-                    $('#data_history').html('<br/>'+js_lang_no_history_records);
-                }
-                if (data.profile) {
-                    if (data.profile.n1r) {
-                        $('#n1r').val(data.profile.n1r);
-                    }
-                    if (data.profile.n2r) {
-                        $('#n2r').val(data.profile.n2r);
-                    }
-                    if (data.profile.n3r) {
-                        $('#n3r').val(data.profile.n3r);
-                    }
-                    if (data.profile.n1e) {
-                        $('#n1e').val(data.profile.n1e);
-                    }
-                    if (data.profile.n2e) {
-                        $('#n2e').val(data.profile.n2e);
-                    }
-                    if (data.profile.n3e) {
-                        $('#n3e').val(data.profile.n3e);
-                    }
-                    if (data.profile.email) {
-                        $('#email').val(data.profile.email);
-                    }
-                    if (data.profile.phone) {
-                        $('#phone').val(data.profile.phone);
-                    }
-                    if (data.profile.fax) {
-                        $('#fax').val(data.profile.fax);
-                    }
-                    if (data.profile.country) {
-                        $('#country').val(data.profile.country);
-                    }
-                    if (data.profile.city) {
-                        $('#city').val(data.profile.city);
-                    }
-                    if (data.profile.state) {
-                        $('#state').val(data.profile.state);
-                    }
-                    if (data.profile.addr) {
-                        $('#addr').val(data.profile.addr);
-                    }
-                    if (data.profile.postcode) {
-                        $('#postcode').val(data.profile.postcode);
-                    }
-                    if (data.profile.passport) {
-                        $('#passport').val(data.profile.passport);
-                    }
-                    if (data.profile.birth_date) {
-                        $('#birth_date').val(data.profile.birth_date);
-                    }
-                    if (data.profile.addr_ru) {
-                        $('#addr_ru').val(data.profile.addr_ru);
-                    }
-                    if (data.profile.org) {
-                        $('#org').val(data.profile.org);
-                    }
-                    if (data.profile.org_r) {
-                        $('#org_r').val(data.profile.org_r);
-                    }
-                    if (data.profile.code) {
-                        $('#code').val(data.profile.code);
-                    }
-                    if (data.profile.kpp) {
-                        $('#kpp').val(data.profile.kpp);
-                    }
-                    if (data.profile.private) {
-                        $('#private').attr('checked', 'checked');
-                    } else {
-                        $('#private').removeAttr('checked');
-                    } 
-                }
-                if (data.payment_methods && data.payment_methods.length > 0) {
-                    var pdata='<table class="table">';
-                    for (var i = 0; i < data.payment_methods.length; i++) {
-                        var chk='';
-                        if (i == 0) {
-                            chk=" checked";
-                        }
-                        pdata += '<tr style="cursor:pointer" onclick="$(\'#payment_method_\'+'+i+').attr(\'checked\', \'checked\');"><td style="width:20px;text-align:center;vertical-align:middle"><input type="radio" name="payment_method_id" id="payment_method_'+i+'" value="'+data.payment_methods[i].id+'"'+chk+'></td><td><h4>'+data.payment_methods[i].name+'</h4>'+data.payment_methods[i].desc+'</td></tr>';
-                    }
-                    pdata += '</table>';
-                    $('#payment_methods').html(pdata);
-                }
-                var hplans = ''; 
-                if (data.hosting_plans) {                    
-                    for (var i = 0; i < data.hosting_plans.length; i++) {
-                        var name = data.hosting_plans[i].name || '';
-                        var id = data.hosting_plans[i].id || '';
-                        var cost = data.hosting_plans[i].cost || 0;
-                        hosting_planid_cost[id]=cost;
-                        hplans += "<option value=\"" + id + "\">" + name + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
-                    }
-                }
-                $('#hplan').html(hplans);
-                $('#billing_customer_wrap_ajax').hide();
-                $('#billing_customer_wrap').show();
             }
-        },
-        error: function () {
-            $('#billing_customer_wrap').html(js_lang_error_ajax);
-            $('#billing_customer_wrap').fadeIn(200);
-            $('#billing_customer_wrap_ajax').hide();
-        }
-    });
+        });
+    }
     $('#btn_save_funds').click(function() {
         $('#form_error_msg').hide();
         $('#form_error_msg_text').html('');
@@ -547,7 +557,7 @@ $(document).ready(function () {
                     } else { // OK
                         hosting_plans_cost[data.haccount] = data.hplan_cost;
                         var tdata='';
-                        tdata += tdata += "<tr id=\"hosting_row_" + data.haccount + "\"><td style=\"width:100px\"><strong>" + data.haccount + "</strong>&nbsp;<img src=\"/images/red_loading.gif\" width=\"16\" height=\"11\" alt=\"\" id=\"hosting_progress_"+data.haccount+"\" class=\"hide\" /></span></td><td style=\"text-align:right\">" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                        tdata += tdata += "<tr id=\"hosting_row_" + data.haccount + "\"><td style=\"width:100px\"><strong>" + data.haccount + "</strong>&nbsp;<img src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.haccount+"\" class=\"hide\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.haccount+"\" class=\"hide\" /></span></td><td style=\"text-align:right\">" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         if ($('#hosting_table tr:last').size() > 0) {
                             $('#hosting_table tr:last').after(tdata);
                         } else {
@@ -556,8 +566,10 @@ $(document).ready(function () {
                         }
                         $('#hosting_dialog').modal('hide');
                         $('#funds_avail').html(data.funds_remain);
-                        $('#hosting_progress_'+data.haccount).show();
+                        $('#progress_'+data.haccount).show();
                         reloadHistory();
+                        queue_internal.push(data.haccount);
+                        setTimeout(function() { loadQueue() }, 6000);
                     }
                 },
                 error: function () {
@@ -605,11 +617,13 @@ $(document).ready(function () {
                         $('#' + data.field).focus();
                     }
                 } else { // OK
-                    $('#hosting_progress_'+data.haccount).show();
+                    $('#progress_'+data.haccount).show();
                     $('#hosting_days_'+data.haccount).html(data.hdays);
                     $('#hosting_update_dialog').modal('hide');
                     $('#funds_avail').html(data.funds_remain);
                     reloadHistory();
+                    queue_internal.push(data.haccount);
+                    setTimeout(function() { loadQueue() }, 6000);
                 }
             },
             error: function () {
@@ -626,7 +640,7 @@ $(document).ready(function () {
         $('#data_history').html('<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;'+js_lang_ajax_loading);
         $.ajax({
             type: 'POST',
-            url: '/customer/data/load?'+Math.random(),
+            url: '/customer/data/load/history?'+Math.random(),
             dataType: "json",
             success: function (data) {
                 if (data.result == '0') {                
@@ -658,6 +672,60 @@ $(document).ready(function () {
             }
         });
     }
+    function loadQueue() {        
+        $.ajax({
+            type: 'POST',
+            url: '/customer/data/queue?'+Math.random(),
+            dataType: "json",
+            success: function (data) {                                            
+                if (data.queue && data.queue.length > 0) {
+                    var req_history=false;      
+                    for (var i=0; i<queue_internal.length; i++) {
+                        var found = false;
+                        for (var s=0; s< data.queue.length; s++) {
+                            if (data.queue[s].object == queue_internal[i]) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            $('#progress_'+queue_internal[i]).fadeOut(300);
+                            req_history=true;                            
+                        }                        
+                    }
+                    queue_internal = [];
+                    for (var i=0; i<data.queue.length; i++) {
+                        queue_internal.push(data.queue[i].object);
+                    }                                                            
+                    // reload history
+                    if (req_history) {
+                        reloadHistory();
+                    }
+                    if (queue_internal.length > 0) {
+                        setTimeout(function() { loadQueue() }, 6000);
+                    }
+                } else {
+                    for (var i=0; i<queue_internal.length; i++) {
+                        $('#progress_'+queue_internal[i]).fadeOut(300);
+                    }
+                    queue_internal = [];
+                    reloadHistory();
+                }
+                // show warnings for hosting accounts
+                $('[rel=error_img]').show();                
+                for (var s=0; s< data.hosting.length; s++) {
+                    $('#qerror_'+data.hosting[s]).hide();
+                }
+                for (var s=0; s< data.domains.length; s++) {
+                    $('#qerror_'+data.domains[s]).hide();
+                }
+            },
+            error: function () {
+                setTimeout(function() { loadQueue() }, 6000);
+            }
+        });
+    }
+    // Now load data and start the game
+    loadData();
 }); // document.ready
 function updateHosting(acnt) {
     $('#hosting_update_edit_form_error').hide();

@@ -201,3 +201,7 @@ queue_active: There is an active task in queue (hosting account create/update, d
 hpwd: Password
 hpwd_hint: 8 characters and more (latin characters, numbers, special chars etc), repeat twice to verify
 invalid_password: Invalid password
+progress_popup_title: Operation in progress
+progress_popup_text: This taks is currently in queue. It should be ready in several minutes.
+error_popup_title: Operation error
+error_popup_text: This taks couldn't be completed. See history for details.
