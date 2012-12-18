@@ -56,13 +56,15 @@ data_saved: Data has been saved on server
 form_error_invalid_haccount: Invalid hosting account syntax
 form_error_invalid_hplan: Invalid hosting plan selected
 form_error_invalid_hdays: Invalid number of days
-form_error_duplicate_haccount: User account already exists
+form_error_duplicate_haccount: User account already exists or registered by someone else
 db_save_error: Error while saving to database&#058; please try again later
 data_loading_error: Error while loading data from server
 data_delete_error: Error while removing data from server
 data_delete_ok: Item has been deleted successfully
 data_delete_confirm: Are you sure to delete the following item
 domain_name: Domain name
+domain_name_hint: No domain zone, example&#058; domain (without .com)
+domain_zone: Domain zone
 domain_exp: Expiration date
 domain_exp_hint: Example&#058;&nbsp;YYYY/MM/DD
 domain_date_template: \%Y/\%m/\%d 
@@ -203,5 +205,5 @@ hpwd_hint: 8 characters and more (latin characters, numbers, special chars etc),
 invalid_password: Invalid password
 progress_popup_title: Operation in progress
 progress_popup_text: This taks is currently in queue. It should be ready in several minutes.
-error_popup_title: Operation error
-error_popup_text: This taks couldn't be completed. See history for details.
+error_popup_text: This taks couldn't be completed. See history for more information.
+result_domain_name: Domain name to register

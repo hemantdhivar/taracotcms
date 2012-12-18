@@ -29,6 +29,7 @@ agreement: '/agreement'
 captcha_font: 'ank.ttf'
 site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
+billing_cpanel_plugin: 'ispmanager'
 
 plugins:
  Database:

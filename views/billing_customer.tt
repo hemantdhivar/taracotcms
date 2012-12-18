@@ -79,7 +79,7 @@
         <div class="controls">
           [== $lang->{up_cost} =]:&nbsp;<span id="hupcost"></span>&nbsp;[== $page_data->{billing_currency} =]
         </div>
-      </div>
+      </div>      
     </span>
   </span>
   <div id="hosting_update_edit_ajax" style="display:none">
@@ -88,6 +88,47 @@
  </div>
   <div class="modal-footer">
      <a class="btn" id="btn_hosting_update_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_hosting_update_save">[== $lang->{btn_save} =]</a>
+ </div>
+</div>
+
+<div class="modal hide" id="domain_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{btn_add_domain} =]</h3>
+ </div>
+ <div class="modal-body">
+  <span class="form-horizontal" id="domain_edit_form">
+    <div class="alert alert-block alert-error" id="domain_edit_form_error" style="display:none">
+      <span id="domain_edit_form_error_text"></span>
+    </div>
+    <span id="form_controls_domain"> 
+      <div class="control-group" id="cg_domain_name"> 
+        <label class="control-label" for="domain_name">[== $lang->{domain_name} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="domain_name" />
+          <p class="help-block"><small>[== $lang->{domain_name_hint} =]</small></p> 
+        </div>
+      </div>
+      <div class="control-group" id="cg_domain_zone"> 
+        <label class="control-label" for="domain_zone">[== $lang->{domain_zone} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <select id="domain_zone">
+          </select>
+        </div>
+      </div>
+      <div class="control-group" id="cg_domain_preview"> 
+        <div class="controls">
+          [== $lang->{result_domain_name} =]:&nbsp;<strong><span id="domain_preview"></span></strong>
+        </div>
+      </div>
+    </span>
+  </span>
+  <div id="domain_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="domain_edit_ajax_msg"></span>
+  </div>
+ </div>
+  <div class="modal-footer">
+     <a class="btn" id="btn_domain_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_domain_save">[== $lang->{btn_save} =]</a>
  </div>
 </div>
 

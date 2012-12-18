@@ -58,15 +58,15 @@ $(document).ready(function () {
                                 queue_internal.push(data.hosting[i].account);
                                 queue = true;
                             }
-                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td style=\"width:100px\"><strong>" + data.hosting[i].account + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.hosting[i].account+"\" class=\"hide\" /></span></td><td style=\"text-align:right\">" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";                            
+                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td style=\"width:100px\"><strong>" + data.hosting[i].account + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.hosting[i].account+"\" class=\"qerror hide\" /></span></td><td style=\"text-align:right\">" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";                            
                         }
                         tdata += "</tbody></table>";
                         if (queue) {
                             setTimeout(function() { loadQueue() }, 6000);
                         }                                                
-                        $('body').popover({animation:true, html: false, trigger: 'hover', selector: '[rel=progress_img]', title: js_lang_progress_popup_title, content: js_lang_progress_popup_text});
-                        $('body').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', selector: '[rel=error_img]', title: js_lang_error_popup_text});
-                        $('#data_hosting').html(tdata);                    
+                        $('body').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', selector: '[rel=progress_img]', title: js_lang_progress_popup_title});                        
+                        $('#data_hosting').html(tdata);
+                        $('.qerror').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_error_popup_text});
                     } else {
                         $('#data_hosting').html('<br/>'+js_lang_no_hosting_accounts+'&nbsp;'+js_lang_no_add_by_click);
                     }
@@ -220,6 +220,15 @@ $(document).ready(function () {
                         }
                     }
                     $('#hplan').html(hplans);
+                    var domain_zones = ''; 
+                    if (data.domain_zones) {                    
+                        for (var i = 0; i < data.domain_zones.length; i++) {
+                            var zone = data.domain_zones[i].zone || '';
+                            var cost = data.domain_zones[i].cost || '';
+                            domain_zones += "<option value=\"" + zone + "\">" + zone + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
+                        }
+                    }
+                    $('#domain_zone').html(domain_zones);
                     $('#billing_customer_wrap_ajax').hide();
                     $('#billing_customer_wrap').show();
                 }
@@ -484,6 +493,9 @@ $(document).ready(function () {
     $('#btn_hosting_cancel').click(function() {
         $('#hosting_dialog').modal('hide');
     });
+    $('#btn_domain_cancel').click(function() {
+        $('#domain_dialog').modal('hide');
+    });
     $('#btn_hosting_update_cancel').click(function() {
         $('#hosting_update_dialog').modal('hide');
     });
@@ -500,6 +512,17 @@ $(document).ready(function () {
         $('select option:first-child').attr("selected", "selected");        
         var haddcost = hosting_planid_cost[$('#hplan').val()] * $('#hdays').val();
         $('#haddcost').html(haddcost);
+    });
+    $('#btn_add_domain').click(function() {
+        $('#domain_name').val('');
+        $('#domain_dialog').modal({
+            keyboard: true
+        });
+        $('#domain_edit_ajax').hide();
+        $('#domain_edit_form').show();
+        $('#domain_edit_buttons').show();
+        $('#domain_name').focus();
+        $('select option:first-child').attr("selected", "selected");        
     });
     $('#btn_hosting_save').click(function() {        
         $('#cg_haccount').removeClass('error');
@@ -744,6 +767,20 @@ function updateHosting(acnt) {
 $('#hdaysup').change(function(){
     var hupcost = hosting_plans_cost[$('#hacnt').val()] * $('#hdaysup').val();
     $('#hupcost').html(hupcost);
+});
+function updateDomainPreview() {
+    if ($('#domain_name').val() && $('#domain_name').val().match(/^[A-Za-z\-]{2,100}$/)) {
+        $('#domain_preview').html($('#domain_name').val()+'.'+$('#domain_zone').val());
+    }
+}
+$('#domain_name').keyup(function(){
+    updateDomainPreview();
+});
+$('#domain_name').change(function(){
+    updateDomainPreview();
+});
+$('#domain_zone').change(function(){
+    updateDomainPreview();
 });
 $('#hdays').change(function(){
     var haddcost = hosting_planid_cost[$('#hplan').val()] * $('#hdays').val();

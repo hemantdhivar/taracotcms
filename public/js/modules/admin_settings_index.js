@@ -86,8 +86,12 @@ $(document).ready(function () {
                 "aTargets": [3]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    var lang_text = langs.getItem(sVal) || '&mdash;';
-                    return '<div style="text-align:center;cursor:pointer" onclick="selectLanguage(' + row_id + ')" id="lang_' + row_id + '"><span style="display:none" id="langv_' + row_id + '">' + sVal + '</span><img src="/images/flags/' + sVal + '.png" width="16" height="11" alt="" />&nbsp;' + lang_text + '</div>';
+                    var flag_img='';
+                    if (sVal) {
+                        flag_img = '<img src="/images/flags/' + sVal + '.png" width="16" height="11" alt="" />&nbsp;';
+                    }
+                    var lang_text = langs.getItem(sVal) || '&mdash;';                    
+                    return '<div style="text-align:center;cursor:pointer" onclick="selectLanguage(' + row_id + ')" id="lang_' + row_id + '"><span style="display:none" id="langv_' + row_id + '">' + sVal + '</span>'+ flag_img + lang_text + '</div>';
                 },
                 "aTargets": [2]
             }, {
@@ -153,8 +157,12 @@ $(document).ready(function () {
                 "aTargets": [4]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    var lang_text = langs.getItem(sVal) || '&mdash;';
-                    return '<div style="text-align:center;cursor:pointer" onclick="selectLanguage(' + row_id + ')" id="lang_' + row_id + '"><span style="display:none" id="langv_' + row_id + '">' + sVal + '</span><img src="/images/flags/' + sVal + '.png" width="16" height="11" alt="" />&nbsp;' + lang_text + '</div>';
+                    var flag_img='';
+                    if (sVal) {
+                        flag_img = '<img src="/images/flags/' + sVal + '.png" width="16" height="11" alt="" />&nbsp;';
+                    }
+                    var lang_text = langs.getItem(sVal) || '&mdash;';                    
+                    return '<div style="text-align:center;cursor:pointer" onclick="selectLanguage(' + row_id + ')" id="lang_' + row_id + '"><span style="display:none" id="langv_' + row_id + '">' + sVal + '</span>'+ flag_img + lang_text + '</div>';
                 },
                 "aTargets": [3]
             }, {
@@ -288,7 +296,15 @@ $('#btn_language_select_save').click(function () {
                     });
                 }
             } else {
-                $('#lang_' + edit_id).html('<span style="display:none" id="langv_' + edit_id + '">' + $('#language_select_lang').val() + '</span><img src="/images/flags/' + $('#language_select_lang').val() + '.png" width="16" height="11" alt="" />&nbsp;' + langs.getItem($('#language_select_lang').val()));
+                var flag_img='';
+                var val = $('#language_select_lang').val();
+                var val_txt = langs.getItem(val) || '—';
+                if (val) {
+                    flag_img = '<img src="/images/flags/' + val + '.png" width="16" height="11" alt="" />&nbsp;';
+                } else {
+                    val='&mdash;';
+                }
+                $('#lang_' + edit_id).html('<span style="display:none" id="langv_' + edit_id + '">' + val + '</span>' + flag_img + val_txt);
             }
         },
         error: function () {

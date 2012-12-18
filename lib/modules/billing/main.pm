@@ -1166,11 +1166,31 @@ post '/data/load' => sub {
   if (!$auth_data) { return qq~{"result":"0"}~;  } 
   my %response;
   my $current_lang = _load_lang();  
+  # load domain zones & costs
+  my @domain_zones;
+  my $curlang = database->quote($current_lang);
+  my $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_domain_zone_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      my %zone_data;
+      $s_name=~s/^billing_domain_zone_//;
+      $zone_data{zone}=$s_name;
+      $s_value=~s/\s//gm;
+      ($zone_data{cost}, $zone_data{cost_up}) = split(/,/, $s_value);
+      if (!$zone_data{cost_up}) {
+        $zone_data{cost_up} = $zone_data{cost};
+      }
+      push @domain_zones, \%zone_data;
+    }
+  }
+  $sth->finish();
+  $response{domain_zones}=\@domain_zones;
   # load hosting plan names and IDs from settings
   my %hosting_plan_names;
   my @hosting_plan_ids;
-  my $curlang = database->quote($current_lang);
-  my $sth = database->prepare(
+  $sth = database->prepare(
     'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_plan_name_*\' IN BOOLEAN MODE)'
   );
   if ($sth->execute()) {
@@ -1701,17 +1721,6 @@ post '/data/hosting/save' => sub {
    }
   }
   $sth->finish();
-  # my $in_queue=0;
-  # $sth = database->prepare(
-  #  'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
-  # );
-  # if ($sth->execute()) {
-  #   ($in_queue) = $sth->fetchrow_array;
-  # }
-  # $sth->finish();
-  # if ($in_queue) {
-  #   return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
-  # }
   $sth = database->prepare(
    'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_plan_name_'.$hplan)
   );
@@ -1747,13 +1756,18 @@ post '/data/hosting/save' => sub {
   if ($total_cost > $funds_avail) {
     return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
   }
+  require "api/".config->{billing_cpanel_plugin}.".pl";
+  my $login_avail = &APICheckLogin($haccount);
+  if ($login_avail ne -1) {
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_duplicate_haccount}.qq~"}~;
+  }
   if (!database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $user_id, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, in_queue => 1, lastchanged => time })) {
     return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
   }
   my $id = database->{q{mysql_insertid}}; 
   if (!$id) {
       return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~1"}~; 
-  }
+  }  
   if (
       !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingregister', object => $haccount, amount => $total_cost, pwd => $hpwd, tstamp => time })
        ||
