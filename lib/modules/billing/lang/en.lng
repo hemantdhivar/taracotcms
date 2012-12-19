@@ -77,6 +77,7 @@ trans_time_template: \%I\:\%M %p
 trans_time_picker_show_meridian: true
 history_datetime_template: \%Y/\%m/\%d \%l:%M %p
 form_error_invalid_domain_name: Invalid domain name
+form_error_invalid_domain_zone: Invalid domain zone
 form_error_invalid_domain_exp: Invalid domain expiration date
 form_error_duplicate_domain: Domain name already exists
 transactions_history: Transactions history
@@ -165,6 +166,7 @@ ns1_ip: NS 1 IP
 ns2_ip: NS 2 IP
 ns3_ip: NS 3 IP
 ns4_ip: NS 4 IP
+ip_address: IP address
 form_error_invalid_ns: Invalid name server
 form_error_invalid_ip: Invalid IP address
 history_hint: The account history is displayed below. Note&#058; max. 50 records are shown.
@@ -198,6 +200,7 @@ add_cost: Cost
 access_denied: Access denied
 insufficent_funds: Insufficent account funds
 pay_action_confirm: Are you sure you wish to continue?\n\nYou will be subcharged to
+pay_domain_confirm: Are you sure you wish to continue?\n\nDomain name
 action_queue_success: Task has been queued sucessfully. Operation is now in progress and will be done in several minutes.
 queue_active: There is an active task in queue (hosting account create/update, domain register etc.). Please try again in a few minutes.
 hpwd: Password
@@ -206,4 +209,5 @@ invalid_password: Invalid password
 progress_popup_title: Operation in progress
 progress_popup_text: This taks is currently in queue. It should be ready in several minutes.
 error_popup_text: This taks couldn't be completed. See history for more information.
-result_domain_name: Domain name to register
+important: Important
+ns_note: IP addresses are only required in case of NS is a part of domain name. Leave these fields blank otherwise!

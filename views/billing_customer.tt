@@ -102,23 +102,50 @@
       <span id="domain_edit_form_error_text"></span>
     </div>
     <span id="form_controls_domain"> 
-      <div class="control-group" id="cg_domain_name"> 
+      <div class="control-group ctrl-grp-domain" id="cg_domain_name"> 
         <label class="control-label" for="domain_name">[== $lang->{domain_name} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
-          <input type="text" class="input-xlarge" id="domain_name" />
+          <div class="input-append">
+            <input type="text" class="inpt-domain input-medium" id="domain_name" />
+            <span class="add-on" style="font-weight:bold" id="domain_preview"></span>
+          </div>
           <p class="help-block"><small>[== $lang->{domain_name_hint} =]</small></p> 
         </div>
-      </div>
-      <div class="control-group" id="cg_domain_zone"> 
+      </div>      
+      <div class="control-group ctrl-grp-domain" id="cg_domain_zone"> 
         <label class="control-label" for="domain_zone">[== $lang->{domain_zone} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="controls">
           <select id="domain_zone">
           </select>
         </div>
       </div>
-      <div class="control-group" id="cg_domain_preview"> 
+      <div class="control-group ctrl-grp-domain" id="cg_domain_zone"> 
         <div class="controls">
-          [== $lang->{result_domain_name} =]:&nbsp;<strong><span id="domain_preview"></span></strong>
+          <span class="label">[== $lang->{important} =]:</span>&nbsp;[== $lang->{ns_note} =]
+        </div>
+      </div>
+      <div class="control-group ctrl-grp-domain" id="cg_ns1"> 
+        <label class="control-label" for="ns1">[== $lang->{ns1} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="inpt-domain input-medium" id="ns1" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns1_ip" placeholder="[== $lang->{ip_address} =]" />
+        </div>
+      </div>
+      <div class="control-group ctrl-grp-domain" id="cg_ns2"> 
+        <label class="control-label" for="ns2">[== $lang->{ns2} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="controls">
+          <input type="text" class="inpt-domain input-medium" id="ns2" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns2_ip" placeholder="[== $lang->{ip_address} =]" />
+        </div>
+      </div>
+      <div class="control-group ctrl-grp-domain" id="cg_ns3"> 
+        <label class="control-label" for="ns3">[== $lang->{ns3} =]</label> 
+        <div class="controls">
+          <input type="text" class="inpt-domain input-medium" id="ns3" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns3_ip" placeholder="[== $lang->{ip_address} =]" />
+        </div>
+      </div>
+      <div class="control-group ctrl-grp-domain" id="cg_ns4"> 
+        <label class="control-label" for="ns4">[== $lang->{ns4} =]</label> 
+        <div class="controls">
+          <input type="text" class="inpt-domain input-medium" id="ns4" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns4_ip" placeholder="[== $lang->{ip_address} =]" />
         </div>
       </div>
     </span>
@@ -563,6 +590,7 @@
     var js_lang_ajax_saving = "[== $lang->{ajax_saving} =]";
     var js_lang_ajax_loading = "[== $lang->{ajax_loading} =]";
     var js_lang_pay_action_confirm = "[== $lang->{pay_action_confirm} =]";
+    var js_lang_pay_domain_confirm = "[== $lang->{pay_domain_confirm} =]";
     var js_lang_progress_popup_text = "[== $lang->{progress_popup_text} =]";
     var js_lang_progress_popup_title = "[== $lang->{progress_popup_title} =]";
     var js_lang_error_popup_text = "[== $lang->{error_popup_text} =]";

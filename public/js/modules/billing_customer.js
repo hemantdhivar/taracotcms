@@ -216,7 +216,7 @@ $(document).ready(function () {
                             var id = data.hosting_plans[i].id || '';
                             var cost = data.hosting_plans[i].cost || 0;
                             hosting_planid_cost[id]=cost;
-                            hplans += "<option value=\"" + id + "\">" + name + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
+                            hplans += "<option value=\"" + id + "\">" + name + " (" + cost+ " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</option>";
                         }
                     }
                     $('#hplan').html(hplans);
@@ -225,7 +225,7 @@ $(document).ready(function () {
                         for (var i = 0; i < data.domain_zones.length; i++) {
                             var zone = data.domain_zones[i].zone || '';
                             var cost = data.domain_zones[i].cost || '';
-                            domain_zones += "<option value=\"" + zone + "\">" + zone + " (" + cost + "/" + js_lang_hac_per_month + ")</option>";
+                            domain_zones += "<option value=\"" + zone + "\">" + zone + " (" + cost+ " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</option>";
                         }
                     }
                     $('#domain_zone').html(domain_zones);
@@ -502,6 +502,8 @@ $(document).ready(function () {
     $('#btn_add_hosting').click(function() {
         $('#hosting_dialog_head').html(js_lang_add_hosting);
         $('#haccount').val('');
+        $('#hpwd').val('');
+        $('#hpwd_repeat').val('');
         $('#hosting_dialog').modal({
             keyboard: true
         });
@@ -514,15 +516,21 @@ $(document).ready(function () {
         $('#haddcost').html(haddcost);
     });
     $('#btn_add_domain').click(function() {
-        $('#domain_name').val('');
+        $(".inpt-domain").each(function() {
+            $(this).val('');
+        });
+        $('select option:first-child').attr("selected", "selected");
+        $(".ctrl-grp-domain").each(function() {
+            $(this).removeClass('error');
+        });
         $('#domain_dialog').modal({
             keyboard: true
         });
         $('#domain_edit_ajax').hide();
         $('#domain_edit_form').show();
         $('#domain_edit_buttons').show();
-        $('#domain_name').focus();
-        $('select option:first-child').attr("selected", "selected");        
+        $('#domain_name').focus();        
+        updateDomainPreview();
     });
     $('#btn_hosting_save').click(function() {        
         $('#cg_haccount').removeClass('error');
@@ -602,6 +610,124 @@ $(document).ready(function () {
                     $('#hosting_edit_ajax').hide();
                     $('#hosting_edit_form').show();
                     $('#hosting_edit_buttons').show();
+                }
+            });
+        }
+    }); 
+    $('#btn_domain_save').click(function() {        
+        $(".ctrl-grp-domain").each(function() {
+            $(this).removeClass('error');
+        });
+        $('#domain_edit_form_error').hide();
+        var errors = false;
+        if (!$('#domain_name').val().match(/^[A-Za-z0-9\-]{2,100}$/)) {
+            $('#cg_domain_name').addClass('error');
+            errors = true;
+        }
+        if (!$('#ns1').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+            $('#cg_ns1').addClass('error');
+            errors = true;
+        }
+        if (!$('#ns2').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+            $('#cg_ns2').addClass('error');
+            errors = true;
+        }
+        if ($('#ns3').val() && !$('#ns3').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+            $('#cg_ns3').addClass('error');
+            errors = true;
+        }
+        if ($('#ns4').val() && !$('#ns4').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+            $('#cg_ns4').addClass('error');
+            errors = true;
+        }
+        if ($('#ns1_ip').val() && !$('#ns1_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+            $('#cg_ns1_ip').addClass('error');
+            errors = true;
+        }
+        if ($('#ns2_ip').val() && !$('#ns2_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+            $('#cg_ns2_ip').addClass('error');
+            errors = true;
+        }
+        if ($('#ns3_ip').val() && !$('#ns3_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+            $('#cg_ns3_ip').addClass('error');
+            errors = true;
+        }
+        if ($('#ns4_ip').val() && !$('#ns4_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
+            $('#cg_ns4_ip').addClass('error');
+            errors = true;
+        }
+        if (errors) {
+            $('#domain_edit_form_error_text').html(js_lang_form_errors);
+            $('#domain_edit_form_error').fadeIn(400);
+            $('#domain_edit_form_error').alert();
+            $('#haccount').focus();
+        } else {
+            if (!confirm(js_lang_pay_domain_confirm+': '+ $('#domain_name').val() + '.' + $('#domain_zone option:selected').text())) {
+                return;
+            }
+            $('#domain_edit_ajax_msg').html(js_lang_ajax_saving);
+            $('#domain_edit_ajax').show();
+            $('#domain_edit_form').hide();
+            $('#domain_edit_buttons').hide();
+            $.ajax({
+                type: 'POST',
+                url: '/customer/data/domain/save',
+                data: {
+                    domain_name: $('#domain_name').val(),
+                    domain_zone: $('#domain_zone').val(),
+                    ns1: $('#ns1').val(),
+                    ns2: $('#ns2').val(),
+                    ns3: $('#ns3').val(),
+                    ns4: $('#ns4').val(),
+                    ns1_ip: $('#ns1_ip').val(),
+                    ns2_ip: $('#ns2_ip').val(),
+                    ns3_ip: $('#ns3_ip').val(),
+                    ns4_ip: $('#ns4_ip').val()
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data.result == '0') {
+                        if (data.error) { // ERROR
+                            $('#domain_edit_form_error_text').html(data.error);
+                            $('#domain_edit_form_error').fadeIn(400);
+                            $('#domain_edit_form_error').alert();
+                        }
+                        $('#domain_edit_ajax').hide();
+                        $('#domain_edit_form').show();
+                        $('#domain_edit_buttons').show();
+                        $('#ajax_loading').hide();
+                        if (data.field) {
+                            $('#cg_' + data.field).addClass('error');
+                            $('#' + data.field).focus();
+                        }
+                    } else { // OK
+                        var update_icon='';
+                        var update_class='';
+                        if (data.zone != "ru" && data.zone != "su") {
+                            update_icon = '<span class="btn btn-mini"><i class="icon-refresh" onclick="updateDomain(\''+data.domain_name+'\');""></i></span>';
+                        }
+                        var tdata = "<tr"+update_class+"><td><strong>" + data.domain_name + "</strong>&nbsp;<img src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.domain_name+"\" class=\"hide\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.domain_name+"\" class=\"hide\" /></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;" + data.exp_date + "</td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                        if ($('#domains_table tr:last').size() > 0) {
+                            $('#domains_table tr:last').after(tdata);
+                        } else {
+                            var ndata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>'+tdata+"</tbody></table>";
+                            $('#data_domains').html(ndata);
+                        }
+                        $('#domain_dialog').modal('hide');
+                        $('#funds_avail').html(data.funds_remain);
+                        $('#progress_'+data.domain_name).show();
+                        reloadHistory();
+                        queue_internal.push(data.haccount);
+                        setTimeout(function() { loadQueue() }, 6000);
+                    }
+                },
+                error: function () {
+                    $('#domain_edit_form_error_text').html(js_lang_error_ajax);
+                    $('#domain_edit_form_error').fadeIn(400);
+                    $('#domain_edit_form_error').alert();
+                    $('#domain_edit_ajax').hide();
+                    $('#domain_edit_form').show();
+                    $('#domain_edit_buttons').show();
                 }
             });
         }
@@ -749,6 +875,18 @@ $(document).ready(function () {
     }
     // Now load data and start the game
     loadData();
+    function updateDomainPreview() {
+        $('#domain_preview').html('.'+$('#domain_zone').val());
+    }
+    $('#domain_name').keyup(function(){
+        updateDomainPreview();
+    });
+    $('#domain_name').change(function(){
+        updateDomainPreview();
+    });
+    $('#domain_zone').change(function(){
+        updateDomainPreview();
+    });
 }); // document.ready
 function updateHosting(acnt) {
     $('#hosting_update_edit_form_error').hide();
@@ -767,20 +905,6 @@ function updateHosting(acnt) {
 $('#hdaysup').change(function(){
     var hupcost = hosting_plans_cost[$('#hacnt').val()] * $('#hdaysup').val();
     $('#hupcost').html(hupcost);
-});
-function updateDomainPreview() {
-    if ($('#domain_name').val() && $('#domain_name').val().match(/^[A-Za-z\-]{2,100}$/)) {
-        $('#domain_preview').html($('#domain_name').val()+'.'+$('#domain_zone').val());
-    }
-}
-$('#domain_name').keyup(function(){
-    updateDomainPreview();
-});
-$('#domain_name').change(function(){
-    updateDomainPreview();
-});
-$('#domain_zone').change(function(){
-    updateDomainPreview();
 });
 $('#hdays').change(function(){
     var haddcost = hosting_planid_cost[$('#hplan').val()] * $('#hdays').val();

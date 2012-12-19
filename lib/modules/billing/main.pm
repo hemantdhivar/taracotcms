@@ -1803,6 +1803,123 @@ post '/data/hosting/save' => sub {
   return $json;    
 };
 
+post '/data/domain/save' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  }
+  _load_lang();  
+  content_type 'application/json';
+  my $domain_name=param('domain_name') || '';
+  my $domain_zone=param('domain_zone') || '';
+  my $ns1=param('ns1') || '';
+  my $ns2=param('ns2') || '';
+  my $ns3=param('ns3') || '';
+  my $ns4=param('ns4') || '';
+  my $ns1_ip=param('ns1_ip') || '';
+  my $ns2_ip=param('ns2_ip') || '';
+  my $ns3_ip=param('ns3_ip') || '';
+  my $ns4_ip=param('ns4_ip') || '';
+  my $user_id=$auth_data->{id};
+  if ($domain_name !~ /^([a-zA-Z0-9\-]{1,100})$/) {
+   return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
+  }
+  if ($domain_zone !~ /^([a-z]{1,8})$/) {
+   return qq~{"result":"0","field":"domain_zone","error":"~.$lang->{form_error_invalid_domain_zone}.qq~"}~;
+  }
+  if ($ns1 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns1) > 80) {
+   return qq~{"result":"0","field":"ns1","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns2 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns2) > 80) {
+   return qq~{"result":"0","field":"ns2","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns3 && $ns3 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns3) > 80) {
+   return qq~{"result":"0","field":"ns3","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns4 && $ns4 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns4) > 80) {
+   return qq~{"result":"0","field":"ns4","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns1_ip && $ns1_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns1_ip) > 42) {
+   return qq~{"result":"0","field":"ns1_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns2_ip && $ns2_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns2_ip) > 42) {
+   return qq~{"result":"0","field":"ns2_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns3_ip && $ns3_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns3_ip) > 42) {
+   return qq~{"result":"0","field":"ns3_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  if ($ns4_ip && $ns4_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns4_ip) > 42) {
+   return qq~{"result":"0","field":"ns4_ip","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
+  }
+  my $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_domains WHERE domain_name='.database->quote($domain_name.'.'.$domain_zone)
+  );
+  if ($sth->execute()) {
+   my ($tmpid) = $sth->fetchrow_array;
+   if ($tmpid) {
+    $sth->finish();
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_duplicate_domain}.qq~"}~;
+   }
+  }
+  $sth->finish();
+  $sth = database->prepare(
+   'SELECT s_value FROM '.config->{db_table_prefix}.'_settings WHERE s_name='.database->quote('billing_domain_zone_'.$domain_zone)
+  );
+  my $zone_cost;
+  if ($sth->execute()) {
+   ($zone_cost) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if (!$zone_cost) {
+    return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_domain_zone}.qq~"}~;
+  }
+  $zone_cost=~s/\s//gm;
+  my ($reg_cost, $up_cost)=split(/,/, $zone_cost);
+  my $funds_avail=0;
+  $sth = database->prepare(
+    'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    ($funds_avail) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  if ($reg_cost > $funds_avail) {
+    return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
+  }
+  my $funds_remain = $funds_avail - $reg_cost;
+  if ($reg_cost > $funds_avail) {
+    return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
+  }
+  my $exp_date = time + 31557600; # 1 year
+  if (!database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name.'.'.$domain_zone, exp_date => $exp_date, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, in_queue => 1, lastchanged => time })) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  my $id = database->{q{mysql_insertid}}; 
+  if (!$id) {
+      return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~1"}~; 
+  }  
+  if (
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainregister', object => $domain_name.'.'.$domain_zone, amount => $reg_cost, pwd => '', tstamp => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'domainregister', trans_objects => $domain_name.'.'.$domain_zone, trans_amount => -$reg_cost, trans_date => time, lastchanged => time })
+       ||
+      !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+     ) 
+  {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }  
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{id}=$id;
+  $response{domain_name}=$domain_name.'.'.$domain_zone;
+  $response{zone}=$domain_zone;
+  $response{funds_remain} = $funds_remain;
+  $response{exp_date} = time2str($lang->{domain_date_template}, $exp_date);
+  $response{exp_date} =~s/\\//gm;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
 post '/data/hosting/update/save' => sub {
   my $auth_data = &taracot::_auth();
   content_type 'application/json';
