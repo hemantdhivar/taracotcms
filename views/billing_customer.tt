@@ -162,7 +162,7 @@
 <h1>[== $lang->{billing_customer} =]</h1>
     <div id="billing_customer_wrap" style="display:none">
         <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail"></span>&nbsp;[== $page_data->{billing_currency} =]</span>
-        <br/><br/>
+        <br/><a href="#" id="main_head"><img src="/images/blank.gif" width="1" height="1" alt="" /></a><br/>
         <ul class="nav nav-tabs" id="customer_tabs">
             <li class="active">
                 <a href="#tab_hosting">[== $lang->{c_hosting} =]</a>

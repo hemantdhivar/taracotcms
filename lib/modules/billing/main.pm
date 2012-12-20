@@ -1303,11 +1303,11 @@ post '/data/load' => sub {
   $sth->finish();
   # select domain names
   $sth = database->prepare(
-    'SELECT id,domain_name,exp_date FROM `'.config->{db_table_prefix}.'_billing_domains` WHERE user_id='.$auth_data->{id}
+    'SELECT id,domain_name,exp_date,in_queue FROM `'.config->{db_table_prefix}.'_billing_domains` WHERE user_id='.$auth_data->{id}
   );
   if ($sth->execute()) {
     my @domain_names;
-    while (my ($id, $domain_name, $exp_date) = $sth -> fetchrow_array()) {      
+    while (my ($id, $domain_name, $exp_date, $in_queue) = $sth -> fetchrow_array()) {      
       if ($exp_date - time + 864000 < 0) { # 10 days
         next;
       }
@@ -1328,6 +1328,7 @@ post '/data/load' => sub {
       $data{exp_date} =~s/\\//gm;
       $data{update} = $allow_update;
       $data{expired} = $expired;
+      $data{in_queue} = $in_queue;
       $data{zone} = $zone;
       push (@domain_names, \%data);
     }

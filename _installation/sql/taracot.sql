@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 19, 2012 at 07:18 PM
+-- Generation Time: Dec 20, 2012 at 07:28 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -22,7 +22,7 @@ CREATE TABLE `taracot_billing_bills` (
   `amount` float NOT NULL,
   `created` int(11) NOT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 AUTO_INCREMENT=41 ;
+) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=utf8 AUTO_INCREMENT=42 ;
 
 -- 
 -- Dumping data for table `taracot_billing_bills`
@@ -66,6 +66,7 @@ INSERT INTO `taracot_billing_bills` VALUES (36, 1, 12, 1355387860);
 INSERT INTO `taracot_billing_bills` VALUES (37, 1, 12, 1355387867);
 INSERT INTO `taracot_billing_bills` VALUES (39, 1, 1, 1355606394);
 INSERT INTO `taracot_billing_bills` VALUES (40, 1, 1, 1355606726);
+INSERT INTO `taracot_billing_bills` VALUES (41, 1, 12, 1356011069);
 
 -- --------------------------------------------------------
 
@@ -100,7 +101,6 @@ INSERT INTO `taracot_billing_domains` VALUES (1, 1, 're-hash.ru', 1352750400, 'n
 INSERT INTO `taracot_billing_domains` VALUES (16, 1, 'domain.ru', 1386878400, 'ns1', 'ns2', '', '', '', '', '', '', 0, 1355916207);
 INSERT INTO `taracot_billing_domains` VALUES (21, 1, 'domain.com', 1359403200, 'ns1.re-hash.org', 'ns2.re-hash.org', 'ns3.re-hash.org', 'ns4.re-hash.org', '123.123.111.56', '12.12.12.12', '13.13.13.13', '14.14.14.14', 0, 1355212528);
 INSERT INTO `taracot_billing_domains` VALUES (22, 1, 'microsoft.ru', 1387486625, 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 1, 1355929025);
-INSERT INTO `taracot_billing_domains` VALUES (23, 1, 'ms2.com', 1387486705, 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 1, 1355929105);
 
 -- --------------------------------------------------------
 
@@ -200,7 +200,7 @@ CREATE TABLE `taracot_billing_hosting` (
 
 INSERT INTO `taracot_billing_hosting` VALUES (66, 1, 'ours', 'econom', 330, 0, 1355842131);
 INSERT INTO `taracot_billing_hosting` VALUES (68, 1, 'medved', 'econom', 60, 1, 1355908936);
-INSERT INTO `taracot_billing_hosting` VALUES (76, 1, 'test', 'econom', 30, 0, 1355842136);
+INSERT INTO `taracot_billing_hosting` VALUES (76, 1, 'test', 'econom', 30, 1, 1356009548);
 
 -- --------------------------------------------------------
 
@@ -267,8 +267,6 @@ CREATE TABLE `taracot_billing_queue` (
 -- Dumping data for table `taracot_billing_queue`
 -- 
 
-INSERT INTO `taracot_billing_queue` VALUES (26, 1, 'domainregister', 'ms2.com', '', 0, 1355929105, 500);
-INSERT INTO `taracot_billing_queue` VALUES (25, 1, 'domainregister', 'microsoft.ru', '', 0, 1355929025, 500);
 
 -- --------------------------------------------------------
 

@@ -7,6 +7,7 @@ $(document).ready(function () {
     $('#customer_tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
+        $('#main_head').focus();
     });
     // Populate countries list
     var cntrs = js_lang_countries.split('=');
@@ -41,10 +42,13 @@ $(document).ready(function () {
                     } else {
                         $('#funds_avail').html('0');
                     }
+                    
+                    var queue = false;
+
+                    // Hosting
+
                     if (data.hosting && data.hosting.length > 0) {                    
-                        var tdata='';
-                        tdata = '<table class="table table-striped table-bordered" id="hosting_table"><tbody>';
-                        var queue = false;
+                        var tdata = '<table class="table table-striped table-bordered" id="hosting_table"><tbody>';                        
                         for (var i = 0; i < data.hosting.length; i++) {
                             hosting_plans_id[data.hosting[i].account] = data.hosting[i].plan_id;
                             hosting_plans_cost[data.hosting[i].account] = data.hosting[i].plan_cost;
@@ -60,19 +64,16 @@ $(document).ready(function () {
                             }
                             tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td style=\"width:100px\"><strong>" + data.hosting[i].account + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.hosting[i].account+"\" class=\"qerror hide\" /></span></td><td style=\"text-align:right\">" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";                            
                         }
-                        tdata += "</tbody></table>";
-                        if (queue) {
-                            setTimeout(function() { loadQueue() }, 6000);
-                        }                                                
-                        $('body').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', selector: '[rel=progress_img]', title: js_lang_progress_popup_title});                        
-                        $('#data_hosting').html(tdata);
-                        $('.qerror').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_error_popup_text});
+                        tdata += "</tbody></table>";                        
+                        $('#data_hosting').html(tdata);                        
                     } else {
                         $('#data_hosting').html('<br/>'+js_lang_no_hosting_accounts+'&nbsp;'+js_lang_no_add_by_click);
                     }
-                    if (data.domains && data.domains.length > 0) {
-                        var tdata='';                    
-                        tdata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>';                    
+
+                    // Domains
+
+                    if (data.domains && data.domains.length > 0) {                                                
+                        var tdata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>';                    
                         for (var i = 0; i < data.domains.length; i++) {
                             var update_icon='';
                             var update_class='';
@@ -85,13 +86,23 @@ $(document).ready(function () {
                             if (data.domains[i].expired && data.domains[i].expired == 1) {
                                 update_class = ' class="error"';
                             }
-                            tdata += "<tr"+update_class+"><td><strong>" + data.domains[i].domain_name + "</strong></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;" + data.domains[i].exp_date + "</td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                            var hidepr='hide';
+                            if (data.domains[i].in_queue && data.domains[i].in_queue == 1) {
+                                queue_internal.push(data.domains[i].domain_name);
+                                queue = true;
+                                hidepr='';
+                            }
+                            var dnid=data.domains[i].domain_name.replace(/\./g, "_");
+                            tdata += "<tr"+update_class+"><td><strong>" + data.domains[i].domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"qerror hide\" /></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;" + data.domains[i].exp_date + "</td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
                         }
                         tdata += "</tbody></table>";
                         $('#data_domains').html(tdata);                    
                     } else {
                         $('#data_domains').html('<br/>'+js_lang_no_domains_accounts+'&nbsp;'+js_lang_no_add_by_click);
-                    }
+                    }           
+
+                    // Services
+
                     if (data.services && data.services.length > 0) {
                         var tdata='';
                         tdata = '<table class="table table-striped table-bordered" id="services_table"><tbody>';
@@ -107,6 +118,14 @@ $(document).ready(function () {
                     } else {
                         $('#data_services').html('<br/>'+js_lang_no_services_accounts);
                     }
+
+                    $('body').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', selector: '[rel=progress_img]', title: js_lang_progress_popup_title});
+                    $('.qerror').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_error_popup_text});
+
+                    if (queue) {
+                        setTimeout(function() { loadQueue() }, 6000);
+                    }
+
                     if (data.history && data.history.length > 0) {
                         var tdata='';
                         tdata = js_lang_history_hint+'<br/><br/><table class="table table-striped table-bordered" id="history_table"><tbody>';
@@ -831,13 +850,14 @@ $(document).ready(function () {
                     var req_history=false;      
                     for (var i=0; i<queue_internal.length; i++) {
                         var found = false;
-                        for (var s=0; s< data.queue.length; s++) {
+                        for (var s=0; s< data.queue.length; s++) {                            
                             if (data.queue[s].object == queue_internal[i]) {
                                 found = true;
                             }
                         }
                         if (!found) {
-                            $('#progress_'+queue_internal[i]).fadeOut(300);
+                            var dnid = queue_internal[i].replace(/\./g, "_");
+                            $('#progress_'+dnid).fadeOut(300).delay(300).attr('src', '/images/blank.gif');
                             req_history=true;                            
                         }                        
                     }
@@ -854,7 +874,8 @@ $(document).ready(function () {
                     }
                 } else {
                     for (var i=0; i<queue_internal.length; i++) {
-                        $('#progress_'+queue_internal[i]).fadeOut(300);
+                        var dnid = queue_internal[i].replace(/\./g, "_");
+                        $('#progress_'+dnid).fadeOut(300).delay(300).attr('src', '/images/blank.gif');
                     }
                     queue_internal = [];
                     reloadHistory();
@@ -865,7 +886,8 @@ $(document).ready(function () {
                     $('#qerror_'+data.hosting[s]).hide();
                 }
                 for (var s=0; s< data.domains.length; s++) {
-                    $('#qerror_'+data.domains[s]).hide();
+                    var dnid=data.domains[s].replace(/\./g, "_");
+                    $('#qerror_'+dnid).hide();
                 }
             },
             error: function () {

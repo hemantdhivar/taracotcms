@@ -2,6 +2,7 @@ $(document).ready(function () {
     $('#account_tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
+        $('#main_head').focus();
     });
     var uploader;
     $('.nav-tabs a').on('shown', function (e) {

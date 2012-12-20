@@ -2,7 +2,7 @@
  my @statustxt = split(/,/, $lang->{user_account_status_list});
  my $status=@statustxt[$auth_data->{status}];
 ?>
-<h1>[== $lang->{user_account} =]</h1>
+<h1>[== $lang->{user_account} =]<a href="#" id="main_head"><img src="/images/blank.gif" width="1" height="1" alt="" /></a></h1>
 <ul class="nav nav-tabs" id="account_tabs">
     <li class="active">
         <a href="#tab_overview">[== $lang->{user_account_tab_overview} =]</a>
