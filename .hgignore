@@ -2,8 +2,9 @@ tmp/sessions/.*\.yml$
 tmp/sessions/.*\.stor$
 views/.*\.cache$
 views/layouts/.*\.cache$
-public/files/images/*
-public/files/storage/*
-public/files/avatars/*
-public/files/images_catalog/*
+public/files/images/*.jpg
+public/files/images/*.png
+public/files/avatars/*.jpg
+public/files/images_catalog/*.png
+public/files/images_catalog/*.jpg
 data/.*\.html$
