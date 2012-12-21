@@ -2,6 +2,7 @@ var hosting_plans_cost = {};
 var hosting_plans_id = {};
 var hosting_planid_cost = {};
 var queue_internal=[];
+var queue_request_active = true;
 
 $(document).ready(function () {
     $('#customer_tabs a').click(function (e) {
@@ -124,6 +125,7 @@ $(document).ready(function () {
 
                     if (queue) {
                         setTimeout(function() { loadQueue() }, 6000);
+                        queue_request_active = true;
                     }
 
                     if (data.history && data.history.length > 0) {
@@ -619,7 +621,10 @@ $(document).ready(function () {
                         $('#progress_'+data.haccount).show();
                         reloadHistory();
                         queue_internal.push(data.haccount);
-                        setTimeout(function() { loadQueue() }, 6000);
+                        if (!queue_request_active) {
+                            setTimeout(function() { loadQueue() }, 6000);
+                            queue_request_active = true;
+                        }
                     }
                 },
                 error: function () {
@@ -725,19 +730,24 @@ $(document).ready(function () {
                         if (data.zone != "ru" && data.zone != "su") {
                             update_icon = '<span class="btn btn-mini"><i class="icon-refresh" onclick="updateDomain(\''+data.domain_name+'\');""></i></span>';
                         }
-                        var tdata = "<tr"+update_class+"><td><strong>" + data.domain_name + "</strong>&nbsp;<img src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.domain_name+"\" class=\"hide\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.domain_name+"\" class=\"hide\" /></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;" + data.exp_date + "</td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                        var dnid=data.domain_name.replace(/\./g, "_");
+                        var tdata = "<tr"+update_class+"><td><strong>" + data.domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"hide\" /></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;" + data.exp_date + "</td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
                         if ($('#domains_table tr:last').size() > 0) {
                             $('#domains_table tr:last').after(tdata);
                         } else {
                             var ndata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>'+tdata+"</tbody></table>";
                             $('#data_domains').html(ndata);
-                        }
+                        }                        
                         $('#domain_dialog').modal('hide');
-                        $('#funds_avail').html(data.funds_remain);
-                        $('#progress_'+data.domain_name).show();
+                        $('#funds_avail').html(data.funds_remain);                        
+                        $('#progress_'+dnid).show();
                         reloadHistory();
-                        queue_internal.push(data.haccount);
-                        setTimeout(function() { loadQueue() }, 6000);
+                        queue_internal.push(data.domain_name);
+                        alert(queue_request_active);
+                        if (!queue_request_active) {
+                            setTimeout(function() { loadQueue() }, 6000);
+                            queue_request_active = true;
+                        }
                     }
                 },
                 error: function () {
@@ -791,7 +801,10 @@ $(document).ready(function () {
                     $('#funds_avail').html(data.funds_remain);
                     reloadHistory();
                     queue_internal.push(data.haccount);
-                    setTimeout(function() { loadQueue() }, 6000);
+                    if (!queue_request_active) {
+                        setTimeout(function() { loadQueue() }, 6000);
+                        queue_request_active = true;
+                    }
                 }
             },
             error: function () {
@@ -871,6 +884,8 @@ $(document).ready(function () {
                     }
                     if (queue_internal.length > 0) {
                         setTimeout(function() { loadQueue() }, 6000);
+                    } else {
+                        queue_request_active = false;
                     }
                 } else {
                     for (var i=0; i<queue_internal.length; i++) {
@@ -878,6 +893,7 @@ $(document).ready(function () {
                         $('#progress_'+dnid).fadeOut(300).delay(300).attr('src', '/images/blank.gif');
                     }
                     queue_internal = [];
+                    queue_request_active = false;
                     reloadHistory();
                 }
                 // show warnings for hosting accounts
