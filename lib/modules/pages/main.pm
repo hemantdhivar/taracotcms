@@ -63,7 +63,7 @@ get qr{(.*)} => sub {
   # remove slash at the end
   $url = $1 if ($url=~/(.*)\/$/);
   # remove slash at the beginning
-  $url = $1 if ($url=~/^\/(.*)/);
+  # $url = $1 if ($url=~/^\/(.*)/);
   if (!$url) { 
    $url='/'; 
   }
