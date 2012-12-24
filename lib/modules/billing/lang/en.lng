@@ -211,3 +211,4 @@ progress_popup_text: This taks is currently in queue. It should be ready in seve
 error_popup_text: This taks couldn't be completed. See history for more information.
 important: Important
 ns_note: IP addresses are only required in case of NS is a part of domain name. Leave these fields blank otherwise!
+save_config: Save configuration

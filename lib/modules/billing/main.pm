@@ -1,10 +1,11 @@
 package modules::billing::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
-use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use Date::Format;
 use Date::Parse;
+use Fcntl qw(:flock SEEK_END); # import LOCK_* and SEEK_END constants
+use taracot::fs;
 
 # Configuration
 
@@ -48,6 +49,156 @@ get '/' => sub {
   _load_lang();
   my $navdata=&taracot::admin::_navdata();
   return template 'admin_billing_index', { lang => $lang, navdata => $navdata, authdata => $auth }, { layout => 'admin' };
+};
+
+post '/data/config/generate' => sub {
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  my $current_lang=_load_lang();
+  content_type 'application/json';
+  my %response;
+  # load domain zones & costs
+  my @domain_zones;
+  my $curlang = database->quote($current_lang);
+  my $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_domain_zone_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      my %zone_data;
+      $s_name=~s/^billing_domain_zone_//;
+      $zone_data{zone}=$s_name;
+      $s_value=~s/\s//gm;
+      ($zone_data{cost}, $zone_data{cost_up}) = split(/,/, $s_value);
+      if (!$zone_data{cost_up}) {
+        $zone_data{cost_up} = $zone_data{cost};
+      }
+      push @domain_zones, \%zone_data;
+    }
+  }
+  $sth->finish();
+  $response{domain_zones}=\@domain_zones;
+  # load hosting plan names and IDs from settings
+  my %hosting_plan_names;
+  my @hosting_plan_ids;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_plan_name_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_plan_name_//;
+      $hosting_plan_names{$s_name} = $s_value;
+      push @hosting_plan_ids, $s_name;
+    }
+  }
+  $sth->finish();
+  $response{hosting_plan_names} = \%hosting_plan_names;
+  $response{hosting_plan_ids} = \@hosting_plan_ids;
+  # load hosting plan costs from settings
+  my %hosting_plan_costs;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_plan_cost_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_plan_cost_//;
+      $hosting_plan_costs{$s_name} = $s_value;
+    }
+  }  
+  $sth->finish();  
+  $response{hosting_plan_costs} = \%hosting_plan_costs;
+  # generate hosting plan array
+  my @hosting_plans;
+  foreach my $pid (@hosting_plan_ids) {
+   my %hosting_plan;
+   $hosting_plan{id} = $pid;
+   $hosting_plan{name} = $hosting_plan_names{$pid};
+   $hosting_plan{cost} = $hosting_plan_costs{$pid};
+   push @hosting_plans, \%hosting_plan;
+  }
+  my @sorted_hosting_plans = sort { $a->{cost} <=> $b->{cost} } @hosting_plans;
+  $response{hosting_plans} = \@sorted_hosting_plans;
+  # load service plan names and IDs from settings
+  my %service_plan_names;
+  my @service_plan_ids;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_service_name_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_service_name_//;
+      $service_plan_names{$s_name} = $s_value;
+      push @service_plan_ids, $s_name;
+    }
+  }
+  $sth->finish();
+  $response{service_plan_names} = \%service_plan_names;
+  $response{service_plan_ids} = \@service_plan_ids;
+  # load service plan costs from settings
+  my %service_plan_costs;
+  $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_service_cost_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      $s_name=~s/^billing_service_cost_//;
+      $service_plan_costs{$s_name} = $s_value;
+    }
+  }
+  $response{service_plan_costs} = \%service_plan_costs;
+  $sth->finish();
+  # generate service plan array
+  my @service_plans;
+  foreach my $pid (@service_plan_ids) {
+   my %service_plan;
+   $service_plan{id} = $pid;
+   $service_plan{name} = $service_plan_names{$pid};
+   $service_plan{cost} = $service_plan_costs{$pid};
+   push @service_plans, \%service_plan;
+  }
+  $response{service_plans} = \@service_plans;
+  # load payment methods
+  my @payment_methods;
+  $sth = database->prepare(
+    'SELECT s_name, s_value, s_value_html FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_payment_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value, $s_value_html) = $sth -> fetchrow_array()) {
+      my %payment_method;
+      $s_name=~s/^billing_payment_//;
+      $s_value_html=~s/<.+?>//g;
+      $s_value_html=~s/[\n\r]//g;
+      $s_value_html=~s/^\s+//g;
+      $s_value_html=~s/\s+$//g;
+      $payment_method{id} = $s_name;
+      $payment_method{name} = $s_value;
+      $payment_method{desc} = $s_value_html;
+      push @payment_methods, \%payment_method;
+    }
+  }
+  $response{payment_methods} = \@payment_methods;
+  $sth->finish();
+  my %history_values;
+  $sth = database->prepare(
+   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE (MATCH (s_name) AGAINST (\'billing_history_*\' IN BOOLEAN MODE)) AND lang='.database->quote($current_lang)
+  );
+  if ($sth->execute()) {
+   while (my ($sname, $svalue) = $sth -> fetchrow_array) {
+     $sname=~s/billing_history_//;
+     $history_values{$sname} = $svalue;
+   }
+  }
+  $sth->finish();
+  $response{history_values} = \%history_values;
+  my $json_xs = JSON::XS->new();
+  my $json = $json_xs->encode(\%response);
+  # Begin: return JSON data
+  open(DATA, '>'.config->{root_dir}.'/'.config->{data_dir}.'/billing_'.$current_lang.'.json') || return '{"result":"0"}';
+  flock(DATA, LOCK_EX) || return '{"result":"0"}'; 
+  binmode(DATA);
+  print DATA $json;
+  close(DATA);
+  return '{"result":"1"}'
 };
 
 get '/funds' => sub {
@@ -146,11 +297,11 @@ get '/data/list' => sub {
   my $json = $json_xs->encode(\@data);
   # Begin: return JSON data
   return qq~{
-  "sEcho": $sEcho,
-  "iTotalRecords": "$total",
-  "iTotalDisplayRecords": "$total_filtered",
-  "aaData": $json   
-}~;
+    "sEcho": $sEcho,
+    "iTotalRecords": "$total",
+    "iTotalDisplayRecords": "$total_filtered",
+    "aaData": $json   
+  }~;
 };
 
 get '/funds/data/list' => sub {
@@ -1166,123 +1317,26 @@ post '/data/load' => sub {
   if (!$auth_data) { return qq~{"result":"0"}~;  } 
   my %response;
   my $current_lang = _load_lang();  
-  # load domain zones & costs
-  my @domain_zones;
   my $curlang = database->quote($current_lang);
-  my $sth = database->prepare(
-    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_domain_zone_*\' IN BOOLEAN MODE)'
-  );
-  if ($sth->execute()) {
-    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
-      my %zone_data;
-      $s_name=~s/^billing_domain_zone_//;
-      $zone_data{zone}=$s_name;
-      $s_value=~s/\s//gm;
-      ($zone_data{cost}, $zone_data{cost_up}) = split(/,/, $s_value);
-      if (!$zone_data{cost_up}) {
-        $zone_data{cost_up} = $zone_data{cost};
-      }
-      push @domain_zones, \%zone_data;
-    }
-  }
-  $sth->finish();
-  $response{domain_zones}=\@domain_zones;
-  # load hosting plan names and IDs from settings
-  my %hosting_plan_names;
-  my @hosting_plan_ids;
-  $sth = database->prepare(
-    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_plan_name_*\' IN BOOLEAN MODE)'
-  );
-  if ($sth->execute()) {
-    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
-      $s_name=~s/^billing_plan_name_//;
-      $hosting_plan_names{$s_name} = $s_value;
-      push @hosting_plan_ids, $s_name;
-    }
-  }
-  $sth->finish();
-  # load hosting plan costs from settings
-  my %hosting_plan_costs;
-  $sth = database->prepare(
-    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_plan_cost_*\' IN BOOLEAN MODE)'
-  );
-  if ($sth->execute()) {
-    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
-      $s_name=~s/^billing_plan_cost_//;
-      $hosting_plan_costs{$s_name} = $s_value;
-    }
-  }
-  $sth->finish();
-  # generate hosting plan array
-  my @hosting_plans;
-  foreach my $pid (@hosting_plan_ids) {
-   my %hosting_plan;
-   $hosting_plan{id} = $pid;
-   $hosting_plan{name} = $hosting_plan_names{$pid};
-   $hosting_plan{cost} = $hosting_plan_costs{$pid};
-   push @hosting_plans, \%hosting_plan;
-  }
-  my @sorted_hosting_plans = sort { $a->{cost} <=> $b->{cost} } @hosting_plans;
-  $response{hosting_plans} = \@sorted_hosting_plans;
-  # load service plan names and IDs from settings
-  my %service_plan_names;
-  my @service_plan_ids;
-  $sth = database->prepare(
-    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_service_name_*\' IN BOOLEAN MODE)'
-  );
-  if ($sth->execute()) {
-    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
-      $s_name=~s/^billing_service_name_//;
-      $service_plan_names{$s_name} = $s_value;
-      push @service_plan_ids, $s_name;
-    }
-  }
-  $sth->finish();
-  # load service plan costs from settings
-  my %service_plan_costs;
-  $sth = database->prepare(
-    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_service_cost_*\' IN BOOLEAN MODE)'
-  );
-  if ($sth->execute()) {
-    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
-      $s_name=~s/^billing_service_cost_//;
-      $service_plan_costs{$s_name} = $s_value;
-    }
-  }
-  $sth->finish();
-  # generate service plan array
-  my @service_plans;
-  foreach my $pid (@service_plan_ids) {
-   my %service_plan;
-   $service_plan{id} = $pid;
-   $service_plan{name} = $service_plan_names{$pid};
-   $service_plan{cost} = $service_plan_costs{$pid};
-   push @service_plans, \%service_plan;
-  }
-  $response{service_plans} = \@service_plans;
-  # load payment methods
-  my @payment_methods;
-  $sth = database->prepare(
-    'SELECT s_name, s_value, s_value_html FROM `'.config->{db_table_prefix}.'_settings` WHERE lang='.$curlang.' AND MATCH (s_name) AGAINST (\'billing_payment_*\' IN BOOLEAN MODE)'
-  );
-  if ($sth->execute()) {
-    while (my ($s_name, $s_value, $s_value_html) = $sth -> fetchrow_array()) {
-      my %payment_method;
-      $s_name=~s/^billing_payment_//;
-      $s_value_html=~s/<.+?>//g;
-      $s_value_html=~s/[\n\r]//g;
-      $s_value_html=~s/^\s+//g;
-      $s_value_html=~s/\s+$//g;
-      $payment_method{id} = $s_name;
-      $payment_method{name} = $s_value;
-      $payment_method{desc} = $s_value_html;
-      push @payment_methods, \%payment_method;
-    }
-  }
-  $response{payment_methods} = \@payment_methods;
-  $sth->finish();
+  my $lf = loadFile(config->{root_dir}.'/'.config->{data_dir}.'/billing_'.$current_lang.'.json');
+  my $json_config=from_json $$lf;
+  my $domain_zones = $json_config->{domain_zones};
+  $response{domain_zones} = $domain_zones;
+  my $hosting_plan_names = $json_config->{hosting_plan_names};
+  my $hosting_plan_ids = $json_config->{hosting_plan_ids};
+  my $hosting_plan_costs = $json_config->{hosting_plan_costs};
+  my $hosting_plans = $json_config->{hosting_plans};
+  $response{hosting_plans} = $hosting_plans;
+  my $service_plan_names = $json_config->{service_plan_names};
+  my $service_plan_ids = $json_config->{service_plan_ids};
+  my $service_plan_costs = $json_config->{service_plan_costs};
+  my $service_plans = $json_config->{service_plans};
+  $response{service_plans} = $service_plans;
+  my $payment_methods= $json_config->{payment_methods};
+  $response{payment_methods} = $payment_methods;
+  my $history_values = $json_config->{history_values};
   # select hosting accounts
-  $sth = database->prepare(
+  my $sth = database->prepare(
     'SELECT id,host_acc,host_plan_id,host_days_remain,in_queue FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}.' ORDER BY id'
   );
   if ($sth->execute()) {
@@ -1292,8 +1346,8 @@ post '/data/load' => sub {
       $data{id} = $id;
       $data{account} = $host_acc;
       $data{plan_id} = $host_plan_id;
-      $data{plan_cost} = $hosting_plan_costs{$host_plan_id} || '0';
-      $data{plan_name} = $hosting_plan_names{$host_plan_id} || $host_plan_id;
+      $data{plan_cost} = $hosting_plan_costs->{$host_plan_id} || '0';
+      $data{plan_name} = $hosting_plan_names->{$host_plan_id} || $host_plan_id;
       $data{in_queue} = $in_queue;
       $data{days} = $host_days_remain;
       push (@host_accounts, \%data);
@@ -1346,8 +1400,8 @@ post '/data/load' => sub {
       $data{id} = $id;
       $data{service_id} = $service_id;
       $data{days} = $service_days_remaining;
-      $data{cost} = $service_plan_costs{$service_id} || '0';
-      $data{name} = $service_plan_names{$service_id} || $service_id;
+      $data{cost} = $service_plan_costs->{$service_id} || '0';
+      $data{name} = $service_plan_names->{$service_id} || $service_id;
       push (@services, \%data);
     }
     $response{services} = \@services;
@@ -1365,18 +1419,7 @@ post '/data/load' => sub {
   if (!$response{amount}) {
     $response{amount}='0';
   }
-  # select history
-  my %history_values;
-  $sth = database->prepare(
-   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE (MATCH (s_name) AGAINST (\'billing_history_*\' IN BOOLEAN MODE)) AND lang='.database->quote($current_lang)
-  );
-  if ($sth->execute()) {
-   while (my ($sname, $svalue) = $sth -> fetchrow_array) {
-     $sname=~s/billing_history_//;
-     $history_values{$sname} = $svalue;
-   }
-  }
-  $sth->finish();
+  # select history  
   my @history;
   $sth = database->prepare(
    'SELECT trans_id, trans_objects, trans_amount, trans_date FROM `'.config->{db_table_prefix}.'_billing_funds_history` WHERE user_id='.$auth_data->{id}.' ORDER BY trans_date DESC LIMIT 50'
@@ -1386,8 +1429,8 @@ post '/data/load' => sub {
     my %hr;
     my $event;
     if ($trans_id) {
-      if ($history_values{$trans_id}) {
-        $event=$history_values{$trans_id}.' ';
+      if ($history_values->{$trans_id}) {
+        $event=$history_values->{$trans_id}.' ';
       } else {
         $event=$trans_id.' ';
       }

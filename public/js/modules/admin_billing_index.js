@@ -1197,6 +1197,30 @@ $('#btn_profile').click(function() {
     });    
 });
 
+$('#btn_save_config').click(function() {    
+    if ($('#btn_save_config').hasClass('disabled')) {
+        return;
+    }
+    $('#btn_save_config').addClass('disabled');
+    $.ajax({
+        type: 'POST',
+        url: '/admin/billing/data/config/generate',        
+        dataType: "json",
+        success: function (data) {
+            $('#btn_save_config').removeClass('disabled');
+            if (data.result && data.result == 1) { // ok
+                $.jmessage(js_lang_success, js_lang_data_saved, 2500, 'jm_message_success');                
+            } else { // error
+                $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+            }
+        },
+        error: function () {
+            $('#btn_save_config').removeClass('disabled');
+            $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
+        }
+    });    
+});
+
 // dataTable ajax fix
 jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {
     if ( typeof( onoff ) == 'undefined' ) {
