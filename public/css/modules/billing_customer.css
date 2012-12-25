@@ -1,5 +1,10 @@
 .required_field
 {
-  color:red;
-  font-weight:700;
+  	color:red;
+  	font-weight:700;
+}
+.taracot-sub-header {
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom:10px;
 }

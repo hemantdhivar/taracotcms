@@ -2052,6 +2052,95 @@ post '/data/hosting/update/save' => sub {
   return $json;    
 };
 
+post '/data/domain/update/save' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  }
+  _load_lang();  
+  content_type 'application/json';
+  my $domain_name=param('domain_name') || '';
+  my $user_id=$auth_data->{id};
+  $domain_name=lc($domain_name);
+  if ($domain_name !~ /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/) {
+   return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
+  }  
+  my $sth = database->prepare(
+   'SELECT id, exp_date FROM '.config->{db_table_prefix}.'_billing_domains WHERE domain_name='.database->quote($domain_name)
+  );
+  my ($id, $exp_date);
+  if ($sth->execute()) {
+   ($id, $exp_date) = $sth->fetchrow_array;
+  } else {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
+  }
+  $sth->finish();  
+  if (!$id) {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
+  }
+  my $zone=$domain_name;
+  $zone=~s/^[^\.]*\.//;
+  my $cost;
+  my $cost_up;
+  $sth = database->prepare(
+    'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE s_name=\'billing_domain_zone_'.$zone.'\''
+  );
+  if ($sth->execute()) {
+    ($cost) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  $cost=~s/\s//gm;
+  ($cost, $cost_up) = split(/,/, $cost);
+  if (!$cost_up) {
+    $cost_up = $cost;
+  }
+  if (!$cost_up) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  my $funds_avail;
+  $sth = database->prepare(
+    'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$user_id
+  );
+  if ($sth->execute()) {
+    ($funds_avail) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  my $total_cost = $cost_up;
+  if ($total_cost > $funds_avail) {
+    return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
+  }
+  my $allow_update='0';
+  if ((($zone eq 'ru' || $zone eq 'su') && ( $exp_date - time < 4838400)) || ($zone ne 'ru' && $zone ne 'su')) {
+    $allow_update='1';
+  }
+  if (!$allow_update) {
+    return qq~{"result":"0","error":"~.$lang->{cant_update}.qq~"}~;   
+  }
+  $exp_date = $exp_date + 31557600; # 1 year
+  my $funds_remain = $funds_avail - $total_cost;
+  if (
+      !database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { exp_date => $exp_date, in_queue => 1, lastchanged => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainupdate', object => $domain_name, amount => $total_cost, tstamp => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'domainupdate', trans_objects => $domain_name, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
+       ||
+      !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+     ) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{id}=$id;
+  $response{domain_name}=$domain_name;
+  $response{exp_date}=$exp_date;
+  $response{exp_date} = time2str($lang->{domain_date_template}, $exp_date);
+  $response{exp_date} =~s/\\//gm;
+  $response{funds_remain} = $funds_remain;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
 any '/data/queue' => sub {
   my $auth_data = &taracot::_auth();
   content_type 'application/json';
@@ -2072,20 +2161,28 @@ any '/data/queue' => sub {
   }
   $sth->finish();
   $sth = database->prepare(
-   'SELECT host_acc FROM '.config->{db_table_prefix}.'_billing_hosting WHERE user_id='.$auth_data->{id}
+   'SELECT host_acc, host_days_remain FROM '.config->{db_table_prefix}.'_billing_hosting WHERE user_id='.$auth_data->{id}
   );
   if ($sth->execute()) {
-   while (my ($data) = $sth->fetchrow_array) {
-    push @hosting, $data;
+   while (my ($acc, $days) = $sth->fetchrow_array) {
+    my %hsh;
+    $hsh{host_acc} = $acc;
+    $hsh{host_days_remain} = $days;
+    push @hosting, \%hsh;    
    }
   }
   $sth->finish();
   $sth = database->prepare(
-   'SELECT domain_name FROM '.config->{db_table_prefix}.'_billing_domains WHERE user_id='.$auth_data->{id}
+   'SELECT domain_name, exp_date FROM '.config->{db_table_prefix}.'_billing_domains WHERE user_id='.$auth_data->{id}
   );
   if ($sth->execute()) {
-   while (my ($data) = $sth->fetchrow_array) {
-    push @domains, $data;
+   while (my ($dn, $exp) = $sth->fetchrow_array) {
+    my %hsh;
+    $hsh{domain_name} = $dn;
+    $exp =  time2str($lang->{domain_date_template}, $exp);
+    $exp =~s/\\//gm;
+    $hsh{exp_date} = $exp;    
+    push @domains, \%hsh;
    }
   }
   $sth->finish();

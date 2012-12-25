@@ -47,6 +47,7 @@ edit_service: Edit service data
 return_to_list: Return to list
 hac_account: Account
 hac_per_month: month
+domain_one_year: 1 year
 hac_plan: Tarification plan
 hac_days: Days remain
 btn_close: Close
@@ -194,6 +195,7 @@ in_queue: In queue (not created)
 months: Months
 hosting_account_hint: Latin characters and numbers only, 4-8 characters, example&#058;&nbsp;myaccount
 hosting_update: Update hosting account
+domain_update: Update domain
 acnt_up: Account
 up_cost: Update cost
 add_cost: Cost
@@ -212,3 +214,4 @@ error_popup_text: This taks couldn't be completed. See history for more informat
 important: Important
 ns_note: IP addresses are only required in case of NS is a part of domain name. Leave these fields blank otherwise!
 save_config: Save configuration
+cant_update: You can't update requested domain

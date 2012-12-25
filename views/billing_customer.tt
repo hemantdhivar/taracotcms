@@ -159,6 +159,29 @@
  </div>
 </div>
 
+<div class="modal hide" id="domain_update_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{domain_update} =]</h3>
+ </div>
+ <div class="modal-body">
+  <span class="form-horizontal" id="domain_update_edit_form">
+    <div class="alert alert-block alert-error" id="domain_update_edit_form_error" style="display:none">
+      <span id="domain_update_edit_form_error_text"></span>
+    </div>
+    <div id="up_domain_name" class="taracot-sub-header"></div>    
+    [== $lang->{up_cost} =]:&nbsp;<span id="dupcost"></span>&nbsp;[== $page_data->{billing_currency} =] ([== $lang->{domain_one_year} =])
+    <br/>
+  </span>
+  <div id="domain_update_edit_ajax" style="display:none">
+    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="domain_update_edit_ajax_msg"></span>
+  </div>
+ </div>
+  <div class="modal-footer">
+     <a class="btn" id="btn_domain_update_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_domain_update_save">[== $lang->{btn_save} =]</a>
+ </div>
+</div>
+
 <h1>[== $lang->{billing_customer} =]</h1>
     <div id="billing_customer_wrap" style="display:none">
         <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail"></span>&nbsp;[== $page_data->{billing_currency} =]</span>
