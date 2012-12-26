@@ -203,7 +203,7 @@ access_denied: Access denied
 insufficent_funds: Insufficent account funds
 pay_action_confirm: Are you sure you wish to continue?\n\nYou will be subcharged to
 pay_domain_confirm: Are you sure you wish to continue?\n\nDomain name
-action_queue_success: Task has been queued sucessfully. Operation is now in progress and will be done in several minutes.
+action_queue_success: Task has been queued. Operation is now in progress and will be done in several minutes.
 queue_active: There is an active task in queue (hosting account create/update, domain register etc.). Please try again in a few minutes.
 hpwd: Password
 hpwd_hint: 8 characters and more (latin characters, numbers, special chars etc), repeat twice to verify

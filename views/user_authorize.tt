@@ -22,8 +22,8 @@
         </div>
     </div>
     <div class="form-actions">
-        <div class="btn btn-primary" id="btn_submit">[== $lang->{user_auth_submit} =]</div>
-        <div class="btn btn-success" id="btn_register" onclick="location.href='/user/register'">[== $lang->{user_auth_register} =]</div>
+        <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_auth_submit} =]</button>
+        <button type="button" class="btn btn-success" id="btn_register" onclick="location.href='/user/register'">[== $lang->{user_auth_register} =]</button>
     </div>
 </form>
 <div id="auth_form_ajax" style="display:none">

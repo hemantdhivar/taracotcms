@@ -17,7 +17,8 @@ sub APICheckLogin {
  if (!$response->is_success) {
  	return 0;
  }
- my $data = decode_json $response->content;
+ my $data;
+ eval { $data = decode_json $response->content; }; return -1 if $@;
  if ($data->{error}->{code}) {
  	return -1;
  } else {

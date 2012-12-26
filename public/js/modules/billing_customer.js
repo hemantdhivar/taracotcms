@@ -10,7 +10,6 @@ $(document).ready(function () {
     $('#customer_tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
-        $('#main_head').focus();
     });
     // Populate countries list
     var cntrs = js_lang_countries.split('=');
@@ -557,6 +556,7 @@ $(document).ready(function () {
         $('#domain_dialog').modal({
             keyboard: true
         });
+        $('#domain_edit_form_error').hide();
         $('#domain_edit_ajax').hide();
         $('#domain_edit_form').show();
         $('#domain_edit_buttons').show();
@@ -615,7 +615,7 @@ $(document).ready(function () {
                         if (data.field) {
                             $('#cg_' + data.field).addClass('error');
                             $('#' + data.field).focus();
-                        }
+                        }                        
                     } else { // OK
                         hosting_plans_cost[data.haccount] = data.hplan_cost;
                         var tdata='';
@@ -627,7 +627,8 @@ $(document).ready(function () {
                             $('#data_hosting').html(ndata);
                         }
                         $('#hosting_dialog').modal('hide');
-                        $('#funds_avail').html(data.funds_remain);
+                        $('#funds_avail').html(data.funds_remain);                        
+                        $('#queue_success_msg').fadeIn(400).delay(3000).fadeOut(400);
                         $('#progress_'+data.haccount).show();
                         $('#progress_'+data.haccount).attr('src', '/images/update.png');
                         $('#progress_'+data.haccount).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
@@ -636,7 +637,7 @@ $(document).ready(function () {
                         if (!queue_request_active) {
                             setTimeout(function() { loadQueue() }, 6000);
                             queue_request_active = true;
-                        }
+                        }                        
                     }
                 },
                 error: function () {
@@ -755,6 +756,7 @@ $(document).ready(function () {
                         $('#progress_'+dnid).show();
                         $('#progress_'+dnid).attr('src', '/images/update.png');
                         $('#progress_'+dnid).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
+                        $('#queue_success_msg').fadeIn(400).delay(3000).fadeOut(400);
                         reloadHistory();
                         queue_internal.push(data.domain_name);
                         if (!queue_request_active) {
@@ -815,6 +817,7 @@ $(document).ready(function () {
                     $('#hosting_days_'+data.haccount).html(data.hdays);
                     $('#hosting_update_dialog').modal('hide');
                     $('#funds_avail').html(data.funds_remain);
+                    $('#queue_success_msg').fadeIn(400).delay(3000).fadeOut(400);
                     reloadHistory();
                     queue_internal.push(data.haccount);
                     if (!queue_request_active) {
@@ -872,6 +875,7 @@ $(document).ready(function () {
                     $('#exp_'+dnid).html(data.exp_date);
                     $('#domain_update_dialog').modal('hide');
                     $('#funds_avail').html(data.funds_remain);
+                    $('#queue_success_msg').fadeIn(400).delay(3000).fadeOut(400);
                     reloadHistory();
                     queue_internal.push(data.haccount);
                     if (!queue_request_active) {
@@ -1003,6 +1007,42 @@ $(document).ready(function () {
     });
     $('#domain_zone').change(function(){
         updateDomainPreview();
+    });    
+    function submitOnEnter(e) {
+        var keycode;
+        if (window.event) keycode = window.event.keyCode;
+        else if (e) keycode = (e.keyCode ? e.keyCode : e.which);
+        else return false;
+        if (keycode == 13) {
+            if (window.previousKeyCode) {
+                // down=40,up=38,pgdn=34,pgup=33
+                if (window.previousKeyCode == 33 || window.previousKeyCode == 34 ||
+                    window.previousKeyCode == 39 || window.previousKeyCode == 40) {
+                        window.previousKeyCode = keycode;
+                        return false;
+                }
+            }
+            return true;
+        } else {
+            window.previousKeyCode = keycode;
+            return false;
+        }
+    }
+    // bind enter keys to form fields
+    $('#haccount,#hpwd,#hpwd_repeat,#hplan').bind('keypress', function (e) {
+       if (submitOnEnter(e)) {
+        $('#btn_hosting_save').click();
+       }
+    });
+    $('#hdaysup').bind('keypress', function (e) {
+       if (submitOnEnter(e)) {
+        $('#btn_hosting_update_save').click();
+       }
+    });
+    $('#domain_name,#domain_zone,#ns1,#ns2,#ns3,#ns4,#ns1_ip,#ns2_ip,#ns3_ip,#ns4_ip').bind('keypress', function (e) {
+       if (submitOnEnter(e)) {
+        $('#btn_domain_save').click();
+       }
     });
 }); // document.ready
 function updateHosting(acnt) {

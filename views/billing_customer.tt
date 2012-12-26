@@ -47,8 +47,8 @@
     <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="hosting_edit_ajax_msg"></span>
   </div>
  </div>
-  <div class="modal-footer">
-     <a class="btn" id="btn_hosting_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_hosting_save">[== $lang->{btn_save} =]</a>
+  <div class="modal-footer" id="hosting_edit_buttons">
+     <button type="button" class="btn" id="btn_hosting_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button type="button" class="btn btn-primary" id="btn_hosting_save">[== $lang->{btn_save} =]</button>
  </div>
 </div>
 
@@ -86,8 +86,8 @@
     <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="hosting_update_edit_ajax_msg"></span>
   </div>
  </div>
-  <div class="modal-footer">
-     <a class="btn" id="btn_hosting_update_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_hosting_update_save">[== $lang->{btn_save} =]</a>
+  <div class="modal-footer" id="hosting_update_edit_buttons">
+     <button type="button" class="btn" id="btn_hosting_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_hosting_update_save">[== $lang->{btn_save} =]</button>
  </div>
 </div>
 
@@ -154,8 +154,8 @@
     <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="domain_edit_ajax_msg"></span>
   </div>
  </div>
-  <div class="modal-footer">
-     <a class="btn" id="btn_domain_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_domain_save">[== $lang->{btn_save} =]</a>
+  <div class="modal-footer" id="domain_edit_buttons">
+     <button type="button" class="btn" id="btn_domain_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_domain_save">[== $lang->{btn_save} =]</button>
  </div>
 </div>
 
@@ -177,15 +177,20 @@
     <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="domain_update_edit_ajax_msg"></span>
   </div>
  </div>
-  <div class="modal-footer">
-     <a class="btn" id="btn_domain_update_cancel">[== $lang->{edit_cancel} =]</a>&nbsp;<a class="btn btn-primary" id="btn_domain_update_save">[== $lang->{btn_save} =]</a>
+  <div class="modal-footer" id="domain_update_edit_buttons">
+     <button class="btn" id="btn_domain_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_domain_update_save">[== $lang->{btn_save} =]</button>
  </div>
 </div>
 
 <h1>[== $lang->{billing_customer} =]</h1>
     <div id="billing_customer_wrap" style="display:none">
         <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail"></span>&nbsp;[== $page_data->{billing_currency} =]</span>
-        <br/><a href="#" id="main_head"><img src="/images/blank.gif" width="1" height="1" alt="" /></a><br/>
+        <br/><img src="/images/blank.gif" width="10" height="15" alt="" />
+        <div id="queue_success_msg" class="hide">
+          <div class="alert alert-block alert-success">
+            <img src="/images/update.png" width="16" height="16" alt="" />&nbsp;[== $lang->{action_queue_success} =]
+          </div>
+        </div>        
         <ul class="nav nav-tabs" id="customer_tabs">
             <li class="active">
                 <a href="#tab_hosting">[== $lang->{c_hosting} =]</a>
@@ -208,15 +213,12 @@
         </ul>
         <div class="tab-content" id="customer_tabs_content">
             <div class="tab-pane active" id="tab_hosting">
-                <span class="btn btn-small btn-success" id="btn_add_hosting">[== $lang->{btn_add_hosting} =]</span>
-                <br/><br/>
-                <div class="alert alert-block alert-success hide" id="hosting_success_msg">
-                  [== $lang->{action_queue_success} =]
-                </div>
+                <button type="button" class="btn btn-small btn-success" id="btn_add_hosting">[== $lang->{btn_add_hosting} =]</button>
+                <br/><br/>                
                 <div id="data_hosting">[== $lang->{no_hosting_accounts} =]&nbsp;[== $lang->{no_add_by_click} =]</div>
             </div>
             <div class="tab-pane" id="tab_domains">
-                <span class="btn btn-small btn-success" id="btn_add_domain">[== $lang->{btn_add_domain} =]</span>
+                <button type="button" class="btn btn-small btn-success" id="btn_add_domain">[== $lang->{btn_add_domain} =]</button>
                 <br/><br/>
                 <div id="data_domains">[== $lang->{no_domains} =]&nbsp;[== $lang->{no_add_by_click} =]</div>
             </div>
@@ -259,11 +261,11 @@
                         <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]
                     </div>
                     <div id="funds_buttons">
-                        <span class="btn btn-primary" id="btn_save_funds">[== $lang->{continue} =]</span>
+                        <button type="button" class="btn btn-primary" id="btn_save_funds">[== $lang->{continue} =]</button>
                     </div>
                     <div id="funds_buttons_step2" class="hide">
-                        <span class="btn" id="btn_funds_back">[== $lang->{go_back} =]</span>
-                        <span class="btn btn-primary" id="btn_funds_submit">[== $lang->{confirm} =]</span>                        
+                        <button type="button" class="btn" id="btn_funds_back">[== $lang->{go_back} =]</button>
+                        <button type="button" class="btn btn-primary" id="btn_funds_submit">[== $lang->{confirm} =]</button>                        
                     </div>
                 </div>                 
             </div>
@@ -581,7 +583,7 @@
                         <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_saving} =]
                     </div>
                     <div id="profile_buttons">
-                        <span class="btn btn-primary" id="btn_save_profile">[== $lang->{edit_save} =]</span>
+                        <button type="button" class="btn btn-primary" id="btn_save_profile">[== $lang->{edit_save} =]</button>
                     </div>  
                 </div> 
             </div>        

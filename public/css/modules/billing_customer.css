@@ -1,3 +1,19 @@
+a, a:hover, a:active, a:focus, object, embed {
+    outline: 0;
+}
+input::-moz-focus-inner { 
+	border: 0; 
+}
+button::-moz-focus-inner {border: 2px solid transparent;}
+button:focus::-moz-focus-inner {border-color: blue} 
+.btn:focus {
+	outline: thin dotted #888;
+    outline-offset: -4px;
+}
+select:focus, input[type="file"]:focus, input[type="radio"]:focus, input[type="checkbox"]:focus {
+    border: 1px solid #999;
+    outline: 0;
+}
 .required_field
 {
   	color:red;
