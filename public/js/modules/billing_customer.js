@@ -3,8 +3,10 @@ var hosting_plans_id = {};
 var hosting_planid_cost = {};
 var queue_internal=[];
 var domain_update_cost = {};
+var service_plans_cost = {};
 var domains_zones = {};
 var queue_request_active = true;
+var tmp_service_id = '';
 
 $(document).ready(function () {
     $('#customer_tabs a').click(function (e) {
@@ -69,7 +71,7 @@ $(document).ready(function () {
                         tdata += "</tbody></table>";                        
                         $('#data_hosting').html(tdata);                        
                     } else {
-                        $('#data_hosting').html('<br/>'+js_lang_no_hosting_accounts+'&nbsp;'+js_lang_no_add_by_click);
+                        $('#data_hosting').html(js_lang_no_hosting_accounts+'&nbsp;'+js_lang_no_add_by_click);
                     }
 
                     // Domains
@@ -103,7 +105,7 @@ $(document).ready(function () {
                         tdata += "</tbody></table>";
                         $('#data_domains').html(tdata);                    
                     } else {
-                        $('#data_domains').html('<br/>'+js_lang_no_domains_accounts+'&nbsp;'+js_lang_no_add_by_click);
+                        $('#data_domains').html(js_lang_no_domains+'&nbsp;'+js_lang_no_add_by_click);
                     }           
 
                     // Services
@@ -116,7 +118,8 @@ $(document).ready(function () {
                             if (data.services[i].days <= 0) {
                                 tr_class=' class="error"';
                             }
-                            tdata += "<tr"+tr_class+"><td><strong>" + data.services[i].name + "</strong></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;" + data.services[i].days + "</td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                            service_plans_cost[data.services[i].service_id] = data.services[i].cost;
+                            tdata += "<tr"+tr_class+"><td><strong><span id=\"service_name_"+data.services[i].service_id+"\">" + data.services[i].name + "</span></strong></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"service_days_"+data.services[i].service_id+"\">" + data.services[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateService('"+data.services[i].service_id+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";
                         $('#data_services').html(tdata);                    
@@ -269,7 +272,7 @@ $(document).ready(function () {
     }
     $('#btn_save_funds').click(function() {
         $('#form_error_msg').hide();
-        $('#form_error_msg_text').html('');
+        $('#form_error_msg_text').html('');        
         $('#cg_amnt').removeClass('error');
         var form_errors = false;
         if (!$('#amnt').val().match(/^[0-9]*\.?[0-9]+$/) || $('#amnt').val() <= 0) {
@@ -308,8 +311,9 @@ $(document).ready(function () {
                                 $('#' + data.field).focus();
                             }  
                         } else { // ok
-                            $('#account_form_2').show();    
+                            $('#account_form_2').show();                                
                             $('#funds_buttons_step2').show();
+                            $('#btn_funds_submit').focus();
                             var frm='<form action="'+data.pdata.url+'" method="'+data.pdata.method+'" id="funds_submit_form">';
                             for (var i=0; i<data.pdata.fields.length; i++) {
                                 frm+='<input type="hidden" name="'+data.pdata.fields[i].name+'" value="'+data.pdata.fields[i].value+'">';
@@ -529,8 +533,16 @@ $(document).ready(function () {
     $('#btn_domain_update_cancel').click(function() {
         $('#domain_update_dialog').modal('hide');
     });
+    $('#btn_service_update_cancel').click(function() {
+        $('#service_update_dialog').modal('hide');
+    });
     $('#btn_add_hosting').click(function() {
         $('#hosting_dialog_head').html(js_lang_add_hosting);
+        $('#cg_haccount').removeClass('error');
+        $('#cg_hpwd').removeClass('error');
+        $('#cg_hplan').removeClass('error');
+        $('#cg_hdays').removeClass('error');
+        $('#hosting_edit_form_error').hide();
         $('#haccount').val('');
         $('#hpwd').val('');
         $('#hpwd_repeat').val('');
@@ -836,6 +848,57 @@ $(document).ready(function () {
             }
         });
     });
+    $('#btn_service_update_save').click(function() {
+        if (!confirm(js_lang_pay_action_confirm+' '+$('#supcost').html()+' '+js_lang_billing_currency)) {
+            return;
+        }
+        $('#cg_sdays').removeClass('error');
+        $('#service_update_edit_form_error').hide();
+        $('#service_update_edit_ajax_msg').html(js_lang_ajax_saving);
+        $('#service_update_edit_ajax').show();
+        $('#service_update_edit_form').hide();
+        $('#service_update_edit_buttons').hide();
+        $.ajax({
+            type: 'POST',
+            url: '/customer/data/service/update/save',
+            data: {
+                sid: tmp_service_id,
+                sdays: $('#sdaysup').val()
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data.result == '0') {
+                    if (data.error) { // ERROR
+                        $('#service_update_edit_form_error_text').html(data.error);
+                        $('#service_update_edit_form_error').fadeIn(400);
+                        $('#service_update_edit_form_error').alert();
+                    }
+                    $('#service_update_edit_ajax').hide();
+                    $('#service_update_edit_form').show();
+                    $('#service_update_edit_buttons').show();
+                    $('#ajax_loading').hide();
+                    if (data.field) {
+                        $('#cg_' + data.field).addClass('error');
+                        $('#' + data.field).focus();
+                    }
+                } else { // OK
+                    $('#service_days_'+data.sid).html(data.sdays);
+                    $('#service_update_dialog').modal('hide');
+                    $('#funds_avail').html(data.funds_remain);
+                    $('#service_success_msg').fadeIn(400).delay(3000).fadeOut(400);
+                    reloadHistory();
+                }
+            },
+            error: function () {
+                $('#service_update_edit_form_error_text').html(js_lang_error_ajax);
+                $('#service_update_edit_form_error').fadeIn(400);
+                $('#service_update_edit_form_error').alert();
+                $('#service_update_edit_ajax').hide();
+                $('#service_update_edit_form').show();
+                $('#service_update_edit_buttons').show();
+            }
+        });
+    });
     $('#btn_domain_update_save').click(function() {
         if (!confirm(js_lang_pay_action_confirm+' '+$('#dupcost').html()+' '+js_lang_billing_currency)) {
             return;
@@ -936,8 +999,11 @@ $(document).ready(function () {
             url: '/customer/data/queue?'+Math.random(),
             dataType: "json",
             success: function (data) {                                            
+                if (data.funds) {
+                    $('#funds_avail').html(data.funds);
+                }
                 if (data.queue && data.queue.length > 0) {
-                    var req_history=false;      
+                    var req_history=false;
                     for (var i=0; i<queue_internal.length; i++) {
                         var found = false;
                         for (var s=0; s< data.queue.length; s++) {                            
@@ -1039,6 +1105,22 @@ $(document).ready(function () {
         $('#btn_hosting_update_save').click();
        }
     });
+    $('#sdaysup').bind('keypress', function (e) {       
+       if (submitOnEnter(e)) {
+        $('#btn_service_update_save').click();
+       }
+    });
+    $('.pr_input').bind('keypress', function (e) {       
+       if (submitOnEnter(e)) {
+        $('#btn_save_profile').click();
+       }
+    });
+    $('#amnt').bind('keypress', function (e) {       
+       if (submitOnEnter(e)) {        
+        e.preventDefault();
+        $('#btn_save_funds').click();
+       }
+    });
     $('#domain_name,#domain_zone,#ns1,#ns2,#ns3,#ns4,#ns1_ip,#ns2_ip,#ns3_ip,#ns4_ip').bind('keypress', function (e) {
        if (submitOnEnter(e)) {
         $('#btn_domain_save').click();
@@ -1063,7 +1145,7 @@ function updateDomain(acnt) {
     $('#domain_update_edit_form_error').hide();
     $('#domain_update_dialog').modal({
         keyboard: true
-    });
+    });    
     $('#hacnt').val(acnt);
     $('#domain_update_edit_ajax').hide();
     $('#domain_update_edit_form').show();
@@ -1071,10 +1153,30 @@ function updateDomain(acnt) {
     var dupcost = domain_update_cost[domains_zones[acnt]];
     $('#up_domain_name').html(acnt);
     $('#dupcost').html(dupcost);
+    $('#btn_domain_update_save').focus();
+}
+function updateService(acnt) {
+    tmp_service_id = acnt;
+    $('#service_update_edit_form_error').hide();
+    $('#service_update_dialog').modal({
+        keyboard: true
+    });
+    $('#sn').val($('#service_name_'+acnt).html());
+    $('#service_update_edit_ajax').hide();
+    $('#service_update_edit_form').show();
+    $('#service_update_edit_buttons').show();
+    $('#sdaysup').focus();
+    $('select option:first-child').attr("selected", "selected"); 
+    var supcost = service_plans_cost[acnt] * $('#sdaysup').val();
+    $('#supcost').html(supcost);
 }
 $('#hdaysup').change(function(){
     var hupcost = hosting_plans_cost[$('#hacnt').val()] * $('#hdaysup').val();
     $('#hupcost').html(hupcost);
+});
+$('#sdaysup').change(function(){
+    var supcost = service_plans_cost[tmp_service_id] * $('#sdaysup').val();
+    $('#supcost').html(supcost);
 });
 $('#hdays').change(function(){
     var haddcost = hosting_planid_cost[$('#hplan').val()] * $('#hdays').val();

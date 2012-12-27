@@ -1457,7 +1457,6 @@ post '/data/load' => sub {
   $sth = database->prepare(
    'SELECT id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private FROM '.config->{db_table_prefix}.'_billing_profiles WHERE user_id='.$auth_data->{id}
   );
-  my $resp;
   if ($sth->execute()) {
    $profile_hash = $sth->fetchrow_hashref;
   }
@@ -1705,18 +1704,18 @@ post '/data/profile/save' => sub {
   if (!$country_exists) {
    return qq~{"result":"0","field":"country","error":"~.$lang->{invalid_field}.' ('.$lang->{p_country}.')"}';
   }
-  # my $in_queue=0;
-  # my $sth = database->prepare(
-  #  'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
-  # );
-  # if ($sth->execute()) {
-  #   ($in_queue) = $sth->fetchrow_array;
-  # }
-  # $sth->finish();
-  # if ($in_queue) {
-  #   return qq~{"result":"0","field":"haccount","error":"~.$lang->{queue_active}.qq~"}~; 
-  # }
+  my $in_queue=0;
   my $sth = database->prepare(
+   'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
+  );
+  if ($sth->execute()) {
+    ($in_queue) = $sth->fetchrow_array;
+  }
+  $sth->finish();
+  if ($in_queue) {
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{queue_active}.qq~"}~; 
+  }
+  $sth = database->prepare(
    'INSERT INTO '.config->{db_table_prefix}.'_billing_profiles (user_id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private,lastchanged) VALUES ('.database->quote($id).','.database->quote($n1r).','.database->quote($n1e).','.database->quote($n2r).','.database->quote($n2e).','.database->quote($n3r).','.database->quote($n3e).','.database->quote($email).','.database->quote($phone).','.database->quote($fax).','.database->quote($country).','.database->quote($city).','.database->quote($state).','.database->quote($addr).','.database->quote($postcode).','.database->quote($passport).','.database->quote($birth_date).','.database->quote($addr_ru).','.database->quote($org).','.database->quote($org_r).','.database->quote($code).','.database->quote($kpp).','.database->quote($private).','.time.') ON DUPLICATE KEY UPDATE n1r='.database->quote($n1r).',n1e='.database->quote($n1e).',n2r='.database->quote($n2r).',n2e='.database->quote($n2e).',n3r='.database->quote($n3r).',n3e='.database->quote($n3e).',email='.database->quote($email).',phone='.database->quote($phone).',fax='.database->quote($fax).',country='.database->quote($country).',city='.database->quote($city).',state='.database->quote($state).',addr='.database->quote($addr).',postcode='.database->quote($postcode).',passport='.database->quote($passport).',birth_date='.database->quote($birth_date).',addr_ru='.database->quote($addr_ru).',org='.database->quote($org).',org_r='.database->quote($org_r).',code='.database->quote($code).',kpp='.database->quote($kpp).',private='.database->quote($private).',lastchanged='.time
   );
   my $res=$sth->execute();
@@ -1918,6 +1917,23 @@ post '/data/domain/save' => sub {
   }
   $zone_cost=~s/\s//gm;
   my ($reg_cost, $up_cost)=split(/,/, $zone_cost);
+  my $profile_hash;
+  $sth = database->prepare(
+   'SELECT id,n1r,n1e,n2r,n2e,n3r,n3e,email,phone,fax,country,city,state,addr,postcode,passport,birth_date,addr_ru,org,org_r,code,kpp,private FROM '.config->{db_table_prefix}.'_billing_profiles WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+   $profile_hash = $sth->fetchrow_hashref;
+  }
+  $sth->finish();
+  if (!$profile_hash->{id}) {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{incomplete_profile}.qq~"}~;  
+  }
+  if (!$profile_hash->{n1e} || !$profile_hash->{n2e} || !$profile_hash->{n3e} || !$profile_hash->{email} || !$profile_hash->{phone} || !$profile_hash->{country} || !$profile_hash->{city} || !$profile_hash->{state} || !$profile_hash->{addr} || !$profile_hash->{postcode} || !$profile_hash->{birth_date}) {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{incomplete_profile}.qq~"}~;  
+  }
+  if (($domain_zone eq 'ru' || $domain_zone eq 'su') && (!$profile_hash->{n1r} || !$profile_hash->{n2r} || !$profile_hash->{n3r} || !$profile_hash->{passport} || !$profile_hash->{addr_ru})) {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{incomplete_profile}.qq~"}~;  
+  }
   my $funds_avail=0;
   $sth = database->prepare(
     'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$auth_data->{id}
@@ -1998,17 +2014,6 @@ post '/data/hosting/update/save' => sub {
     return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
   }
   $sth->finish();
-  # my $in_queue=0;
-  # $sth = database->prepare(
-  #  'SELECT id FROM '.config->{db_table_prefix}.'_billing_queue WHERE user_id='.$auth_data->{id}.' LIMIT 1'
-  # );
-  # if ($sth->execute()) {
-  #   ($in_queue) = $sth->fetchrow_array;
-  # }
-  # $sth->finish();
-  # if ($in_queue) {
-  #   return qq~{"result":"0","error":"~.$lang->{queue_active}.qq~"}~; 
-  # }
   my $month_cost=0;
   $sth = database->prepare(
     'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE s_name=\'billing_plan_cost_'.$plan_id.'\''
@@ -2047,6 +2052,80 @@ post '/data/hosting/update/save' => sub {
   $response{id}=$id;
   $response{haccount}=$haccount;
   $response{hdays}=$hdays+$old_days;
+  $response{funds_remain} = $funds_remain;
+  my $json = $json_xs->encode(\%response);
+  return $json;    
+};
+
+post '/data/service/update/save' => sub {
+  my $auth_data = &taracot::_auth();
+  content_type 'application/json';
+  if (!$auth_data) { return qq~{"result":"0"}~;  }
+  _load_lang();  
+  content_type 'application/json';
+  my $sid=param('sid') || '';
+  my $sdays=param('sdays') || 0;
+  my $user_id=$auth_data->{id};
+  $sdays=int($sdays);
+  $sid=lc($sid);
+  if ($sid !~ /^[a-z0-9]{1,40}$/) {
+   return qq~{"result":"0","field":"sn","error":"~.$lang->{form_error_invalid_sid}.qq~"}~;
+  }
+  my $smonths = $sdays; 
+  $sdays=$sdays*30; 
+  if (!$sdays || $sdays > 9999) {
+   return qq~{"result":"0","field":"sdays","error":"~.$lang->{form_error_invalid_sdays}.qq~"}~;
+  }  
+  my $sth = database->prepare(
+   'SELECT user_id, service_days_remaining FROM '.config->{db_table_prefix}.'_billing_services WHERE service_id='.database->quote($sid)
+  );
+  my $old_days=0;
+  my $suid;
+  if ($sth->execute()) {
+   ($suid, $old_days) = $sth->fetchrow_array;
+   if (!$suid || $suid ne $user_id) {
+    $sth->finish();
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
+   }
+  } else {
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
+  }
+  $sth->finish();
+  my $month_cost=0;
+  $sth = database->prepare(
+    'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE s_name=\'billing_service_cost_'.$sid.'\''
+  );
+  if ($sth->execute()) {
+    ($month_cost) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  my $funds_avail=0;
+  $sth = database->prepare(
+    'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$user_id
+  );
+  if ($sth->execute()) {
+    ($funds_avail) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
+  my $total_cost = $month_cost * $smonths;
+  if ($total_cost > $funds_avail) {
+    return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
+  }
+  my $funds_remain = $funds_avail - $total_cost;
+  if (
+      !database->quick_update(config->{db_table_prefix}.'_billing_services', { service_id => $sid }, { service_days_remaining => $sdays + $old_days, lastchanged => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'serviceupdate', trans_objects => $sid, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
+       ||
+      !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+     ) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  my %response;
+  my $json_xs = JSON::XS->new();  
+  $response{result}="1";
+  $response{sid}=$sid;
+  $response{sdays}=$sdays+$old_days;
   $response{funds_remain} = $funds_remain;
   my $json = $json_xs->encode(\%response);
   return $json;    
@@ -2186,10 +2265,19 @@ any '/data/queue' => sub {
    }
   }
   $sth->finish();
+  my $funds_avail;
+  $sth = database->prepare(
+    'SELECT amount FROM `'.config->{db_table_prefix}.'_billing_funds` WHERE user_id='.$auth_data->{id}
+  );
+  if ($sth->execute()) {
+    ($funds_avail) = $sth -> fetchrow_array();
+  }
+  $sth->finish();
   my %response;
   $response{queue}=\@qdata;
   $response{hosting}=\@hosting;
   $response{domains}=\@domains;
+  $response{funds}=$funds_avail;
   my $json_xs = JSON::XS->new();  
   my $json = $json_xs->encode(\%response);
   return $json;    

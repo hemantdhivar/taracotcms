@@ -215,3 +215,7 @@ important: Important
 ns_note: IP addresses are only required in case of NS is a part of domain name. Leave these fields blank otherwise!
 save_config: Save configuration
 cant_update: You can't update requested domain
+service_update: Update service
+service_name: Service name
+service_update_success: Service has been updated successfully
+incomplete_profile: Your profile data is incomplete for selected domain zone

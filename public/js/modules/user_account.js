@@ -281,4 +281,41 @@ $(document).ready(function () {
             });
         }
     }); // btn_submit_password click
+    function submitOnEnter(e) {
+        var keycode;
+        if (window.event) keycode = window.event.keyCode;
+        else if (e) keycode = (e.keyCode ? e.keyCode : e.which);
+        else return false;
+        if (keycode == 13) {
+            if (window.previousKeyCode) {
+                // down=40,up=38,pgdn=34,pgup=33
+                if (window.previousKeyCode == 33 || window.previousKeyCode == 34 ||
+                    window.previousKeyCode == 39 || window.previousKeyCode == 40) {
+                        window.previousKeyCode = keycode;
+                        return false;
+                }
+            }
+            return true;
+        } else {
+            window.previousKeyCode = keycode;
+            return false;
+        }
+    }
+    // bind enter keys to form fields
+    $('#pro_realname,#pro_phone,#pro_password').bind('keypress', function (e) {
+       if (submitOnEnter(e)) {
+            $('#btn_submit_profile').click();
+       }
+    });
+    $('#emc_email,#emc_new_email,#emc_new_email_verify,#emc_password').bind('keypress', function (e) {
+       if (submitOnEnter(e)) {
+            $('#btn_submit_email').click();
+       }
+    });
+    $('#pwd_password,#pwd_password_repeat,#pwd_old_password').bind('keypress', function (e) {
+       if (submitOnEnter(e)) {
+            e.preventDefault();
+            $('#btn_submit_password').click();
+       }
+    });
 }); // document.ready
