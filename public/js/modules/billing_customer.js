@@ -66,7 +66,14 @@ $(document).ready(function () {
                                 queue_internal.push(data.hosting[i].account);
                                 queue = true;
                             }
-                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td style=\"width:100px\"><strong>" + data.hosting[i].account + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.hosting[i].account+"\" class=\"qerror hide\" /></span></td><td style=\"text-align:right\">" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";                            
+                            var error_msg='';
+                            var error_act='';
+                            if (data.hosting[i].error_msg && data.hosting[i].error_msg != '') {
+                                error_act=js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>';
+                                error_msg=data.hosting[i].error_msg;
+                            }
+                            var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+data.hosting[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
+                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><strong>" + data.hosting[i].account + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.hosting[i].account+"\" class=\"qerror hide\" /></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";                            
                         }
                         tdata += "</tbody></table>";                        
                         $('#data_hosting').html(tdata);                        
@@ -97,7 +104,15 @@ $(document).ready(function () {
                                 hidepr='';
                             }
                             var dnid=data.domains[i].domain_name.replace(/\./g, "_");
-                            tdata += "<tr"+update_class+"><td><strong>" + data.domains[i].domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"qerror hide\" /></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                            var error_msg = data.domains[i].error_msg || '';
+                            var error_msg='';
+                            var error_act='';
+                            if (data.domains[i].error_msg && data.domains[i].error_msg != '') {
+                                error_act=js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>';
+                                error_msg=data.domains[i].error_msg;
+                            }
+                            var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+data.domains[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
+                            tdata += "<tr"+update_class+"><td><strong>" + data.domains[i].domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"qerror hide\" />&nbsp;"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
                             if (data.domains[i].zone) {
                                 domains_zones[data.domains[i].domain_name] = data.domains[i].zone;
                             }
@@ -536,6 +551,9 @@ $(document).ready(function () {
     $('#btn_service_update_cancel').click(function() {
         $('#service_update_dialog').modal('hide');
     });
+    $('#btn_error_msg_dialog_close').click(function() {
+        $('#error_msg_dialog').modal('hide'); 
+    });
     $('#btn_add_hosting').click(function() {
         $('#hosting_dialog_head').html(js_lang_add_hosting);
         $('#cg_haccount').removeClass('error');
@@ -631,7 +649,8 @@ $(document).ready(function () {
                     } else { // OK
                         hosting_plans_cost[data.haccount] = data.hplan_cost;
                         var tdata='';
-                        tdata += tdata += "<tr id=\"hosting_row_" + data.haccount + "\"><td style=\"width:100px\"><strong>" + data.haccount + "</strong>&nbsp;<img src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.haccount+"\" class=\"hide\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.haccount+"\" class=\"hide\" /></span></td><td style=\"text-align:right\">" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                        var error_label='<span class="badge badge-important" id="error_label_'+data.haccount+'"></span>&nbsp;';
+                        tdata += tdata += "<tr id=\"hosting_row_" + data.haccount + "\"><td><strong>" + data.haccount + "</strong>&nbsp;<img src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.haccount+"\" class=\"hide\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.haccount+"\" class=\"hide\" /></span>&nbsp;"+ error_label + "&nbsp;" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         if ($('#hosting_table tr:last').size() > 0) {
                             $('#hosting_table tr:last').after(tdata);
                         } else {
@@ -756,7 +775,8 @@ $(document).ready(function () {
                             update_icon = '<span class="btn btn-mini"><i class="icon-refresh" onclick="updateDomain(\''+data.domain_name+'\');"></i></span>';
                         }
                         var dnid=data.domain_name.replace(/\./g, "_");
-                        var tdata = "<tr"+update_class+"><td><strong>" + data.domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"hide\" /></td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                        var error_label='<span class="badge badge-important" id="error_label_'+dnid+'"></span>&nbsp;';
+                        var tdata = "<tr"+update_class+"><td><strong>" + data.domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"hide\" />&nbsp;"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
                         if ($('#domains_table tr:last').size() > 0) {
                             $('#domains_table tr:last').after(tdata);
                         } else {
@@ -823,6 +843,7 @@ $(document).ready(function () {
                         $('#' + data.field).focus();
                     }
                 } else { // OK
+                    $('#error_label_'+data.haccount).html('');
                     $('#progress_'+data.haccount).show();
                     $('#progress_'+data.haccount).attr('src', '/images/update.png');
                     $('#progress_'+data.haccount).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
@@ -932,6 +953,7 @@ $(document).ready(function () {
                     }
                 } else { // OK
                     var dnid=data.domain_name.replace(/\./g, "_");
+                    $('#error_label_'+dnid).html('');
                     $('#progress_'+dnid).show();
                     $('#progress_'+dnid).attr('src', '/images/update.png');
                     $('#progress_'+dnid).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
@@ -1046,13 +1068,27 @@ $(document).ready(function () {
                 // show warnings for hosting accounts
                 $('[rel=error_img]').show();                
                 for (var s=0; s< data.hosting.length; s++) {
+                    if (data.hosting[s].error_msg && data.hosting[s].error_msg != '') {
+                        var emsg = data.hosting[s].error_msg;
+                        $("#error_label_"+data.hosting[s].host_acc).html(js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>');
+                        $("#error_label_"+data.hosting[s].host_acc).bind('click', {msg: emsg}, function(event) { errorMessage(event.data.msg) });
+                    } else {
+                        $("#error_label_"+data.hosting[s].host_acc).html('');
+                    }
                     $('#qerror_'+data.hosting[s].host_acc).hide();
-                    $('#hosting_days_'+data.hosting[s].host_acc).html(data.hosting[s].host_days_remain)
+                    $('#hosting_days_'+data.hosting[s].host_acc).html(data.hosting[s].host_days_remain);
                 }
                 for (var s=0; s< data.domains.length; s++) {
                     var dnid=data.domains[s].domain_name.replace(/\./g, "_");
                     $('#qerror_'+dnid).hide();
-                    $('#exp_'+dnid).html(data.domains[s].exp_date)
+                    $('#exp_'+dnid).html(data.domains[s].exp_date);
+                    if (data.domains[s].error_msg && data.domains[s].error_msg != '') {
+                        var emsg = data.domains[s].error_msg;
+                        $("#error_label_"+dnid).html(js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>');
+                        $("#error_label_"+dnid).bind('click', {msg: emsg}, function(event) { errorMessage(event.data.msg) });
+                    } else {
+                        $("#error_label_"+dnid).html('');
+                    }
                 }
             },
             error: function () {
@@ -1169,6 +1205,13 @@ function updateService(acnt) {
     $('select option:first-child').attr("selected", "selected"); 
     var supcost = service_plans_cost[acnt] * $('#sdaysup').val();
     $('#supcost').html(supcost);
+}
+function errorMessage(emsg) {
+    $('#error_msg_text').html(emsg);
+    $('#error_msg_dialog').modal({
+        keyboard: true
+    });
+    $('#btn_error_msg_dialog_close').focus();
 }
 $('#hdaysup').change(function(){
     var hupcost = hosting_plans_cost[$('#hacnt').val()] * $('#hdaysup').val();

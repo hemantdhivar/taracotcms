@@ -1337,11 +1337,11 @@ post '/data/load' => sub {
   my $history_values = $json_config->{history_values};
   # select hosting accounts
   my $sth = database->prepare(
-    'SELECT id,host_acc,host_plan_id,host_days_remain,in_queue FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}.' ORDER BY id'
+    'SELECT id,host_acc,host_plan_id,host_days_remain,error_msg,in_queue FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}.' ORDER BY id'
   );
   if ($sth->execute()) {
     my @host_accounts;
-    while (my ($id,$host_acc,$host_plan_id,$host_days_remain,$in_queue) = $sth -> fetchrow_array()) {      
+    while (my ($id,$host_acc,$host_plan_id,$host_days_remain,$error_msg,$in_queue) = $sth -> fetchrow_array()) {      
       my %data;
       $data{id} = $id;
       $data{account} = $host_acc;
@@ -1349,6 +1349,7 @@ post '/data/load' => sub {
       $data{plan_cost} = $hosting_plan_costs->{$host_plan_id} || '0';
       $data{plan_name} = $hosting_plan_names->{$host_plan_id} || $host_plan_id;
       $data{in_queue} = $in_queue;
+      $data{error_msg} = $error_msg;
       $data{days} = $host_days_remain;
       push (@host_accounts, \%data);
     }
@@ -1357,11 +1358,11 @@ post '/data/load' => sub {
   $sth->finish();
   # select domain names
   $sth = database->prepare(
-    'SELECT id,domain_name,exp_date,in_queue FROM `'.config->{db_table_prefix}.'_billing_domains` WHERE user_id='.$auth_data->{id}
+    'SELECT id,domain_name,exp_date,error_msg,in_queue FROM `'.config->{db_table_prefix}.'_billing_domains` WHERE user_id='.$auth_data->{id}
   );
   if ($sth->execute()) {
     my @domain_names;
-    while (my ($id, $domain_name, $exp_date, $in_queue) = $sth -> fetchrow_array()) {      
+    while (my ($id, $domain_name, $exp_date,$error_msg,$in_queue) = $sth -> fetchrow_array()) {      
       if ($exp_date - time + 864000 < 0) { # 10 days
         next;
       }
@@ -1383,6 +1384,7 @@ post '/data/load' => sub {
       $data{update} = $allow_update;
       $data{expired} = $expired;
       $data{in_queue} = $in_queue;
+      $data{error_msg} = $error_msg;
       $data{zone} = $zone;
       push (@domain_names, \%data);
     }
@@ -1731,7 +1733,7 @@ post '/data/hosting/save' => sub {
   my $auth_data = &taracot::_auth();
   content_type 'application/json';
   if (!$auth_data) { return qq~{"result":"0"}~;  }
-  _load_lang();  
+  my $clng = _load_lang();  
   content_type 'application/json';
   my $haccount=param('haccount') || '';
   my $hplan=param('hplan') || '';
@@ -1804,7 +1806,7 @@ post '/data/hosting/save' => sub {
   if ($login_avail ne -1) {
     return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_duplicate_haccount}.qq~"}~;
   }
-  if (!database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $user_id, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, in_queue => 1, lastchanged => time })) {
+  if (!database->quick_insert(config->{db_table_prefix}.'_billing_hosting', { user_id => $user_id, host_acc => $haccount, host_plan_id => $hplan, host_days_remain => $hdays, pwd => $hpwd, in_queue => 1, lastchanged => time })) {
     return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
   }
   my $id = database->{q{mysql_insertid}}; 
@@ -1812,7 +1814,7 @@ post '/data/hosting/save' => sub {
       return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~1"}~; 
   }  
   if (
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingregister', object => $haccount, amount => $total_cost, pwd => $hpwd, tstamp => time })
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingregister', object => $haccount, amount => $total_cost, lang => $clng, tstamp => time })
        ||
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'hostingregister', trans_objects => $haccount, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
        ||
@@ -1850,7 +1852,7 @@ post '/data/domain/save' => sub {
   my $auth_data = &taracot::_auth();
   content_type 'application/json';
   if (!$auth_data) { return qq~{"result":"0"}~;  }
-  _load_lang();  
+  my $clng = _load_lang();  
   content_type 'application/json';
   my $domain_name=param('domain_name') || '';
   my $domain_zone=param('domain_zone') || '';
@@ -1958,7 +1960,7 @@ post '/data/domain/save' => sub {
       return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~1"}~; 
   }  
   if (
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainregister', object => $domain_name.'.'.$domain_zone, amount => $reg_cost, pwd => '', tstamp => time })
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainregister', object => $domain_name.'.'.$domain_zone, amount => $reg_cost, lang => $clng, tstamp => time })
        ||
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'domainregister', trans_objects => $domain_name.'.'.$domain_zone, trans_amount => -$reg_cost, trans_date => time, lastchanged => time })
        ||
@@ -1984,7 +1986,7 @@ post '/data/hosting/update/save' => sub {
   my $auth_data = &taracot::_auth();
   content_type 'application/json';
   if (!$auth_data) { return qq~{"result":"0"}~;  }
-  _load_lang();  
+  my $clng = _load_lang();  
   content_type 'application/json';
   my $haccount=param('haccount') || '';
   my $hdays=param('hdays') || 0;
@@ -2036,9 +2038,9 @@ post '/data/hosting/update/save' => sub {
   }
   my $funds_remain = $funds_avail - $total_cost;
   if (
-      !database->quick_update(config->{db_table_prefix}.'_billing_hosting', { host_acc => $haccount }, { host_days_remain => $hdays + $old_days, in_queue => 1, lastchanged => time })
+      !database->quick_update(config->{db_table_prefix}.'_billing_hosting', { host_acc => $haccount }, { host_days_remain => $hdays + $old_days, in_queue => 1, error_msg => '', lastchanged => time })
        ||
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingupdate', object => $haccount, amount => $total_cost, tstamp => time })
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingupdate', object => $haccount, amount => $total_cost, lang => $clng, tstamp => time })
        ||
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'hostingupdate', trans_objects => $haccount, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
        ||
@@ -2135,7 +2137,7 @@ post '/data/domain/update/save' => sub {
   my $auth_data = &taracot::_auth();
   content_type 'application/json';
   if (!$auth_data) { return qq~{"result":"0"}~;  }
-  _load_lang();  
+  my $clng = _load_lang();  
   content_type 'application/json';
   my $domain_name=param('domain_name') || '';
   my $user_id=$auth_data->{id};
@@ -2197,9 +2199,9 @@ post '/data/domain/update/save' => sub {
   $exp_date = $exp_date + 31557600; # 1 year
   my $funds_remain = $funds_avail - $total_cost;
   if (
-      !database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { exp_date => $exp_date, in_queue => 1, lastchanged => time })
+      !database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { exp_date => $exp_date, in_queue => 1, error_msg => '', lastchanged => time })
        ||
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainupdate', object => $domain_name, amount => $total_cost, tstamp => time })
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainupdate', object => $domain_name, amount => $total_cost, lang => $clng, tstamp => time })
        ||
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'domainupdate', trans_objects => $domain_name, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
        ||
@@ -2240,27 +2242,29 @@ any '/data/queue' => sub {
   }
   $sth->finish();
   $sth = database->prepare(
-   'SELECT host_acc, host_days_remain FROM '.config->{db_table_prefix}.'_billing_hosting WHERE user_id='.$auth_data->{id}
+   'SELECT host_acc, host_days_remain, error_msg FROM '.config->{db_table_prefix}.'_billing_hosting WHERE user_id='.$auth_data->{id}
   );
   if ($sth->execute()) {
-   while (my ($acc, $days) = $sth->fetchrow_array) {
+   while (my ($acc, $days, $error_msg) = $sth->fetchrow_array) {
     my %hsh;
     $hsh{host_acc} = $acc;
     $hsh{host_days_remain} = $days;
+    $hsh{error_msg} = $error_msg;
     push @hosting, \%hsh;    
    }
   }
   $sth->finish();
   $sth = database->prepare(
-   'SELECT domain_name, exp_date FROM '.config->{db_table_prefix}.'_billing_domains WHERE user_id='.$auth_data->{id}
+   'SELECT domain_name, exp_date, error_msg FROM '.config->{db_table_prefix}.'_billing_domains WHERE user_id='.$auth_data->{id}
   );
   if ($sth->execute()) {
-   while (my ($dn, $exp) = $sth->fetchrow_array) {
+   while (my ($dn, $exp, $error_msg) = $sth->fetchrow_array) {
     my %hsh;
     $hsh{domain_name} = $dn;
     $exp =  time2str($lang->{domain_date_template}, $exp);
     $exp =~s/\\//gm;
-    $hsh{exp_date} = $exp;    
+    $hsh{exp_date} = $exp;
+    $hsh{error_msg} = $error_msg;
     push @domains, \%hsh;
    }
   }

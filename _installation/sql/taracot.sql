@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Dec 25, 2012 at 06:39 PM
+-- Generation Time: Dec 28, 2012 at 07:14 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -22,7 +22,7 @@ CREATE TABLE `taracot_billing_bills` (
   `amount` float NOT NULL,
   `created` int(11) NOT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=utf8 AUTO_INCREMENT=42 ;
+) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 AUTO_INCREMENT=57 ;
 
 -- 
 -- Dumping data for table `taracot_billing_bills`
@@ -67,6 +67,21 @@ INSERT INTO `taracot_billing_bills` VALUES (37, 1, 12, 1355387867);
 INSERT INTO `taracot_billing_bills` VALUES (39, 1, 1, 1355606394);
 INSERT INTO `taracot_billing_bills` VALUES (40, 1, 1, 1355606726);
 INSERT INTO `taracot_billing_bills` VALUES (41, 1, 12, 1356011069);
+INSERT INTO `taracot_billing_bills` VALUES (42, 1, 12, 1356520719);
+INSERT INTO `taracot_billing_bills` VALUES (43, 1, 1234, 1356596496);
+INSERT INTO `taracot_billing_bills` VALUES (44, 1, 12, 1356596521);
+INSERT INTO `taracot_billing_bills` VALUES (45, 1, 123, 1356596562);
+INSERT INTO `taracot_billing_bills` VALUES (46, 1, 123, 1356596570);
+INSERT INTO `taracot_billing_bills` VALUES (47, 1, 123, 1356596615);
+INSERT INTO `taracot_billing_bills` VALUES (48, 1, 12, 1356596634);
+INSERT INTO `taracot_billing_bills` VALUES (49, 1, 12, 1356596654);
+INSERT INTO `taracot_billing_bills` VALUES (50, 1, 1212, 1356596947);
+INSERT INTO `taracot_billing_bills` VALUES (51, 1, 12, 1356603145);
+INSERT INTO `taracot_billing_bills` VALUES (52, 1, 12, 1356606732);
+INSERT INTO `taracot_billing_bills` VALUES (53, 1, 12, 1356606748);
+INSERT INTO `taracot_billing_bills` VALUES (54, 1, 12, 1356606793);
+INSERT INTO `taracot_billing_bills` VALUES (55, 1, 12, 1356606812);
+INSERT INTO `taracot_billing_bills` VALUES (56, 1, 12, 1356608800);
 
 -- --------------------------------------------------------
 
@@ -79,6 +94,7 @@ CREATE TABLE `taracot_billing_domains` (
   `user_id` int(11) NOT NULL,
   `domain_name` varchar(255) NOT NULL,
   `exp_date` int(11) default NULL,
+  `error_msg` varchar(255) NOT NULL,
   `ns1` varchar(80) default NULL,
   `ns2` varchar(80) default NULL,
   `ns3` varchar(80) default NULL,
@@ -91,16 +107,14 @@ CREATE TABLE `taracot_billing_domains` (
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `domain_name` (`domain_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=43 AUTO_INCREMENT=25 ;
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=43 AUTO_INCREMENT=27 ;
 
 -- 
 -- Dumping data for table `taracot_billing_domains`
 -- 
 
-INSERT INTO `taracot_billing_domains` VALUES (1, 1, 're-hash.ru', 1352750400, 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 0, 1355212535);
-INSERT INTO `taracot_billing_domains` VALUES (16, 1, 'domain.ru', 1388174400, 'ns1', 'ns2', '', '', '', '', '', '', 1, 1356446197);
-INSERT INTO `taracot_billing_domains` VALUES (21, 1, 'domain.com', 1422518400, 'ns1.re-hash.org', 'ns2.re-hash.org', 'ns3.re-hash.org', 'ns4.re-hash.org', '123.123.111.56', '12.12.12.12', '13.13.13.13', '14.14.14.14', 1, 1356445819);
-INSERT INTO `taracot_billing_domains` VALUES (24, 1, 'test.com', 1514188800, 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 1, 1356445437);
+INSERT INTO `taracot_billing_domains` VALUES (1, 1, 're-hash.ru', 1352750400, '', 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 0, 1355212535);
+INSERT INTO `taracot_billing_domains` VALUES (26, 1, 'medved.com', 1419645600, '', 'ns1.re-hash.org', 'ns2.re-hash.org', '', '', '', '', '', '', 1, 1356606887);
 
 -- --------------------------------------------------------
 
@@ -121,7 +135,7 @@ CREATE TABLE `taracot_billing_funds` (
 -- Dumping data for table `taracot_billing_funds`
 -- 
 
-INSERT INTO `taracot_billing_funds` VALUES (1, 1, 3614, 1356446183);
+INSERT INTO `taracot_billing_funds` VALUES (1, 1, 2480, 1356706061);
 
 -- --------------------------------------------------------
 
@@ -139,7 +153,7 @@ CREATE TABLE `taracot_billing_funds_history` (
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `trans_amount` (`trans_objects`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=60 AUTO_INCREMENT=46 ;
+) ENGINE=MyISAM AUTO_INCREMENT=87 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=60 AUTO_INCREMENT=87 ;
 
 -- 
 -- Dumping data for table `taracot_billing_funds_history`
@@ -182,6 +196,47 @@ INSERT INTO `taracot_billing_funds_history` VALUES (42, 1, 'domainupdate', 'doma
 INSERT INTO `taracot_billing_funds_history` VALUES (43, 1, 'domainupdate', 'test.com', -500, 1356445437, 1356445437);
 INSERT INTO `taracot_billing_funds_history` VALUES (44, 1, 'domainupdate', 'domain.com', -500, 1356445819, 1356445819);
 INSERT INTO `taracot_billing_funds_history` VALUES (45, 1, 'domainupdate', 'domain.ru', -400, 1356446183, 1356446183);
+INSERT INTO `taracot_billing_funds_history` VALUES (46, 1, 'domainupdate', 'domain.com', -500, 1356514333, 1356514333);
+INSERT INTO `taracot_billing_funds_history` VALUES (47, 1, 'hostingupdate', 'medved', -199, 1356514341, 1356514341);
+INSERT INTO `taracot_billing_funds_history` VALUES (48, 1, 'hostingregister', 'ours2', -199, 1356514604, 1356514604);
+INSERT INTO `taracot_billing_funds_history` VALUES (49, 1, 'hostingregister', 'ours3', -199, 1356515129, 1356515129);
+INSERT INTO `taracot_billing_funds_history` VALUES (50, 1, 'hostingregister', 'ours4', -199, 1356515171, 1356515171);
+INSERT INTO `taracot_billing_funds_history` VALUES (51, 1, 'hostingregister', 'ours5', -199, 1356515364, 1356515364);
+INSERT INTO `taracot_billing_funds_history` VALUES (52, 1, 'hostingregister', 'ours6', -199, 1356515462, 1356515462);
+INSERT INTO `taracot_billing_funds_history` VALUES (53, 1, 'hostingregister', 'ours7', -199, 1356515489, 1356515489);
+INSERT INTO `taracot_billing_funds_history` VALUES (54, 1, 'hostingregister', 'ours8', -199, 1356515520, 1356515520);
+INSERT INTO `taracot_billing_funds_history` VALUES (55, 1, 'hostingregister', 'ours9', -199, 1356515573, 1356515573);
+INSERT INTO `taracot_billing_funds_history` VALUES (56, 1, 'hostingupdate', 'ours2', -199, 1356515601, 1356515601);
+INSERT INTO `taracot_billing_funds_history` VALUES (57, 1, 'hostingupdate', 'ours3', -199, 1356515613, 1356515613);
+INSERT INTO `taracot_billing_funds_history` VALUES (58, 1, 'hostingupdate', 'test', -199, 1356515735, 1356515735);
+INSERT INTO `taracot_billing_funds_history` VALUES (59, 1, 'hostingupdate', 'medved', -199, 1356515753, 1356515753);
+INSERT INTO `taracot_billing_funds_history` VALUES (60, 1, 'hostingupdate', 'medved', -199, 1356515789, 1356515789);
+INSERT INTO `taracot_billing_funds_history` VALUES (61, 1, 'hostingupdate', 'medved', -199, 1356515817, 1356515817);
+INSERT INTO `taracot_billing_funds_history` VALUES (62, 1, 'hostingupdate', 'medved', -199, 1356515863, 1356515863);
+INSERT INTO `taracot_billing_funds_history` VALUES (63, 1, 'hostingupdate', 'medved', -199, 1356515957, 1356515957);
+INSERT INTO `taracot_billing_funds_history` VALUES (64, 1, 'hostingupdate', 'medved', -199, 1356515973, 1356515973);
+INSERT INTO `taracot_billing_funds_history` VALUES (65, 1, 'hostingupdate', 'medved', -199, 1356516011, 1356516011);
+INSERT INTO `taracot_billing_funds_history` VALUES (66, 1, 'hostingupdate', 'medved', -199, 1356516021, 1356516021);
+INSERT INTO `taracot_billing_funds_history` VALUES (67, 1, 'hostingupdate', 'medved', -199, 1356516048, 1356516048);
+INSERT INTO `taracot_billing_funds_history` VALUES (68, 1, 'hostingupdate', 'medved', -199, 1356516062, 1356516062);
+INSERT INTO `taracot_billing_funds_history` VALUES (69, 1, 'hostingregister', 'ours10', -199, 1356517212, 1356517212);
+INSERT INTO `taracot_billing_funds_history` VALUES (70, 1, 'hostingupdate', 'medved', -199, 1356517220, 1356517220);
+INSERT INTO `taracot_billing_funds_history` VALUES (71, 1, 'domainupdate', 'domain.com', -500, 1356517229, 1356517229);
+INSERT INTO `taracot_billing_funds_history` VALUES (72, 1, 'domainupdate', 'domain.com', -500, 1356517237, 1356517237);
+INSERT INTO `taracot_billing_funds_history` VALUES (73, 1, 'domainupdate', 'domain.com', -500, 1356517243, 1356517243);
+INSERT INTO `taracot_billing_funds_history` VALUES (74, 1, 'domainregister', 'domain2.com', -500, 1356517258, 1356517258);
+INSERT INTO `taracot_billing_funds_history` VALUES (75, 1, 'serviceupdate', 'backup', -666, 1356598428, 1356598428);
+INSERT INTO `taracot_billing_funds_history` VALUES (76, 1, 'serviceupdate', 'backup', -666, 1356603084, 1356603084);
+INSERT INTO `taracot_billing_funds_history` VALUES (77, 1, 'serviceupdate', 'backup', -666, 1356603139, 1356603139);
+INSERT INTO `taracot_billing_funds_history` VALUES (78, 1, 'serviceupdate', 'backup', -666, 1356603450, 1356603450);
+INSERT INTO `taracot_billing_funds_history` VALUES (79, 1, 'domainregister', 'medved.com', -500, 1356606599, 1356606599);
+INSERT INTO `taracot_billing_funds_history` VALUES (80, 1, 'domainupdate', 'medved.com', -500, 1356606887, 1356606887);
+INSERT INTO `taracot_billing_funds_history` VALUES (81, 1, 'hostingregister', 'oursik', -199, 1356695529, 1356695529);
+INSERT INTO `taracot_billing_funds_history` VALUES (82, 1, 'hostingregister', 'mdvd', -199, 1356701710, 1356701710);
+INSERT INTO `taracot_billing_funds_history` VALUES (83, 1, 'hostingupdate', 'ours', -199, 1356702408, 1356702408);
+INSERT INTO `taracot_billing_funds_history` VALUES (84, 1, 'hostingupdate', 'mdvd', -199, 1356702421, 1356702421);
+INSERT INTO `taracot_billing_funds_history` VALUES (85, 1, 'hostingregister', 'mdvd2', -199, 1356704993, 1356704993);
+INSERT INTO `taracot_billing_funds_history` VALUES (86, 1, 'hostingregister', 'whops', -199, 1356706061, 1356706061);
 
 -- --------------------------------------------------------
 
@@ -195,19 +250,23 @@ CREATE TABLE `taracot_billing_hosting` (
   `host_acc` varchar(255) default NULL,
   `host_plan_id` varchar(255) default NULL,
   `host_days_remain` int(11) default '0',
+  `pwd` varchar(80) default NULL,
+  `error_msg` varchar(255) default NULL,
   `in_queue` tinyint(1) NOT NULL default '0',
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `host_acc` (`host_acc`)
-) ENGINE=MyISAM AUTO_INCREMENT=77 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=40 AUTO_INCREMENT=77 ;
+) ENGINE=MyISAM AUTO_INCREMENT=90 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=40 AUTO_INCREMENT=90 ;
 
 -- 
 -- Dumping data for table `taracot_billing_hosting`
 -- 
 
-INSERT INTO `taracot_billing_hosting` VALUES (66, 1, 'ours', 'econom', 330, 0, 1356444393);
-INSERT INTO `taracot_billing_hosting` VALUES (68, 1, 'medved', 'econom', 120, 0, 1356444391);
-INSERT INTO `taracot_billing_hosting` VALUES (76, 1, 'test', 'econom', 30, 0, 1356444388);
+INSERT INTO `taracot_billing_hosting` VALUES (66, 1, 'ours', 'econom', 360, NULL, '', 1, 1356702408);
+INSERT INTO `taracot_billing_hosting` VALUES (86, 1, 'oursik', 'econom', 30, 'oursikoursik', 'Ойойой жопка', 1, 1356695529);
+INSERT INTO `taracot_billing_hosting` VALUES (88, 1, 'mdvd2', 'econom', 30, 'testtest', NULL, 1, 1356704993);
+INSERT INTO `taracot_billing_hosting` VALUES (89, 1, 'whops', 'econom', 30, 'whopswhops', 'Ащипька!', 1, 1356706061);
+INSERT INTO `taracot_billing_hosting` VALUES (87, 1, 'mdvd', 'econom', 60, 'mdvdmdvd', 'усё', 1, 1356702421);
 
 -- --------------------------------------------------------
 
@@ -249,7 +308,7 @@ CREATE TABLE `taracot_billing_profiles` (
 -- Dumping data for table `taracot_billing_profiles`
 -- 
 
-INSERT INTO `taracot_billing_profiles` VALUES (1, 1, '', 'Petrov', '', 'Vasily', '', 'A', 'xtreme@rh1.ru', '+7 921 7998111', '+7 812 9883535', 'AF', 'St. Petersburg', 'St. Petersburg', 'Michmanskaya Str. 2-1-212', '199226', '', '16.02.1985', '', '', '', '', '', 1, 1355656157);
+INSERT INTO `taracot_billing_profiles` VALUES (1, 1, '', 'Petrov', '', 'Vasily', '', 'A', 'xtreme@rh1.ru', '+7 921 7998111', '+7 812 9883535', 'RU', 'St. Petersburg', 'St. Petersburg', 'Michmanskaya Str. 2-1-212', '199226', '', '16.02.1985', '', '', '', '', '', 1, 1356606909);
 INSERT INTO `taracot_billing_profiles` VALUES (2, 9, 'Петров', 'Smith', 'Иван', 'John', 'Иванович', 'I', 'john.smith@domain.com', '+7 495 1234567', '+7 495 1234589', 'RE', 'New York', 'New York', 'Tverskaya St., 2-1-234', NULL, '34 02 651241 выдан 48 о/м г. Москвы 26.12.1990', '30.11.1985', '101000, Москва, ул. Воробьянинова, 15, кв. 22, В. Лоханкину', 'ROGA I KOPYTA, LTD.', 'Общество с ограниченной ответственностью "Рога и Копыта"', '7701107259', '632946014', 0, 1354883028);
 
 -- --------------------------------------------------------
@@ -263,18 +322,18 @@ CREATE TABLE `taracot_billing_queue` (
   `user_id` int(11) NOT NULL,
   `action` varchar(80) NOT NULL,
   `object` varchar(80) NOT NULL,
-  `pwd` varchar(100) default NULL,
-  `err` tinyint(1) default '0',
+  `lang` varchar(2) default NULL,
   `tstamp` int(11) NOT NULL,
   `amount` float NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 -- 
 -- Dumping data for table `taracot_billing_queue`
 -- 
 
-INSERT INTO `taracot_billing_queue` VALUES (33, 1, 'domainupdate', 'domain.ru', NULL, 0, 1356446183, 400);
+INSERT INTO `taracot_billing_queue` VALUES (6, 1, 'hostingregister', 'mdvd2', 'en', 1356704993, 199);
+INSERT INTO `taracot_billing_queue` VALUES (7, 1, 'hostingregister', 'whops', 'en', 1356706061, 199);
 
 -- --------------------------------------------------------
 
@@ -287,6 +346,7 @@ CREATE TABLE `taracot_billing_services` (
   `user_id` int(11) NOT NULL,
   `service_id` varchar(255) default NULL,
   `service_days_remaining` int(11) NOT NULL,
+  `error_msg` varchar(255) default NULL,
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `service_name` (`service_id`)
@@ -296,8 +356,8 @@ CREATE TABLE `taracot_billing_services` (
 -- Dumping data for table `taracot_billing_services`
 -- 
 
-INSERT INTO `taracot_billing_services` VALUES (2, 1, 'vps', 323, NULL);
-INSERT INTO `taracot_billing_services` VALUES (4, 1, 'backup', 0, 1354883149);
+INSERT INTO `taracot_billing_services` VALUES (2, 1, 'vps', 323, '', NULL);
+INSERT INTO `taracot_billing_services` VALUES (4, 1, 'backup', 120, '', 1356603450);
 
 -- --------------------------------------------------------
 
@@ -425,5 +485,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 'Medved', 'xtreme@rh1.ru', '79217998111', 2, '', NULL, 1354541320);
+INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 'Medved', 'xtreme@rh1.ru', '79217998111', 2, '', NULL, 1356607509);
 INSERT INTO `taracot_users` VALUES (9, 'medved', '2a4dc2662da8f8465d6bc4de5a4a3df8', '', 'medved@medved.com', '', 1, '', NULL, 1351864773);
