@@ -2,7 +2,7 @@ use strict;
 use JSON::XS("decode_json");
 
 my $CPANEL="https://re-hash.ru/manager/";
-my $AUTHDATA="";
+my $AUTHDATA="taracot_api:12345678";
 my $OWNER="rehash_customers";
 # Debug
 $ENV{HTTPS_PROXY} = 'http://10.233.104.141:3128';
@@ -44,4 +44,4 @@ sub APIUserRegister {
  }
 }
 
-true;
+1;
