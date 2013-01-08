@@ -57,10 +57,26 @@ post '/data/config/generate' => sub {
   my $current_lang=_load_lang();
   content_type 'application/json';
   my %response;
-  # load domain zones & costs
-  my @domain_zones;
   my $curlang = database->quote($current_lang);
+  # load NS defaults
+  my @nss;
   my $sth = database->prepare(
+    'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_nss_*\' IN BOOLEAN MODE)'
+  );
+  if ($sth->execute()) {
+    while (my ($s_name, $s_value) = $sth -> fetchrow_array()) {
+      my %nh;
+      $s_name=~s/^billing_nss_//;
+      $nh{ns} = $s_name;
+      $nh{host} = $s_value;
+      push @nss, \%nh;
+    }
+  }
+  $sth->finish();
+  $response{nss} = \@nss;
+  # load domain zones & costs
+  my @domain_zones;  
+  $sth = database->prepare(
     'SELECT s_name, s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE MATCH (s_name) AGAINST (\'billing_domain_zone_*\' IN BOOLEAN MODE)'
   );
   if ($sth->execute()) {
@@ -753,7 +769,15 @@ post '/data/funds/save' => sub {
   if ($amount !~ /^[-+]?[0-9]*\.?[0-9]+$/) {
    return qq~{"result":"0"}~;
   } 
-  if (database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $amount, lastchanged => time })) {
+  my $res=0;
+  my $sth = database->prepare(
+   'INSERT INTO '.config->{db_table_prefix}.'_billing_funds (user_id,amount,lastchanged) VALUES ('.$user_id.','.database->quote($amount).','.time.') ON DUPLICATE KEY UPDATE amount=amount+'.database->quote($amount).',lastchanged='.time
+  );
+  if ($sth->execute()) {
+    $res=1;
+  }
+  $sth->finish();
+  if ($res) {
       return qq~{"result":"1"}~;
     } else {
       return qq~{"result":"0"}~;
@@ -836,6 +860,12 @@ post '/data/domain/save' => sub {
   my $ns3_ip=param('ns3_ip') || '';
   my $ns4_ip=param('ns4_ip') || '';
   my $id=param('id') || 0;
+  my $in_queue=param('d_queue') || 0;
+  if ($in_queue) {
+    $in_queue=1;
+  } else {
+    $in_queue=0;
+  }
   my $user_id=param('user_id') || 0;
   $user_id=int($user_id);
   $id=int($id);
@@ -890,9 +920,9 @@ post '/data/domain/save' => sub {
   }
   $sth->finish();
   if ($id > 0) {
-    database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { domain_name => $domain_name, exp_date => $domain_exp, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { domain_name => $domain_name, exp_date => $domain_exp, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, in_queue => $in_queue, lastchanged => time });
   } else {   
-    database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name, exp_date => $domain_exp, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, lastchanged => time });
+    database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name, exp_date => $domain_exp, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, in_queue => $in_queue, lastchanged => time });
     $id = database->{q{mysql_insertid}}; 
   }  
   if (!$id) {
@@ -1335,6 +1365,8 @@ post '/data/load' => sub {
   my $payment_methods= $json_config->{payment_methods};
   $response{payment_methods} = $payment_methods;
   my $history_values = $json_config->{history_values};
+  my $nss = $json_config->{nss};
+  $response{nss} = $nss;
   # select hosting accounts
   my $sth = database->prepare(
     'SELECT id,host_acc,host_plan_id,host_days_remain,error_msg,in_queue FROM `'.config->{db_table_prefix}.'_billing_hosting` WHERE user_id='.$auth_data->{id}.' ORDER BY id'
@@ -1813,12 +1845,12 @@ post '/data/hosting/save' => sub {
   if (!$id) {
       return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~1"}~; 
   }  
-  if (
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingregister', object => $haccount, amount => $total_cost, lang => $clng, tstamp => time })
-       ||
+  if (      
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'hostingregister', trans_objects => $haccount, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
        ||
       !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingregister', object => $haccount, amount => $total_cost, lang => $clng, tstamp => time }) 
      ) 
   {
     return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
@@ -1952,19 +1984,23 @@ post '/data/domain/save' => sub {
     return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
   }
   my $exp_date = time + 31557600; # 1 year
-  if (!database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name.'.'.$domain_zone, exp_date => $exp_date, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, in_queue => 1, lastchanged => time })) {
+  my $remote_ip = request->env->{'HTTP_X_REAL_IP'} || request->env->{'REMOTE_ADDR'} || '';
+  if (!$remote_ip) {
+    return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
+  }
+  if (!database->quick_insert(config->{db_table_prefix}.'_billing_domains', { user_id => $user_id, domain_name => $domain_name.'.'.$domain_zone, exp_date => $exp_date, ns1 => $ns1, ns2 => $ns2, ns3 => $ns3, ns4 => $ns4, ns1_ip => $ns1_ip, ns2_ip => $ns2_ip, ns3_ip => $ns3_ip, ns4_ip => $ns4_ip, remote_ip => $remote_ip, in_queue => 1, lastchanged => time })) {
     return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
   }
   my $id = database->{q{mysql_insertid}}; 
   if (!$id) {
       return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~1"}~; 
   }  
-  if (
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainregister', object => $domain_name.'.'.$domain_zone, amount => $reg_cost, lang => $clng, tstamp => time })
-       ||
+  if (      
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'domainregister', trans_objects => $domain_name.'.'.$domain_zone, trans_amount => -$reg_cost, trans_date => time, lastchanged => time })
        ||
       !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainregister', object => $domain_name.'.'.$domain_zone, amount => $reg_cost, lang => $clng, tstamp => time })
      ) 
   {
     return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
@@ -2002,12 +2038,12 @@ post '/data/hosting/update/save' => sub {
    return qq~{"result":"0","field":"hdays","error":"~.$lang->{form_error_invalid_hdays}.qq~"}~;
   }  
   my $sth = database->prepare(
-   'SELECT id, user_id, host_days_remain, host_plan_id FROM '.config->{db_table_prefix}.'_billing_hosting WHERE host_acc='.database->quote($haccount)
+   'SELECT id, user_id, host_days_remain, host_plan_id, in_queue FROM '.config->{db_table_prefix}.'_billing_hosting WHERE host_acc='.database->quote($haccount)
   );
   my $old_days=0;
-  my ($db_user_id, $id, $plan_id);
+  my ($db_user_id, $id, $plan_id, $in_queue);
   if ($sth->execute()) {
-   ($id, $db_user_id, $old_days, $plan_id) = $sth->fetchrow_array;
+   ($id, $db_user_id, $old_days, $plan_id, $in_queue) = $sth->fetchrow_array;
    if (!$db_user_id || $db_user_id ne $user_id) {
     $sth->finish();
     return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
@@ -2016,6 +2052,9 @@ post '/data/hosting/update/save' => sub {
     return qq~{"result":"0","field":"haccount","error":"~.$lang->{access_denied}.qq~"}~;
   }
   $sth->finish();
+  if ($in_queue) {
+    return qq~{"result":"0","field":"haccount","error":"~.$lang->{queue_task_active}.qq~"}~; 
+  }
   my $month_cost=0;
   $sth = database->prepare(
     'SELECT s_value FROM `'.config->{db_table_prefix}.'_settings` WHERE s_name=\'billing_plan_cost_'.$plan_id.'\''
@@ -2038,13 +2077,13 @@ post '/data/hosting/update/save' => sub {
   }
   my $funds_remain = $funds_avail - $total_cost;
   if (
-      !database->quick_update(config->{db_table_prefix}.'_billing_hosting', { host_acc => $haccount }, { host_days_remain => $hdays + $old_days, in_queue => 1, error_msg => '', lastchanged => time })
-       ||
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingupdate', object => $haccount, amount => $total_cost, lang => $clng, tstamp => time })
-       ||
+      !database->quick_update(config->{db_table_prefix}.'_billing_hosting', { host_acc => $haccount }, { host_days_remain => $hdays + $old_days, host_days_last => $hdays, in_queue => 1, error_msg => '', lastchanged => time })
+       ||      
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'hostingupdate', trans_objects => $haccount, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
        ||
       !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'hostingupdate', object => $haccount, amount => $total_cost, lang => $clng, tstamp => time })
      ) {
     return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
   }
@@ -2146,17 +2185,23 @@ post '/data/domain/update/save' => sub {
    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
   }  
   my $sth = database->prepare(
-   'SELECT id, exp_date FROM '.config->{db_table_prefix}.'_billing_domains WHERE domain_name='.database->quote($domain_name)
+   'SELECT id, exp_date, user_id, in_queue FROM '.config->{db_table_prefix}.'_billing_domains WHERE domain_name='.database->quote($domain_name)
   );
-  my ($id, $exp_date);
+  my ($id, $exp_date, $domain_user_id, $in_queue);
   if ($sth->execute()) {
-   ($id, $exp_date) = $sth->fetchrow_array;
+   ($id, $exp_date, $domain_user_id, $in_queue) = $sth->fetchrow_array;
   } else {
     return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
   }
   $sth->finish();  
   if (!$id) {
     return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
+  }
+  if ($domain_user_id ne $user_id) {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{access_denied}.qq~"}~;
+  }
+  if ($in_queue) {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{queue_task_active}.qq~"}~; 
   }
   my $zone=$domain_name;
   $zone=~s/^[^\.]*\.//;
@@ -2200,12 +2245,12 @@ post '/data/domain/update/save' => sub {
   my $funds_remain = $funds_avail - $total_cost;
   if (
       !database->quick_update(config->{db_table_prefix}.'_billing_domains', { id => $id }, { exp_date => $exp_date, in_queue => 1, error_msg => '', lastchanged => time })
-       ||
-      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainupdate', object => $domain_name, amount => $total_cost, lang => $clng, tstamp => time })
-       ||
+       ||      
       !database->quick_insert(config->{db_table_prefix}.'_billing_funds_history', { user_id => $user_id, trans_id => 'domainupdate', trans_objects => $domain_name, trans_amount => -$total_cost, trans_date => time, lastchanged => time })
        ||
       !database->quick_update(config->{db_table_prefix}.'_billing_funds', { user_id => $user_id }, { amount => $funds_remain, lastchanged => time })
+       ||
+      !database->quick_insert(config->{db_table_prefix}.'_billing_queue', { user_id => $user_id, action => 'domainupdate', object => $domain_name, amount => $total_cost, lang => $clng, tstamp => time })
      ) {
     return qq~{"result":"0","error":"~.$lang->{db_save_error}.qq~"}~; 
   }
@@ -2261,6 +2306,11 @@ any '/data/queue' => sub {
    while (my ($dn, $exp, $error_msg) = $sth->fetchrow_array) {
     my %hsh;
     $hsh{domain_name} = $dn;
+    if ($exp <= time) {
+     $hsh{expired} = 1;
+    } else {
+     $hsh{expired} = 0;
+    }
     $exp =  time2str($lang->{domain_date_template}, $exp);
     $exp =~s/\\//gm;
     $hsh{exp_date} = $exp;

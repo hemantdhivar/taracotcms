@@ -47,8 +47,8 @@ plugins:
   log_queries: 1
  Email:
   headers:
-    from: 'noreply@taracot.org'
+    from: 'Taracot CMS <noreply@taracot.org>'
     X-Mailer: 'Taracot CMS'
   transport:
     Sendmail:
-      sendmail: 'c:/XTreme/local/usr/bin/sendmail.exe'
+      sendmail: 'c:/Denwer/usr/bin/sendmail.exe'

@@ -2,14 +2,14 @@ use strict;
 use JSON::XS("decode_json");
 
 my $CPANEL="https://re-hash.ru/manager/";
-my $AUTHDATA="taracot_api:12345678";
+my $AUTHDATA="";
 my $OWNER="rehash_customers";
 # Debug
-$ENV{HTTPS_PROXY} = 'http://10.233.104.141:3128';
+#$ENV{HTTPS_PROXY} = 'http://10.233.104.141:3128';
 
 use LWP::UserAgent;
 my $agent=LWP::UserAgent->new;
-$agent->timeout(10);
+$agent->timeout(5);
 $agent->env_proxy;
 
 sub APICheckLogin {
@@ -19,7 +19,7 @@ sub APICheckLogin {
  	return 0;
  }
  my $data;
- eval { $data = decode_json $response->content; }; return -1 if $@;
+ eval { $data = decode_json $response->content; }; return 0 if $@;
  if ($data->{error}->{code}) {
  	return -1;
  } else {
@@ -36,7 +36,22 @@ sub APIUserRegister {
  	return 0;
  }
  my $data;
- eval { $data = decode_json $response->content; }; return -1 if $@;
+ eval { $data = decode_json $response->content; }; return 0 if $@;
+ if ($data->{error}->{code}) {
+ 	return -1;
+ } else {
+ 	return 1;
+ }
+}
+
+sub APIUserTurnOn {
+ my $login=$_[0];
+ my $response = $agent->get("$CPANEL?authinfo=$AUTHDATA&out=json&func=user.enable&elid=$login");
+ if (!$response->is_success) {
+ 	return 0;
+ }
+ my $data;
+ eval { $data = decode_json $response->content; }; return 0 if $@;
  if ($data->{error}->{code}) {
  	return -1;
  } else {

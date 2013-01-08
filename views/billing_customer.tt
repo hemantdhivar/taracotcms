@@ -1,6 +1,5 @@
 <div class="modal hide" id="hosting_dialog">
- <div class="modal-header">
-  <a class="close" data-dismiss="modal"></a>
+ <div class="modal-header">  
   <h3 id="hosting_dialog_head"></h3>
  </div>
  <div class="modal-body">
@@ -48,13 +47,12 @@
   </div>
  </div>
   <div class="modal-footer" id="hosting_edit_buttons">
-     <button type="button" class="btn" id="btn_hosting_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button type="button" class="btn btn-primary" id="btn_hosting_save">[== $lang->{btn_save} =]</button>
+     <button type="button" class="btn" id="btn_hosting_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button type="button" class="btn btn-primary" id="btn_hosting_save">[== $lang->{confirm} =]</button>
  </div>
 </div>
 
 <div class="modal hide" id="hosting_update_dialog">
- <div class="modal-header">
-  <a class="close" data-dismiss="modal"></a>
+ <div class="modal-header">  
   <h3>[== $lang->{hosting_update} =]</h3>
  </div>
  <div class="modal-body">
@@ -75,7 +73,7 @@
           <select name="hdaysup" id="hdaysup" class="span1" /><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
         </div>
       </div>
-      <div class="control-group" id="cg_hupcost"> 
+      <div class="control-group" id="cg_haddcost"> 
         <div class="controls">
           [== $lang->{up_cost} =]:&nbsp;<span id="hupcost"></span>&nbsp;[== $page_data->{billing_currency} =]
         </div>
@@ -87,13 +85,12 @@
   </div>
  </div>
   <div class="modal-footer" id="hosting_update_edit_buttons">
-     <button type="button" class="btn" id="btn_hosting_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_hosting_update_save">[== $lang->{btn_save} =]</button>
+     <button type="button" class="btn" id="btn_hosting_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_hosting_update_save">[== $lang->{confirm} =]</button>
  </div>
 </div>
 
 <div class="modal hide" id="domain_dialog">
- <div class="modal-header">
-  <a class="close" data-dismiss="modal"></a>
+ <div class="modal-header">  
   <h3>[== $lang->{btn_add_domain} =]</h3>
  </div>
  <div class="modal-body">
@@ -118,34 +115,42 @@
           <select id="domain_zone">
           </select>
         </div>
-      </div>
-      <div class="control-group ctrl-grp-domain" id="cg_domain_zone"> 
+      </div>      
+      <div class="control-group"> 
+        <label class="control-label" for="use_default_nss">[== $lang->{local_name_servers} =]</label>
         <div class="controls">
-          <span class="label">[== $lang->{important} =]:</span>&nbsp;[== $lang->{ns_note} =]
+          <input type="checkbox" id="use_default_nss" name="use_default_nss" checked="checked" />
         </div>
       </div>
-      <div class="control-group ctrl-grp-domain" id="cg_ns1"> 
-        <label class="control-label" for="ns1">[== $lang->{ns1} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="inpt-domain input-medium" id="ns1" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns1_ip" placeholder="[== $lang->{ip_address} =]" />
+      <div id="nss_controls" class="hide">
+        <div class="control-group ctrl-grp-domain" id="cg_domain_zone"> 
+          <div class="controls">
+            <span class="label">[== $lang->{important} =]:</span>&nbsp;[== $lang->{ns_note} =]
+          </div>
+        </div>  
+        <div class="control-group ctrl-grp-domain" id="cg_ns1"> 
+          <label class="control-label" for="ns1">[== $lang->{ns1} =]&nbsp;<span class="required_field">*</span></label> 
+          <div class="controls">
+            <input type="text" class="inpt-domain input-medium" id="ns1" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns1_ip" placeholder="[== $lang->{ip_address} =]" />
+          </div>
         </div>
-      </div>
-      <div class="control-group ctrl-grp-domain" id="cg_ns2"> 
-        <label class="control-label" for="ns2">[== $lang->{ns2} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="inpt-domain input-medium" id="ns2" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns2_ip" placeholder="[== $lang->{ip_address} =]" />
+        <div class="control-group ctrl-grp-domain" id="cg_ns2"> 
+          <label class="control-label" for="ns2">[== $lang->{ns2} =]&nbsp;<span class="required_field">*</span></label> 
+          <div class="controls">
+            <input type="text" class="inpt-domain input-medium" id="ns2" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns2_ip" placeholder="[== $lang->{ip_address} =]" />
+          </div>
         </div>
-      </div>
-      <div class="control-group ctrl-grp-domain" id="cg_ns3"> 
-        <label class="control-label" for="ns3">[== $lang->{ns3} =]</label> 
-        <div class="controls">
-          <input type="text" class="inpt-domain input-medium" id="ns3" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns3_ip" placeholder="[== $lang->{ip_address} =]" />
+        <div class="control-group ctrl-grp-domain" id="cg_ns3"> 
+          <label class="control-label" for="ns3">[== $lang->{ns3} =]</label> 
+          <div class="controls">
+            <input type="text" class="inpt-domain input-medium" id="ns3" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns3_ip" placeholder="[== $lang->{ip_address} =]" />
+          </div>
         </div>
-      </div>
-      <div class="control-group ctrl-grp-domain" id="cg_ns4"> 
-        <label class="control-label" for="ns4">[== $lang->{ns4} =]</label> 
-        <div class="controls">
-          <input type="text" class="inpt-domain input-medium" id="ns4" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns4_ip" placeholder="[== $lang->{ip_address} =]" />
+        <div class="control-group ctrl-grp-domain" id="cg_ns4"> 
+          <label class="control-label" for="ns4">[== $lang->{ns4} =]</label> 
+          <div class="controls">
+            <input type="text" class="inpt-domain input-medium" id="ns4" />&nbsp;<input type="text" class="inpt-domain input-medium" id="ns4_ip" placeholder="[== $lang->{ip_address} =]" />
+          </div>
         </div>
       </div>
     </span>
@@ -155,13 +160,12 @@
   </div>
  </div>
   <div class="modal-footer" id="domain_edit_buttons">
-     <button type="button" class="btn" id="btn_domain_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_domain_save">[== $lang->{btn_save} =]</button>
+     <button type="button" class="btn" id="btn_domain_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_domain_save">[== $lang->{confirm} =]</button>
  </div>
 </div>
 
 <div class="modal hide" id="domain_update_dialog">
  <div class="modal-header">
-  <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{domain_update} =]</h3>
  </div>
  <div class="modal-body">
@@ -178,13 +182,12 @@
   </div>
  </div>
   <div class="modal-footer" id="domain_update_edit_buttons">
-     <button class="btn" id="btn_domain_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_domain_update_save">[== $lang->{btn_save} =]</button>
+     <button class="btn" id="btn_domain_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_domain_update_save">[== $lang->{confirm} =]</button>
  </div>
 </div>
 
 <div class="modal hide" id="error_msg_dialog">
  <div class="modal-header">
-  <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{error} =]</h3>
  </div>
  <div class="modal-body" style="background-color:#ffeeee">
@@ -197,7 +200,6 @@
 
 <div class="modal hide" id="service_update_dialog">
  <div class="modal-header">
-  <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{service_update} =]</h3>
  </div>
  <div class="modal-body">
@@ -230,7 +232,7 @@
   </div>
  </div>
   <div class="modal-footer" id="service_update_edit_buttons">
-     <button type="button" class="btn" id="btn_service_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_service_update_save">[== $lang->{btn_save} =]</button>
+     <button type="button" class="btn" id="btn_service_update_cancel">[== $lang->{edit_cancel} =]</button>&nbsp;<button class="btn btn-primary" id="btn_service_update_save">[== $lang->{confirm} =]</button>
  </div>
 </div>
 
@@ -290,7 +292,7 @@
                     <span id="form_error_msg_text"></span>
                   </div>
                   <div class="row">
-                    <form class="form-horizontal">
+                    <div class="form-horizontal">
                       <div class="span3">
                         <fieldset>
                             <div class="control-group" id="cg_amnt">
@@ -305,7 +307,7 @@
                             </div>
                         </fieldset>
                       </div>
-                    </form>
+                    </div>
                   </div>
                   <div id="payment_methods"></div>
                 </div>
@@ -654,9 +656,14 @@
     </div>
     <script type="text/javascript">    
     var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
+    var js_lang_service = "[== $lang->{service} =]";
+    var js_lang_domain_name = "[== $lang->{domain_name} =]";
     var js_lang_error = "[== $lang->{error} =]";
     var js_lang_no_hosting_accounts = "[== $lang->{no_hosting_accounts} =]"; 
+    var js_lang_hosting_account = "[== $lang->{hosting_account} =]"; 
     var js_lang_no_domains = "[== $lang->{no_domains} =]"; 
+    var js_lang_hac_days = "[== $lang->{hac_days} =]";
+    var js_lang_renew = "[== $lang->{renew} =]";
     var js_lang_no_services = "[== $lang->{no_services} =]"; 
     var js_lang_no_history_records = "[== $lang->{no_history_records} =]"; 
     var js_lang_no_add_by_click = "[== $lang->{no_add_by_click} =]";
@@ -675,8 +682,10 @@
     var js_lang_pay_action_confirm = "[== $lang->{pay_action_confirm} =]";
     var js_lang_pay_domain_confirm = "[== $lang->{pay_domain_confirm} =]";
     var js_lang_progress_popup_text = "[== $lang->{progress_popup_text} =]";
-    var js_lang_progress_popup_title = "[== $lang->{progress_popup_title} =]";
     var js_lang_error_popup_text = "[== $lang->{error_popup_text} =]";
     var js_lang_error_popup_title = "[== $lang->{error_popup_title} =]";
+    var js_lang_domain_exp_short = "[== $lang->{domain_exp_short} =]";
+    var js_lang_event = "[== $lang->{event} =]";
+    var js_lang_trans_date = "[== $lang->{trans_date} =]";
     </script>
     <script src="/js/modules/billing_customer.js"></script>

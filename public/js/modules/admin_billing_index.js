@@ -185,7 +185,7 @@ function editData(id) {
             if (data.result == '0') {
                 $('#data_form_buttons').show();
                 $('#ajax_loading').hide();
-                $('#data_form').html("<br/><br/>js_lang_load_error");
+                $('#data_form').html("<br/><br/>"+js_lang_load_error);
                 $('#data_form').show();
             } else {
                 $('#data_form').show();
@@ -260,7 +260,7 @@ function editData(id) {
         error: function () {
             $('#data_form_buttons').show();
             $('#ajax_loading').hide();
-            $('#data_form').html("<br/><br/>js_lang_load_error");
+            $('#data_form').html("<br/><br/>"+js_lang_load_error);
             $('#data_form').show();
         }
     }); //ajax

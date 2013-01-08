@@ -5,10 +5,25 @@ var queue_internal=[];
 var domain_update_cost = {};
 var service_plans_cost = {};
 var domains_zones = {};
-var queue_request_active = true;
+var queue_request_active = false;
 var tmp_service_id = '';
+var allowModalEsc = false;
+var data_nss = [];
 
 $(document).ready(function () {
+    $('#use_default_nss').change(function() {
+        if ($('input[name=use_default_nss]').is(':checked')) {
+            $('#nss_controls').hide();
+            if (data_nss && data_nss.length > 0) {
+                for (var i = 0; i < data_nss.length; i++) {
+                    $('#'+data_nss[i].ns).val(data_nss[i].host);
+                }
+            }
+        } else {
+            $('#nss_controls').show();
+        }
+    });
+    $('body').tooltip({animation:true, html: true, placement: 'right', trigger: 'hover', selector: '[rel=progress_img]', title: js_lang_progress_popup_text});
     $('#customer_tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
@@ -45,14 +60,17 @@ $(document).ready(function () {
                         $('#funds_avail').html(data.amount);
                     } else {
                         $('#funds_avail').html('0');
-                    }
-                    
+                    }                    
                     var queue = false;
 
                     // Hosting
 
+                    if (data.nss) {
+                        data_nss = data.nss;
+                    }
+
                     if (data.hosting && data.hosting.length > 0) {                    
-                        var tdata = '<table class="table table-striped table-bordered" id="hosting_table"><tbody>';                        
+                        var tdata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:40px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
                         for (var i = 0; i < data.hosting.length; i++) {
                             hosting_plans_id[data.hosting[i].account] = data.hosting[i].plan_id;
                             hosting_plans_cost[data.hosting[i].account] = data.hosting[i].plan_cost;
@@ -60,9 +78,9 @@ $(document).ready(function () {
                             if (data.hosting[i].days <= 0) {
                                 tr_class=' class="error"';
                             }
-                            var hidepr='hide';
+                            var prp='';
                             if (data.hosting[i].in_queue && data.hosting[i].in_queue == 1) {
-                                hidepr='';
+                                prp='<img src="/images/update.png" width="16" height="16" alt="" />';
                                 queue_internal.push(data.hosting[i].account);
                                 queue = true;
                             }
@@ -73,35 +91,32 @@ $(document).ready(function () {
                                 error_msg=data.hosting[i].error_msg;
                             }
                             var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+data.hosting[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
-                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><strong>" + data.hosting[i].account + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.hosting[i].account+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.hosting[i].account+"\" class=\"qerror hide\" /></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";                            
+                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><span class=\"label label-inverse\">" + data.hosting[i].account + "</span>&nbsp;<span class=\"badge badge-success\" rel=\"progress_img\" id=\"progress_"+data.hosting[i].account+"\">"+prp+"</span><span id=\"qerror_"+data.hosting[i].account+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";                        
                         $('#data_hosting').html(tdata);                        
                     } else {
                         $('#data_hosting').html(js_lang_no_hosting_accounts+'&nbsp;'+js_lang_no_add_by_click);
                     }
-
+                    
                     // Domains
 
                     if (data.domains && data.domains.length > 0) {                                                
-                        var tdata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>';                    
+                        var tdata = '<table class="table table-striped table-bordered" id="domains_table"><thead><tr><th>'+js_lang_domain_name+'</th><th style="width:100px;text-align:center">'+js_lang_domain_exp_short+'</th><th style="width:50px"></th></tr></thead><tbody>';                    
                         for (var i = 0; i < data.domains.length; i++) {
                             var update_icon='';
                             var update_class='';
                             if (data.domains[i].update && data.domains[i].update == 1) {
                                 update_icon = '<span class="btn btn-mini"  onclick="updateDomain(\''+data.domains[i].domain_name+'\');"><i class="icon-refresh"></i></span>';
-                                if (data.domains[i].zone == "ru" || data.domains[i].zone == "su") {
-                                    update_class = ' class="warning"';
-                                }
                             }
                             if (data.domains[i].expired && data.domains[i].expired == 1) {
                                 update_class = ' class="error"';
                             }
-                            var hidepr='hide';
+                            var prp='';
                             if (data.domains[i].in_queue && data.domains[i].in_queue == 1) {
                                 queue_internal.push(data.domains[i].domain_name);
                                 queue = true;
-                                hidepr='';
+                                prp='<img src="/images/update.png" width="16" height="16" alt="" />';
                             }
                             var dnid=data.domains[i].domain_name.replace(/\./g, "_");
                             var error_msg = data.domains[i].error_msg || '';
@@ -111,8 +126,8 @@ $(document).ready(function () {
                                 error_act=js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>';
                                 error_msg=data.domains[i].error_msg;
                             }
-                            var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+data.domains[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
-                            tdata += "<tr"+update_class+"><td><strong>" + data.domains[i].domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" class=\""+hidepr+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"qerror hide\" />&nbsp;"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                            var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+dnid+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
+                            tdata += "<tr"+update_class+" id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domains[i].domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
                             if (data.domains[i].zone) {
                                 domains_zones[data.domains[i].domain_name] = data.domains[i].zone;
                             }
@@ -127,23 +142,20 @@ $(document).ready(function () {
 
                     if (data.services && data.services.length > 0) {
                         var tdata='';
-                        tdata = '<table class="table table-striped table-bordered" id="services_table"><tbody>';
+                        tdata = '<table class="table table-striped table-bordered" id="services_table"><thead><tr><th>'+js_lang_service+'</th><th style="width:40px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
                         for (var i = 0; i < data.services.length; i++) {
                             var tr_class='';
                             if (data.services[i].days <= 0) {
                                 tr_class=' class="error"';
                             }
                             service_plans_cost[data.services[i].service_id] = data.services[i].cost;
-                            tdata += "<tr"+tr_class+"><td><strong><span id=\"service_name_"+data.services[i].service_id+"\">" + data.services[i].name + "</span></strong></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"service_days_"+data.services[i].service_id+"\">" + data.services[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateService('"+data.services[i].service_id+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                            tdata += "<tr"+tr_class+"><td><span class=\"label label-inverse\"><span id=\"service_name_"+data.services[i].service_id+"\">" + data.services[i].name + "</span></span></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"service_days_"+data.services[i].service_id+"\">" + data.services[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateService('"+data.services[i].service_id+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";
                         $('#data_services').html(tdata);                    
                     } else {
-                        $('#data_services').html('<br/>'+js_lang_no_services_accounts);
-                    }
-
-                    $('body').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', selector: '[rel=progress_img]', title: js_lang_progress_popup_title});
-                    $('.qerror').tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_error_popup_text});
+                        $('#data_services').html(js_lang_no_services);
+                    }                   
 
                     if (queue) {
                         setTimeout(function() { loadQueue() }, 6000);
@@ -152,7 +164,7 @@ $(document).ready(function () {
 
                     if (data.history && data.history.length > 0) {
                         var tdata='';
-                        tdata = js_lang_history_hint+'<br/><br/><table class="table table-striped table-bordered" id="history_table"><tbody>';
+                        tdata = js_lang_history_hint+'<br/><br/><table class="table table-striped table-bordered" id="history_table"><thead><tr><th>'+js_lang_event+'</th><th style="text-align:center">'+js_lang_preview_amount+'</th><th style="text-align:center">'+js_lang_trans_date+'</th></tr></thead><tbody>';
                         for (var i = 0; i < data.history.length; i++) {
                             var tr_class='';
                             if (data.history[i].days <= 0) {
@@ -163,7 +175,7 @@ $(document).ready(function () {
                                 pic = '/images/minus.png';
                                 data.history[i].amount = data.history[i].amount * -1;
                             }                        
-                            tdata += "<tr"+tr_class+"><td>" + data.history[i].event + "</strong></td><td style=\"width:90px\"><img src=\""+pic+"\" width=\"16\" height=\"16\" alt=\"\" />&nbsp;" + data.history[i].amount + "</td><td style=\"width:160px;text-align:center\">"+data.history[i].date+"</td></tr>";
+                            tdata += "<tr"+tr_class+"><td>" + data.history[i].event + "</td><td style=\"width:90px;text-align:center\"><img src=\""+pic+"\" width=\"16\" height=\"16\" alt=\"\" />&nbsp;" + data.history[i].amount + "</td><td style=\"width:160px;text-align:center\">"+data.history[i].date+"</td></tr>";
                         }
                         tdata += "</tbody></table>";
                         $('#data_history').html(tdata);
@@ -555,6 +567,7 @@ $(document).ready(function () {
         $('#error_msg_dialog').modal('hide'); 
     });
     $('#btn_add_hosting').click(function() {
+        allowModalEsc = true;
         $('#hosting_dialog_head').html(js_lang_add_hosting);
         $('#cg_haccount').removeClass('error');
         $('#cg_hpwd').removeClass('error');
@@ -565,7 +578,8 @@ $(document).ready(function () {
         $('#hpwd').val('');
         $('#hpwd_repeat').val('');
         $('#hosting_dialog').modal({
-            keyboard: true
+            keyboard: false,
+            backdrop: 'static'
         });
         $('#hosting_edit_ajax').hide();
         $('#hosting_edit_form').show();
@@ -576,6 +590,7 @@ $(document).ready(function () {
         $('#haddcost').html(haddcost);
     });
     $('#btn_add_domain').click(function() {
+        allowModalEsc = true;
         $(".inpt-domain").each(function() {
             $(this).val('');
         });
@@ -584,16 +599,25 @@ $(document).ready(function () {
             $(this).removeClass('error');
         });
         $('#domain_dialog').modal({
-            keyboard: true
+            keyboard: false,
+            backdrop: 'static'
         });
         $('#domain_edit_form_error').hide();
         $('#domain_edit_ajax').hide();
         $('#domain_edit_form').show();
         $('#domain_edit_buttons').show();
-        $('#domain_name').focus();        
+        $('#domain_name').focus();     
+        if (data_nss && data_nss.length > 0) {
+            for (var i = 0; i < data_nss.length; i++) {
+                $('#'+data_nss[i].ns).val(data_nss[i].host);
+            }
+        }
+        $('input[name=use_default_nss]').attr('checked', true);
+        $('#nss_controls').hide();
         updateDomainPreview();
     });
     $('#btn_hosting_save').click(function() {        
+        allowModalEsc = true;
         $('#cg_haccount').removeClass('error');
         $('#cg_hplan').removeClass('error');
         $('#cg_hpwd').removeClass('error');
@@ -601,6 +625,10 @@ $(document).ready(function () {
         $('#hosting_edit_form_error').hide();
         var errors = false;
         if (!$('#haccount').val().match(/^[A-Za-z0-9]{4,8}$/)) {
+            $('#cg_haccount').addClass('error');
+            errors = true;
+        }
+        if ($('#hosting_row_' + $('#haccount').val()) && $('#hosting_row_' + $('#haccount').val()).length > 0) {
             $('#cg_haccount').addClass('error');
             errors = true;
         }
@@ -614,9 +642,11 @@ $(document).ready(function () {
             $('#hosting_edit_form_error').alert();
             $('#haccount').focus();
         } else {
-            if (!confirm(js_lang_pay_action_confirm+' '+$('#hupcost').html()+' '+js_lang_billing_currency)) {
+            allowModalEsc = false;
+            if (!confirm(js_lang_pay_action_confirm+' '+$('#haddcost').html()+' '+js_lang_billing_currency)) {
+                allowModalEsc = true;
                 return;
-            }
+            }                      
             $('#hosting_edit_ajax_msg').html(js_lang_ajax_saving);
             $('#hosting_edit_ajax').show();
             $('#hosting_edit_form').hide();
@@ -633,6 +663,7 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (data) {
                     if (data.result == '0') {
+                        allowModalEsc = true;
                         if (data.error) { // ERROR
                             $('#hosting_edit_form_error_text').html(data.error);
                             $('#hosting_edit_form_error').fadeIn(400);
@@ -648,21 +679,18 @@ $(document).ready(function () {
                         }                        
                     } else { // OK
                         hosting_plans_cost[data.haccount] = data.hplan_cost;
-                        var tdata='';
+                        var prp='<img src="/images/update.png" width="16" height="16" alt="" />';
                         var error_label='<span class="badge badge-important" id="error_label_'+data.haccount+'"></span>&nbsp;';
-                        tdata += tdata += "<tr id=\"hosting_row_" + data.haccount + "\"><td><strong>" + data.haccount + "</strong>&nbsp;<img src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+data.haccount+"\" class=\"hide\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+data.haccount+"\" class=\"hide\" /></span>&nbsp;"+ error_label + "&nbsp;" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                        var tdata = "<tr id=\"hosting_row_"+data.haccount+"\"><td><span class=\"label label-inverse\">" + data.haccount + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+data.haccount+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+data.haccount+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         if ($('#hosting_table tr:last').size() > 0) {
                             $('#hosting_table tr:last').after(tdata);
                         } else {
-                            var ndata = '<table class="table table-striped table-bordered" id="hosting_table"><tbody>'+tdata+"</tbody></table>";
+                            var ndata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:40px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>'+tdata+"</tbody></table>";
                             $('#data_hosting').html(ndata);
                         }
                         $('#hosting_dialog').modal('hide');
                         $('#funds_avail').html(data.funds_remain);                        
                         $('#queue_success_msg').fadeIn(400).delay(3000).fadeOut(400);
-                        $('#progress_'+data.haccount).show();
-                        $('#progress_'+data.haccount).attr('src', '/images/update.png');
-                        $('#progress_'+data.haccount).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
                         reloadHistory();
                         queue_internal.push(data.haccount);
                         if (!queue_request_active) {
@@ -672,6 +700,7 @@ $(document).ready(function () {
                     }
                 },
                 error: function () {
+                    allowModalEsc = true;
                     $('#hosting_edit_form_error_text').html(js_lang_error_ajax);
                     $('#hosting_edit_form_error').fadeIn(400);
                     $('#hosting_edit_form_error').alert();
@@ -682,7 +711,8 @@ $(document).ready(function () {
             });
         }
     }); 
-    $('#btn_domain_save').click(function() {        
+    $('#btn_domain_save').click(function() {
+        allowModalEsc = true;
         $(".ctrl-grp-domain").each(function() {
             $(this).removeClass('error');
         });
@@ -730,7 +760,9 @@ $(document).ready(function () {
             $('#domain_edit_form_error').alert();
             $('#haccount').focus();
         } else {
+            allowModalEsc = false;
             if (!confirm(js_lang_pay_domain_confirm+': '+ $('#domain_name').val() + '.' + $('#domain_zone option:selected').text())) {
+                allowModalEsc = true;
                 return;
             }
             $('#domain_edit_ajax_msg').html(js_lang_ajax_saving);
@@ -755,6 +787,7 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (data) {
                     if (data.result == '0') {
+                        allowModalEsc = true;
                         if (data.error) { // ERROR
                             $('#domain_edit_form_error_text').html(data.error);
                             $('#domain_edit_form_error').fadeIn(400);
@@ -770,24 +803,21 @@ $(document).ready(function () {
                         }
                     } else { // OK
                         var update_icon='';
-                        var update_class='';
                         if (data.zone != "ru" && data.zone != "su") {
                             update_icon = '<span class="btn btn-mini"><i class="icon-refresh" onclick="updateDomain(\''+data.domain_name+'\');"></i></span>';
                         }
                         var dnid=data.domain_name.replace(/\./g, "_");
                         var error_label='<span class="badge badge-important" id="error_label_'+dnid+'"></span>&nbsp;';
-                        var tdata = "<tr"+update_class+"><td><strong>" + data.domain_name + "</strong>&nbsp;<img rel=\"progress_img\" src=\"/images/update.png\" width=\"16\" height=\"16\" alt=\"\" id=\"progress_"+dnid+"\" /><img rel=\"error_img\" src=\"/images/error.png\" width=\"16\" height=\"16\" alt=\"\" id=\"qerror_"+dnid+"\" class=\"hide\" />&nbsp;"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                        var prp='<img src="/images/update.png" width="16" height="16" alt="" />';
+                        var tdata = "<tr id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
                         if ($('#domains_table tr:last').size() > 0) {
                             $('#domains_table tr:last').after(tdata);
                         } else {
-                            var ndata = '<table class="table table-striped table-bordered" id="domains_table"><tbody>'+tdata+"</tbody></table>";
+                            var ndata = '<table class="table table-striped table-bordered" id="domains_table"><thead><tr><th>'+js_lang_domain_name+'</th><th style="width:100px;text-align:center">'+js_lang_domain_exp_short+'</th><th style="width:50px"></th></tr></thead><tbody>'+tdata+"</tbody></table>";
                             $('#data_domains').html(ndata);
                         }                        
                         $('#domain_dialog').modal('hide');
                         $('#funds_avail').html(data.funds_remain);                        
-                        $('#progress_'+dnid).show();
-                        $('#progress_'+dnid).attr('src', '/images/update.png');
-                        $('#progress_'+dnid).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
                         $('#queue_success_msg').fadeIn(400).delay(3000).fadeOut(400);
                         reloadHistory();
                         queue_internal.push(data.domain_name);
@@ -799,6 +829,7 @@ $(document).ready(function () {
                     }
                 },
                 error: function () {
+                    allowModalEsc = true;
                     $('#domain_edit_form_error_text').html(js_lang_error_ajax);
                     $('#domain_edit_form_error').fadeIn(400);
                     $('#domain_edit_form_error').alert();
@@ -810,7 +841,9 @@ $(document).ready(function () {
         }
     }); 
     $('#btn_hosting_update_save').click(function() {
+        allowModalEsc = false;
         if (!confirm(js_lang_pay_action_confirm+' '+$('#hupcost').html()+' '+js_lang_billing_currency)) {
+            allowModalEsc = true;
             return;
         }
         $('#cg_hdays').removeClass('error');
@@ -827,8 +860,9 @@ $(document).ready(function () {
                 hdays: $('#hdaysup').val()
             },
             dataType: "json",
-            success: function (data) {
+            success: function (data) {                
                 if (data.result == '0') {
+                    allowModalEsc = true;
                     if (data.error) { // ERROR
                         $('#hosting_update_edit_form_error_text').html(data.error);
                         $('#hosting_update_edit_form_error').fadeIn(400);
@@ -844,9 +878,7 @@ $(document).ready(function () {
                     }
                 } else { // OK
                     $('#error_label_'+data.haccount).html('');
-                    $('#progress_'+data.haccount).show();
-                    $('#progress_'+data.haccount).attr('src', '/images/update.png');
-                    $('#progress_'+data.haccount).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
+                    $('#progress_'+data.haccount).html('<img src="/images/update.png" width="16" height="16" alt="" />');
                     $('#hosting_days_'+data.haccount).html(data.hdays);
                     $('#hosting_update_dialog').modal('hide');
                     $('#funds_avail').html(data.funds_remain);
@@ -860,6 +892,7 @@ $(document).ready(function () {
                 }
             },
             error: function () {
+                allowModalEsc = true;
                 $('#hosting_update_edit_form_error_text').html(js_lang_error_ajax);
                 $('#hosting_update_edit_form_error').fadeIn(400);
                 $('#hosting_update_edit_form_error').alert();
@@ -870,7 +903,9 @@ $(document).ready(function () {
         });
     });
     $('#btn_service_update_save').click(function() {
+        allowModalEsc = false;
         if (!confirm(js_lang_pay_action_confirm+' '+$('#supcost').html()+' '+js_lang_billing_currency)) {
+            allowModalEsc = true;
             return;
         }
         $('#cg_sdays').removeClass('error');
@@ -889,6 +924,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (data) {
                 if (data.result == '0') {
+                    allowModalEsc = true;
                     if (data.error) { // ERROR
                         $('#service_update_edit_form_error_text').html(data.error);
                         $('#service_update_edit_form_error').fadeIn(400);
@@ -911,6 +947,7 @@ $(document).ready(function () {
                 }
             },
             error: function () {
+                allowModalEsc = true;
                 $('#service_update_edit_form_error_text').html(js_lang_error_ajax);
                 $('#service_update_edit_form_error').fadeIn(400);
                 $('#service_update_edit_form_error').alert();
@@ -921,7 +958,9 @@ $(document).ready(function () {
         });
     });
     $('#btn_domain_update_save').click(function() {
+        allowModalEsc = false;
         if (!confirm(js_lang_pay_action_confirm+' '+$('#dupcost').html()+' '+js_lang_billing_currency)) {
+            allowModalEsc = true;
             return;
         }
         $('#domain_update_edit_form_error').hide();
@@ -938,6 +977,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (data) {
                 if (data.result == '0') {
+                    allowModalEsc = true;
                     if (data.error) { // ERROR
                         $('#domain_update_edit_form_error_text').html(data.error);
                         $('#domain_update_edit_form_error').fadeIn(400);
@@ -954,9 +994,7 @@ $(document).ready(function () {
                 } else { // OK
                     var dnid=data.domain_name.replace(/\./g, "_");
                     $('#error_label_'+dnid).html('');
-                    $('#progress_'+dnid).show();
-                    $('#progress_'+dnid).attr('src', '/images/update.png');
-                    $('#progress_'+dnid).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_progress_popup_title});
+                    $('#progress_'+dnid).html('<img src="/images/update.png" width="16" height="16" alt="" />');
                     $('#exp_'+dnid).html(data.exp_date);
                     $('#domain_update_dialog').modal('hide');
                     $('#funds_avail').html(data.funds_remain);
@@ -970,6 +1008,7 @@ $(document).ready(function () {
                 }
             },
             error: function () {
+                allowModalEsc = true;
                 $('#domain_update_edit_form_error_text').html(js_lang_error_ajax);
                 $('#domain_update_edit_form_error').fadeIn(400);
                 $('#domain_update_edit_form_error').alert();
@@ -990,7 +1029,7 @@ $(document).ready(function () {
                 } else { // OK
                     if (data.history && data.history.length > 0) {
                         var tdata='';
-                        tdata = js_lang_history_hint+'<br/><br/><table class="table table-striped table-bordered" id="history_table"><tbody>';
+                        tdata = js_lang_history_hint+'<br/><br/><table class="table table-striped table-bordered" id="history_table"><thead><tr><th>'+js_lang_event+'</th><th style="text-align:center">'+js_lang_preview_amount+'</th><th style="text-align:center">'+js_lang_trans_date+'</th></tr></thead><tbody>';
                         for (var i = 0; i < data.history.length; i++) {
                             var tr_class='';
                             if (data.history[i].days <= 0) {
@@ -1001,7 +1040,7 @@ $(document).ready(function () {
                                 pic = '/images/minus.png';
                                 data.history[i].amount = data.history[i].amount * -1;
                             }
-                            tdata += "<tr"+tr_class+"><td>" + data.history[i].event + "</strong></td><td style=\"width:90px\"><img src=\""+pic+"\" width=\"16\" height=\"16\" alt=\"\" />&nbsp;" + data.history[i].amount + "</td><td style=\"width:160px;text-align:center\">"+data.history[i].date+"</td></tr>";
+                            tdata += "<tr"+tr_class+"><td>" + data.history[i].event + "</td><td style=\"width:90px;text-align:center\"><img src=\""+pic+"\" width=\"16\" height=\"16\" alt=\"\" />&nbsp;" + data.history[i].amount + "</td><td style=\"width:160px;text-align:center\">"+data.history[i].date+"</td></tr>";
                         }
                         tdata += "</tbody></table>";
                         $('#data_history').html(tdata);
@@ -1020,12 +1059,12 @@ $(document).ready(function () {
             type: 'POST',
             url: '/customer/data/queue?'+Math.random(),
             dataType: "json",
-            success: function (data) {                                            
+            success: function (data) {      
+                var hrel = false;                                      
                 if (data.funds) {
                     $('#funds_avail').html(data.funds);
                 }
                 if (data.queue && data.queue.length > 0) {
-                    var req_history=false;
                     for (var i=0; i<queue_internal.length; i++) {
                         var found = false;
                         for (var s=0; s< data.queue.length; s++) {                            
@@ -1035,21 +1074,16 @@ $(document).ready(function () {
                         }
                         if (!found) {
                             if (queue_internal[i]) {
-                            var dnid = queue_internal[i].replace(/\./g, "_");
-                                $('#progress_'+dnid).fadeOut(300).delay(300).attr('src', '/images/blank.gif');
-                                $('#progress_'+dnid).tooltip();
+                                var dnid = queue_internal[i].replace(/\./g, "_");
+                                $('#progress_'+dnid).html('');
                             }
-                            req_history=true;                            
+                            hrel=true;                            
                         }                        
                     }
                     queue_internal = [];
                     for (var i=0; i<data.queue.length; i++) {
                         queue_internal.push(data.queue[i].object);
                     }                                                            
-                    // reload history
-                    if (req_history) {
-                        reloadHistory();
-                    }
                     if (queue_internal.length > 0) {
                         setTimeout(function() { loadQueue() }, 6000);
                     } else {
@@ -1058,15 +1092,16 @@ $(document).ready(function () {
                 } else {
                     for (var i=0; i<queue_internal.length; i++) {
                         var dnid = queue_internal[i].replace(/\./g, "_");
-                        $('#progress_'+dnid).fadeOut(300).delay(300).attr('src', '/images/blank.gif');
-                        $('#progress_'+dnid).tooltip();
+                        $('#progress_'+dnid).html('');
                     }
                     queue_internal = [];
                     queue_request_active = false;
-                    reloadHistory();
+                    hrel=true;
                 }
-                // show warnings for hosting accounts
-                $('[rel=error_img]').show();                
+                // show warnings for hosting accounts and
+                $("[rel=qerror]").each(function() {
+                    $(this).html('<img src="/images/error.png" width="16" height="16" alt="" />');
+                });
                 for (var s=0; s< data.hosting.length; s++) {
                     if (data.hosting[s].error_msg && data.hosting[s].error_msg != '') {
                         var emsg = data.hosting[s].error_msg;
@@ -1075,12 +1110,17 @@ $(document).ready(function () {
                     } else {
                         $("#error_label_"+data.hosting[s].host_acc).html('');
                     }
-                    $('#qerror_'+data.hosting[s].host_acc).hide();
+                    $('#qerror_'+data.hosting[s].host_acc).html('');
                     $('#hosting_days_'+data.hosting[s].host_acc).html(data.hosting[s].host_days_remain);
+                    if (data.hosting[s].host_days_remain > 0) {
+                        $('#hosting_row_'+data.hosting[s].host_acc).removeClass('error');
+                    } else {
+                        $('#hosting_row_'+data.hosting[s].host_acc).addClass('error');
+                    }
                 }
                 for (var s=0; s< data.domains.length; s++) {
                     var dnid=data.domains[s].domain_name.replace(/\./g, "_");
-                    $('#qerror_'+dnid).hide();
+                    $('#qerror_'+dnid).html('');
                     $('#exp_'+dnid).html(data.domains[s].exp_date);
                     if (data.domains[s].error_msg && data.domains[s].error_msg != '') {
                         var emsg = data.domains[s].error_msg;
@@ -1088,7 +1128,22 @@ $(document).ready(function () {
                         $("#error_label_"+dnid).bind('click', {msg: emsg}, function(event) { errorMessage(event.data.msg) });
                     } else {
                         $("#error_label_"+dnid).html('');
+                    }                    
+                    if (data.domains[s].expired == 1) {
+                        $('#domain_row_'+dnid).addClass('error');
+                    } else {
+                        $('#domain_row_'+dnid).removeClass('error');
                     }
+                }
+                $(".qerror").each(function() {
+                    if ($(this).is(":visible")) {
+                        hrel=true;
+                        $(this).tooltip('destroy');
+                        $(this).tooltip({animation:true, html: false, placement: 'right', trigger: 'hover', title: js_lang_error_popup_text});
+                    }
+                });
+                if (hrel) {
+                    reloadHistory();
                 }
             },
             error: function () {
@@ -1131,19 +1186,39 @@ $(document).ready(function () {
         }
     }
     // bind enter keys to form fields
+    $('.btn').bind('keypress', function (e) {
+       if (e.keyCode == 27 && allowModalEsc) {
+            $('.modal').modal('hide');
+       }
+    });
     $('#haccount,#hpwd,#hpwd_repeat,#hplan').bind('keypress', function (e) {
        if (submitOnEnter(e)) {
-        $('#btn_hosting_save').click();
+            $('#btn_hosting_save').click();
+       }
+       if (e.keyCode == 27) {
+            if (allowModalEsc) {
+                $('.modal').modal('hide');
+            }
        }
     });
     $('#hdaysup').bind('keypress', function (e) {
        if (submitOnEnter(e)) {
-        $('#btn_hosting_update_save').click();
+            $('#btn_hosting_update_save').click();
+       }
+       if (e.keyCode == 27) {
+            if (allowModalEsc) {
+                $('.modal').modal('hide');
+            }
        }
     });
     $('#sdaysup').bind('keypress', function (e) {       
        if (submitOnEnter(e)) {
         $('#btn_service_update_save').click();
+       }
+       if (e.keyCode == 27) {
+            if (allowModalEsc) {
+                $('.modal').modal('hide');
+            }
        }
     });
     $('.pr_input').bind('keypress', function (e) {       
@@ -1161,12 +1236,19 @@ $(document).ready(function () {
        if (submitOnEnter(e)) {
         $('#btn_domain_save').click();
        }
+       if (e.keyCode == 27) {
+            if (allowModalEsc) {
+                $('.modal').modal('hide');
+            }
+       }
     });
 }); // document.ready
 function updateHosting(acnt) {
+    allowModalEsc = true;
     $('#hosting_update_edit_form_error').hide();
     $('#hosting_update_dialog').modal({
-        keyboard: true
+        keyboard: false,
+        backdrop: 'static'
     });
     $('#hacnt').val(acnt);
     $('#hosting_update_edit_ajax').hide();
@@ -1178,11 +1260,12 @@ function updateHosting(acnt) {
     $('#hupcost').html(hupcost);
 }
 function updateDomain(acnt) {
+    allowModalEsc = true;
     $('#domain_update_edit_form_error').hide();
     $('#domain_update_dialog').modal({
-        keyboard: true
+        keyboard: false,
+        backdrop: 'static'
     });    
-    $('#hacnt').val(acnt);
     $('#domain_update_edit_ajax').hide();
     $('#domain_update_edit_form').show();
     $('#domain_update_edit_buttons').show();
@@ -1192,10 +1275,12 @@ function updateDomain(acnt) {
     $('#btn_domain_update_save').focus();
 }
 function updateService(acnt) {
+    allowModalEsc = true;
     tmp_service_id = acnt;
     $('#service_update_edit_form_error').hide();
     $('#service_update_dialog').modal({
-        keyboard: true
+        keyboard: false,
+        backdrop: 'static'
     });
     $('#sn').val($('#service_name_'+acnt).html());
     $('#service_update_edit_ajax').hide();

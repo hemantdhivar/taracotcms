@@ -67,6 +67,7 @@ domain_name: Domain name
 domain_name_hint: No domain zone, example&#058; domain (without .com)
 domain_zone: Domain zone
 domain_exp: Expiration date
+domain_exp_short: Exp. date
 domain_exp_hint: Example&#058;&nbsp;YYYY/MM/DD
 domain_date_template: \%Y/\%m/\%d 
 domain_date_picker_template: yyyy/mm/dd 
@@ -97,6 +98,7 @@ form_error_invalid_trans_amount: Invalid amount
 form_error_invalid_trans_objects: Invalid objects data
 form_error_invalid_trans_date: Invalid date/time
 service_id: Service ID
+service: Service
 service_days: Days remaining
 form_error_invalid_sid: Invalid service ID
 form_error_invalid_sdays: Invalid remainig service days
@@ -154,7 +156,7 @@ c_hosting: Hosting
 c_domains: Domains
 c_services: Services
 c_account: Deposit
-c_profile: Proile
+c_profile: Profile
 с_history: History
 btn_add_hosting: New hosting account
 label_funds: Funds deposited
@@ -205,10 +207,10 @@ pay_action_confirm: Are you sure you wish to continue?\n\nYou will be subcharged
 pay_domain_confirm: Are you sure you wish to continue?\n\nDomain name
 action_queue_success: Task has been queued. Operation is now in progress and will be done in several minutes.
 queue_active: There is an active task in queue (hosting account create/update, domain register etc.). Please try again in a few minutes.
+queue_task_active: Task has been queued, please wait till it finished
 hpwd: Password
 hpwd_hint: 8 characters and more (latin characters, numbers, special chars etc), repeat twice to verify
 invalid_password: Invalid password
-progress_popup_title: Operation in progress
 progress_popup_text: This taks is currently in queue. It should be ready in several minutes.
 error_popup_text: This taks couldn't be completed. See history for more information.
 important: Important
@@ -219,3 +221,6 @@ service_update: Update service
 service_name: Service name
 service_update_success: Service has been updated successfully
 incomplete_profile: Your profile data is incomplete for selected domain zone
+renew: Renew
+event: Event
+local_name_servers: Local name servers
