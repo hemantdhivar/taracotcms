@@ -2,7 +2,7 @@ module_name: Billing
 module_name_long: Billing management
 id: ID
 username: Username
-username_hint: Latin characters&#058; numbers and "_"= "-"
+username_hint: Latin character, numbers and "_", "-"
 realname: Real name
 amount: Funds
 email: E-mail
@@ -195,7 +195,7 @@ preview_billid: Bill ID
 profile_saved: Profile data has been saved
 in_queue: In queue (not created)
 months: Months
-hosting_account_hint: Latin characters and numbers only, 4-8 characters, example&#058;&nbsp;myaccount
+hosting_account_hint: Latin characters and numbers only, 4-8 characters, example&#058;&nbsp;account
 hosting_update: Update hosting account
 domain_update: Update domain
 acnt_up: Account

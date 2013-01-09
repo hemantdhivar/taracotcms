@@ -1,0 +1,226 @@
+module_name: Биллинг
+module_name_long: Управление биллингом
+id: ID
+username: Имя пользователя
+username_hint: Лат. символы, цифры, "_", "-"
+realname: Настоящее имя
+amount: Баланс
+email: E-mail
+actions: Действия
+edit_user: Данные пользователя
+add_user: Добавить пользователя
+edit_save: Сохранить изменения
+continue: Продолжить
+confirm: Подтвердить
+go_back: Назад
+edit_cancel: Отмена
+load_error: Ошибка в процессе загрузки данных с сервера. Повторите попытку позже.
+ajax_saving: Сохранение данных, пожалуйста, подождите...
+ajax_loading: Загрузка данных, пожалуйста, подождите...
+error: Ошибка
+success: Успешно
+sLengthMenu: Записей на страницу&#058; _MENU_
+sZeroRecords: Записи не найдены
+sInfo: Показываются записи&#058; с _START_ по _END_ (всего&#058; _TOTAL_)
+sInfoEmpty: Показываются записи&#058; с 0 по 0 (всего&#058; 0)
+sInfoFiltered: (всего записей&#058; _MAX)
+sPrevious: Пред. страница
+sNext: След. страница
+sSearch: Поиск
+error_ajax: Ошибка в процессе загрузки данных с сервера. Повторите попытку позже.
+funds: Доступный баланс
+hosting_accounts: Аккаунты хостинга
+hosting_account: Хостинговый аккаунт
+domains: Домены
+services: Сервисы
+no_hosting_accounts: В настоящий момент у Вас нет аккаунтов хостинга.
+no_domains: В настоящий момент у Вас нет доменов.
+no_services: В настоящий момент у Вас не подключено ни одного сервиса.
+no_history_records: В истории нет ни одной записи.
+no_add_by_click: Для подключения нажмите кнопку выше.
+add_account: Добавить аккаунт хостинга
+add_domain: Зарегистрировать домен
+add_service: Добавить сервис
+edit_account: Редактирование данных аккаунта
+edit_domain: Редактирование данных домена
+edit_service: Редактирование данных сервиса
+return_to_list: Вернуться к списку пользователей
+hac_account: Аккаунт
+hac_per_month: мес.
+domain_one_year: 1 год
+hac_plan: Тарифный план
+hac_days: Дней осталось
+btn_close: Закрыть
+btn_save: Сохранить
+form_errors: Форма содержит ошибки&#058; пожалуйста, проверьте все поля и попробуйте еще раз
+data_saved: Данные успешно сохранены на сервере
+form_error_invalid_haccount: Неверный синтаксис аккаунта хостинга
+form_error_invalid_hplan: Выбран неверный тарифный план
+form_error_invalid_hdays: Некорректно указано количество дней
+form_error_duplicate_haccount: Хостинговый аккаунт уже зарегистрирован вами либо другим пользователем
+db_save_error: Ошибка во время записи в базу данных&#058; пожалуйста, повторите попытку позже
+data_loading_error: Ошибка во время загрузки данных с сервера
+data_delete_error: Ошибка во время удаления данных с сервера
+data_delete_ok: Запись успешно удалена
+data_delete_confirm: Вы уверены, что хотите удалить следующую запись
+domain_name: Доменное имя
+domain_name_hint: Без указания зоны, например&#058; domain (без .com)
+domain_zone: Зона
+domain_exp: Зарегистрирован по
+domain_exp_short: Дата окончания
+domain_exp_hint: Формат&#058;&nbsp;ДД/ММ/ГГГГ
+domain_date_template: /\%d/\%m\%Y 
+domain_date_picker_template: dd/mm/yyyy 
+domain_date_picker_week_start: 1
+trans_datetime_picker_template: dd/mm/yyyy
+trans_datetime_picker_week_start: 1
+trans_date_template: /\%d/\%m\%Y 
+trans_time_template: \%I\:\%M %p
+trans_time_picker_show_meridian: false
+history_datetime_template: \%Y/\%m/\%d \%l:%M %p
+form_error_invalid_domain_name: Неверное доменное имя
+form_error_invalid_domain_zone: Неверная доменная зона
+form_error_invalid_domain_exp: Неверная дата окончания действия домена
+form_error_duplicate_domain: Доменное имя уже зарегистрировано
+transactions_history: История транзакций
+trans_reason: Событие и/или объекты
+trans_objects: Объекты
+trans_amount: Сумма
+trans_date: Дата
+trans_time: Время
+btn_add_history_record: Добавить запись в историю
+btn_edit_history_record: Изменить запись в истории
+trans_id: ID транзакции
+add_history_record: Добавить запись в историю
+edit_history_record: Изменить запись в истории
+form_error_invalid_trans_id: Неверный ID транзакции
+form_error_invalid_trans_amount: Неверная сумма
+form_error_invalid_trans_objects: Неверные данные объектов
+form_error_invalid_trans_date: Неверная дата/время
+service_id: ID сервиса
+service: Сервис
+service_days: Дней осталось
+form_error_invalid_sid: Неверный ID сервиса
+form_error_invalid_sdays: Неверное число оставшихся дней
+profile: Профиль
+russian_lang_data: Данные, относящиеся к доменам .RU/.SU
+p_first_name: Имя
+p_first_name_hint: Пример&#058;&nbsp;Иван
+p_first_name_en_hint: Пример&#058;&nbsp;John
+p_last_name: Фамилия
+p_last_name_hint: Пример&#058;&nbsp;Петров
+p_last_name_en_hint: Пример&#058;&nbsp;Smith
+p_patronym: Отчество
+p_patronym_hint: Пример&#058;&nbsp;Иванович
+p_patronym_first_en_hint: Пример&#058;&nbsp;I
+p_patronym_first: Первая буква отчества
+p_patronym_first_br: Первая буква<br/>отчества
+p_passport: Паспортные данные
+p_passport_hint: Пример&#058;&nbsp;34 02 651241 выдан 48 о/м г. Москвы 26.12.1990
+p_birth_date: Дата рождения
+p_birth_date_hint: Пример&#058;&nbsp;30.11.1985
+p_addr_ru: Почтовый адрес
+p_postcode: Индекс
+p_postcode_hint: Пример&#058;&nbsp;199226
+p_addr_ru_hint: Пример&#058;&nbsp;101000, Москва, ул. Воробьянинова, 15, кв. 22, В. Лоханкину
+p_private: Скрывать приватные данные владельца домена
+russian_org_lang_data: Данные организации
+russian_org_lang_data_filled_hint: Если поля заполнены, доменное имя регистрируется на организацию
+int_lang_data: Общие данные для доменов
+int_cont_data: Контактная информация
+p_country: Страна
+countries: AF,Afghanistan=AL,Albania=DZ,Algeria=AS,American Samoa=AD,Andorra=AO,Angola=AI,Anguilla=AQ,Antarctica=AG,Antigua=AN,Antilles=AR,Argentina=AM,Armenia=AW,Aruba=AU,Australia=AT,Austria=AZ,Azerbaijan=BS,Bahamas=BH,Bahrain=BD,Bangladesh=BB,Barbados=BY,Belarus=BE,Belgium=BZ,Belize=BJ,Benin=BM,Bermuda=BT,Bhutan=BO,Bolivia=BA,Bosnia and Herzegovina=BW,Botswana=BV,Bouvet Island=BR,Brazil=IO,British ind. ocean terr.=BN,Brunei=BG,Bulgaria=BF,Burkina Faso=BI,Burundi=KH,Cambodia=CM,Cameroon=CA,Canada=CV,Cape Verde=KY,Cayman Islands=CF,Central African Republic=TD,Chad=CL,Chile=CN,China=CX,Christmas Island=CC,Cocos (Keeling) Islands=CO,Colombia=KM,Comoros=CG,Congo=CD,Congo= The Democratic Republic Of The=CK,Cook Islands=CR,Costa Rica=CI,Cote d'Ivoire=HR,Croatia=CU,Cuba=CY,Cyprus=CZ,Czech Republic=DK,Denmark=DJ,Djibouti=DM,Dominica=DO,Dominican Republic=EC,Ecuador=EG,Egypt=SV,El Salvador=GQ,Equatorial Guinea=ER,Eritrea=EE,Estonia=ET,Ethiopia=FK,Falkland Islands=FO,Faroe Islands=FJ,Fiji=FI,Finland=FR,France=GF,French Guiana=PF,French Polynesia=TF,French Southern Terr.=GA,Gabon=GM,Gambia=GE,Georgia=DE,Germany=GH,Ghana=GI,Gibraltar=GR,Greece=GL,Greenland=GD,Grenada=GP,Guadeloupe=GU,Guam=GT,Guatemala=GN,Guinea=GW,Guinea-Bissau=GY,Guyana (UK)=HT,Haiti=HM,Heard and McDonald isl-s=VA,Holy See (vatican City State)=HN,Honduras=HK,Hong Kong=HU,Hungary=IS,Iceland=IN,India=ID,Indonesia=IR,Iran=IQ,Iraq=IE,Ireland=IL,Israel=IT,Italy=JM,Jamaica=JP,Japan=JO,Jordan=KZ,Kazakhstan=KE,Kenya=KI,Kiribati=KP,Korea (North)=KR,Korea (South)=KW,Kuwait=KG,Kyrgyzstan=LA,Lao People's Democratic Republic=LV,Latvia=LB,Lebanon=LS,Lesotho=LR,Liberia=LY,Libya=LI,Liechtenstein=LT,Lithuania=LU,Luxembourg=MO,Macao=MK,Macedonia=MG,Madagascar=MW,Malawi=MY,Malaysia=MV,Maldives=ML,Mali=MT,Malta=MI,Mariana Islands=MH,Marshall Islands=MQ,Martinique=MR,Mauritania=MU,Mauritius=YT,Mayotte=MX,Mexico=FM,Micronesia=MD,Moldova=MC,Monaco=MN,Mongolia=MS,Montserrat=MA,Morocco=MZ,Mozambique=MM,Myanmar=NA,Namibia=NR,Nauru=NP,Nepal=NL,Netherlands=XN,Nevis=NC,New Caledonia=NZ,New Zealand=NI,Nicaragua=NE,Niger=NG,Nigeria=NU,Niue=NF,Norfolk Island=NO,Norway=OM,Oman=PK,Pakistan=PW,Palau=PS,Palestinian Territory=PA,Panama=PG,Papua New Guinea=PY,Paraguay=PE,Peru=PH,Philippines=PN,Pitcairn=PL,Poland=PT,Portugal=PR,Puerto Rico=QA,Qatar=RE,R&eacute;union=RO,Romania=RU,Russia=RW,Rwanda=SH,Saint Helena=PM,Saint Pierre And Miquelon=WS,Samoa=SM,San Marino=ST,Sao Tome and Principe=SA,Saudi Arabia=SN,Senegal=YU,Serbia And Montenegro=SC,Seychelles=SL,Sierra Leone=SG,Singapore=SK,Slovakia=SI,Slovenia=SB,Solomon Islands=SO,Somalia=ZA,South Africa=GS,South Georgia/Sandwich isl.=ES,Spain=LK,Sri Lanka=LC,St. Lucia=VC,St. Vincent=SD,Sudan=SR,Suriname=SJ,Svalbard And Jan Mayen=SZ,Swaziland=SE,Sweden=CH,Switzerland=SY,Syria=TW,Taiwan=TJ,Tajikistan=TZ,Tanzania=TH,Thailand=TP,Timor-leste=TG,Togo=TK,Tokelau=TO,Tonga=TT,Trinidad and Tobago=TN,Tunisia=TR,Turkey=TM,Turkmenistan=TC,Turks and Caicos Islands=TV,Tuvalu=UG,Uganda=UA,Ukraine=AE,United Arab Emirates=GB,United Kingdom=UM,United States Minor Outlying Islands=UY,Uruguay=US,USA=UZ,Uzbekistan=VU,Vanuatu=VE,Venezuela=VN,Viet Nam=VG,Virgin Islands (British)=VI,Virgin Islands (U.S.)=WF,Wallis And Futuna=EH,Western Sahara=YE,Yemen=ZM,Zambia=ZW,Zimbabwe
+p_state: Область
+p_state_hint: Пример&#058;&nbsp;Leningradskaya oblast
+p_city: Город
+p_city_hint: Пример&#058;&nbsp;New York
+p_addr: Адрес
+p_addr_hint: Пример&#058;&nbsp;Tverskaya St., 2-1-234
+p_phone: Телефон
+p_phone_hint: Пример&#058;&nbsp;+7 495 1234567
+p_fax: Факс
+p_fax_hint: Пример&#058;&nbsp;+7 495 1234567
+p_email: E-mail
+p_email_hint: Пример&#058;&nbsp;john.smith@domain.com
+p_org_r: Название организации (по-русски)
+p_org_r_hint: Пример&#058;&nbsp;Общество с ограниченной ответственностью &quot;Рога и Копыта&quot;
+p_org_hint: Пример&#058;&nbsp;ROGA I KOPYTA, LTD.
+p_org: Название организации (по-английски)
+p_code: ИНН
+p_code_hint: Пример&#058;&nbsp;7701107259
+p_kpp: КПП
+p_kpp_hint: Пример&#058;&nbsp;632946014
+invalid_field: Неверно заполненное поле
+billing_customer: Личный кабинет
+c_hosting: Хостинг
+c_domains: Домены
+c_services: Сервисы
+c_account: Платежи
+c_profile: Профиль
+с_history: История
+btn_add_hosting: Добавить аккаунт
+label_funds: Баланс
+btn_add_domain: Зарегистрировать домен
+ns1: NS 1
+ns2: NS 2
+ns3: NS 3
+ns4: NS 4
+ns1_ip: NS 1 IP
+ns2_ip: NS 2 IP
+ns3_ip: NS 3 IP
+ns4_ip: NS 4 IP
+ip_address: IP адрес
+form_error_invalid_ns: Неверный сервер имен
+form_error_invalid_ip: Неверный IP адрес
+history_hint: История транзакций указана в таблице ниже. Обратите внимание&#058; отображаются до 50 последних записей.
+profile_russian_head: Данные, относящиеся к доменам RU/SU
+profile_russian_hint: Заполнение полей обязательно только в том случае, если Вы будете регистрировать домены в зонах RU или SU. Если регистрация в указанных зонах производиться не будет, поля можно оставить пустыми.
+profile_int_head: Общая информация
+profile_int_hint: Заполнение данных полей является обязательным для регистрации доменов в любых зонах. Пожалуйста, заполняйте поля символами латинского алфавита.
+profile_cont_head: Контактная информация
+profile_cont_hint: Заполнение данных полей является обязательным для регистрации доменов в любых зонах. Все поля, кроме номера факса, являются обязательными для заполнения.
+profile_org_head: Информация организации
+profile_org_hint: Заполнение данных полей является обязательным для регистрации доменов в любых зонах, но только в том случае, если домен должен быть зарегистрирован на организацию. Если домен регистрируется на частное лицо, оставьте все поля незаполненными. Важно&#058; если у вас нет русскоязычных данных организации, заполните поле &laquo;Название организации (по-русски)&raquo; символами латинского алфавита.
+tab_account_hint: Вы можете пополнить баланс вашего лицевого счета, используя форму, расположенную ниже.
+tab_account_hint_2: Пожалуйста, проверьте правильность заполнения формы и щелкните по кнопке &laquo;Подтвердить&raquo;.
+amnt: Сумма
+amnt_hint: Пример&#058;&nbsp;221.95
+form_error_invalid_amount: Указана неверная сумма для пополнения
+form_error_invalid_paysys: Неверный идентификатор платежной системы
+form_error_invalid_plugin: Ошибка во время загрузки надстройки платежной системы
+form_error_creating_bill: Ошибка во время генерации данных счета, пожалуйста, повторите попытку позднее
+preview_amount: Итоговая сумма
+preview_paysys: Платежная система
+preview_billid: Идентификатор счета
+profile_saved: Профиль был успешно сохранен
+in_queue: В очереди
+months: Мес.
+hosting_account_hint: Символы латинского алфавита, от 4 до 8 символов, например&#058;&nbsp;account
+hosting_update: Продлить аккаунт хостинга
+domain_update: Продлить домен
+acnt_up: Аккаунт
+up_cost: Стоимость продления
+add_cost: Стоимость
+access_denied: В доступе отказано
+insufficent_funds: Недостаточно средств на лицевом счете
+pay_action_confirm: Вы уверены, что хотите продолжить?\n\nСо счета будет списано
+pay_domain_confirm: Вы уверены, что хотите продолжить?\n\Домен
+action_queue_success: Задание успешно поставлено в очередь. В настоящий момент операция находится в обработке и будет завершена в течении нескольких минут.
+queue_active: В очереди находится невыполненное задание (например, создание или обновление аккаунта, регистрация домена и т.д.). Пожалуйста, попробуйте повторить действие через несколько минут.
+queue_task_active: Задание находится в очереди, пожалуйста, дождитесь окончания
+hpwd: Пароль
+hpwd_hint: 8 символов и более (символы лат. алфавита, цифры, спец. символы и т.д.), повторите дважды для проверки
+invalid_password: Неверный пароль
+progress_popup_text: Задание находится в очереди и будет выполнено в течении нескольких минут
+error_popup_text: Задание не может быть выполнено. См. историю для получения более подробной информации
+important: Важно
+ns_note: IP адреса требуются только в том случае, если сервера имен являются частью регистрируемого домена. В противном случае оставьте поля &laquo;IP-адрес&raquo; пустыми!
+save_config: Сохранить конфигурацию
+cant_update: Обновление домена в настоящий момент невозможно
+service_update: Продление сервиса
+service_name: Сервис
+service_update_success: Сервис был успешно продлен
+incomplete_profile: Для регистрации доменного имени в запрошенной зоне требуются дополнительные данные в профиле
+renew: Продлить
+event: Событие
+local_name_servers: Сервера имен провайдера

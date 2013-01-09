@@ -73,7 +73,7 @@ $log->write("[DEBUG] Connecting to the database") if $log_level<=DEBUG;
 &connect_db();
 # Decrease hosting days
 $log->write("[INFO] Decreasing days: ".config->{db_table_prefix}."_billing_hosting") if $log_level<=INFO;
-my $sth = $dbh->prepare("UPDATE `".config->{db_table_prefix}."_billing_hosting` SET host_days_remain=host_days_remain WHERE host_days_remain>0");
+my $sth = $dbh->prepare("UPDATE `".config->{db_table_prefix}."_billing_hosting` SET host_days_remain=host_days_remain-1 WHERE host_days_remain>0");
 my $r1 = $sth->execute();
 $sth->finish();
 if (!$r1) {
@@ -81,7 +81,7 @@ if (!$r1) {
 }
 # Decrease service days
 $log->write("[INFO] Decreasing days: ".config->{db_table_prefix}."_billing_services") if $log_level<=INFO;
-$sth = $dbh->prepare("UPDATE `".config->{db_table_prefix}."_billing_services` SET service_days_remaining=service_days_remaining WHERE service_days_remaining>0");
+$sth = $dbh->prepare("UPDATE `".config->{db_table_prefix}."_billing_services` SET service_days_remaining=service_days_remaining-1 WHERE service_days_remaining>0");
 my $r2 = $sth->execute();
 $sth->finish();
 if (!$r2) {
@@ -127,23 +127,23 @@ foreach my $item(@outdated_hosting_accounts) {
 	if (!$user_data->{$item->{user_id}}->{hosting}) {
 		$user_data->{$item->{user_id}}->{hosting} = [];
 	}
-	push $user_data->{$item->{user_id}}->{hosting}, $item->{host_acc};
+	push @{$user_data->{$item->{user_id}}->{hosting}}, $item->{host_acc};
 }
 foreach my $item(@outdated_domains) {
 	if (!$user_data->{$item->{user_id}}->{domains}) {
 		$user_data->{$item->{user_id}}->{domains} = [];
 	}
-	push $user_data->{$item->{user_id}}->{domains}, $item->{domain_name};
+	push @{$user_data->{$item->{user_id}}->{domains}}, $item->{domain_name};
 }
 foreach my $item(@outdated_services) {
 	if (!$user_data->{$item->{user_id}}->{services}) {
 		$user_data->{$item->{user_id}->{services}} = [];
 	}
-	push $user_data->{$item->{user_id}}->{services}, $item->{service_id};
+	push @{$user_data->{$item->{user_id}}->{services}}, $item->{service_id};
 }
 # Get user data for each user ID
 my $users = {};
-while(my ($key) = each $user_data) {
+while(my ($key) = each %$user_data) {
 	$sth = $dbh->prepare("SELECT username, realname, email FROM `".config->{db_table_prefix}."_users` WHERE id=".$key);
 	if ($sth->execute()) {
 		my $ud = $sth->fetchrow_hashref();
@@ -163,7 +163,7 @@ $sth->finish();
 $log->write("[DEBUG] Site title: ".$site_title) if $log_level<=DEBUG;
 
 # Send mails to each users
-while(my ($key) = each $user_data) {	
+while(my ($key) = each %$user_data) {	
 	my $items = '';
 	my @items_log;
 	if ($user_data->{$key}->{hosting}) {

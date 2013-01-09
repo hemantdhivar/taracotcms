@@ -16,3 +16,4 @@ Dancer::Plugin::Email
 Try::Tiny
 Date::Format
 Date::Parse 
+Crypt::SSLeay

@@ -1,0 +1,87 @@
+module_name: Пользователь
+user_register: Регистрация пользователя
+user_register_hint: Пожалуйста, заполните форму, расположенную ниже, для регистрации нового пользователя. Поля, отмеченные &laquo;звездочкой&raquo;, являются обязательными для заполнения.
+user_register_username: Имя пользователя
+user_register_username_or_email: Имя пользователя (или e-mail)
+user_register_username_hint: Только Буквы латинского алфавита, цифры и следюущие символы&#58; &quot;_&quot;, &quot;-&quot; (от 3 до 100 символов)
+user_register_realname: Настоящее имя
+user_register_email: E-mail
+user_register_email_current: Текущий e-mail
+user_register_email_new: Новый e-mail
+user_register_email_new_hint: Пожалуйста, введите e-mail дважды для проверки, будьте внимательны!
+user_register_phone: Сотовый телефон
+user_register_password: Пароль
+user_register_password_hint: Не менее 8 символов, введите дважды для проверки
+user_register_captcha: Цифры с картинки
+user_register_submit: Подтвердить
+user_register_agreement_1: Я согласен с
+user_register_agreement_2: условиями пользовательского соглашения
+user_register_captcha_refresh: Щелкните здесь, чтобы обновить картинку
+error_ajax: Ошибка во время подключения к серверу, пожалуйста, повторите попытку позже.
+user_register_error_username: Неверное имя пользователя
+user_register_error_login: Неверное имя пользователя или e-mail
+user_register_error_user_not_exists: Пользователь с такой комбинацией имени пользователя и пароля не найден в системе
+user_register_error_realname: Слишком длинное настоящее имя (должно быть до 80 символов)
+user_register_error_email: Неверный E-mail
+user_register_error_phone: Неверный номер телефона
+user_register_error_password: Неверный синтаксис пароля (или пароли не совпадают)
+user_register_error_email_multi: Неверный синтаксис адреса e-mail (или адреса не совпадают)
+user_register_error_email_equals: Ваш новый адрес e-mail должен отличаться от старого
+user_register_error_password_equals: Ваш новый пароль должен отличаться от старого
+user_register_error_password_single: Неверный синтаксис пароля
+user_register_error_password_bad: Неверный пароль
+user_register_error_password_multi: Неверный синтаксис пароля, либо пароли не совпадают
+user_register_error_captcha: Введен неверный код с картинки
+user_register_error_agreement: Вы должны принять пользовательское соглашение для регистрации на сайте
+user_register_error_username_taken: Указанное имя пользователя уже зарегистрировано в системе
+user_register_error_email_taken: Пользователь с указанным адресом e-mail уже зарегистрирован в системе
+user_register_processing: Идет обработка, пожалуйста, подождите...
+user_register_success: Первый этап регистрации успешно выполнен! Для завершения процесса регистрации, пожалуйста, проверьте свой почтовый ящик, и активируйте аккаунт по ссылке.
+user_authorize: Авторизация
+user_authorize_hint: Пожалуйста, введите имя пользователя (или e-mail) и пароль для входа на сайт.
+user_auth_submit: Вход
+user_auth_register: Регистрация
+user_auth_forgot_password: Забыли пароль? Щелкните здесь
+user_auth_success: Вы успешно авторизировались на сайте. <a href=/user/account>Щелкните здесь</a>, если вы хотите перейти в личный кабинет пользователя.
+user_auth_invalid: Неверное имя пользователя/e-mail или пароль
+user_auth_already_logged_in: Этот (или другой) пользователь уже авторизирован на сайте
+user_auth_user_disabled: Аккаунт в настоящее время заблокирован
+user_register_email_subj: Регистрация на
+user_register_emailchange_subj: Смена e-mail на
+user_activate: Активация пользователя
+user_activate_error_url: Неверные данные активации, пожалуйста, проверьте правильность ссылки и повторите попытку.
+user_activate_error_wrong_code: Неверный активационный код, пожалуйста, проверьте правильность ссылки и повторите попытку.
+user_activate_success: Пользователь успешно зарегистрирован и активирован. Теперь вы можете авторизироваться на сайте, используя свои имя пользователя и пароль.
+user_password: Смена пароля
+user_password_hint: Пожалуйста, заполните форму, расположенную ниже, для смены забытого пароля. Поля, отмеченные &laquo;звездочкой&raquo;, являются обязательными для заполнения.
+user_password_submit: Отправить данные
+user_pwd_success_sent: Запрос на смену пароля успешно создан. Пожалуйста, проверьте почтовый ящик для получения дальнейших инструкций.
+user_password_reset: Новый пароль
+user_password_reset_hint: Для смены пароля, пожалуйста, введите новый пароль.
+user_password_success_reset: Смена пароля завершена успешно. Вы можете авторизироваться на сайте, используя свой новый пароль.
+user_password_reset_inavlid_data: Неверные данные верификации, пожалуйста, проверьте правильность ссылки и повторите попытку.
+user_password_reset_fail: Смена пароля для данного пользователя невозможна.
+user_account: Аккаунт
+user_account_tab_overview: Обзор
+user_account_tab_profie: Профиль
+user_account_tab_email: E-Mail
+user_account_tab_password: Пароль
+user_account_welcome: Добро пожаловать
+user_account_status_list: Неактивный пользователь,Пользователь,Администратор
+user_account_status: Статус аккаунта
+user_account_date_template: \%d/\%m/\%Y
+user_account_regdate: Дата регистрации
+user_account_regdate_unknown: неизвестна
+user_account_save: Сохранить
+user_account_proifle_hint: Вы можете изменить данные профиля в форме, расположенной ниже.
+user_account_profile_email_warning: Важно&#58; в случае смены адреса электронный почты, ваш аккаунт будет заблокирован и потребуется повторная активация с помощью ссылки, которая будет отправлена на новый адрес электронной почты. 
+user_account_logout: Выход
+user_account_logout_success: Вы успешно вышли.
+user_account_change_avatar: Сменить
+user_account_current_password: Текущий пароль
+image_files: Изображения
+user_account_avatar_uploading: Загрузка изображения...
+user_account_avatar_uploading_error: Ошибка во время загрузки аватара!
+user_account_profile_saved: Данные вашего профиля успешно сохранены!
+user_account_password_saved: Новый пароль успешно сохранен!
+user_account_email_saved: Данные вашего профиля успешно сохранены! В настоящий момент ваш аккаунт деактивирован, следуйте инструкциям, отправленным на новый почтовый ящик, для повторной активации. 
