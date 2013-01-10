@@ -39,6 +39,12 @@ my $error_message = {
         hostingupdate => qq~Error while updating the hosting account~,
         domainregister => qq~Error while registering the domain~,
         domainupdate => qq~Error while updating the domain~
+    },
+    ru => {
+        hostingregister => qq~Ошибка во время создания нового аккаунта~,
+        hostingupdate => qq~Ошибка во время продления аккаунта~,
+        domainregister => qq~Ошибка во время регистрации домена~,
+        domainupdate => qq~Ошибка во время продления домена~
     }
 };
 

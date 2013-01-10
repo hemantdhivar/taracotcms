@@ -70,7 +70,7 @@ $(document).ready(function () {
                     }
 
                     if (data.hosting && data.hosting.length > 0) {                    
-                        var tdata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:40px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
+                        var tdata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:70px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
                         for (var i = 0; i < data.hosting.length; i++) {
                             hosting_plans_id[data.hosting[i].account] = data.hosting[i].plan_id;
                             hosting_plans_cost[data.hosting[i].account] = data.hosting[i].plan_cost;
@@ -91,7 +91,7 @@ $(document).ready(function () {
                                 error_msg=data.hosting[i].error_msg;
                             }
                             var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+data.hosting[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
-                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><span class=\"label label-inverse\">" + data.hosting[i].account + "</span>&nbsp;<span class=\"badge badge-success\" rel=\"progress_img\" id=\"progress_"+data.hosting[i].account+"\">"+prp+"</span><span id=\"qerror_"+data.hosting[i].account+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><span class=\"label label-inverse\">" + data.hosting[i].account + "</span>&nbsp;<span class=\"badge badge-success\" rel=\"progress_img\" id=\"progress_"+data.hosting[i].account+"\">"+prp+"</span><span id=\"qerror_"+data.hosting[i].account+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:70px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";                        
                         $('#data_hosting').html(tdata);                        
@@ -127,7 +127,7 @@ $(document).ready(function () {
                                 error_msg=data.domains[i].error_msg;
                             }
                             var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+dnid+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
-                            tdata += "<tr"+update_class+" id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domains[i].domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                            tdata += "<tr"+update_class+" id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domains[i].domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:70px;text-align:center\">"+update_icon+"</td></tr>";
                             if (data.domains[i].zone) {
                                 domains_zones[data.domains[i].domain_name] = data.domains[i].zone;
                             }
@@ -142,14 +142,14 @@ $(document).ready(function () {
 
                     if (data.services && data.services.length > 0) {
                         var tdata='';
-                        tdata = '<table class="table table-striped table-bordered" id="services_table"><thead><tr><th>'+js_lang_service+'</th><th style="width:40px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
+                        tdata = '<table class="table table-striped table-bordered" id="services_table"><thead><tr><th>'+js_lang_service+'</th><th style="width:70px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
                         for (var i = 0; i < data.services.length; i++) {
                             var tr_class='';
                             if (data.services[i].days <= 0) {
                                 tr_class=' class="error"';
                             }
                             service_plans_cost[data.services[i].service_id] = data.services[i].cost;
-                            tdata += "<tr"+tr_class+"><td><span class=\"label label-inverse\"><span id=\"service_name_"+data.services[i].service_id+"\">" + data.services[i].name + "</span></span></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"service_days_"+data.services[i].service_id+"\">" + data.services[i].days + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateService('"+data.services[i].service_id+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                            tdata += "<tr"+tr_class+"><td><span class=\"label label-inverse\"><span id=\"service_name_"+data.services[i].service_id+"\">" + data.services[i].name + "</span></span></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"service_days_"+data.services[i].service_id+"\">" + data.services[i].days + "</span></td><td style=\"width:70px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateService('"+data.services[i].service_id+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";
                         $('#data_services').html(tdata);                    
@@ -158,7 +158,7 @@ $(document).ready(function () {
                     }                   
 
                     if (queue) {
-                        setTimeout(function() { loadQueue() }, 6000);
+                        setTimeout(function() { loadQueue() }, 60000);
                         queue_request_active = true;
                     }
 
@@ -681,11 +681,11 @@ $(document).ready(function () {
                         hosting_plans_cost[data.haccount] = data.hplan_cost;
                         var prp='<img src="/images/update.png" width="16" height="16" alt="" />';
                         var error_label='<span class="badge badge-important" id="error_label_'+data.haccount+'"></span>&nbsp;';
-                        var tdata = "<tr id=\"hosting_row_"+data.haccount+"\"><td><span class=\"label label-inverse\">" + data.haccount + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+data.haccount+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+data.haccount+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:40px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                        var tdata = "<tr id=\"hosting_row_"+data.haccount+"\"><td><span class=\"label label-inverse\">" + data.haccount + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+data.haccount+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+data.haccount+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:70px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
                         if ($('#hosting_table tr:last').size() > 0) {
                             $('#hosting_table tr:last').after(tdata);
                         } else {
-                            var ndata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:40px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>'+tdata+"</tbody></table>";
+                            var ndata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:70px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>'+tdata+"</tbody></table>";
                             $('#data_hosting').html(ndata);
                         }
                         $('#hosting_dialog').modal('hide');
@@ -694,7 +694,7 @@ $(document).ready(function () {
                         reloadHistory();
                         queue_internal.push(data.haccount);
                         if (!queue_request_active) {
-                            setTimeout(function() { loadQueue() }, 6000);
+                            setTimeout(function() { loadQueue() }, 60000);
                             queue_request_active = true;
                         }                        
                     }
@@ -809,7 +809,7 @@ $(document).ready(function () {
                         var dnid=data.domain_name.replace(/\./g, "_");
                         var error_label='<span class="badge badge-important" id="error_label_'+dnid+'"></span>&nbsp;';
                         var prp='<img src="/images/update.png" width="16" height="16" alt="" />';
-                        var tdata = "<tr id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:40px;text-align:center\">"+update_icon+"</td></tr>";
+                        var tdata = "<tr id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:70px;text-align:center\">"+update_icon+"</td></tr>";
                         if ($('#domains_table tr:last').size() > 0) {
                             $('#domains_table tr:last').after(tdata);
                         } else {
@@ -822,7 +822,7 @@ $(document).ready(function () {
                         reloadHistory();
                         queue_internal.push(data.domain_name);
                         if (!queue_request_active) {
-                            setTimeout(function() { loadQueue() }, 6000);
+                            setTimeout(function() { loadQueue() }, 60000);
                             queue_request_active = true;
                         }
                         domains_zones[data.domain_name] = data.zone;
@@ -886,7 +886,7 @@ $(document).ready(function () {
                     reloadHistory();
                     queue_internal.push(data.haccount);
                     if (!queue_request_active) {
-                        setTimeout(function() { loadQueue() }, 6000);
+                        setTimeout(function() { loadQueue() }, 60000);
                         queue_request_active = true;
                     }
                 }
@@ -1002,7 +1002,7 @@ $(document).ready(function () {
                     reloadHistory();
                     queue_internal.push(data.haccount);
                     if (!queue_request_active) {
-                        setTimeout(function() { loadQueue() }, 6000);
+                        setTimeout(function() { loadQueue() }, 60000);
                         queue_request_active = true;
                     }
                 }
@@ -1085,7 +1085,7 @@ $(document).ready(function () {
                         queue_internal.push(data.queue[i].object);
                     }                                                            
                     if (queue_internal.length > 0) {
-                        setTimeout(function() { loadQueue() }, 6000);
+                        setTimeout(function() { loadQueue() }, 60000);
                     } else {
                         queue_request_active = false;
                     }
@@ -1147,7 +1147,7 @@ $(document).ready(function () {
                 }
             },
             error: function () {
-                setTimeout(function() { loadQueue() }, 6000);
+                setTimeout(function() { loadQueue() }, 60000);
             }
         });
     }

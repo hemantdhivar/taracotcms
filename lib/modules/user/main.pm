@@ -237,6 +237,7 @@ post '/authorize/process' => sub {
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
   }
+  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { last_lang => $_current_lang, lastchanged => time }); 
   session user => $db_data->{id}; 
   return $json_xs->encode(\%res);
 };

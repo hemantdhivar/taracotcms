@@ -1349,6 +1349,9 @@ post '/data/load' => sub {
   my $current_lang = _load_lang();  
   my $curlang = database->quote($current_lang);
   my $lf = loadFile(config->{root_dir}.'/'.config->{data_dir}.'/billing_'.$current_lang.'.json');
+  if (!$lf) {
+    return '{"result":"0"}';
+  }
   my $json_config=from_json $$lf;
   my $domain_zones = $json_config->{domain_zones};
   $response{domain_zones} = $domain_zones;

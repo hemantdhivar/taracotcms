@@ -42,6 +42,13 @@ my $lang_data = {
         hosting => "Hosting accounts",
         domains => "Domains",
         services => "Services"
+    },
+    ru => {
+        useroff => qq~Ошибка во время отключения пользовательского аккаунта~,
+        mail_subj => "Сообщение с сайта",
+        hosting => "Хостинговые аккаунты",
+        domains => "Домены",
+        services => "Сервисы"
     }
 };
 
@@ -144,12 +151,13 @@ foreach my $item(@outdated_services) {
 # Get user data for each user ID
 my $users = {};
 while(my ($key) = each %$user_data) {
-	$sth = $dbh->prepare("SELECT username, realname, email FROM `".config->{db_table_prefix}."_users` WHERE id=".$key);
+	$sth = $dbh->prepare("SELECT username, realname, email, last_lang FROM `".config->{db_table_prefix}."_users` WHERE id=".$key);
 	if ($sth->execute()) {
 		my $ud = $sth->fetchrow_hashref();
 		$users->{$key}->{username} = $ud->{username};
 		$users->{$key}->{realname} = $ud->{realname};
 		$users->{$key}->{email} = $ud->{email};
+		$users->{$key}->{lang} = $ud->{last_lang};
 	}
 	$sth->finish();
 };
@@ -166,6 +174,7 @@ $log->write("[DEBUG] Site title: ".$site_title) if $log_level<=DEBUG;
 while(my ($key) = each %$user_data) {	
 	my $items = '';
 	my @items_log;
+	my $lang = $users->{$key}->{lang} || $lang;
 	if ($user_data->{$key}->{hosting}) {
 		my $ref = $user_data->{$key}->{hosting};
 		my $hacc = join(', ', @$ref);

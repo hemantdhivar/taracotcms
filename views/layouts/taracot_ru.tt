@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8" />
+  <title>[== $pagetitle =] | [== $page_data->{site_title} =]</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="[== $page_data->{site_keywords} =]">
+  <meta name="description" content="[== $page_data->{site_description} =]"> 
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/taracot/main.css">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <script src="/js/taracot.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="/js/html5.js"></script>
+  <![endif]-->  
+  <!-- module css --> [== $head_html =]  
+</head>
+<body>
+  <div class="container navbar-wrapper">
+    <a href="/"><img id="taracot-logo" src="/taracot/logo_white_235.png" width="235" height="51" alt="Taracot CMS" /></a>
+    <div class="navbar">      
+      <div class="navbar-inner">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </a>
+         <a class="brand" href="#">&nbsp;</a>
+         <div class="nav-collapse collapse">
+          <ul class="nav">
+            [% menu %]       
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container taracot-header">
+      <div class="row">
+        <div class="span12 visible-desktop" id="taracot-header-span">
+          <?pl if ($auth_data->{id}) { ?>
+          Вы вошли как: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">Профиль</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Выход</div>
+          <?pl } else { ?>
+          <div class="btn btn-mini" onclick="location.href='/user/authorize'">Войти</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Регистрация</div>
+          <?pl } ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="taracot-top-img"></div>  
+  <div class="container taracot-after-header" id="taracot-content">
+    <div class="visible-phone visible-tablet taracot-phone-login-buttons">
+      <?pl if ($auth_data->{id}) { ?>
+      Вы вошли как: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Выход</div>
+      <?pl } else { ?>
+      <div class="btn btn-mini" onclick="location.href='/user/authorize'">Войти</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Регистрация</div>
+      <?pl } ?>
+    </div>
+    [== $content =]     
+  </div>  
+  <footer id="taracot-footer">
+    <div class="container">
+      <p>Taracot CMS, разработка &copy; <a href="http://taracot.org" rel="author">Michael Matveev</a></p>
+    </div>
+  </footer>   
+</body>
+</html>

@@ -33,9 +33,9 @@ hosting_accounts: Аккаунты хостинга
 hosting_account: Хостинговый аккаунт
 domains: Домены
 services: Сервисы
-no_hosting_accounts: В настоящий момент у Вас нет аккаунтов хостинга.
-no_domains: В настоящий момент у Вас нет доменов.
-no_services: В настоящий момент у Вас не подключено ни одного сервиса.
+no_hosting_accounts: В настоящий момент нет аккаунтов хостинга.
+no_domains: В настоящий момент нет доменов.
+no_services: В настоящий момент не подключено ни одного сервиса.
 no_history_records: В истории нет ни одной записи.
 no_add_by_click: Для подключения нажмите кнопку выше.
 add_account: Добавить аккаунт хостинга
@@ -49,7 +49,7 @@ hac_account: Аккаунт
 hac_per_month: мес.
 domain_one_year: 1 год
 hac_plan: Тарифный план
-hac_days: Дней осталось
+hac_days: Дни
 btn_close: Закрыть
 btn_save: Сохранить
 form_errors: Форма содержит ошибки&#058; пожалуйста, проверьте все поля и попробуйте еще раз
@@ -67,14 +67,14 @@ domain_name: Доменное имя
 domain_name_hint: Без указания зоны, например&#058; domain (без .com)
 domain_zone: Зона
 domain_exp: Зарегистрирован по
-domain_exp_short: Дата окончания
+domain_exp_short: Окончание
 domain_exp_hint: Формат&#058;&nbsp;ДД/ММ/ГГГГ
-domain_date_template: /\%d/\%m\%Y 
+domain_date_template: \%d/\%m/\%Y 
 domain_date_picker_template: dd/mm/yyyy 
 domain_date_picker_week_start: 1
 trans_datetime_picker_template: dd/mm/yyyy
 trans_datetime_picker_week_start: 1
-trans_date_template: /\%d/\%m\%Y 
+trans_date_template: \%d/\%m/\%Y 
 trans_time_template: \%I\:\%M %p
 trans_time_picker_show_meridian: false
 history_datetime_template: \%Y/\%m/\%d \%l:%M %p
