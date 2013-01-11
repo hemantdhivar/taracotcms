@@ -8,6 +8,7 @@ use taracot::loadpm;
 use Imager;
 use Imager::Fill;
 use Imager::Matrix2d;
+use JSON::XS();
 
 prefix undef;
 
@@ -77,23 +78,43 @@ prefix "/";
 my $lang;
 
 sub _detect_lang() {
+ my $resp = {}; 
  my $lng;
+ my @lst;
  if (defined request) {
     my $_uribase=request->uri_base();
     $_uribase=~s/http(s)?\:\/\///im;
     my ($lang)=split(/\./, $_uribase);
     my $lang_avail=lc config->{lang_available};
     $lang_avail=~s/ //gm;
+    my $lang_avail_long=config->{lang_available_long};
+    $lang_avail_long=~s/ //gm;
     my (@langs)=split(/,/, $lang_avail);
+    my (@langs_long)=split(/,/, $lang_avail_long);
+    my $cnt=0;
+    foreach my $item(@langs) {
+      my $ln = {};
+      if (config->{lang_default} eq $item) {
+        $item='';
+      }
+      $ln->{short} = $item;
+      $ln->{long} = $langs_long[$cnt];
+      push @lst, $ln;
+      $cnt++;
+    }    
     if (exists {map { $_ => 1 } @langs}->{$lang}) {
      $lng=$lang;
     }                 
-  }
- return $lng; 
+ }
+ my $json_xs = JSON::XS->new();
+ $resp->{lng} = $lng || 'en';
+ $resp->{list} = $json_xs->encode(\@lst); 
+ return $resp;
 }
 
 sub _load_lang {          
-  my $lng = _detect_lang() || config->{lang_default};
+  my $dl = _detect_lang();
+  my $lng = $dl->{lng} || config->{lang_default};
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
   my $lang_mod_cnt={};
   if ($lng ne 'en') {
@@ -122,7 +143,7 @@ sub _process_template {
    while (my ($name, $value) = each(%blocks)){
     $taracot_render_template =~ s/\[\% ?$name ?\%\]/$value/igm;
    }
-   $taracot_render_template =~ s/\[\% current_lang ?\%\]/$_current_lang/gm;
+   $taracot_render_template =~ s/\[\% current_lang ?\%\]/$_current_lang/gm;   
    return $taracot_render_template;
  }
  return undef;
@@ -166,7 +187,6 @@ get '/captcha_img' => sub {
 };
 
 any qr{.*} => sub { 
- &_detect_lang;
  &_load_lang;
  status 'not_found';
  my $render_404 = template 'error_404', { lang => $lang }, { layout => undef };

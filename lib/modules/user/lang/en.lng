@@ -38,6 +38,7 @@ user_register_error_email_taken: User with e-mail address provided is already re
 user_register_processing: Processing, please wait...
 user_register_success: Registration was successful! Please check your mailbox to confirm your account.
 user_authorize: Authorize
+user_auth_redirect: You are now logged in. Redirecting to the previous page...
 user_authorize_hint: Please enter your username (or e-mail) and password to log in.
 user_auth_submit: Login
 user_auth_register: Register new account

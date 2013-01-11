@@ -44,6 +44,11 @@
           <?pl } else { ?>
           <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
           <?pl } ?>
+          <div class="btn-group">
+            <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
+            <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left;width:30px">              
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -54,8 +59,8 @@
       <?pl if ($auth_data->{id}) { ?>
       Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
       <?pl } else { ?>
-      <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
-      <?pl } ?>
+      <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>      
+      <?pl } ?>      
     </div>
     [== $content =]     
   </div>  
@@ -63,6 +68,14 @@
     <div class="container">
       <p>Taracot CMS designed by <a href="http://taracot.org" rel="author">Michael Matveev</a></p>
     </div>
-  </footer>   
+  </footer>
+  <script type="text/javascript">
+  var langs = jQuery.parseJSON('[== $detect_lang->{list} =]');
+  if (langs && langs.length>0) {
+    for (var i=0; i<langs.length; i++) {
+      $('#taracot_ui_lang_select').append('<li>Lang'+langs[i].long+'</li>');
+    }
+  }  
+  </script>
 </body>
 </html>

@@ -17,3 +17,5 @@ Try::Tiny
 Date::Format
 Date::Parse 
 Crypt::SSLeay
+URL::Encode
+URL::Encode::XS

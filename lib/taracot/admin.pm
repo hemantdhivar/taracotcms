@@ -8,7 +8,8 @@ use Digest::MD5 qw(md5_hex);
 my $lang = {};
 
 sub _load_lang {
-  my $lng = &taracot::_detect_lang() || config->{lang_default};
+  my $dl = &taracot::_detect_lang();
+  my $lng = $dl->{lng} || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
   my $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
   $lang = { %$lang_adm, %$lang_adm_cnt };

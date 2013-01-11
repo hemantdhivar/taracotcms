@@ -18,6 +18,7 @@ my @columns_ft = ('pagetitle','filename');
 # Module core settings 
 
 my $lang;
+my $detect_lang;
 
 sub _name() {
   _load_lang();
@@ -28,7 +29,8 @@ sub _defroute() {
 }
 
 sub _load_lang {
-  my $lng = &taracot::_detect_lang() || config->{lang_default};
+  $detect_lang = &taracot::_detect_lang();
+  my $lng = $detect_lang->{lng} || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/catalog/lang/en.lng') || {};
   my $lang_adm_cnt={};
   if ($lng ne 'en') {
@@ -141,7 +143,7 @@ get qr{(.*)} => sub {
        if (!$description_short) {
         $description_short='<br>';
        }
-       $items .= template 'catalog_item', { lang => $lang, picture => $picture, id => $id,  pagetitle => $pagetitle, page_data => $page_data, filename => $filename, groupid => $groupid, description_short => $description_short }, { layout => undef };
+       $items .= template 'catalog_item', { detect_lang=> $detect_lang, lang => $lang, picture => $picture, id => $id,  pagetitle => $pagetitle, page_data => $page_data, filename => $filename, groupid => $groupid, description_short => $description_short }, { layout => undef };
      } # while     
     }
     $sth->finish();
@@ -156,7 +158,7 @@ get qr{(.*)} => sub {
     my %db_data;
     my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => $var1, lang => $_current_lang });
     $db_data{'content'} = $db_var1->{s_value_html}.template 'catalog_list', { items => $items }, { layout => undef };
-    my $render_template = &taracot::_process_template( template 'catalog_view_index', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => \%db_data, pagetitle => $db_var1->{s_value} || $lang->{module_name} }, { layout => config->{layout}.'_'.$_current_lang } );
+    my $render_template = &taracot::_process_template( template 'catalog_view_index', { detect_lang=> $detect_lang, current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => \%db_data, pagetitle => $db_var1->{s_value} || $lang->{module_name} }, { layout => config->{layout}.'_'.$_current_lang } );
     if ($render_template) {
       return $render_template;
     }
@@ -200,16 +202,16 @@ get qr{(.*)} => sub {
     $page_description=~s/\. $//;
     $page_data->{site_keywords}=$page_keywords;
     $page_data->{site_description}=$page_description;
-    my $grid=template 'admin_catalog_images_grid', { id => $db_data->{id}, img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
+    my $grid=template 'admin_catalog_images_grid', { detect_lang=> $detect_lang, id => $db_data->{id}, img_pics => \%img_pics, img_urls => \%img_urls }, { layout => undef };
     my $db_var1  = database->quick_select(config->{db_table_prefix}.'_settings', { s_name => "catalog_title_".$groupid, lang => $_current_lang });
     my $groupid_title = $db_var1->{s_value} || $groupid;
-    $render_template = &taracot::_process_template( template 'catalog_view', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => $db_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title, pagetitle => $db_data->{pagetitle} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'catalog_view', { detect_lang=> $detect_lang, current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, site_title => $stitle->{s_value}, page_data => $page_data, db_data => $db_data, grid => $grid, url => $url, groupid => $groupid, groupid_title => $groupid_title, pagetitle => $db_data->{pagetitle} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 0) {
-    $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'catalog_status', { detect_lang=> $detect_lang, site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 2) {
-    $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'catalog_status', { site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'catalog_status', { detect_lang=> $detect_lang, site_title => $stitle->{s_value}, page_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($render_template) {
     return $render_template;

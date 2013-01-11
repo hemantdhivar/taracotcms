@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jan 10, 2013 at 05:56 PM
+-- Generation Time: Jan 11, 2013 at 05:48 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -657,5 +657,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 'Medved', 'xtreme@rh1.ru', '79217998111', 2, '', NULL, 'en', 1357808153);
+INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 'Medved', 'xtreme@rh1.ru', '79217998111', 2, '', NULL, 'en', 1357907992);
 INSERT INTO `taracot_users` VALUES (9, 'medved', '401568e9e2faae21d0341397972cd10b', '', 'medved@medved.com', '', 1, '', NULL, NULL, 1357033313);

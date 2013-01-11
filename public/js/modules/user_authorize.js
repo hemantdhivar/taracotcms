@@ -19,6 +19,7 @@ function submitOnEnter(e) {
         return false;
     }
 }
+
 // bind enter keys to form fields
 $('#auth_login,#auth_password').bind('keypress', function (e) {
     if (submitOnEnter(e)) {
@@ -61,6 +62,11 @@ $('#btn_submit').bind('click', function () {
             success: function (data) {
                 if (data.status == 1) {
                     $('#auth_form_ajax').html(js_lang_user_auth_success);
+                    var redirect = comeback_url;
+                    if (redirect && redirect.length > 0) {
+                        $('#auth_form_ajax').html('<br/><br/>'+js_lang_user_auth_redirect);
+                        location.href = redirect;
+                    }
                 } else {
                     if (data.errors) {
                         for (var i = 0; i < data.errors.length; i++) {

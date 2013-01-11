@@ -17,6 +17,7 @@ my @columns_funds = ('id', 'trans_objects','trans_amount', 'trans_date');
 # Module core settings 
 
 my $lang;
+my $detect_lang;
 prefix $defroute;
 
 sub _name() {
@@ -27,7 +28,8 @@ sub _defroute() {
   return $defroute;
 }
 sub _load_lang {
-  my $lng = &taracot::_detect_lang() || config->{lang_default};
+  $detect_lang = &taracot::_detect_lang();
+  my $lng = $detect_lang->{lng} || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/billing/lang/en.lng') || {};
   my $lang_adm_cnt={};
   if ($lng ne 'en') {
@@ -1331,10 +1333,10 @@ prefix '/customer';
 
 get '/' => sub {
   my $auth_data = &taracot::_auth();
-  if (!$auth_data) { redirect '/user/authorize' } 
+  if (!$auth_data) { redirect '/user/authorize?comeback=/customer' } 
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description,billing_currency', $_current_lang);
-  my $render_template = &taracot::_process_template( template 'billing_customer', { head_html => '<link href="'.config->{modules_css_url}.'billing_customer.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{billing_customer}, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'billing_customer', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'billing_customer.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{billing_customer}, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }

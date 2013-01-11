@@ -16,6 +16,7 @@ my @columns_ft = ('pagetitle','filename');
 # Module core settings 
 
 my $lang;
+my $detect_lang;
 
 sub _name() {
   _load_lang();
@@ -26,7 +27,8 @@ sub _defroute() {
 }
 
 sub _load_lang {
-  my $lng = &taracot::_detect_lang() || config->{lang_default};
+  $detect_lang = &taracot::_detect_lang();
+  my $lng = $detect_lang->{lng} || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/pages/lang/en.lng') || {};
   my $lang_adm_cnt={};
   if ($lng ne 'en') {
@@ -83,13 +85,13 @@ get qr{(.*)} => sub {
   if (defined $db_data && $db_data->{id}) {
    my $render_template;
    if ($db_data->{status} eq 1) {
-    $render_template = &taracot::_process_template( template 'pages_view', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'pages_view', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 0) {
-    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'pages_status', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($db_data->{status} eq 2) {
-    $render_template = &taracot::_process_template( template 'pages_status', { current_lang => $_current_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template 'pages_status', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
    }
    if ($render_template) {
     return $render_template;

@@ -42,5 +42,7 @@
     var js_lang_user_register_error_password_single = "[== $lang->{user_register_error_password_single} =]";
     var js_lang_user_auth_success = "[== $lang->{user_auth_success} =]";
     var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
+    var js_lang_user_auth_redirect = "[== $lang->{user_auth_redirect} =]";
+    var comeback_url = "[== $comeback =]";
 </script>
 <script src="/js/modules/user_authorize.js"></script>

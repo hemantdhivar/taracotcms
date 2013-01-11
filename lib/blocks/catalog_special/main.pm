@@ -27,7 +27,8 @@ sub _load_lang {
 
 sub data() {
  my $self=shift;
- my $current_lang = &taracot::_detect_lang() || config->{lang_default};
+ my $dl = &taracot::_detect_lang();
+ my $current_lang = $dl->{lng} || config->{lang_default};
  &_load_lang($current_lang);
  my %reply = (
   block_content => ''  

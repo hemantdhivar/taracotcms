@@ -16,6 +16,7 @@ my $defroute = '/user';
 
 my $lang;
 prefix $defroute;
+my $detect_lang;
 
 sub _name() {
  &_load_lang();
@@ -25,7 +26,8 @@ sub _defroute() {
   return $defroute;
 }
 sub _load_lang {
-  my $lng = &taracot::_detect_lang() || config->{lang_default};
+  $detect_lang = &taracot::_detect_lang();
+  my $lng = $detect_lang->{lng} || config->{lang_default};
   my $lang_adm = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/user/lang/en.lng') || {};
   my $lang_adm_cnt={};
   if ($lng ne 'en') {
@@ -46,7 +48,7 @@ get '/register' => sub {
   if ($auth_data) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
-  my $render_template = &taracot::_process_template( template 'user_register', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_register', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -152,9 +154,15 @@ get '/authorize' => sub {
   my $auth_data = &taracot::_auth();
   if ($auth_data) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
+  my $comeback = param('comeback') || '';
+  if ($comeback) {
+    $comeback =~ s/\"/&quot;/gm;
+    $comeback =~ s/\</&lt;/gm;
+    $comeback =~ s/\>/&gt;/gm;
+  }
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, current_lang => $_current_lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data, comeback => $comeback }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -262,7 +270,7 @@ get '/activate/:username/:verification' => sub {
   }
   database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => '', status => 1, lastchanged => time }); 
   $msg = $lang->{user_activate_success};
-  my $render_template = &taracot::_process_template( template 'user_activate', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_activate', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -274,7 +282,7 @@ get '/password' => sub {
   my $_current_lang=_load_lang();
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  my $render_template = &taracot::_process_template( template 'user_password', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password} }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_password', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password} }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -361,15 +369,15 @@ get '/password/reset/:username/:verification' => sub {
   my $verification = params->{verification};
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
   if ($username !~ /^[a-z0-9_\-]{1,100}$/ || $verification !~ /^[a-f0-9]{32}$/) { 
-    my $render_template = &taracot::_process_template( template 'user_password_reset', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset} }, { layout => config->{layout}.'_'.$_current_lang } );
+    my $render_template = &taracot::_process_template( template 'user_password_reset', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset} }, { layout => config->{layout}.'_'.$_current_lang } );
     return $render_template;
   }  
   my $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, verification => 'pwd_'.$verification, status => 1 });
   if (!$db_data->{id}) {
-    my $render_template = &taracot::_process_template( template 'user_password_reset', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset} }, { layout => config->{layout}.'_'.$_current_lang } );
+    my $render_template = &taracot::_process_template( template 'user_password_reset', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset} }, { layout => config->{layout}.'_'.$_current_lang } );
     return $render_template;
   }
-  my $render_template = &taracot::_process_template( template 'user_password_reset', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset}, username => $username, verification => $verification }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_password_reset', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset}, username => $username, verification => $verification }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -441,7 +449,7 @@ get '/account' => sub {
   if (-e config->{files_dir}.'/avatars/'.$auth->{username}.'.jpg') {
     $avatar = config->{files_url}.'/avatars/'.$auth->{username}.'.jpg';
   }
-  my $render_template = &taracot::_process_template( template 'user_account', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_account', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -662,7 +670,7 @@ get '/logout' => sub {
   my $_current_lang=_load_lang();
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
-  my $render_template = &taracot::_process_template( template 'user_logout', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_account_logout} }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_logout', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_account_logout} }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
