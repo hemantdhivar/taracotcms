@@ -14,7 +14,7 @@
        </select>      
   		</div>
   		<div class="controls">
-  		 <input type="button" class="btn" value="[== $lang->{load_tree} =]" id="tree_btn_load" />
+  		 <button type="button" class="btn" id="tree_btn_load">[== $lang->{load_tree} =]</button>
   		</div>
 		</div>
   </span> 
@@ -22,7 +22,7 @@
  <div id="tree_editor" style="display:none">
    <div class="row" style="padding-bottom:5px">
      <div class="span4" style="padding-top:10px;">
-       <span id="tree_btn_add" class="btn btn-success"><i class="icon-plus icon-white"></i></span>&nbsp;<span id="tree_btn_del" class="btn btn-danger"><i class="icon-trash icon-white"></i></span>
+       <button type="button" id="tree_btn_add" class="btn btn-success"><i class="icon-plus icon-white"></i></button>&nbsp;<button type="button" id="tree_btn_del" class="btn btn-danger"><i class="icon-trash icon-white"></i></button>
      </div>
      <div class="span8"></div>
    </div>
@@ -44,7 +44,7 @@
         </div>
         <div class="control-group" style="padding-top:6px text-align:right; border-top:1px solid #ccc">
          <div class="controls" style="padding-top:15px">
-          <input type="button" class="btn" id="node_btn_save" value="[== $lang->{node_save} =]" />&nbsp;<input type="button" class="btn" id="node_btn_cancel" value="[== $lang->{node_cancel} =]" />
+          <button type="button" class="btn" id="node_btn_save">[== $lang->{node_save} =]</button>&nbsp;<button type="button" class="btn" id="node_btn_cancel">[== $lang->{node_cancel} =]</button>
          </div> 
         </div>
       </span>
@@ -55,7 +55,7 @@
   	  <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
  		</div>
  		<div id="tree_btns">
-      <input type="button" id="tree_btn_serialize" class="btn" value="[== $lang->{tree_save} =]" />&nbsp;<input type="button" id="tree_btn_cancel" class="btn" value="[== $lang->{tree_cancel} =]" />&nbsp;<input type="button" id="tree_btn_reset" class="btn btn-danger" value="[== $lang->{tree_reset} =]" />
+      <button type="button" id="tree_btn_serialize" class="btn">[== $lang->{tree_save} =]</button>&nbsp;<button type="button" id="tree_btn_cancel" class="btn">[== $lang->{tree_cancel} =]</button>&nbsp;<button type="button" id="tree_btn_reset" class="btn btn-danger">[== $lang->{tree_reset} =]</button>
     </div>  
    </div>
  </div>

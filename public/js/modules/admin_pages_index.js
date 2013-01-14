@@ -11,10 +11,38 @@ var html_editor = CodeMirror(document.getElementById('html_editor'), {
     lineNumbers: 'true'
 });
 var plain_editor;
+function submitOnEnter(e) {
+    var keycode;
+    if (window.event) keycode = window.event.keyCode;
+    else if (e) keycode = (e.keyCode ? e.keyCode : e.which);
+    else return false;
+    if (keycode == 13) {
+        if (window.previousKeyCode) {
+            // down=40,up=38,pgdn=34,pgup=33
+            if (window.previousKeyCode == 33 || window.previousKeyCode == 34 ||
+                window.previousKeyCode == 39 || window.previousKeyCode == 40) {
+                    window.previousKeyCode = keycode;
+                    return false;
+            }
+        }
+        return true;
+    } else {
+        window.previousKeyCode = keycode;
+        return false;
+    }
+}
 // Bind Enter key 
 $('#language_select_lang').bind('keypress', function (e) {
     if (e.keyCode == 13) {
         $('#btn_language_select_save').click();
+    }
+});
+$('.data-edit-field').bind('keypress', function (e) {
+    if (e.keyCode == 13) {
+        $('#btn_edit_save').click();
+    }
+    if (e.keyCode == 27) {
+        $('#btn_edit_cancel').click();
     }
 });
 $('#layout_select_layout').bind('keypress', function (e) {
@@ -87,7 +115,7 @@ $(document).ready(function () {
                 "aTargets": [3]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center;width:92px"><span class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+                    return '<div style="text-align:center;width:92px"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
                 },
                 "aTargets": [3]
             }, {
@@ -153,7 +181,7 @@ $(document).ready(function () {
                 "aTargets": [6]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center"><span class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+                    return '<div style="text-align:center"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
                 },
                 "aTargets": [6]
             }, {

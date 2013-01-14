@@ -17,12 +17,12 @@
 <div id="data_overview">
 	<div class="btn-toolbar">
     <div class="btn-group">
-      <span id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_add} =]</span></span>
-      <span id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_del} =]</span></span>
+      <button type="button" id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_add} =]</span></button>
+      <button type="button" id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_del} =]</span></span>
     </div>
     <div class="btn-group">
-      <span id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');$('#data_table_mobile').checkAll('table_cbx');"><i class="icon-ok-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_all} =]</span></span>
-      <span id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');$('#data_table_mobile').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_none} =]</span></span>
+      <button type="button" id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');$('#data_table_mobile').checkAll('table_cbx');"><i class="icon-ok-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_all} =]</span></button>
+      <button type="button" id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');$('#data_table_mobile').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_none} =]</span></button>
     </div>
   </div>
   <div><img src="/images/blank.gif" width="1" height="50" alt="" /></div>
@@ -67,7 +67,7 @@
   <p>[== $lang->{delete_confirmation_msg1} =]<br /><br /><span id="delete_row_list">none</span><br /><br />[== $lang->{delete_confirmation_msg2} =]</p>
  </div>
   <div class="modal-footer">
-     <a class="btn" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</a>&nbsp;<a class="btn btn-danger" id="btn_delete">[== $lang->{delete} =]</a>
+     <button type="button" class="btn" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</button>&nbsp;<button type="button" class="btn btn-danger" id="btn_delete">[== $lang->{delete} =]</button>
  </div>
 </div>
 
@@ -84,7 +84,7 @@
   <p>[== $lang->{delete_none_selected_msg} =]</p>
  </div>
   <div class="modal-footer">
-    <a class="btn" id="btn_none_selected_close">[== $lang->{btn_close} =]</a>
+    <button type="button" class="btn" id="btn_none_selected_close">[== $lang->{btn_close} =]</button>
  </div>
 </div>
 
@@ -113,8 +113,8 @@
   </span>
  </div>
   <div class="modal-footer">
-    <a class="btn" id="btn_language_select_close">[== $lang->{edit_cancel} =]</a>
-    <a class="btn btn-success" id="btn_language_select_save">[== $lang->{edit_save} =]</a>
+    <button type="button" class="btn" id="btn_language_select_close">[== $lang->{edit_cancel} =]</button>
+    <button type="button" class="btn btn-success" id="btn_language_select_save">[== $lang->{edit_save} =]</button>
  </div>
 </div>
 
@@ -131,7 +131,7 @@
   <span id="error_dialog_msg"></span>
  </div>
   <div class="modal-footer">
-    <a class="btn" id="btn_error_dialog_close">[== $lang->{btn_close} =]</a>
+    <button type="button" class="btn" id="btn_error_dialog_close">[== $lang->{btn_close} =]</button>
  </div>
 </div>
 
@@ -156,21 +156,21 @@
         <div class="control-group" id="cg_s_name">
     			<label class="control-label" for="s_name">[== $lang->{s_name} =]&nbsp;<span class="required_field">*</span></label>
     			<div class="controls">
-    				<input type="text" class="input-xlarge" id="s_name">
+    				<input type="text" class="input-xlarge data-edit-field" id="s_name">
     			</div>
     		</div>
         
         <div class="control-group" id="cg_s_value">
     			<label class="control-label" for="s_value">[== $lang->{s_value} =]</label>
     			<div class="controls">
-    				<input type="text" class="input-xlarge" id="s_value">
+    				<input type="text" class="input-xlarge data-edit-field" id="s_value">
     			</div>
     		</div>
     		
      		<div class="control-group" id="cg_lang">
      			<label class="control-label" for="lang">[== $lang->{language} =]&nbsp;<span class="required_field">*</span></label>
      			<div class="controls">
-     				<select class="input-xlarge" id="lang">
+     				<select class="input-xlarge data-edit-field" id="lang">
     				 [== $list_langs =]
      				</select>
      			</div>
@@ -189,7 +189,7 @@
   			<img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
   		</div>
   		<div id="data_edit_form_buttons">
-  			<span class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</span>&nbsp;<span class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</span>
+  			<button type="button" class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</button>&nbsp;<button type="button" class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</button>
   		</div>
   		<span class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</span>
   		<!-- data_edit_form_buttons -->

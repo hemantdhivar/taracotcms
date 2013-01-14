@@ -36,32 +36,21 @@
         </div>
       </div>
     </div>
-    <div class="container taracot-header">
-      <div class="row">
-        <div class="span12 visible-desktop" id="taracot-header-span">
-          <?pl if ($auth_data->{id}) { ?>
-          Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
-          <?pl } else { ?>
-          <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
-          <?pl } ?>
-          <div class="btn-group">
-            <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
-            <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left;width:30px">              
-            </ul>
-          </div>
-        </div>
+    <div class="taracot-header" style="text-align:right;width:100%">
+      <?pl if ($auth_data->{id}) { ?>
+      Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
+      <?pl } else { ?>
+      <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
+      <?pl } ?>
+      <div class="btn-group">
+        <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left">              
+        </ul>
       </div>
     </div>
   </div>
   <div id="taracot-top-img"></div>  
   <div class="container taracot-after-header" id="taracot-content">
-    <div class="visible-phone visible-tablet taracot-phone-login-buttons">
-      <?pl if ($auth_data->{id}) { ?>
-      Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
-      <?pl } else { ?>
-      <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>      
-      <?pl } ?>      
-    </div>
     [== $content =]     
   </div>  
   <footer id="taracot-footer">
@@ -70,12 +59,9 @@
     </div>
   </footer>
   <script type="text/javascript">
-  var langs = jQuery.parseJSON('[== $detect_lang->{list} =]');
-  if (langs && langs.length>0) {
-    for (var i=0; i<langs.length; i++) {
-      $('#taracot_ui_lang_select').append('<li>Lang'+langs[i].long+'</li>');
-    }
-  }  
+   var taracot_langs_available = jQuery.parseJSON('[== $detect_lang->{list} =]');
+   var taracot_lang_current = "[== $detect_lang->{lng} =]";
   </script>
+  <script src="/js/taracot.frontend.min.js"></script>
 </body>
 </html>

@@ -95,7 +95,7 @@ sub _detect_lang() {
     foreach my $item(@langs) {
       my $ln = {};
       if (config->{lang_default} eq $item) {
-        $item='';
+        $ln->{default} = '1';
       }
       $ln->{short} = $item;
       $ln->{long} = $langs_long[$cnt];
