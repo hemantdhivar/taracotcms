@@ -211,6 +211,21 @@ while(my ($key) = each %$user_data) {
 	};
 }
 
+# Disable outdated hosting accounts
+
+my @zero_days;
+
+$log->write("[INFO] Disabling accounts with host_days_remain = 0") if $log_level<=INFO;
+$sth = $dbh->prepare("SELECT host_acc FROM `".config->{db_table_prefix}."_billing_hosting` WHERE host_days_remain=0");
+if ($sth->execute()) {
+	while (my ($acc) = $sth->fetchrow_array()) {
+		push @zero_days, $acc;
+	}
+} else {
+	$log->write("[ERROR] Error while getting accounts with host_days_remain = 0 from ".config->{db_table_prefix}."_billing_hosting") if $log_level<=ERROR;	
+}
+$sth->finish();
+
 # Disconnect from DB
 $log->write("[DEBUG] Disconnecting from the database") if $log_level<=DEBUG;
 &disconnect_db();

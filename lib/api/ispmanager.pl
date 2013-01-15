@@ -59,4 +59,19 @@ sub APIUserTurnOn {
  }
 }
 
+sub APIUserTurnOff {
+ my $login=$_[0];
+ my $response = $agent->get("$CPANEL?authinfo=$AUTHDATA&out=json&func=user.disable&elid=$login");
+ if (!$response->is_success) {
+ 	return 0;
+ }
+ my $data;
+ eval { $data = decode_json $response->content; }; return 0 if $@;
+ if ($data->{error}->{code}) {
+ 	return -1;
+ } else {
+ 	return 1;
+ }
+}
+
 1;

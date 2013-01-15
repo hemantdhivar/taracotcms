@@ -22,6 +22,18 @@
   <div class="container navbar-wrapper">
     <a href="/"><img id="taracot-logo" src="/taracot/logo_white_235.png" width="235" height="51" alt="Taracot CMS" class="visible-desktop visible-tablet" /></a>
     <a href="/"><img id="taracot-logo-small" src="/taracot/logo_white_51.png" width="51" height="51" alt="Taracot CMS" class="visible-phone" /></a>
+    <div class="taracot-header container">
+      <?pl if ($auth_data->{id}) { ?>
+      <div class="taracot-logged-in-as"><span class="label label-inverse">Logged in as: [== $auth_data->{username} =]</span></div><div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
+      <?pl } else { ?>
+      <div class="taracot-logged-in-as"><span class="label label-inverse">Not logged in</span></div><div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
+      <?pl } ?>
+      <div class="btn-group">
+        <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left">              
+        </ul>
+      </div>
+    </div>
     <div class="navbar">      
       <div class="navbar-inner">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -36,19 +48,7 @@
           </ul>
         </div>
       </div>
-    </div>
-    <div class="taracot-header" style="text-align:right;width:100%">
-      <?pl if ($auth_data->{id}) { ?>
-      Logged in as: <b>[== $auth_data->{username} =]</b>&nbsp;&nbsp;<div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
-      <?pl } else { ?>
-      <div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
-      <?pl } ?>
-      <div class="btn-group">
-        <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
-        <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left">              
-        </ul>
-      </div>
-    </div>
+    </div>    
   </div>
   <div id="taracot-top-img"></div>  
   <div class="container taracot-after-header" id="taracot-content">
