@@ -31,6 +31,10 @@ site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
 billing_cpanel_plugin: 'ispmanager'
 
+auth_facebook_app_id: '000000000000'
+auth_facebook_app_secret: ''
+auth_facebook_redirect_uri: 'http://sandbox.taracot.org/user/authorize/facebook/'
+
 plugins:
  Database:
   driver: 'mysql'
