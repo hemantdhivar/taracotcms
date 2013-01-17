@@ -1,4 +1,4 @@
-package modules::auth_facebook::main;
+package modules::auth_google::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use LWP::UserAgent;
@@ -14,35 +14,31 @@ $agent->default_header('Content-Length' => "0 ");
 
 prefix '/';
 
-get '/user/authorize/facebook/' => sub { 
+get '/user/authorize/google/' => sub { 
 
   my $auth_data = &taracot::_auth();
   if ($auth_data) { 
     redirect '/user/account';
-    return; 
+    return;
   } 
   my $detect_lang = &taracot::_detect_lang();
   my $_current_lang = $detect_lang->{lng} || config->{lang_default};
 
-  # Try to get data from facebook
+  # Try to get data from google
 
   my $code = param('code');
-
-  my $response = $agent->get("https://graph.facebook.com/oauth/access_token?client_id=".config->{auth_facebook_app_id}."&client_secret=".&config->{auth_facebook_app_secret}."&redirect_uri=".config->{auth_facebook_redirect_uri}."&code=".url_encode($code));
+  my $response = $agent->post("https://accounts.google.com/o/oauth2/token", { code => $code, client_id => config->{auth_google_client_id}, client_secret => config->{auth_google_client_secret}, redirect_uri => config->{auth_google_redirect_uri}, grant_type => 'authorization_code' });
   if (!$response->is_success) {
     redirect '/user/authorize';
     return;
   }
-  my $data = {};
-  foreach my $item (split(/\&/, $response->content)) {
-    my ($name, $val) = split(/\=/, $item);
-    $data->{$name} = $val;
-  }
-  if (!$data->{access_token} || length($data->{access_token}) == 0) {
+  my $data;
+  eval { $data = decode_json $response->content; }; 
+  if (!$data->{access_token}) {
     redirect '/user/authorize';
     return;
   }
-  $response = $agent->get("https://graph.facebook.com/me?access_token=".url_encode($data->{access_token}));
+  $response = $agent->get("https://www.googleapis.com/oauth2/v1/userinfo?access_token=".url_encode($data->{access_token}));
   if (!$response->is_success) {
     redirect '/user/authorize';
     return;
@@ -75,11 +71,12 @@ get '/user/authorize/facebook/' => sub {
   if ($id) {
     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time }); 
     session user => $id;
-    redirect '/user/account?'.md5_hex(rand*time);
+    redirect '/user/account?'.md5_hex(rand*time); 
     return;
   } else {
-    my $username = $json->{username};
-    $username='facebook.'.$username;
+    my $username = $json->{id};
+    redirect '/user/authorize' if !$username;
+    $username='google.'.$username;
     my $password = md5_hex(config->{salt}.(rand * time));
     my $phone = '';
     my $realname = $json->{name};
@@ -91,7 +88,7 @@ get '/user/authorize/facebook/' => sub {
     my $id = database->{q{mysql_insertid}}; 
     if ($id) {
      session user => $id;
-     redirect '/user/account?'.md5_hex(rand*time);
+     redirect '/user/account?'.md5_hex(rand*time); 
      return;
     } else {
      redirect '/user/authorize'; 

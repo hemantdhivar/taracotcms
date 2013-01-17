@@ -31,9 +31,14 @@ site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
 billing_cpanel_plugin: 'ispmanager'
 
-auth_facebook_app_id: '000000000000'
+auth_facebook_app_id: ''
 auth_facebook_app_secret: ''
 auth_facebook_redirect_uri: 'http://sandbox.taracot.org/user/authorize/facebook/'
+auth_google_client_id: ''
+auth_google_client_secret: ''
+auth_google_redirect_uri: 'http://sandbox.taracot.org/user/authorize/google/'
+auth_yandex_client_id: ''
+auth_yandex_client_secret: ''
 
 plugins:
  Database:
