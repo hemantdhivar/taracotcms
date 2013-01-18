@@ -151,7 +151,7 @@ post '/data/save' => sub {
   my $id=param('id') || 0;
   $id=int($id);
   
-  if ($username !~ /^[A-Za-z0-9_\-]{1,100}$/) {
+  if ($username !~ /^[A-Za-z0-9_\-\.]{1,100}$/) {
    return qq~{"result":"0","field":"username","error":"~.$lang->{form_error_invalid_username}.qq~"}~;
   }
   $username=lc $username;
@@ -160,7 +160,7 @@ post '/data/save' => sub {
      return qq~{"result":"0","field":"password","error":"~.$lang->{form_error_invalid_password}.qq~"}~;
     }
   }
-  if ($email !~ /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/ || length($email) >80) {
+  if ($email && ($email !~ /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/ || length($email) >80)) {
    return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_invalid_email}.qq~"}~;
   }
   $email=lc $email;
@@ -195,18 +195,20 @@ post '/data/save' => sub {
    }
   }
   $sth->finish();
-  
-  $sth = database->prepare(
-   'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE email='.database->quote($email).$dupesql
-  );
-  if ($sth->execute()) {
-   my ($tmpid) = $sth->fetchrow_array;
-   if ($tmpid) {
+
+  if ($email) {  
+    $sth = database->prepare(
+     'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE email='.database->quote($email).$dupesql
+    );
+    if ($sth->execute()) {
+     my ($tmpid) = $sth->fetchrow_array;
+     if ($tmpid) {
+      $sth->finish();
+      return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_duplicate_email}.qq~"}~;
+     } 
+    }
     $sth->finish();
-    return qq~{"result":"0","field":"email","error":"~.$lang->{form_error_duplicate_email}.qq~"}~;
-   } 
   }
-  $sth->finish();
   
   if ($id > 0) {
    if ($password) {
@@ -242,7 +244,7 @@ post '/data/save/field' => sub {
   
   if ($field_name eq 'username') {
    my $username=$field_value;
-   if ($username !~ /^[A-Za-z0-9_\-]{1,100}$/) {
+   if ($username !~ /^[A-Za-z0-9_\-\.]{1,100}$/) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_username}.qq~"}~;
    }
    $username=lc $username;
@@ -265,21 +267,23 @@ post '/data/save/field' => sub {
   
   if ($field_name eq 'email') {
    my $email=$field_value;
-   if ($email !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/ || length($email) > 80) {
+   if ($email && ($email !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/ || length($email) > 80)) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_email}.qq~"}~;
    }
-   $email=lc $email;
-   my $sth = database->prepare(
-    'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE email='.database->quote($email).' AND id != '.$field_id
-   );
-   if ($sth->execute()) {
-    my ($tmpid) = $sth->fetchrow_array;
-    if ($tmpid) {
+   if ($email) {
+     $email=lc $email;
+     my $sth = database->prepare(
+      'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE email='.database->quote($email).' AND id != '.$field_id
+     );
+     if ($sth->execute()) {
+      my ($tmpid) = $sth->fetchrow_array;
+      if ($tmpid) {
+       $sth->finish();
+       return qq~{"result":"0","error":"~.$lang->{form_error_duplicate_email}.qq~"}~;
+      }
+     }
      $sth->finish();
-     return qq~{"result":"0","error":"~.$lang->{form_error_duplicate_email}.qq~"}~;
-    }
    }
-   $sth->finish();
    database->quick_update(config->{db_table_prefix}.'_users', { id => $field_id }, { email => $email, lastchanged => time });
    return qq~{"result":"1"}~;
   }

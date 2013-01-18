@@ -175,7 +175,7 @@
           </div>
         </div>
         <div class="control-group" id="cg_email">
-          <label class="control-label" for="email">[== $lang->{email} =]&nbsp;<span class="required_field">*</span></label>
+          <label class="control-label" for="email">[== $lang->{email} =]</label>
           <div class="controls">
             <input type="text" class="input-xlarge data-edit-field" id="email">
           </div>

@@ -35,22 +35,22 @@ get '/user/authorize/yandex/' => sub {
   my $data;
   eval { $data = decode_json $response->content; }; 
   if (!$data->{access_token}) {
-    redirect '/user/authorize#2';
+    redirect '/user/authorize';
     return;
   }
-  $response = $agent->get("https://login.yandex.ru/info?format=json&access_token=".$data->{access_token});
+  $response = $agent->get("https://login.yandex.ru/info?format=json&oauth_token=".$data->{access_token});
   if (!$response->is_success) {
-    redirect '/user/authorize#3'.$response->status_line;
+    redirect '/user/authorize';
     return;
   }
   my $json;
   eval { $json = decode_json $response->content; }; 
   if ($@) {
-    redirect '/user/authorize#4';
+    redirect '/user/authorize';
     return;
   }
-  if (!$json->{email}) {
-    redirect '/user/authorize#5';
+  if (!$json->{default_email}) {
+    redirect '/user/authorize';
     return;
   }
 
@@ -74,12 +74,12 @@ get '/user/authorize/yandex/' => sub {
     redirect '/user/account?'.md5_hex(rand*time); 
     return;
   } else {
-    my $username = $json->{id};
-    redirect '/user/authorize#6' if !$username;
+    my $username = $json->{display_name};
+    redirect '/user/authorize' if !$username;
     $username='yandex.'.$username;
     my $password = md5_hex(config->{salt}.(rand * time));
     my $phone = '';
-    my $realname = $json->{name};
+    my $realname = $json->{real_name};
     $realname=~s/\"//gm;
     $realname=~s/\'//gm;
     $realname=~s/\<//gm;

@@ -326,7 +326,7 @@ $('#btn_edit_save').click(function () {
     $('#form_error_msg').hide();
     resetFormState();
     var errors = false;
-    if (!$('#username').val().match(/^[A-Za-z0-9_\-]{1,100}$/)) {
+    if (!$('#username').val().match(/^[A-Za-z0-9_\-\.]{1,100}$/)) {
         $('#cg_username').addClass('error');
         errors = true;
     }
@@ -342,7 +342,7 @@ $('#btn_edit_save').click(function () {
             }
         }
     }
-    if (!$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
+    if ($('#email').val() && !$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
         $('#cg_email').addClass('error');
         errors = true;
     }

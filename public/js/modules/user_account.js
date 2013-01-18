@@ -2,6 +2,15 @@ $(document).ready(function () {
     $('#account_tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
+        if ($('#emc_email').val()) {
+            $('#cg_emc_password').show();
+            $('#cg_emc_new_password').hide();
+        } else {
+            $('#cg_emc_password').hide();
+            $('#cg_emc_new_password').show();
+            $('#emc_new_password').val('');
+            $('#emc_new_password_repeat').val('');
+        }
     });
     var uploader;
     $('.nav-tabs a').on('shown', function (e) {
