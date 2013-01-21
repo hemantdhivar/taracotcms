@@ -1,4 +1,4 @@
-package modules::auth_facebook::main;
+package modules::auth_vk::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use LWP::UserAgent;
@@ -8,41 +8,41 @@ use Digest::MD5 qw(md5_hex);
 use Dancer::Plugin::Database;
 
 my $agent=LWP::UserAgent->new;
-$agent->timeout(5);
+$agent->timeout(10);
 $agent->env_proxy;
 $agent->default_header('Content-Length' => "0 ");
 
 prefix '/';
 
-get '/user/authorize/facebook/' => sub { 
+get '/user/authorize/vk/' => sub { 
 
   my $auth_data = &taracot::_auth();
   if ($auth_data) { 
     redirect '/user/account';
-    return; 
+    return;
   } 
   my $detect_lang = &taracot::_detect_lang();
   my $_current_lang = $detect_lang->{lng} || config->{lang_default};
 
-  # Try to get data from facebook
+  # Try to get data from vk
 
   my $code = param('code');
-
-  my $response = $agent->get("https://graph.facebook.com/oauth/access_token?client_id=".config->{auth_facebook_app_id}."&client_secret=".&config->{auth_facebook_app_secret}."&redirect_uri=".config->{auth_facebook_redirect_uri}."&code=".url_encode($code));
+  my $response = $agent->post("https://oauth.vk.com/token", { code => $code, redirect_uri => config->{auth_vk_redirect_uri}, client_id => config->{auth_vk_client_id}, client_secret => config->{auth_vk_client_secret} });
   if (!$response->is_success) {
     redirect '/user/authorize';
     return;
   }
-  my $data = {};
-  foreach my $item (split(/\&/, $response->content)) {
-    my ($name, $val) = split(/\=/, $item);
-    $data->{$name} = $val;
-  }
-  if (!$data->{access_token} || length($data->{access_token}) == 0) {
+  my $data;  
+  eval { $data = decode_json $response->content; }; 
+  if (!$data->{access_token}) {
     redirect '/user/authorize';
     return;
   }
-  $response = $agent->get("https://graph.facebook.com/me?access_token=".url_encode($data->{access_token}));
+  if (!$data->{user_id}) {
+    redirect '/user/authorize';
+    return;
+  }
+  $response = $agent->get("https://api.vk.com/method/users.get?access_token=".$data->{access_token}."&uids=".$data->{user_id}."&fields=uid,first_name,last_name,screen_name");
   if (!$response->is_success) {
     redirect '/user/authorize';
     return;
@@ -53,17 +53,21 @@ get '/user/authorize/facebook/' => sub {
     redirect '/user/authorize';
     return;
   }
-  if (!$json->{email}) {
+
+  my @da = @{$$json{response}};
+  $json = $da[0];
+
+  if (!$json->{uid}) {
     redirect '/user/authorize';
     return;
   }
 
   # Check if user is registered
 
-  my $email = lc $json->{email};
+  my $username = 'vk.'.lc($json->{uid});
   my $id;
   my $sth = database->prepare(
-    'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE email='.database->quote($email)
+    'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE username='.database->quote($username)
   );
   if ($sth->execute()) {
     ($id) = $sth->fetchrow_array();
@@ -75,23 +79,20 @@ get '/user/authorize/facebook/' => sub {
   if ($id) {
     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time }); 
     session user => $id;
-    redirect '/user/account?'.md5_hex(rand*time);
+    redirect '/user/account?'.md5_hex(rand*time); 
     return;
   } else {
-    my $username = $json->{username};
-    $username='facebook.'.$username;
     my $password = md5_hex(config->{salt}.(rand * time));
-    my $phone = '';
-    my $realname = $json->{name};
+    my $realname = $json->{first_name}.' '.$json->{last_name};
     $realname=~s/\"//gm;
     $realname=~s/\'//gm;
     $realname=~s/\<//gm;
     $realname=~s/\>//gm;
-    database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, password_unset => 1, email => $email, phone => $phone, realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
+    database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, password_unset => 1, email => '', phone => '', realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
     my $id = database->{q{mysql_insertid}}; 
     if ($id) {
      session user => $id;
-     redirect '/user/account?'.md5_hex(rand*time);
+     redirect '/user/account?'.md5_hex(rand*time); 
      return;
     } else {
      redirect '/user/authorize'; 

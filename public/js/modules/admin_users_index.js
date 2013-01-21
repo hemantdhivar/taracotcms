@@ -2,6 +2,7 @@
 var edit_id = 0;
 var delete_data = new Array();
 var dtable;
+var mobile_mode = false;
 function submitOnEnter(e) {
     var keycode;
     if (window.event) keycode = window.event.keyCode;
@@ -47,7 +48,7 @@ jQuery.fn.uncheckAll = function (name) {
 }
 $(document).ready(function () {
     $().dropdown();
-    var mobile_mode = $('#mobile_mode').is(":visible");
+    mobile_mode = $('#mobile_mode').is(":visible");
     var row_id = 0;
     // Init data table
     if (mobile_mode) {

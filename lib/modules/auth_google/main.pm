@@ -84,7 +84,7 @@ get '/user/authorize/google/' => sub {
     $realname=~s/\'//gm;
     $realname=~s/\<//gm;
     $realname=~s/\>//gm;
-    database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
+    database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, password_unset => 1, email => $email, phone => $phone, realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
     my $id = database->{q{mysql_insertid}}; 
     if ($id) {
      session user => $id;

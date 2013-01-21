@@ -162,7 +162,7 @@ get '/authorize' => sub {
   }
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, current_lang => $_current_lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data, comeback => $comeback }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, current_lang => $_current_lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data, comeback => $comeback, config => config }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -257,7 +257,7 @@ get '/activate/:username/:verification' => sub {
   my $username = params->{username};
   my $verification = params->{verification};
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  if ($username !~ /^[a-z0-9_\-]{1,100}$/ || $verification !~ /^[a-f0-9]{32}$/) { 
+  if ($username !~ /^[a-z0-9_\-\.]{1,100}$/ || $verification !~ /^[a-f0-9]{32}$/) { 
     $msg = $lang->{user_activate_error_url};
     my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_activate', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );    
     return $render_template;
@@ -565,9 +565,15 @@ post '/account/email/process' => sub {
   }
   # first wave validations
   my $password=param('emc_password') || '';
+  my $new_password=param('emc_new_password') || '';
   my $email=param('emc_new_email') || '';
   $email = lc $email;
-  if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+  if ($password && $password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_single};
+    push @fields, 'password';  
+  }
+  if ($new_password && $new_password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_single};
     push @fields, 'password';  
@@ -584,7 +590,7 @@ post '/account/email/process' => sub {
   }
   # second wave validations
   $password = md5_hex(config->{salt}.$password);
-  my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id}, password => $password });
+  my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id} });
   if (!$db_data_1->{id}) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_bad};
@@ -593,9 +599,20 @@ post '/account/email/process' => sub {
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
   }
+  if ($db_data_1->{email} && $password ne $db_data_1->{password}) {
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_bad};
+    push @fields, 'password';  
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
   # success  
+  if ($new_password && !$db_data_1->{email}) {
+    $password = md5_hex(config->{salt}.$new_password);  
+  }
   my $verification=md5_hex(config->{salt}.$password.time.rand);
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'act_'.$verification, lastchanged => time });   
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'act_'.$verification, password => $password, lastchanged => time });   
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/'.$auth->{username}.'/'.$verification;
   my $body = template 'user_mail_emailchange_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
@@ -626,7 +643,7 @@ post '/account/password/process' => sub {
   # first wave validations
   my $password=param('pwd_password') || '';
   my $password_old=param('pwd_old_password') || '';
-  if ($password_old !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+  if ($auth->{password_unset} ne 1 && $password_old !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_single};
     push @fields, 'old_password';  
@@ -636,7 +653,7 @@ post '/account/password/process' => sub {
     push @errors, $lang->{user_register_error_password_multi};
     push @fields, 'password';  
   }
-  if ($password eq $password_old) { 
+  if (!$auth->{password_unset} ne 1 && $password eq $password_old) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_equals};
     push @fields, 'password';  
@@ -649,8 +666,16 @@ post '/account/password/process' => sub {
   }
   # second wave validations
   $password_old = md5_hex(config->{salt}.$password_old);
-  my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id}, password => $password_old });
+  my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id} });
   if (!$db_data_1->{id}) { 
+    $res{status}=0; 
+    push @errors, $lang->{user_register_error_password_bad};
+    push @fields, 'old_password';  
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  if ($auth->{password_unset} ne 1 && $db_data_1->{password} ne $password_old) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_bad};
     push @fields, 'old_password';  
@@ -660,7 +685,7 @@ post '/account/password/process' => sub {
   }
   # success  
   $password = md5_hex(config->{salt}.$password);
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { password => $password, lastchanged => time });   
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { password => $password, password_unset => 0, lastchanged => time });   
   return $json_xs->encode(\%res);
 };
 

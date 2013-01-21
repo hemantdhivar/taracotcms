@@ -14,7 +14,7 @@
         <a href="#tab_email">[== $lang->{user_account_tab_email} =]</a>
     </li>
     <li>
-        <a href="#tab_password">[== $lang->{user_account_tab_password} =]</a>
+        <a href="#tab_password" id="change_password_tab">[== $lang->{user_account_tab_password} =]</a>
     </li>
 </ul>
 <div class="tab-content" id="account_tabs_content">
@@ -238,6 +238,7 @@ var js_lang_user_register_error_email_multi = "[== $lang->{user_register_error_e
 var js_lang_user_register_error_email_equals = "[== $lang->{user_register_error_email_equals} =]";
 var js_lang_user_account_email_saved = "[== $lang->{user_account_email_saved} =]";
 var js_lang_user_register_error_password_equals = "[== $lang->{user_register_error_password_equals} =]";
-var js_lang_user_register_error_password_multi = "[== $lang->{user_register_error_password_multi} =]";    
+var js_lang_user_register_error_password_multi = "[== $lang->{user_register_error_password_multi} =]";
+var password_unset = "[== $auth_data->{password_unset} =]";
 </script>
 <script src="/js/modules/user_account.js"></script>

@@ -585,7 +585,7 @@ sub cleanDir ($;$) {
 
 	# process subdirs
 	map {
-		cleanDir($_, $recursive);
+		#cleanDir($_, $recursive);
 		rmdir($_) || return callErrorHandler("Can't unlink $_") if $recursive == 2;
 	} @subdirs if $recursive;
 	rmdir($dirName) || return callErrorHandler("Can't unlink $dirName") if $recursive == 3;

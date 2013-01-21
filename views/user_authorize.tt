@@ -24,6 +24,19 @@
     <div class="form-actions">
         <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_auth_submit} =]</button>
         <button type="button" class="btn btn-success" id="btn_register" onclick="location.href='/user/register'">[== $lang->{user_auth_register} =]</button>
+        <br/><br/>[== $lang->{user_social} =]:<br/><br/>
+        <?pl if ($config->{auth_facebook_app_id}) { ?>
+        <button type="button" class="btn btn-small btn-inverse" onclick="location.href='https://www.facebook.com/dialog/oauth?client_id=[== $config->{auth_facebook_app_id} =]&redirect_uri=[== $config-> {auth_facebook_redirect_uri} =]&response_type=code&scope=email';">[== $lang->{social_facebook} =]</button>&nbsp;
+        <?pl } ?>
+        <?pl if ($config->{auth_google_client_id}) { ?>
+        <button type="button" class="btn btn-small btn-inverse" onclick="location.href='https://accounts.google.com/o/oauth2/auth?redirect_uri=[== $config-> {auth_google_redirect_uri} =]&response_type=code&client_id=[== $config->{auth_google_client_id} =]&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile';">[== $lang->{social_google} =]</button>&nbsp;
+        <?pl } ?>
+        <?pl if ($config->{auth_yandex_client_id}) { ?>
+        <button type="button" class="btn btn-small btn-inverse" onclick="location.href='https://oauth.yandex.ru/authorize?response_type=code&client_id=[== $config->{auth_yandex_client_id} =]';">[== $lang->{social_yandex} =]</button>&nbsp;
+        <?pl } ?>
+        <?pl if ($config->{auth_vk_client_id}) { ?>
+        <button type="button" class="btn btn-small btn-inverse" onclick="location.href='http://oauth.vk.com/authorize?client_id=[== $config->{auth_vk_client_id} =]&redirect_uri=[== $config->{auth_vk_redirect_uri} =]&response_type=code';">[== $lang->{social_vk} =]</button>&nbsp;
+        <?pl } ?>
     </div>
 </form>
 <div id="auth_form_ajax" style="display:none">
