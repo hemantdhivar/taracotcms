@@ -32,15 +32,16 @@
   <!-- module css -->
 </head>
 <body>
-  <div class="container-fluid" style="margin-top:19px;">
-    <div class="navbar navbar-inverse">      
+  <div id="taracot-top-img"></div>
+  <div id="taracot-admin-container" class="container-fluid" style="margin-top:19px;">
+    <div class="navbar">      
       <div class="navbar-inner">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
            <span class="icon-bar"></span>
            <span class="icon-bar"></span>
            <span class="icon-bar"></span>
          </a>
-         <a class="brand" href="#">[== $lang->{admin_taracot} =]</a>
+         <a class="brand" href="/admin/">[== $lang->{admin_taracot} =]</a>
          <div class="nav-collapse collapse">
           <ul class="nav">
             [== $navdata =]<li class="visible-tablet visible-phone"><a href="/admin/logout">[== $lang->{admin_logout} =]</a></li>
@@ -55,7 +56,7 @@
           </ul>
         </div>
       </div>
-    </div>
+    </div>     
     [== $content =]
   </div>
 </body>  

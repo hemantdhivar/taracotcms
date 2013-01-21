@@ -4,7 +4,7 @@
 <script type="text/javascript" src="/js/bootstrap.datepicker.min.js"></script>
 <script type="text/javascript" src="/js/bootstrap.timepicker.min.js"></script>
 
-<h1>[== $lang->{transactions_history} =]</h1>
+<h1 class="taracot-admin-h1">[== $lang->{transactions_history} =]</h1>
 
 <!-- 
  Data table 

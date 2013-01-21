@@ -2,7 +2,7 @@
 <script type="text/javascript" src="/js/admin/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/js/admin/jquery.jeditable.min.js"></script>
 
-<h1>[== $lang->{module_name_long} =]</h1>
+<h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
 <br />
 
 <!-- 

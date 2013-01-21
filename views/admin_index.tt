@@ -3,10 +3,10 @@
 <img src="/images/logo.png" width="90" height="90" alt="Taracot CMS" />
 </div>
 <div class="span10">
-<h1>Taracot</h1>
+<h1 class="taracot-admin-h1">Taracot</h1>
 <br/>
 Open source content management system<br/>
-Version: [== $taracot_current_version =]<br /><br />&copy; 2003-2012 Michael A. Matveev
+Version: [== $taracot_current_version =]<br /><br />&copy; 2003-2013 Michael A. Matveev
 <br/><br/>
 Components license:
 <br/><br/>

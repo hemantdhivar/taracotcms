@@ -2,7 +2,7 @@
  <script type="text/javascript" src="/js/admin/hashtable.js"></script>
  <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
  <script type="text/javascript" src="/js/admin/jquery.zclip.min.js"></script>
-  <h1>[== $lang->{module_name_long} =]</h1>
+ <h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
  <br />
  <div id="files_table">
    [== $lang->{files_hint} =]
