@@ -48,7 +48,7 @@ get '/register' => sub {
   if ($auth_data) { redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
-  my $render_template = &taracot::_process_template( template 'user_register', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'user_register', { detect_lang => $detect_lang, config => config, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -152,7 +152,7 @@ post '/register/process' => sub {
 
 get '/authorize' => sub {
   my $auth_data = &taracot::_auth();
-  if ($auth_data) { redirect '/user/account' } 
+  if ($auth_data) { redirect '/user/account'; return; } 
   my $_current_lang=_load_lang();
   my $comeback = param('comeback') || '';
   if ($comeback) {
@@ -160,6 +160,12 @@ get '/authorize' => sub {
     $comeback =~ s/\</&lt;/gm;
     $comeback =~ s/\>/&gt;/gm;
   }
+  if (length($comeback) > 512) {
+    redirect '/user/authorize'; 
+    return;  
+  }
+  session auth_uri_base => request->uri_base();
+  session auth_comeback => $comeback;
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
   my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, current_lang => $_current_lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data, comeback => $comeback, config => config }, { layout => config->{layout}.'_'.$_current_lang } );
@@ -244,8 +250,7 @@ post '/authorize/process' => sub {
     $res{errors}=\@errors;
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
-  }
-  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { last_lang => $_current_lang, lastchanged => time }); 
+  } 
   session user => $db_data->{id}; 
   return $json_xs->encode(\%res);
 };
@@ -449,6 +454,7 @@ get '/account' => sub {
   if (-e config->{files_dir}.'/avatars/'.$auth->{username}.'.jpg') {
     $avatar = config->{files_url}.'/avatars/'.$auth->{username}.'.jpg';
   }
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { last_lang => $_current_lang, lastchanged => time });
   my $render_template = &taracot::_process_template( template 'user_account', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
@@ -612,7 +618,7 @@ post '/account/email/process' => sub {
     $password = md5_hex(config->{salt}.$new_password);  
   }
   my $verification=md5_hex(config->{salt}.$password.time.rand);
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'act_'.$verification, password => $password, lastchanged => time });   
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'act_'.$verification, password => $password, password_unset => 0, lastchanged => time });   
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/'.$auth->{username}.'/'.$verification;
   my $body = template 'user_mail_emailchange_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };

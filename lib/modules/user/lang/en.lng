@@ -86,7 +86,7 @@ user_account_avatar_uploading_error: Error while uploading your new avatar pictu
 user_account_profile_saved: Your profile data has been saved successfully!
 user_account_password_saved: Your new password has been saved successfully!
 user_account_email_saved: Your profile has been saved successfully! At this time your account is disabled, so you need to re-activate it. Please follow the instructions you'll find in your mailbox.
-user_social: or log in using your social network account
+user_social: If you have already registered on any of the following social services, please click the corresponding button below
 social_facebook: Facebook
 social_google: Google
 social_yandex: Yandex

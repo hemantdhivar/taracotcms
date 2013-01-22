@@ -34,8 +34,12 @@
 	<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
 	<tr>
 		<td>
+			<table width="100%" bgcolor="#444444" cellpadding="10" cellspacing="0">
+			<tr><td width="100%">
 			<img class="image_fix" src="[== $site_logo_url =]" alt="[== $site_title =]" title="[== $site_title =]" />
-			<br /><br />
+			</td></tr>
+			</table>
+			<br />
 			Some of your hosting accounts / domains / services need your attention on <b>[== $site_title =]</b>.<br /><br />
 			The following items are going to expire in 7 or less days:
 			<br /><br />

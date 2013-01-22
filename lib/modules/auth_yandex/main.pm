@@ -16,12 +16,16 @@ prefix '/';
 
 get '/user/authorize/yandex/' => sub { 
 
+  my $auth_uri_base = session('auth_uri_base') || '/';
+  my $auth_comeback = session('auth_comeback') || '/user/account?'.md5_hex(rand*time);
+
   my $auth_data = &taracot::_auth();
   if ($auth_data) { 
-    redirect '/user/account';
+    redirect $auth_uri_base.'/user/account';
     return;
   } 
-  my $detect_lang = &taracot::_detect_lang();
+  
+  my $detect_lang = &taracot::_detect_lang($auth_uri_base);
   my $_current_lang = $detect_lang->{lng} || config->{lang_default};
 
   # Try to get data from yandex
@@ -29,28 +33,28 @@ get '/user/authorize/yandex/' => sub {
   my $code = param('code');
   my $response = $agent->post("https://oauth.yandex.ru/token", { code => $code, grant_type => 'authorization_code', client_id => config->{auth_yandex_client_id}, client_secret => config->{auth_yandex_client_secret} });
   if (!$response->is_success) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   my $data;
   eval { $data = decode_json $response->content; }; 
   if (!$data->{access_token}) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   $response = $agent->get("https://login.yandex.ru/info?format=json&oauth_token=".$data->{access_token});
   if (!$response->is_success) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   my $json;
   eval { $json = decode_json $response->content; }; 
   if ($@) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   if (!$json->{default_email}) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
 
@@ -71,11 +75,12 @@ get '/user/authorize/yandex/' => sub {
   if ($id) {
     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time }); 
     session user => $id;
-    redirect '/user/account?'.md5_hex(rand*time); 
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
+    redirect $auth_uri_base.$auth_comeback; 
     return;
   } else {
     my $username = $json->{display_name};
-    redirect '/user/authorize' if !$username;
+    redirect $auth_uri_base.'/user/authorize' if !$username;
     $username='yandex.'.$username;
     my $password = md5_hex(config->{salt}.(rand * time));
     my $phone = '';
@@ -88,10 +93,11 @@ get '/user/authorize/yandex/' => sub {
     my $id = database->{q{mysql_insertid}}; 
     if ($id) {
      session user => $id;
-     redirect '/user/account?'.md5_hex(rand*time); 
+     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
+     redirect $auth_uri_base.$auth_comeback; 
      return;
     } else {
-     redirect '/user/authorize'; 
+     redirect $auth_uri_base.'/user/authorize'; 
      return;
     }
   }

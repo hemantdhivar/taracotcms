@@ -16,12 +16,16 @@ prefix '/';
 
 get '/user/authorize/facebook/' => sub { 
 
+  my $auth_uri_base = session('auth_uri_base') || '/';
+  my $auth_comeback = session('auth_comeback') || '/user/account?'.md5_hex(rand*time);
+
   my $auth_data = &taracot::_auth();
   if ($auth_data) { 
-    redirect '/user/account';
+    redirect $auth_uri_base.'/user/account';
     return; 
   } 
-  my $detect_lang = &taracot::_detect_lang();
+  
+  my $detect_lang = &taracot::_detect_lang($auth_uri_base);
   my $_current_lang = $detect_lang->{lng} || config->{lang_default};
 
   # Try to get data from facebook
@@ -30,7 +34,7 @@ get '/user/authorize/facebook/' => sub {
 
   my $response = $agent->get("https://graph.facebook.com/oauth/access_token?client_id=".config->{auth_facebook_app_id}."&client_secret=".&config->{auth_facebook_app_secret}."&redirect_uri=".config->{auth_facebook_redirect_uri}."&code=".url_encode($code));
   if (!$response->is_success) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   my $data = {};
@@ -39,22 +43,22 @@ get '/user/authorize/facebook/' => sub {
     $data->{$name} = $val;
   }
   if (!$data->{access_token} || length($data->{access_token}) == 0) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   $response = $agent->get("https://graph.facebook.com/me?access_token=".url_encode($data->{access_token}));
   if (!$response->is_success) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   my $json;
   eval { $json = decode_json $response->content; }; 
   if ($@) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
   if (!$json->{email}) {
-    redirect '/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';
     return;
   }
 
@@ -75,7 +79,8 @@ get '/user/authorize/facebook/' => sub {
   if ($id) {
     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time }); 
     session user => $id;
-    redirect '/user/account?'.md5_hex(rand*time);
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
+    redirect $auth_uri_base.$auth_comeback;
     return;
   } else {
     my $username = $json->{username};
@@ -91,10 +96,11 @@ get '/user/authorize/facebook/' => sub {
     my $id = database->{q{mysql_insertid}}; 
     if ($id) {
      session user => $id;
-     redirect '/user/account?'.md5_hex(rand*time);
+     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
+     redirect $auth_uri_base.$auth_comeback;
      return;
     } else {
-     redirect '/user/authorize'; 
+     redirect $auth_uri_base.'/user/authorize'; 
      return;
     }
   }

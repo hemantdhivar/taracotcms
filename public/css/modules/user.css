@@ -156,8 +156,22 @@ select:focus, input[type="file"]:focus, input[type="radio"]:focus, input[type="c
   -o-animation-delay:1.3s;
   -ms-animation-delay:1.3s;
 }
-
 100%
 {
   background-color:#FFF;
 }
+[class^="social-i-"]
+    {
+    display:inline-block;
+    width:16px;
+    height:16px;
+    vertical-align:text-top;
+    background-image:url(/images/social-icons.png);
+    background-position:16px 16px;
+    background-repeat:no-repeat;*margin-right:.3em;
+    }
+[class^="social-i-"]:last-child{*margin-left:0;}
+    .social-i-facebook {background-position:0px 0px;} 
+    .social-i-google {background-position:-16px 0px;} 
+    .social-i-vkontakte {background-position:-32px 0px;} 
+    .social-i-yandex {background-position:-48px 0px;}

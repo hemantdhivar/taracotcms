@@ -82,7 +82,7 @@ sub _detect_lang() {
  my $lng;
  my @lst;
  if (defined request) {
-    my $_uribase=request->uri_base();
+    my $_uribase = $_[0] || request->uri_base();
     $_uribase=~s/http(s)?\:\/\///im;
     my ($lang)=split(/\./, $_uribase);
     my $lang_avail=lc config->{lang_available};
