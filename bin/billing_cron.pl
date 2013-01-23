@@ -46,9 +46,9 @@ my $lang_data = {
     ru => {
         useroff => qq~Ошибка во время отключения пользовательского аккаунта~,
         mail_subj => "Сообщение с сайта",
-        hosting => "Хостинговые аккаунты",
-        domains => "Домены",
-        services => "Сервисы"
+        hosting => "&#1061;&#1086;&#1089;&#1090;&#1080;&#1085;&#1075;&#1086;&#1074;&#1099;&#1077; &#1072;&#1082;&#1082;&#1072;&#1091;&#1085;&#1090;&#1099;",
+        domains => "&#1044;&#1086;&#1084;&#1077;&#1085;&#1099;",
+        services => "&#1057;&#1077;&#1088;&#1074;&#1080;&#1089;&#1099;"
     }
 };
 
@@ -107,7 +107,7 @@ if ($sth->execute()) {
 $sth->finish();
 # Get outdated services list
 my @outdated_services;
-$sth = $dbh->prepare("SELECT user_id, service_id FROM `".config->{db_table_prefix}."_billing_services` WHERE service_days_remaining<8");
+$sth = $dbh->prepare("SELECT user_id, service_id FROM `".config->{db_table_prefix}."_billing_services` WHERE service_days_remaining<8 AND service_days_remaining>0");
 if ($sth->execute()) {
 	while (my $od = $sth->fetchrow_hashref()) {
 		push @outdated_services, $od;
@@ -223,6 +223,21 @@ if ($sth->execute()) {
 	}
 } else {
 	$log->write("[ERROR] Error while getting accounts with host_days_remain = 0 from ".config->{db_table_prefix}."_billing_hosting") if $log_level<=ERROR;	
+}
+$sth->finish();
+foreach my $item (@zero_days) {
+	$log->write("[INFO] Disabling account with host_days_remain=0: $item") if $log_level<=INFO;
+	my $res = &APIUserTurnOff($item);
+	if ($res ne 1) {
+		$log->write("[ERROR] Error while disabling account: $item") if $log_level<=ERROR;
+	}
+}
+
+# Detele old bills from taracot_billing_bills (older than 1 week)
+$log->write("[INFO] Deleting bills from taracot_billing_bills older than a week") if $log_level<=INFO;
+$sth = $dbh->prepare("DELETE FROM `".config->{db_table_prefix}."_billing_bills` WHERE ".time."-created > 604800");
+if (!$sth->execute()) {
+	$log->write("[ERROR] Error while deleting old bills") if $log_level<=ERROR;	
 }
 $sth->finish();
 

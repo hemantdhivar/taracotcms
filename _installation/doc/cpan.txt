@@ -17,3 +17,4 @@ Try::Tiny
 Date::Format
 Date::Parse 
 Crypt::SSLeay
+Net::Whois::Parser 

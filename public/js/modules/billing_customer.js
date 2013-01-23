@@ -722,19 +722,19 @@ $(document).ready(function () {
             $('#cg_domain_name').addClass('error');
             errors = true;
         }
-        if (!$('#ns1').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        if (!$('#ns1').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
             $('#cg_ns1').addClass('error');
             errors = true;
         }
-        if (!$('#ns2').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        if (!$('#ns2').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
             $('#cg_ns2').addClass('error');
             errors = true;
         }
-        if ($('#ns3').val() && !$('#ns3').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        if ($('#ns3').val() && !$('#ns3').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
             $('#cg_ns3').addClass('error');
             errors = true;
         }
-        if ($('#ns4').val() && !$('#ns4').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+        if ($('#ns4').val() && !$('#ns4').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
             $('#cg_ns4').addClass('error');
             errors = true;
         }

@@ -13,6 +13,7 @@ my $defroute = '/admin/billing';
 my @columns = ('u.id','u.username','u.realname', 'u.email','f.amount');
 my @columns_mobile = ('u.id','u.username','f.amount');
 my @columns_funds = ('id', 'trans_objects','trans_amount', 'trans_date');
+my $domain_panel_plugin = 'api/regru.pl';
 
 # Module core settings 
 
@@ -872,7 +873,7 @@ post '/data/domain/save' => sub {
   $user_id=int($user_id);
   $id=int($id);
   $domain_name=lc($domain_name);
-  if ($domain_name !~ /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/) {
+  if ($domain_name !~ /^[A-Za-z0-9\-]{2,100}$/) {
    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
   }
   if ($domain_exp !~ /^[0-9\.\/\-]{1,12}$/) {
@@ -882,16 +883,16 @@ post '/data/domain/save' => sub {
   if (!$domain_exp) {
    return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~; 
   }
-  if ($ns1 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns1) > 80) {
+  if ($ns1 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns1) > 80) {
    return qq~{"result":"0","field":"ns1","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
-  if ($ns2 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns2) > 80) {
+  if ($ns2 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns2) > 80) {
    return qq~{"result":"0","field":"ns2","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
-  if ($ns3 && $ns3 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns3) > 80) {
+  if ($ns3 && $ns3 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns3) > 80) {
    return qq~{"result":"0","field":"ns3","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
-  if ($ns4 && $ns4 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns4) > 80) {
+  if ($ns4 && $ns4 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns4) > 80) {
    return qq~{"result":"0","field":"ns4","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
   if ($ns1_ip && $ns1_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns1_ip) > 42) {
@@ -1335,6 +1336,7 @@ get '/' => sub {
   my $auth_data = &taracot::_auth();
   if (!$auth_data) { redirect '/user/authorize?comeback=/customer' } 
   my $_current_lang=_load_lang();
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth_data->{id} }, { last_lang => $_current_lang, lastchanged => time }); 
   my $page_data = &taracot::_load_settings('site_title,keywords,description,billing_currency', $_current_lang);
   my $render_template = &taracot::_process_template( template 'billing_customer', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'billing_customer.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{billing_customer}, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
@@ -1908,16 +1910,16 @@ post '/data/domain/save' => sub {
   if ($domain_zone !~ /^([a-z]{1,8})$/) {
    return qq~{"result":"0","field":"domain_zone","error":"~.$lang->{form_error_invalid_domain_zone}.qq~"}~;
   }
-  if ($ns1 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns1) > 80) {
+  if ($ns1 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns1) > 80) {
    return qq~{"result":"0","field":"ns1","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
-  if ($ns2 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns2) > 80) {
+  if ($ns2 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns2) > 80) {
    return qq~{"result":"0","field":"ns2","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
-  if ($ns3 && $ns3 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns3) > 80) {
+  if ($ns3 && $ns3 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns3) > 80) {
    return qq~{"result":"0","field":"ns3","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
-  if ($ns4 && $ns4 !~ /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/ || length($ns4) > 80) {
+  if ($ns4 && $ns4 !~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ || length($ns4) > 80) {
    return qq~{"result":"0","field":"ns4","error":"~.$lang->{form_error_invalid_ns}.qq~"}~;
   }
   if ($ns1_ip && $ns1_ip !~ /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/ || length($ns1_ip) > 42) {
@@ -1988,6 +1990,15 @@ post '/data/domain/save' => sub {
   if ($reg_cost > $funds_avail) {
     return qq~{"result":"0","error":"~.$lang->{insufficent_funds}.qq~"}~; 
   }
+  eval { require $domain_panel_plugin; };
+  if ($@) {   
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_duplicate_domain}.qq~"}~;
+  }
+  my $avail = &APICheckDomainAvailability($domain_name.'.'.$domain_zone);
+  if (!$avail) {
+    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_duplicate_domain}.qq~"}~;
+  }
+
   my $exp_date = time + 31557600; # 1 year
   my $remote_ip = request->env->{'HTTP_X_REAL_IP'} || request->env->{'REMOTE_ADDR'} || '';
   if (!$remote_ip) {

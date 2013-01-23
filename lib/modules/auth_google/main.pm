@@ -61,27 +61,40 @@ get '/user/authorize/google/' => sub {
   # Check if user is registered
 
   my $email = lc $json->{email};
+  my $username = $json->{id};  
+  if (!$username) {
+    redirect $auth_uri_base.'/user/authorize';
+    return;
+  }
+  $username='google.'.$username;
+
   my $id;
   my $sth = database->prepare(
-    'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE email='.database->quote($email)
+    'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE username='.database->quote($username)
   );
   if ($sth->execute()) {
     ($id) = $sth->fetchrow_array();
   }
   $sth->finish();
+  if (!$id) {
+    my $sth = database->prepare(
+      'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE email='.database->quote($email)
+    );
+    if ($sth->execute()) {
+      ($id) = $sth->fetchrow_array();
+    }
+    $sth->finish();
+  }
 
   # Registered
 
   if ($id) {
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time }); 
     session user => $id;
     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
     redirect $auth_uri_base.$auth_comeback; 
     return;
-  } else {
-    my $username = $json->{id};
-    redirect $auth_uri_base.'/user/authorize' if !$username;
-    $username='google.'.$username;
+  } else {    
+    redirect $auth_uri_base.'/user/authorize' if !$username;    
     my $password = md5_hex(config->{salt}.(rand * time));
     my $phone = '';
     my $realname = $json->{name};

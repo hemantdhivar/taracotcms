@@ -2,6 +2,7 @@ use strict;
 use JSON::XS("decode_json");
 use utf8;
 use URL::Encode qw(url_encode);
+use Net::Whois::Parser;
 
 my $username='test';
 my $password='test';
@@ -168,6 +169,18 @@ sub APIDomainUpdate {
  		return 1;
  	}
 	return 1;
+}
+
+sub APICheckDomainAvailability {
+    my $domain = $_[0];
+    return 0 if !$domain;
+    my $info = parse_whois( domain => $domain );
+    if (!$info) {
+        return 1;
+    } else {
+        return 0;
+    }
+
 }
 
 1;

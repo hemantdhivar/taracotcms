@@ -455,7 +455,7 @@ $('#btn_domain_dialog_save').click(function () {
     $('#cg_ns4_ip').removeClass('error');
     $('#domain_edit_form_error').hide();
     var errors = false;
-    if (!$('#domain_name').val().match(/^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/)) {
+    if (!$('#domain_name').val().match(/^[A-Za-z0-9\-]{2,100}$/)) {
         $('#cg_domain_name').addClass('error');
         errors = true;
     }
@@ -463,19 +463,19 @@ $('#btn_domain_dialog_save').click(function () {
         $('#cg_domain_exp').addClass('error');
         errors = true;
     }
-    if (!$('#ns1').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+    if (!$('#ns1').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
         $('#cg_ns1').addClass('error');
         errors = true;
     }
-    if (!$('#ns2').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+    if (!$('#ns2').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
         $('#cg_ns2').addClass('error');
         errors = true;
     }
-    if ($('#ns3').val() && !$('#ns3').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+    if ($('#ns3').val() && !$('#ns3').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
         $('#cg_ns3').addClass('error');
         errors = true;
     }
-    if ($('#ns4').val() && !$('#ns4').val().match(/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/)) {
+    if ($('#ns4').val() && !$('#ns4').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
         $('#cg_ns4').addClass('error');
         errors = true;
     }
