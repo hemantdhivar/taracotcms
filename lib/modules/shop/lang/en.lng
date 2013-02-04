@@ -1,0 +1,113 @@
+module_name: Shop
+module_name_long: Shop management
+id: ID
+pagetitle: Item title
+pagetitle_hint: Displayed in browser title
+keywords: Keywords
+keywords_hint: List of site keywords separated by comma
+description: Description
+description_hint: Website descriptions
+filename: URL
+status: Status
+status0: Inactive item (disabled for several reasons)
+status1: Visible item
+status2: Under construction
+language: Language
+layout: Layout
+actions: Actions
+btn_add: New item
+btn_del: Delete selected
+btn_select_all: Select all
+btn_select_none: Select none
+edit_page: Edit item
+add_page: Add item
+form_notice_add: Please fill in the following form to add new item to the database. The required fields are marked with an asterisk.
+edit_page: Edit item
+form_notice_edit: Please fill in the following form to change item data. The required fields are marked with an asterisk.
+edit_save: Save changes
+edit_save_upload: Save and upload pictures
+edit_cancel: Cancel
+form_errors: Form contain errors, please check and try again
+ajax_saving: Saving data, please wait...
+ajax_loading: Loading data, please wait...
+form_error_invalid_pagetitle: Invalid item title syntax
+form_error_duplicate_filename: Duplicate item URL (such URL already exists)   
+form_error_invalid_filename: Invalid URL syntax
+form_error_invalid_keywords: Invalid keywords syntax
+form_error_invalid_description: Invalid description syntax
+form_error_invalid_status: Invalid status
+form_error_invalid_lang: Invalid language
+form_error_invalid_layout: Invalid layout
+add_success_notify: New item has been added
+edit_success_notify: Item data has been changed
+data_loading_error: Error while loading data from server. Please check your connection and try again.
+abort: Abort
+delete_confirmation_title: Delete confirmation
+delete_confirmation_msg1: The following item(s) will be deleted pemanently from system database&#058;
+delete_confirmation_msg2: Are you sure you wish to continue?                    
+delete: Delete                                                  
+delete_cancel: Cancel
+delete_success_notify: Item(s) has been deleted
+delete_error_notify: Error while deleting item(s)
+delete_none_selected_title: None selected
+delete_none_selected_msg: No items selected to delete. Please select some items in the table using checkboxes first.
+btn_close: Close
+field_edit_error_unknown: Unknown error while saving field
+error: Error
+success: Success
+language_select_title: Select language
+layout_select_title: Select layout
+status_select_title: Select item status
+sLengthMenu: Display _MENU_ records per page
+sZeroRecords: Nothing found - sorry
+sInfo: Showing _START_ to _END_ of _TOTAL_ records
+sInfoEmpty: Showing 0 to 0 of 0 records
+sInfoFiltered: (filtered from _MAX_ total records)     
+sPrevious: Previous page
+sNext: Next page   
+sSearch: Search
+imgbrowser: Image browser
+html: HTML
+wysiwyg: WYSIWYG
+switch_mode_question: Switching the mode will reset the current changes in editor. Continue?
+get_url: Generate URL automatically
+get_url_error_blank: Cannot generate URL when item title is not set
+get_url_error_other: Error while generating URL
+disabled_header: Item disabled
+disabled_text: The item is currently not available. Please try again later.
+construction_header: Under construction
+construction_text: The item is currently under construction. Please try again later.
+groupid: Group ID
+form_error_invalid_groupid: Invalid group ID syntax
+images_title: Image Browser
+loading_folder: Loading folder data, please wait...
+upload: Upload
+rename: Rename
+delete: Delete
+image_files: Image files
+file_upload: Upload files
+file_uploading: Files uploading now, please be patient...
+file_upload_hint: Please choose some files to upload. When supported by your browser, you can also select multiple files and drag/drop files to the area below.
+upload_add: Select files
+upload_start: Start upload
+upload_clear: Clear list
+upload_back: Back to the browser
+error: Error
+bad_mode: Internal request error
+dir_syntax_error: Directory syntax error
+file_syntax_error: File syntax error
+not_exists: File doesn't exists
+file_error: File system error
+save: Save
+cancel: Cancel
+rename_title: Rename
+rename_new: New name
+rename_error: Error while renaming the file
+delete_error: Error while deleting the file
+delete_confirm: Are you sure you wish to delete the following file(s)/dir(s)? 
+catalog_images: Catalog images
+description_short: Short description
+special_flag: Special offer
+form_error_invalid_description_short: Invalid short description syntax
+catalog_view: View item
+error_ajax: Error while connecting to server. Please try again later.
