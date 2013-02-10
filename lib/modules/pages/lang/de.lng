@@ -1,0 +1,79 @@
+module_name: Seiten
+module_name_long: Seitenverwaltung
+id: ID
+pagetitle: Seitentitel
+pagetitle_hint: wird im Browsertitel angezeigt 
+keywords: Schlüsselwörter
+keywords_hint: Schlüsselwörter der Seite müssen durch Komma getrennt angegeben werden
+description: Beschreibung
+description_hint: Webseite beschreibungen
+filename: URL
+status: Status
+status0: Inaktive Seiten (aus mehreren Gründen deaktiviert)
+status1: Sichtbare Seite
+status2: in Bearbeitung
+language: Sprache
+layout: Anordnung
+actions: Aktionen
+btn_add: Neue Seite
+btn_del: Markierte Löschen
+btn_select_all: Alles selektieren
+btn_select_none: Alles deselektieren
+edit_page: Seite bearbeiten
+add_page: Seite hinzufügen
+form_notice_add: Füllen Sie bitte die folgenden Felder aus, um eine neue Seite der Datenbank hinzuzufügen. Pflichtfelder sind mit Sternchen markiert
+edit_page: Seite bearbeiten
+form_notice_edit: Füllen Sie bitte die folgenden Felder aus, um Seitenangaben zu ändern. Pflichtfelder sind mit Sternchen markiert
+edit_save: Änderungen speichern
+edit_cancel: Abbrechen
+form_errors: Form enthält Fehler, überprüfen Sie bitte die Angaben und versuchen Sie es erneut
+ajax_saving: Daten werden gespeichert, warten Sie bitte...
+ajax_loading: Daten werden geladen, warten Sie bitte...
+form_error_invalid_pagetitle: Ungültige Syntax im Seitentitel
+form_error_duplicate_filename: Doppelte Seiten-URL (diese URL existiert schon)   
+form_error_invalid_filename: Ungültige Syntax in der URL
+form_error_invalid_keywords: Ungültige Syntax in den Schlüsselwörtern
+form_error_invalid_description: Ungültige Syntax in der Beschreibung
+form_error_invalid_status: Ungültiger Status
+form_error_invalid_lang: Ungültige Sprache
+form_error_invalid_layout: Ungültige Anordnung
+add_success_notify: Die neue Seite wurde erfolgreich hinzugefügt
+edit_success_notify: Die Seitenangaben wurden erfolgreich geändert
+data_loading_error: Fehler beim Laden von Daten vom Server. Überprüfen Sie bitte die Verbindung und versuchen Sie es erneut.
+abort: Abbruch
+delete_confirmation_title: Bestätigung löschen
+delete_confirmation_msg1: Diese Seite(n) werden (wird) für immer aus der Datenbank gelöscht werden&#058;
+delete_confirmation_msg2: Sind Sie sicher, daß Sie fortsetzen möchten?                  
+delete: Löschen
+delete_cancel: Abbrechen
+delete_success_notify: Die Seite(n) wurde(n) gelöscht
+delete_error_notify: Fehler beim Löschen der Seite
+delete_none_selected_title: Nichts selektiert
+delete_none_selected_msg: Keine Artikel zum Löschen selektiert. Wählen Sie bitte zuerst einige Seiten in der Tabelle aus
+btn_close: Schließen
+field_edit_error_unknown: Unbekannter Fehler beim Speichern vom Feld
+error: Fehler
+success: Erfolgreich
+language_select_title: Sprache auswählen
+layout_select_title: Anordnung auswählen
+status_select_title: Seitenstatus auswählen
+sLengthMenu: Display _MENU_ Einträge pro Seite
+sZeroRecords: Nichts gefunden - Entschuldigung!
+sInfo: Showing _START_ to _END_ of _TOTAL_ Einträge
+sInfoEmpty: 0 bis 0 von 0 Einträgen anzeigen
+sInfoFiltered: (filtered from _MAX_ total records)     
+sPrevious: Vorherige Seite
+sNext: Nächste Seite
+sSearch: Suchen
+imgbrowser: Bildbrowser
+html: HTML
+wysiwyg: WYSIWYG
+switch_mode_question: Umschalten des Modus wird aktuelle Änderungen im Editor zurücksetzen. Fortsetzen?
+get_url: URL automatisch generieren
+get_url_error_blank: URL kann ohne Seitentitel nicht generiert werden
+get_url_error_other: Fehler beim Generieren von URL
+disabled_header: Seite deaktiviert
+disabled_text: Seite zur Zeit nicht verfügbar. Versuchen Sie es bitte später erneut
+construction_header: In Bearbeitung
+construction_text: Die Seite wird gerade bearbeitet. Versuchen Sie es bitte später erneut.
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.

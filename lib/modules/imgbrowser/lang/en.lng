@@ -23,7 +23,7 @@ bad_mode: Internal request error
 no_files: No files to copy/move
 dir_syntax_error: Directory syntax error
 file_syntax_error: File syntax error
-not_exists: File doesn't exists
+not_exists: File doesn't exist
 file_error: File system error
 newdir: New dir
 newdir_title: Create new directory

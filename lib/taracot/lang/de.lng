@@ -1,0 +1,16 @@
+auth_title: Authorization
+auth_username: Username
+auth_password: Password
+auth_login: Login
+auth_back: Return to website
+auth_close: Close
+auth_error_title: Authorization error
+admin_taracot: Taracot CMS
+admin_logout: Log out
+admin_loggedas: Logged as
+error_404_title: Not found
+error_404_desc: The document you've requested couldn't be found.<br/>Please check your URL and try again. 
+error_ajax: Error while connecting to server. Please try again later.
+warning_browser_title: Please Upgrade Your Browser
+warning_browser_text: Your browser is too old for the Taracot CMS Administrator's Panel. Some user interface can not be displayed correctly, some important functions may not work etc. You can choose and download a new browser using links below&#58;
+continue_anyway: Continue anyway

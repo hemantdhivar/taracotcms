@@ -96,7 +96,7 @@ error: Error
 bad_mode: Internal request error
 dir_syntax_error: Directory syntax error
 file_syntax_error: File syntax error
-not_exists: File doesn't exists
+not_exists: File doesn't exist
 file_error: File system error
 save: Save
 cancel: Cancel

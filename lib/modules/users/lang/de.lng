@@ -1,0 +1,66 @@
+module_name: Benutzer
+module_name_long: Benutzerverwaltung
+id: ID
+username: Benutzername
+username_hint: Lateinische alpha-numerische sowie die folgenden Zeichen "_", "-"
+realname: Realname
+password: Passwort
+password_hint: Geben Sie bitte Ihr Passwort zur Überprüfung zweimalein<br />mindestens 6 Zeichen
+password_hint_edit: Geben Sie bitte Ihr neues Passwort ein wenn Sie es ändern möchten<br />mindestens 6 Zeichen
+password_mismatch: Passwörter stimmen nicht überein
+status: Status
+status0: Inaktiver Benutzer (aus mehreren Gründen deaktiviert)
+status1: Normaler Benutzer
+status2: Website-Administrator (hat Zugriff auf Administrationsbereich)
+email: E-Mail
+phone: Handynummer
+actions: Aktionen
+btn_add: Benutzer hinzufügen
+btn_del: Markierte löschen
+btn_select_all: Alles selektieren
+btn_select_none: Alles deselektieren
+edit_user: Benutzer bearbeiten
+add_user: Benutzer hinzufügen
+form_notice_add: Füllen Sie bitte die folgenden Felder aus, um einen neuen Benutzer der Datenbank hinzufügen. Pflichtfelder sind mit Sternchen markiert
+edit_user: Benutzer bearbeiten
+form_notice_edit: Füllen Sie bitte die folgende Form aus, um Benutzerangaben zu ändern. Pflichtfelder sind mit Sternchen markiert
+edit_save: Änderungen speichern
+edit_cancel: Abbrechen
+form_errors: Form enthält Fehler, überprüfen Sie bitte die Angaben und versuchen Sie es bitte erneut
+ajax_saving: Daten werden gespeichert, bitte warten...
+ajax_loading: Daten werden geladen, bitte warten...
+form_error_invalid_username: Ungültige Syntax im Benutzernamen
+form_error_duplicate_username: Doppelter Benutzername (Benutzer mit diesem Namen existiert schon)   
+form_error_invalid_password: Ungültige Passwortsyntax
+form_error_invalid_email: Ungültige E-Mailsyntax
+form_error_duplicate_email: Doppelte E-Mailadresse (Benutzer mit dieser E-Mailadresse existiert schon)
+form_error_invalid_realname: Ungültige Syntax im Realnamen
+form_error_invalid_status: Ungültiger Status
+form_error_invalid_phone: Ungültige Telefonnummer
+add_success_notify: Neuer Benutzer wurde hinzugefügt
+edit_success_notify: Benutzerangaben wurden geändert
+data_loading_error: Fehler beim Laden der Daten vom Server. Überprüfen Sie bitte die Verbindung und versuchen Sie es bitte später erneut. 
+abort: Abbruch
+delete_confirmation_title: Bestätigung löschen
+delete_confirmation_msg1: Diese(r) Benutzer werden (wird) für immer aus der Datenbank gelöscht werden&#058;
+delete_confirmation_msg2: Sind Sie sicher, daß Sie fortsetzen möchten?             
+delete: Löschen
+delete_cancel: Abbrechen
+delete_success_notify: Benutzer wurde(n) gelöscht
+delete_error_notify: Fehler beim Löschen von Benutzer
+delete_none_selected_title: Nichts selektiert
+delete_none_selected_msg: Keine Artikel zum Löschen selektiert. Wählen Sie bitte zuerst einige Benutzer in der Tabelle aus.
+btn_close: Schließen
+field_edit_error_unknown: Unbekannter Fehler beim Speichern vom Feld
+error: Fehler
+success: Erfolgreich
+status_select_title: Benutzerstatus auswählen 
+sLengthMenu: Display _MENU_ Einträge pro Seite
+sZeroRecords: Nichts gefunden - Entschuldigung!
+sInfo: Showing _START_ to _END_ of _TOTAL_ Einträge
+sInfoEmpty: 0 bis 0 von 0 Einträgen anzeigen
+sInfoFiltered: (von _MAX_ total Einträgen gefiltert)
+sPrevious: Vorherige Seite
+sNext: Nächste Seite
+sSearch: Suchen
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.

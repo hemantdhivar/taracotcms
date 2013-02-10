@@ -1,0 +1,39 @@
+pagetitle: Bildbrowser
+loading_folder: Verzeichnisdaten werden geladen, warten Sie bitte...
+upload: Hochladen
+select: Auswählen
+up: Hoch
+chdir: ChDir
+cut: Ausschneiden
+copy: Kopieren
+paste: Einfügen
+rename: Umbenennen
+delete: Löschen
+image_files: Bilddateien
+current_dir: aktuelles Verzeichnis
+file_upload: Dateien hochladen
+file_uploading: Dateien werden gerade hochladen, haben Sie bitte etwas Geduld...
+file_upload_hint: Wählen Sie bitte einige Dateien zum Hochladen aus. Wenn Ihr Browser das unterstützt, können Sie auch mehrere Dateien auswählen und sie in den unteren Bereich durch Drag&Drop schieben.
+upload_add: Dateien auswählen
+upload_start: Hochladen starten
+upload_clear: Liste leeren
+upload_back: Zurück zum Browser
+error: Fehler
+bad_mode: Interner Anfrage Fehler
+no_files: Keine Dateien zum Kopieren/ Verschieben
+dir_syntax_error: Verzeichnissyntax fehlerhaft
+file_syntax_error: Dateisyntax fehlerhaft
+not_exists: Datei existiert nicht
+file_error: Dateisystemfehler
+newdir: Neues Verzeichnis
+newdir_title: Neues Verzeichnis anlegen
+newdir_name: Verzeichnisname
+save: Speichern
+cancel: Abbrechen
+rename_title: Umbenennen
+rename_new: Neuer Name
+newdir_error: Fehler beim Anlegen des neuen Verzeichnisses
+rename_error: Fehler beim Umbenennen der Datei
+delete_error: Fehler beim Löschen der Datei
+delete_confirm: Sind Sie sicher, dass Sie die(se) Datei(en) / Verzeichnis(se) löschen möchten?
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.

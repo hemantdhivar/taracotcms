@@ -1,0 +1,93 @@
+module_name: Benutzer
+user_register: Neuen Benutzer anmelden
+user_register_hint: Füllen Sie bitte die folgenden Felder aus, um ein neues Benutzerkonto einzurichten. Pflichtfelder sind mit Sternchen markiert
+user_register_username: Benutzername
+user_register_username_or_email: Benutzername (oder E-Mail)
+user_register_username_hint: Lateinische alpha-numerische sowie die folgenden Zeichen&#58; &quot;_&quot;, &quot;-&quot; only (3-100)
+user_register_realname: Realname
+user_register_email: E-Mail
+user_register_email_current: Aktuelle E-Mailadresse
+user_register_email_new: Neue E-Mailadresse
+user_register_email_new_hint: Versuchen Sie es bitte zur Überprüfung zweimal, seien Sie sorgfältig!
+user_register_phone: Handynummer
+user_register_password: Passwort
+user_register_password_hint: Mindestens 8 Zeichen, wiederholen Sie es bitte zur Überprüfung
+user_register_captcha: 4 Ziffern<br />im Bild
+user_register_submit: Senden
+user_register_agreement_1: Ich akzeptiere 
+user_register_agreement_2: die Vereinbarung
+user_register_captcha_refresh: Hier klicken, um anderes Bild zu sehen
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.
+user_register_error_username: Benutzername ist ungültig
+user_register_error_login: Benutzername (oder E-Mail) ist ungültig
+user_register_error_user_not_exists: Benutzer mit dieser Kombination von Benutzernamen und E-Mail ist deaktiviert oder nicht gefunden
+user_register_error_realname: Realname ist zu lang (maximal 80 Zeichen)
+user_register_error_email: E-Mail ist ungültig
+user_register_error_phone: Hnadynummer ist ungültig
+user_register_error_password: Ungültige Passwortsyntax oder Passworte stimmen nicht überein 
+user_register_error_email_multi: Ungültige E-Mailsyntax oder E-Mails stimmen nicht überein 
+user_register_error_email_equals: Ihre alte und neue E-Mailadressen sind gleich
+user_register_error_password_equals: Ihre altes und neues Passwörter sind gleich
+user_register_error_password_single: Ungültige Passwortsyntax
+user_register_error_password_bad: Ungültiges Passwort
+user_register_error_password_multi: Ungültige Passwortsyntax oder Passworte stimmen nicht überein
+user_register_error_captcha: Code, den Sie eingetragen haben, ist ungültig
+user_register_error_agreement: Sie müssen die Vereinbarung der Webseite akzeptieren, um fortzusetzen
+user_register_error_username_taken: Benutzer mit diesem Benutzernamen ist schon angemeldet
+user_register_error_email_taken: Benutzer mit dieser E-Mailadresse ist schon angemeldet
+user_register_processing: Bearbeitung, bitte warten...
+user_register_success: Anmeldung war erfolgreich! Bitte uberprufen Sie Ihre E-Mail-Box, um Ihr Benutzerkonto zu bestätigen.
+user_authorize: Autorisieren
+user_auth_redirect: Sie sind jetzt angemeldet. Umleiten zur vorherigen Seite...
+user_authorize_hint: Zum Einloggen geben Sie bitte Ihren Benutzernamen (oder E-Mail) und Passwort ein.
+user_auth_submit: Einloggen
+user_auth_register: Neues Benutzerkonto einrichten
+user_auth_forgot_password: Passwort vergessen? Hier Klicken
+user_auth_success: Sie sind nicht angemeldet. <a href=/user/account>Hier Klicken</a>  um Ihre Kontoseite zu sehen.
+user_auth_invalid: Ungültiger Benutzername (E-Mail) oder Passwort
+user_auth_already_logged_in: Dieser (oder anderer) Benutzer ist schon angemeldet
+user_auth_user_disabled: Benutzer ist zurzeit auf dieser Webseite deaktiviert
+user_register_email_subj: Registration on
+user_register_emailchange_subj: E-mail change on
+user_activate: Benutzer aktivieren
+user_activate_error_url: Ungültige Aktivierungsdaten, überprüfen Sie bitte die URL und versuchen Sie es erneut
+user_activate_error_wrong_code: Ungültige Aktivierungsdaten, überprüfen Sie bitte die URL und versuchen Sie es erneut
+user_activate_success: Benutzer ist erfolgreich aktiviert worden. Sie können sich jetzt in der Webseite einloggen.
+user_password: Benutzerpasswort zurücksetzen
+user_password_hint: Füllen Sie bitte die Form aus, um das vergessene Passwort zurückzusetzen. Pflichtfelder sind mit Sternchen markiert
+user_password_submit: Data senden
+user_pwd_success_sent: Passwortänderungsanforderung ist fertig. Überprüfen Sie bitte Ihre Mailbox für weitere Anweisungen.
+user_password_reset: Neues Passwort
+user_password_reset_hint: Geben Sie bitte das neue Passwort ein, um das alte zu ändern.
+user_password_success_reset: Ihr Passwort wurde erfolgreich geändert.
+user_password_reset_inavlid_data: Ungültige Verifikationsdaten, überprüfen Sie bitte die URL und versuchen Sie es erneut
+user_password_reset_fail: Sie können das Passwort dieses Benutzers nicht ändern.
+user_account: Konto
+user_account_tab_overview: Überblick
+user_account_tab_profie: Profil
+user_account_tab_email: E-Mail
+user_account_tab_password: Passwort
+user_account_welcome: Herzlich Willkommen
+user_account_status_list: Inaktiver Benutzer,Aktiver Benutzer,Website-Administrator
+user_account_status: Kontostatus
+user_account_date_template: \%Y/\%m/\%d
+user_account_regdate: Registrirungsdatum
+user_account_regdate_unknown: Unbekannt
+user_account_save: Speichern
+user_account_proifle_hint: Sie können Ihre Profilangaben in der unteren Form ändern.
+user_account_profile_email_warning: Wichtig&#58; Wenn Sie Ihre E-Mailadresse ändern, wird das Konto sofort deaktiviert und Sie werden es wieder aktivieren müssen, indem Sie die an Ihre E-Mailadresse geschickten Anweisungen befolgen. 
+user_account_logout: Abmelden
+user_account_logout_success: Sie haben sich erfolgreich abgemeldet
+user_account_change_avatar: Ändern
+user_account_current_password: Aktuelles Passwort
+image_files: Bilddateien
+user_account_avatar_uploading: Bild wird hochgeladen...
+user_account_avatar_uploading_error: Fehler beim Hochladen von Ihrem neuen Avatar!
+user_account_profile_saved: Ihre Profilangaben wurden erfolgreich gespeichert!
+user_account_password_saved: Ihr neues Passwort wurde erfolgreich gespeichert!
+user_account_email_saved: Ihr Profil wurde erfolgreich gespeichert! Zurzeit ist Ihr Konto deaktiviert, also - Sie brauchen, es wieder zu aktivieren. Befolgen Sie bitte die an Ihre E-Mailadresse geschickten Anweisungen.
+user_social: Wenn Sie auf einem dieser sozialen Netzwerke angemeldet sind, klicken Sie bitte den entsprechenden Button unten
+social_facebook: Facebook
+social_google: Google
+social_yandex: Yandex
+social_vk: VKontakte

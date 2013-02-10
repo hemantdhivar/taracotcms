@@ -1,0 +1,113 @@
+module_name: Katalog
+module_name_long: Katalogverwaltung
+id: ID
+pagetitle: Artikelname
+pagetitle_hint: wird in Browsertitel angezeigt 
+keywords: Schlüsselwörter
+keywords_hint: Schlüsselwörter der Seite müssen durch Komma getrennt angegeben werden
+description: Beschreibung
+description_hint: Beschreibung der Webseite
+filename: URL
+status: Status
+status0: Inaktiver Artikel (aus mehreren Gründen deaktiviert)
+status1: Sichtbarer Artikel
+status2: in Bearbeitung
+language: Sprache
+layout: Anordnung
+actions: Aktionen
+btn_add: Neuer Artikel
+btn_del: Markierte Löschen
+btn_select_all: Alles selektieren
+btn_select_none: Alles deselektieren
+edit_page: Artikel bearbeiten
+add_page: Artikel hinzufügen
+form_notice_add: Füllen Sie bitte die folgenden Felder aus, um einen neuen Artikel der Datenbank hinzuzufügen. Pflichtfelder sind mit Sternchen markiert
+Edit_page: Artikel bearbeiten
+form_notice_edit: Füllen Sie bitte die folgenden Felder aus, um Artikelangaben zu ändern. Pflichtfelder sind mit Sternchen markiert
+edit_save: Änderungen speichern
+edit_save_upload: Bilder speichern und hochladen
+edit_cancel: Abbrechen
+form_errors: Die Form enthält Fehler, überprüfen Sie bitte die Angaben und versuchen Sie es erneut
+ajax_saving: Daten werden gespeichert, haben Sie bitte etwas Geduld...
+ajax_loading: Daten werden geladen, haben Sie bitte etwas Geduld...
+form_error_invalid_pagetitle: Ungültige Syntax im Artikeltitel
+form_error_duplicate_filename: Doppelte Artikel URL (diese URL existiert schon)   
+form_error_invalid_filename: Ungültige Syntax in der URL
+form_error_invalid_keywords: Ungültige Syntax in den Schlüsselwörtern
+form_error_invalid_description: Ungültige Syntax in der Beschreibung
+form_error_invalid_status: Ungültiger Status
+form_error_invalid_lang: Ungültige Sprache
+form_error_invalid_layout: Ungültige Anordnung
+add_success_notify: Der neue Artikel wurde erfolgreich hinzugefügt
+edit_success_notify: Die Artikelangaben wurden erfolgreich geändert
+data_loading_error: Fehler beim Laden von Daten vom Server. Überprüfen Sie bitte die Verbindung und versuchen Sie es erneut.
+abort: Abbrechen
+delete_confirmation_title: Bestätigung löschen
+delete_confirmation_msg1: Diese(r) Artikel werden (wird) für immer aus der Datenbank gelöscht werden&#058;
+delete_confirmation_msg2: Sind Sie sicher, daß Sie fortsetzen möchten?                    
+delete: Löschen                                                  
+delete_cancel: Abbrechen
+delete_success_notify: Diese(r) Artikel wurde(n) gelöscht
+delete_error_notify: Fehler beim Löschen von Artikel
+delete_none_selected_title: Nichts selektiert
+delete_none_selected_msg: Keine Artikel zum Löschen selektiert. Wählen Sie bitte zuerst einige Artikel in der Tabelle aus
+btn_close: Schließen
+field_edit_error_unknown: Unbekannter Fehler beim Speichern
+error: Fehler
+success: Erfolgreich
+language_select_title: Sprache auswählen
+layout_select_title: Anordnung auswählen
+status_select_title: Status des Artikels auswählen
+sLengthMenu: _MENU_ Einträge pro Seite anzeigen
+sZeroRecords: Nichts gefunden - Entschuldigung!
+sInfo: _START_ to _END_ of _TOTAL_ Einträgen anzeigen
+sInfoEmpty: 0 bis 0 von 0 Einträgen anzeigen
+sInfoFiltered: (filtered from _MAX_ total records)     
+sPrevious: Vorherige Seite
+sNext: Nächste Seite 
+sSearch: Suche
+imgbrowser: Bildbrowser
+html: HTML
+wysiwyg: WYSIWYG
+switch_mode_question: Umschalten des Modus wird aktuelle Änderungen im Editor zurücksetzen. Fortsetzen?
+get_url: URL automatisch generieren
+get_url_error_blank: URL kann ohne Artikeltitel nicht generiert werden
+get_url_error_other: Fehler beim Generieren von URL
+disabled_header: Artikel deaktiviert
+disabled_text: Artikel zur Zeit nicht verfügbar. Versuchen Sie es bitte später erneut
+construction_header: in Bearbeitung
+construction_text: Der Artikel wird gerade bearbeitet. Versuchen Sie es bitte später erneut.
+groupid: Gruppen-ID
+form_error_invalid_groupid: Ungültige Syntax in der Gruppen-ID
+images_title: Bildbrowser
+loading_folder: Die Daten des Ordners werden geladen, haben Sie bitte etwas Geduld...
+upload: Hochladen
+rename: Umbenennen
+delete: Löschen
+image_files: Bilddateien
+file_upload: Dateien hochladen
+file_uploading: Die Dateien werden gerade hochgeladen, haben Sie bitte etwas Geduld...
+file_upload_hint: Wählen Sie bitte einige Dateien zum Hochladen aus. Wenn Ihr Browser das unterstützt, können Sie auch mehrere Dateien auswählen und sie in den unteren Bereich durch Drag&Drop schieben.
+upload_add: Dateien selektieren
+upload_start: Hochladen starten
+upload_clear: Liste leeren
+upload_back: Zurück zum Browser
+error: Fehler
+bad_mode: Interner Anfrage Fehler
+dir_syntax_error: Verzeichnissyntax fehlerhaft
+file_syntax_error: Dateisyntax fehlerhaft
+not_exists: Die Datei existiert nicht
+file_error: Dateisystemfehler
+save: Speichern
+cancel: Abbrechen
+rename_title: Umbenennen
+rename_new: Neuer Name
+rename_error: Fehler beim Umbenennen der Datei
+delete_error: Fehler beim Löschen der Datei
+delete_confirm: Sind Sie sicher, daß Sie die(se) Datei(en) / Verzeichnis(se) löschen möchten?
+catalog_images: Katalogbilder
+description_short: Kurzbeschreibung
+special_flag: Sonderangebot
+form_error_invalid_description_short: Ungültige Syntax in der Kurzbeschreibung
+catalog_view: Artikelübersicht
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.

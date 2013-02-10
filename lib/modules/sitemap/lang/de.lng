@@ -1,0 +1,23 @@
+module_name: Map
+module_name_long: Sitemap
+tree_loading: Laden…
+ajax_loading: Verbindung zum Server wird hergestellt…
+tree_load_error: Fehler beim Laden von Daten
+tree_node_del_confirm: Sind Sie sicher, daß Sie den Knoten löschen möchten?
+node_title: Artikeltitel
+node_url: Artikel-URL
+node_save: Artikel speichern
+node_cancel: Abbrechen
+node_untitled: Unbenannt
+tree_save: Speichern und schliessen
+select_lang: Sprache für Sitemap Baum auswählen
+load_tree: Baum laden
+tree_cancel: Abbrechen
+tree_reset: Baum zurücksetzen
+tree_cancel_confirm: Sind Sie sicher, daß Sie Editor-Modus verlassen möchten?\nAlle Änderungen gehen verloren.
+tree_reset_confirm: Sind Sie sicher, daß Sie den Baum zurücksetzen möchten?\nAlle Knoten werden gelöscht, alle Daten gehen verloren.
+tree_save_error: Fehler beim Speichern vom Baum
+success: Erfolgreich
+error: Fehler
+tree_save_success: Erfolg speichern
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.

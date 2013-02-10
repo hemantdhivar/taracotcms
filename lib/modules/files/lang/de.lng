@@ -1,0 +1,24 @@
+module_name: Dateien
+module_name_long: Dateienverwaltung
+dir_error: Speicherverzeichnis kann nicht gelesen werden
+no_files: Zurzeit keine Dateien hochgeladen
+ajax_loadng: Daten werden geladen, warten Sie bitte...
+files_hint: Hier können Sie die Dateien auf Ihre Webseite hochladen.
+size_tb: TB
+size_gb: GB
+size_mb: MB
+size_kb: KB
+size_b: Byte(s)
+file_upload: Datei(en) hochladen
+file_uploading: Dateien werden gerade hochgeladen, haben Sie bitte etwas Geduld...
+file_upload_hint: Wählen Sie bitte einige Dateien zum Hochladen. Wenn Ihr Browser das unterstützt, können Sie auch mehrere Dateien auswählen und sie in den unteren Bereich durch Drag&Drop schieben.
+upload_add: Dateien auswählen
+upload_start: Hochladen starten
+upload_clear: Liste leeren
+upload_back: Zurück zur Liste
+error: Fehler
+error_delete: Die angeforderte Datei konnte nicht gelöscht werden
+success: Erfolgreich
+success_delete: Die Datei wurde gelöscht
+confirm_delete: Sind Sie sicher, daß Sie die(se) Datei(en) löschen möchten?
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.

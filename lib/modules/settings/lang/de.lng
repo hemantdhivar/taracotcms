@@ -1,0 +1,53 @@
+module_name: Einstellungen
+module_name_long: Einstellungenverwaltung
+id: ID
+s_name: Option
+s_name_hint: Optionname, lateinische Buchstaben, "_" und "-" Zeichen
+s_value: Wert
+language: Sprache
+actions: Aktionen
+btn_add: Neue Option
+btn_del: Markierte löschen
+btn_select_all: Alles selektieren
+btn_select_none: Alles deselektieren
+edit_option: Option bearbeiten
+add_option: Option hinzufügen
+form_notice_add: Füllen Sie bitte die folgenden Felder aus, um eine neue Option der Datenbank hinzuzufügen. Pflichtfelder sind mit Sternchen markiert
+edit_option: Option bearbeiten
+form_notice_edit: Füllen Sie bitte die folgenden Felder aus, um Optionangaben zu ändern. Pflichtfelder sind mit Sternchen markiert
+edit_save: Änderungen speichern
+edit_cancel: Abbrechen
+form_errors: Form enthält Fehler, überprüfen Sie bitte die Angaben und versuchen Sie es erneut
+ajax_saving: Daten werden gespeichert, warten Sie bitte...
+ajax_loading: Daten werden geladen, warten Sie bitte...
+form_error_invalid_s_name: Ungültige Optionsyntax
+form_error_duplicate_s_name: Doppelter Optionname (diese Option existiert schon) 
+form_error_invalid_s_value: Invalid value syntax
+form_error_invalid_lang: Ungültige Sprache
+add_success_notify: Die neue Option wurde erfolgreich hinzugefügt
+edit_success_notify: Die Optionangaben wurden erfolgreich geändert
+data_loading_error: Fehler beim Laden von Daten vom Server. Überprüfen Sie bitte die Verbindung und versuchen Sie es erneut.
+abort: Abbruch
+delete_confirmation_title: Bestätigung löschen
+delete_confirmation_msg1: Diese Option(en) werden (wird) für immer aus der Datenbank gelöscht werden&#058;
+delete_confirmation_msg2: Sind Sie sicher, daß Sie fortsetzen möchten?                   
+delete: Löschen                                                  
+delete_cancel: Abbrechen
+delete_success_notify: Die Option(en) wurde(n) gelöscht
+delete_error_notify: Fehler beim Löschen der Option
+delete_none_selected_title: Nichts selektiert
+delete_none_selected_msg: Keine Artikel zum Löschen selektiert. Wählen Sie bitte zuerst einige Optionen mithilfe von Kontrollkästchen in der Tabelle aus
+btn_close: Schließen
+field_edit_error_unknown: Unbekannter Fehler beim Speichern vom Feld
+error: Fehler
+success: Erfolgreich
+language_select_title: Sprache selektieren
+sLengthMenu: Display _MENU_ Einträge pro Seite
+sZeroRecords: Nichts gefunden - Entschuldigung!
+sInfo: Showing _START_ to _END_ of _TOTAL_ Einträge
+sInfoEmpty: 0 bis 0 von 0 Einträgen anzeigen
+sInfoFiltered: (filtered from _MAX_ total records)        
+sPrevious: Vorherige Seite
+sNext: Nächste Seite
+sSearch: Suchen
+error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.
