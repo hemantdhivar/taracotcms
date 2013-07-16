@@ -32,9 +32,8 @@
   <!-- module css -->
 </head>
 <body>
-  <div id="taracot-top-img"></div>
   <div id="taracot-admin-container" class="container-fluid" style="margin-top:19px;">
-    <div class="navbar">      
+    <div class="navbar navbar-inverse">      
       <div class="navbar-inner">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
            <span class="icon-bar"></span>

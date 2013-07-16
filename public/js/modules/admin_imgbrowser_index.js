@@ -390,14 +390,30 @@ $(document).ready(function () {
             window.close();
             return;
         }
-        if (return_mode == 'cm') {
-            window.opener.html_editor.replaceSelection('<img src="/files/images' + fn + '" alt="" />');
-            window.close();
-            return;
-        }
         if (return_mode == 'mobile') {
-            var instance = window.opener.nicEditors.findEditor('plain_editor');
-            instance.nicCommand('insertHTML', '<img src="/files/images' + fn + '" alt="" />');
+            var instance = window.opener.document.getElementById('plain_editor');
+            var myValue = '<img src="/files/images' + fn + '" alt="" />';
+
+            if (instance.selection) {
+                    instance.focus();
+                    sel = instance.selection.createRange();
+                    sel.text = myValue;
+                    instance.focus();
+            }
+            else if (instance.selectionStart || instance.selectionStart == '0') {
+                var startPos = instance.selectionStart;
+                var endPos = instance.selectionEnd;
+                var scrollTop = instance.scrollTop;
+                instance.value = instance.value.substring(0, startPos)+myValue+instance.value.substring(endPos,instance.value.length);
+                instance.focus();
+                instance.selectionStart = startPos + myValue.length;
+                instance.selectionEnd = startPos + myValue.length;
+                instance.scrollTop = scrollTop;
+            } else {
+                instance.value += myValue;
+                instance.focus();
+            }
+
             window.close();
             return;
         }
