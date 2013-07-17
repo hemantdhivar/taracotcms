@@ -146,6 +146,7 @@ post '/data/save' => sub {
   my $email=param('email') || '';
   my $phone=param('phone') || '';
   my $realname=param('realname') || '';
+  my $groups=param('groups') || '';
   my $status=param('status') || 0;
   $status=int($status);
   my $id=param('id') || 0;
@@ -155,6 +156,9 @@ post '/data/save' => sub {
    return qq~{"result":"0","field":"username","error":"~.$lang->{form_error_invalid_username}.qq~"}~;
   }
   $username=lc $username;
+  if ($groups && $groups !~ /^[A-Za-z0-9_\-\. ]{1,255}$/) {
+   return qq~{"result":"0","field":"username","error":"~.$lang->{form_error_invalid_groups}.qq~"}~;
+  }  
   if (($id > 0 && length($password) > 0) || $id eq 0) {
     if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/) {
      return qq~{"result":"0","field":"password","error":"~.$lang->{form_error_invalid_password}.qq~"}~;
@@ -213,12 +217,12 @@ post '/data/save' => sub {
   if ($id > 0) {
    if ($password) {
     $password = md5_hex(config->{salt}.$password);
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
    } else {
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
    }
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
   }
       
   return qq~{"result":"1"}~;

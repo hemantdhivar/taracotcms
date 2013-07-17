@@ -30,6 +30,7 @@ form_errors: Form enthält Fehler, überprüfen Sie bitte die Angaben und versuc
 ajax_saving: Daten werden gespeichert, bitte warten...
 ajax_loading: Daten werden geladen, bitte warten...
 form_error_invalid_username: Ungültige Syntax im Benutzernamen
+form_error_invalid_groups: Ungültige Syntax im Gruppen
 form_error_duplicate_username: Doppelter Benutzername (Benutzer mit diesem Namen existiert schon)   
 form_error_invalid_password: Ungültige Passwortsyntax
 form_error_invalid_email: Ungültige E-Mailsyntax
@@ -64,3 +65,4 @@ sPrevious: Vorherige Seite
 sNext: Nächste Seite
 sSearch: Suchen
 error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.
+groups: Gruppen (Leerzeichen als Trennzeichen)

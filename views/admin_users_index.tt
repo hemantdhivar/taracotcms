@@ -186,6 +186,12 @@
             <input type="text" class="input-xlarge data-edit-field" id="realname">
           </div>
         </div>
+        <div class="control-group" id="cg_groups">
+          <label class="control-label" for="realname">[== $lang->{groups} =]</label>
+          <div class="controls">
+            <input type="text" class="input-xxlarge data-edit-field" id="groups">
+          </div>
+        </div>
         <div class="control-group">
           <label class="control-label">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
           <div class="controls">
@@ -272,6 +278,7 @@ var js_lang_data_loading_error = "[== $lang->{data_loading_error} =]";
 var js_lang_password_hint_edit = "[== $lang->{password_hint_edit} =]";
 var js_lang_delete_error_notify = "[== $lang->{delete_error_notify} =]";
 var js_lang_delete_success_notify = "[== $lang->{delete_success_notify} =]";
+var js_lang_groups = "[== $lang->{groups} =]";
 </script>
 <script type="text/javascript" src="/js/modules/admin_users_index.js"></script>
 <script type="text/javascript">$('#nav_users').addClass('active')</script>

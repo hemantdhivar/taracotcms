@@ -275,6 +275,7 @@ $('#btn_add').click(function () {
     $('#password').val('');
     $('#password_repeat').val('');
     $('#realname').val('');
+    $('#groups').val('');
     $('#email').val('');
     $('#phone').val('');
     $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
@@ -355,6 +356,10 @@ $('#btn_edit_save').click(function () {
         $('#cg_realname').addClass('error');
         errors = true;
     }
+    if (!$('#groups').val().match(/^[A-Za-z0-9_\-\.]{0,254}$/)) {
+        $('#cg_groups').addClass('error');
+        errors = true;
+    }
     if (errors) {
         $('#form_error_msg_text').html(js_lang_form_errors);
         $('#form_error_msg').fadeIn(400);
@@ -374,6 +379,7 @@ $('#btn_edit_save').click(function () {
                 email: $('#email').val(),
                 phone: $('#phone').val(),
                 realname: $('#realname').val(),
+                groups: $('#groups').val(),
                 status: $("input[name='status']:checked").val()
             },
             dataType: "json",
@@ -440,6 +446,7 @@ function editData(id) {
     $('#password').val('');
     $('#password_repeat').val('');
     $('#realname').val('');
+    $('#groups').val('');
     $('#email').val('');
     $('#phone').val('');
     $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
@@ -480,6 +487,9 @@ function editData(id) {
                 }
                 if (data.realname) {
                     $('#realname').val(data.realname);
+                }
+                if (data.groups) {
+                    $('#groups').val(data.groups);
                 }
                 if (data.status) {
                     $('input:radio[name="status"]').filter('[value="' + data.status + '"]').attr('checked', true);
@@ -586,6 +596,7 @@ function resetFormState() {
     $('#cg_email').removeClass('error');
     $('#cg_phone').removeClass('error');
     $('#cg_realname').removeClass('error');
+    $('#cg_groups').removeClass('error');
     $('#password_hint').html(js_lang_password_hint);
 }
 // dataTable ajax fix

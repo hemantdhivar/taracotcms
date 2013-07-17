@@ -30,6 +30,7 @@ form_errors: Form contain errors, please check and try again
 ajax_saving: Saving data, please wait...
 ajax_loading: Loading data, please wait...
 form_error_invalid_username: Invalid username syntax
+form_error_invalid_username: Invalid groups syntax
 form_error_duplicate_username: Duplicate username (user with such username already exists)   
 form_error_invalid_password: Invalid password syntax
 form_error_invalid_email: Invalid e-mail syntax
@@ -64,3 +65,4 @@ sPrevious: Previous page
 sNext: Next page   
 sSearch: Search
 error_ajax: Error while connecting to server. Please try again later.
+groups: Groups (use space as a delimiter)
