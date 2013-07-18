@@ -45,19 +45,30 @@ sub _load_lang {
 get '/' => sub {
   my $_current_lang=_load_lang(); 
 
-  $sth = database->prepare(
-   'SELECT id,phub,ptitle,ptags,pdate,uid,ptext,lastmodified,is_public FROM '.config->{db_table_prefix}.'_users WHERE '.$where.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
+  my $flow='';
+  my $aubbc = taracot::AUBBC->new();
+
+  my $sth = database->prepare(
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,uid,ptext,lastmodified,pviews,is_public FROM '.config->{db_table_prefix}.'_blog_posts WHERE 1 ORDER BY pdate DESC'
   );
   if ($sth->execute()) {
-   while(my ($id,$phub,$ptitle,$ptags,$pdate,$uid,$ptext,$lastmodified,$is_public) = $sth -> fetchrow_array) {
-    push(@ary, '');
-    push(@data, \@ary);
+   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$uid,$ptext,$lastmodified,$pviews,$is_public) = $sth -> fetchrow_array) {
+    my $phub_url;
+    if ($phub) {
+      $phub_url = '/blog/hub/'.$phub;
+    }
+    if (!$pviews) {
+      $pviews='&nbsp;0';
+    }
+    $ptext = $aubbc->do_all_ubbc($ptext);
+    my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_read_more => 1 }, { layout => undef };
+    $flow .= $item_template;    
    }
   }
   $sth->finish(); 
 
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
-  my $render_template = &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}  }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow  }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }

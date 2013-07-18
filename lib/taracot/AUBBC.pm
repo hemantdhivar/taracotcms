@@ -1,4 +1,4 @@
-package Taracot::AUBBC;
+package taracot::AUBBC;
 use strict;
 use warnings;
 
@@ -111,12 +111,12 @@ warn 'CREATING AUBBC '.$VERSION if $DEBUG_AUBBC;
   $do_f[7] = 1;
   eval 'use Memoize' if ! defined $Memoize::VERSION;
   unless ($@ || ! defined $Memoize::VERSION) {
-   Memoize::memoize('AUBBC::settings');
-   Memoize::memoize('AUBBC::smiley_hash');
-   Memoize::memoize('AUBBC::add_build_tag');
-   Memoize::memoize('AUBBC::do_all_ubbc');
-   Memoize::memoize('AUBBC::script_escape');
-   Memoize::memoize('AUBBC::html_to_text');
+   Memoize::memoize('taracot::AUBBC::settings');
+   Memoize::memoize('taracot::AUBBC::smiley_hash');
+   Memoize::memoize('taracot::AUBBC::add_build_tag');
+   Memoize::memoize('taracot::AUBBC::do_all_ubbc');
+   Memoize::memoize('taracot::AUBBC::script_escape');
+   Memoize::memoize('taracot::AUBBC::html_to_text');
   }
    $aubbc_error .= $@."\n" if $@;
  }
