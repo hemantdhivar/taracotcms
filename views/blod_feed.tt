@@ -1,1 +1,0 @@
-<h1>[== $post_title =]</h1><a href="[$blog_hub_url]">[== $blog_hub =]</a><div style="height:14px" />[== $blog_text_cut =]<div style="height:14px" />[== $blog_tags =]<div style="height:24px" />
