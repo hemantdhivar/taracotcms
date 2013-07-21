@@ -44,10 +44,11 @@ sub _load_lang {
 
 sub flow() {  
   my $flow = '';
-  my $ipp = 1; # items per page
+  my $ipp = 2; # items per page
   my $page = int($_[0]) || 1;
   my $_current_lang=_load_lang(); 
   my $aubbc = taracot::AUBBC->new();
+  my $auth = &taracot::_auth();
 
   my $total=0;
   my $sth = database->prepare(
@@ -60,9 +61,25 @@ sub flow() {
   my $pc = int($total / $ipp);
   my $pitems='';
   if ($page ne 1) {
-    $pitems .= template 'blog_paginator_item', { page_url => '/blog/page/'.($page-1), page_text => '&laquo;' }, { layout => undef };
+    $pitems .= template 'blog_paginator_item', { page_url => '/blog/page/1', page_text => '&laquo;' }, { layout => undef };
   }  
-  for (my $it=1; $it<=$pc; $it++) {
+  my $lof = 5-$page;
+  if ($lof > 4 || $lof < 0) {
+    $lof=0;
+  }
+  my $rof = -($page-$pc);
+  if ($rof > 4) {
+    $rof=0;
+  } else {
+    $rof=4-$rof;
+  }
+
+  for (my $it=1; $it<=$pc; $it++) {    
+    if ($pc>9) {
+      if ($it < $page-4-$rof || $it > $page+4+$lof) {
+        next;
+      }
+    }
     my $active;
     if ($it eq $page) {
       $active = 1;
@@ -70,7 +87,7 @@ sub flow() {
     $pitems .= template 'blog_paginator_item', { page_url => '/blog/page/'.$it, page_text => $it,active => $active }, { layout => undef };
   }
   if ($page ne $pc) {
-    $pitems .= template 'blog_paginator_item', { page_url => '/blog/page/'.($page+1), page_text => '&raquo;' }, { layout => undef };
+    $pitems .= template 'blog_paginator_item', { page_url => '/blog/page/'.$pc, page_text => '&raquo;' }, { layout => undef };
   }
   my $paginator = template 'blog_paginator', { items => $pitems }, { layout => undef };
 
@@ -94,13 +111,21 @@ sub flow() {
       $read_more_url = $post_url;
     }
     $ptext = $aubbc->do_all_ubbc($ptext);
+    $ptags =~ s/[^\w\n ,]//g;
+    my @tags = split(/,/, $ptags);
+    $ptags='';
+    foreach my $tag (@tags) {
+      $tag=~s/^ //;      
+      $ptags.=', <a href="/blog/tag/'.$tag.'">'.$tag.'</a>';
+    }
+    $ptags=~s/, //;
     my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_read_more => $read_more_url, blog_post_url => $post_url, read_more => $lang->{read_more} }, { layout => undef };
     $flow .= $item_template;    
    }
   }
   $sth->finish();     
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
-  return &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow, paginator => $paginator  }, { layout => config->{layout}.'_'.$_current_lang } );
+  return &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow, paginator => $paginator, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } );
 }
 
 get '/' => sub {  
@@ -124,11 +149,12 @@ get '/page/:page' => sub {
 };
 
 get '/post/:post_id' => sub {
-  my $post_id = params->{post_id};
+  my $post_id = params->{post_id};  
   $post_id=~s/[^0-9]//gm; 
   if (!$post_id) {
     pass();
   }
+  my $auth = &taracot::_auth();
   my $_current_lang=_load_lang(); 
   my $aubbc = taracot::AUBBC->new();
   my $item_template;
@@ -147,7 +173,7 @@ get '/post/:post_id' => sub {
    }    
    $ptext =~s/\[cut\]/ /igm;
    $ptext = $aubbc->do_all_ubbc($ptext);
-   $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags }, { layout => config->{layout}.'_'.$_current_lang } );
+   $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   if ($item_template) {

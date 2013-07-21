@@ -1,0 +1,1 @@
+<li<?pl if ($active) { ?> class="active"<?pl } ?>><?pl if ($page_url) { ?><a href="[== $page_url =]"><?pl } ?> [== $page_text =]<?pl if ($page_url) { ?></a><?pl } ?></li>
