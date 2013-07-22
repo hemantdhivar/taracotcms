@@ -1,2 +1,4 @@
 module_name: Blog
 read_more: Read more
+error_unauth: You need to be <a href="/user/authorize">logged in</a> to view this post.
+error_draft: The post is currently saved as a draft. Please try again later.
