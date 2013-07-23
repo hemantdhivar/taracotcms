@@ -66,9 +66,6 @@ sub flow() {
     $where.=' AND MATCH (ptags) AGAINST (\''.$tag.'*\' IN BOOLEAN MODE)';
   }
   my $total=0;
-  open(DATA, '>C:/XTreme/test.sql');
-  print DATA 'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where;
-  close(DATA);
   my $sth = database->prepare(
    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where
   );
@@ -76,6 +73,18 @@ sub flow() {
    ($total) = $sth -> fetchrow_array;
   }
   $sth->finish();
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my %hub_data;
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+    }
+  }
   my $pc = int($total / $ipp);
   if ($total % $ipp) {
     $pc++;
@@ -106,7 +115,6 @@ sub flow() {
     } else {
       $rof=3-$rof;
     }
-
     for (my $it=1; $it<=$pc; $it++) {    
       if ($pc>7) {
         if ($it < $page-3-$rof || $it > $page+3+$lof) {
@@ -147,6 +155,9 @@ sub flow() {
     $ptext = $aubbc->do_all_ubbc($ptext);
     $ptags =~ s/[^\w\n ,]//g;
     my @tags = split(/,/, $ptags);
+    if ($hub_data{$phub}) {
+      $phub = $hub_data{$phub};
+    }
     $ptags='';
     foreach my $tag (@tags) {
       $tag=~s/^ //; 
@@ -160,12 +171,11 @@ sub flow() {
     $flow .= $item_template;    
    }
   }
-  $sth->finish();     
-  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
+  $sth->finish();  
   return &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow, paginator => $paginator, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } );
 }
 
-get '/' => sub {  
+get '/' => sub {
   my $render_template = &flow();
   if ($render_template) {
     return $render_template;
@@ -226,15 +236,24 @@ get '/post/:post_id' => sub {
   my $_current_lang=_load_lang(); 
   my $aubbc = taracot::AUBBC->new();
   my $item_template;
-  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my %hub_data;
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+    }
+  }
   my $sth = database->prepare(
    'SELECT id,pusername,phub,ptitle,ptags,pdate,uid,ptext,lastmodified,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
-  );   
+  );  
 
   if ($sth->execute()) {
    my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$uid,$ptext,$lastmodified,$pviews,$pstate) = $sth -> fetchrow_array();   
-
-
    if ($pstate eq 2 && !$auth->{id}) {
     $sth->finish(); 
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
@@ -245,7 +264,6 @@ get '/post/:post_id' => sub {
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
     return &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
    }
-
    my $phub_url;
    if ($phub) {
      $phub_url = '/blog/hub/'.$phub.'/1';
@@ -253,6 +271,9 @@ get '/post/:post_id' => sub {
    if (!$pviews) {
      $pviews='&nbsp;0';
    }    
+   if ($hub_data{$phub}) {
+    $phub = $hub_data{$phub};
+   }
    $ptext =~s/\[cut\]/ /igm;
    $ptext = $aubbc->do_all_ubbc($ptext);
    $ptags =~ s/[^\w\n ,]//g;
@@ -266,7 +287,7 @@ get '/post/:post_id' => sub {
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
     $ptags=~s/, //;
-   $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
+    $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -276,6 +297,28 @@ get '/post/:post_id' => sub {
   $sth->finish(); 
   if ($item_template) {
     return $item_template;
+  }
+  pass();
+};
+
+get '/post' => sub {
+  my $auth = &taracot::_auth();
+  my $_current_lang=_load_lang(); 
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my %hub_data;
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+    }
+  }
+  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  if ($edit_template) {
+    return $edit_template;
   }
   pass();
 };

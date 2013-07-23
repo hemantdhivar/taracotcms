@@ -1,9 +1,7 @@
 body,html
 {
   height:100%;
-  background-color:#7d7e7d;
-  background:linear-gradient(tobottom,#7d7e7d0%,#0e0e0e100%);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7d7e7d',endColorstr='#0e0e0e',GradientType=0);
+  background-color:#333;  
 }
 
 #taracot_auth
@@ -17,9 +15,9 @@ body,html
   height:165px;
   background:#e5e5e5;
   text-align:left;
-  -moz-box-shadow:0 0 8px #000;
-  -webkit-box-shadow:0 0 8px #000;
-  box-shadow:0 0 8px #000;
+  -moz-box-shadow:0 0 8px #111;
+  -webkit-box-shadow:0 0 8px #111;
+  box-shadow:0 0 8px #111;
   border:1px solid #fff;
   z-index:200;
   border-radius:6px;
@@ -88,7 +86,7 @@ label
 
 #taracot_about
 {
-  color:#222;
+  color:#999;
   float:bottom;
   font-size:70%;
   margin-top:20px;
@@ -97,10 +95,11 @@ label
 
 #taracot_about a
 {
+  background-color:#8A8A8A;
   color:#111;
-  text-decoration:none;
-  border-bottom:1px solid #aaa;
   padding:2px;
+  text-decoration:none;
+  border-bottom:0px;
 }
 
 #taracot_about a:hover

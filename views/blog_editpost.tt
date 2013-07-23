@@ -1,0 +1,44 @@
+<h1>[== $lang->{edit_post} =]</h1>
+<?pl
+ my $hub_html='';
+ foreach my $key (keys %$hub_data) { 
+  $hub_html.=qq~<option value="$key">$$hub_data{$key}</option>~;
+ }
+?>
+<form class="form-horizontal" id="blog_form">
+	<div class="control-group" id="cg_blog_title">
+    	<label class="control-label" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="controls">
+    		<input type="text" class="input-xxlarge" id="blog_title">
+    	</div>
+    </div>
+    <div class="control-group" id="cg_blog_hub">
+    	<label class="control-label" for="blog_hub">[== $lang->{edit_form_post_hub} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="controls">
+    		<select class="input-large" id="blog_hub">[== $hub_html =]</select>
+    	</div>
+    </div>    
+    <div class="control-group" id="cg_blog_tags">
+    	<label class="control-label" for="blog_tags">[== $lang->{edit_form_post_tags} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="controls">
+    		<input type="text" class="input-xlarge" id="blog_tags">
+    	</div>
+    </div>    
+    <div class="control-group" id="cg_blog_state">
+    	<label class="control-label" for="blog_state">[== $lang->{edit_form_post_state} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="controls">
+    		<select class="input-medium" id="blog_state">[== $hub_html =]</select>
+    	</div>
+    </div>
+    <div class="form-actions">
+        <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{edit_form_btn_save} =]</button>
+        <button type="button" class="btn" id="btn_register" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
+    </div>
+</form>
+<div id="auth_form_ajax" style="display:none">
+    <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{blog_processing} =]
+</div>
+<script type="text/javascript">
+    //var js_lang_user_authorize = "[== $lang->{user_authorize} =]";
+</script>
+<script src="/js/modules/blog_editpost.js"></script>

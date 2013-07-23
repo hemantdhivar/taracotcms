@@ -2,3 +2,12 @@ module_name: Blog
 read_more: Read more
 error_unauth: You need to be <a href="/user/authorize">logged in</a> to view this post.
 error_draft: The post is currently saved as a draft. Please try again later.
+edit_post: Edit post
+edit_form_post_title: Post title
+edit_form_post_hub: Hub
+edit_form_post_tags: Tags (comma sep.)
+edit_form_post_state: State
+edit_form_post_text: Post text
+edit_form_btn_save: Save
+edit_form_btn_cancel: Cancel
+blog_processing: Processing, please wait...
