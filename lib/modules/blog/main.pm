@@ -316,7 +316,7 @@ get '/post' => sub {
       $hub_data{$par}=$val;
     }
   }
-  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($edit_template) {
     return $edit_template;
   }

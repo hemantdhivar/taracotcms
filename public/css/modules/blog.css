@@ -7,3 +7,8 @@
  .blog-label-bottom a {
  	color: #fff;	
  }
+ .blog-post-cut {
+ 	border-bottom: dashed 1px #222;
+ 	height:5px; 	
+ 	margin-bottom:5px;
+ }

@@ -11,3 +11,11 @@ edit_form_post_text: Post text
 edit_form_btn_save: Save
 edit_form_btn_cancel: Cancel
 blog_processing: Processing, please wait...
+state_draft: Draft
+state_published: Published for everyone
+state_published_auth: Published for authorized users
+btn_cut: Insert page break
+invalid_post_title: Invalid post title
+invalid_post_tags: Invalid post tags
+invalid_post_hub: Invalid hub
+invalid_post_state: Invalid post state

@@ -5,6 +5,11 @@
   $hub_html.=qq~<option value="$key">$$hub_data{$key}</option>~;
  }
 ?>
+<br />
+<div class="alert alert-block alert-error hide" id="form_error_msg">
+<span id="form_error_msg_text"></span>
+</div>
+<br />
 <form class="form-horizontal" id="blog_form">
 	<div class="control-group" id="cg_blog_title">
     	<label class="control-label" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
@@ -27,8 +32,13 @@
     <div class="control-group" id="cg_blog_state">
     	<label class="control-label" for="blog_state">[== $lang->{edit_form_post_state} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
-    		<select class="input-medium" id="blog_state">[== $hub_html =]</select>
+    		<select class="input-xlarge" id="blog_state"><option value="0">[== $lang->{state_draft} =]</option><option value="1">[== $lang->{state_published} =]</option><option value="2">[== $lang->{state_published_auth} =]</option></select>
     	</div>
+    </div>
+    <div class="control-group" id="cg_blog_state">        
+        <div class="controls">
+            <textarea id="wbbeditor"></textarea>
+        </div>
     </div>
     <div class="form-actions">
         <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{edit_form_btn_save} =]</button>
@@ -39,6 +49,23 @@
     <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{blog_processing} =]
 </div>
 <script type="text/javascript">
-    //var js_lang_user_authorize = "[== $lang->{user_authorize} =]";
+    var js_lang_invalid_post_title = "[== $lang->{invalid_post_title} =]";
+    var js_lang_invalid_post_tags = "[== $lang->{invalid_post_tags} =]";
+    var js_lang_invalid_post_hub = "[== $lang->{invalid_post_hub} =]";
+    var js_lang_invalid_post_state = "[== $lang->{invalid_post_state} =]";
 </script>
 <script src="/js/modules/blog_editpost.js"></script>
+<script src="/js/wysibb/jquery.wysibb.min.js" charset="utf-8"></script>
+<script src="/js/wysibb/lang/en.js"></script>
+<script src="/js/wysibb/lang/de.js"></script>
+<script>
+$(document).ready(function() {
+  var lng = '[== $detect_lang->{lng} =]';
+  var wbbOpt={
+    imgupload:false,buttons:"bold,italic,underline,strike,sup,sub,|,img,video,link,|,bullist,numlist,smilebox,|,fontcolor,fontsize,fontfamily,|,justifyleft,justifycenter,justifyright,|,quote,code,offtop,table,removeFormat,cutpage",
+  allButtons:{code:{hotkey: "ctrl+shift+c",transform:{'<div class="blog-post-cut"></div>':'[code]'}},cutpage:{title:'[== $lang->{btn_cut} =]',buttonText:'CUT',transform: {'<div class="blog-post-cut"></div>':'[cut]'}}}
+  };
+  if (lng != 'ru'){wbbOpt['lang']=lng}
+  $('#wbbeditor').wysibb(wbbOpt);
+})
+</script>
