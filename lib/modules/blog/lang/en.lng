@@ -19,3 +19,14 @@ invalid_post_title: Invalid post title
 invalid_post_tags: Invalid post tags
 invalid_post_hub: Invalid hub
 invalid_post_state: Invalid post state
+blog_processing: Processing, please wait...
+error_unauth: Not authorized
+error_title: Invalid post title
+error_hub: Invalid hub
+error_tags: Invalid tags
+error_title: Invalid post title
+error_state: Invalid post state
+error_pid: Invalid post or access denied
+error_db: Error while saving data, please try again later
+success_save: The post has been saved. Go to post&#58;
+click_here: click here

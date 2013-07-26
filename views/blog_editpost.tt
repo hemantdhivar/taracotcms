@@ -5,11 +5,11 @@
   $hub_html.=qq~<option value="$key">$$hub_data{$key}</option>~;
  }
 ?>
-<br />
 <div class="alert alert-block alert-error hide" id="form_error_msg">
 <span id="form_error_msg_text"></span>
 </div>
-<br />
+<div class="hide" id="form_success_msg">
+</div>
 <form class="form-horizontal" id="blog_form">
 	<div class="control-group" id="cg_blog_title">
     	<label class="control-label" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
@@ -45,7 +45,7 @@
         <button type="button" class="btn" id="btn_register" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
     </div>
 </form>
-<div id="auth_form_ajax" style="display:none">
+<div id="blog_form_ajax" style="display:none">
     <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{blog_processing} =]
 </div>
 <script type="text/javascript">
@@ -62,7 +62,7 @@
 $(document).ready(function() {
   var lng = '[== $detect_lang->{lng} =]';
   var wbbOpt={
-    imgupload:false,buttons:"bold,italic,underline,strike,sup,sub,|,img,video,link,|,bullist,numlist,smilebox,|,fontcolor,fontsize,fontfamily,|,justifyleft,justifycenter,justifyright,|,quote,code,offtop,table,removeFormat,cutpage",
+    imgupload:false,buttons:"bold,italic,underline,strike,sup,sub,|,img,video,link,|,bullist,numlist,|,fontcolor,fontsize,fontfamily,|,justifyleft,justifycenter,justifyright,|,quote,code,offtop,table,removeFormat,cutpage",
   allButtons:{code:{hotkey: "ctrl+shift+c",transform:{'<div class="blog-post-cut"></div>':'[code]'}},cutpage:{title:'[== $lang->{btn_cut} =]',buttonText:'CUT',transform: {'<div class="blog-post-cut"></div>':'[cut]'}}}
   };
   if (lng != 'ru'){wbbOpt['lang']=lng}

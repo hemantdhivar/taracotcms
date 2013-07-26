@@ -135,10 +135,10 @@ sub flow() {
 
   my $limx = $page*$ipp-$ipp;
   $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,uid,ptext,lastmodified,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
   );
   if ($sth->execute()) {
-   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$uid,$ptext,$lastmodified,$pviews,$pstate) = $sth -> fetchrow_array) {
+   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array) {
     my $phub_url;
     if ($phub) {
       $phub_url = '/blog/hub/'.$phub.'/1';
@@ -212,13 +212,12 @@ get '/hub/:hub/:page' => sub {
 get '/tag/:tag/:page' => sub {  
   my $bpage = int(params->{page}) || 1;
   my $btag = params->{tag};
-  $btag =~ s/[^\w\nА-Яа-я]//g;
+  $btag=~s/_/%/gm;
+  $btag = decode_utf8(uri_decode($btag));
+  $btag =~ s/[^\w\nА-Яа-я ]//g;
   if ($bpage<1 || !$btag) {
     pass();
   }
-  #tags!!!   
-  $btag=~s/_/%/gm;
-  $btag = decode_utf8(uri_decode($btag));  
   my $render_template = &flow($bpage, undef, $btag);
   if ($render_template) {
     return $render_template;
@@ -249,11 +248,11 @@ get '/post/:post_id' => sub {
     }
   }
   my $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,uid,ptext,lastmodified,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
   );  
 
   if ($sth->execute()) {
-   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$uid,$ptext,$lastmodified,$pviews,$pstate) = $sth -> fetchrow_array();   
+   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array();   
    if ($pstate eq 2 && !$auth->{id}) {
     $sth->finish(); 
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
@@ -319,6 +318,122 @@ get '/post' => sub {
   my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($edit_template) {
     return $edit_template;
+  }
+  pass();
+};
+
+post '/post/process' => sub {
+  my $_current_lang=_load_lang(); 
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new(); 
+  my %res;
+  $res{status}=1;  
+  my $auth = &taracot::_auth();
+  # Not authorized?
+  if (!$auth->{id}) {
+    $res{status}=0; 
+    push @errors, $lang->{error_unauth}; 
+    $res{errors}=\@errors; 
+    return $json_xs->encode(\%res);   
+  }   
+  # End if not authorized
+  my $pid = int(params->{id}) || 0;
+  # Post owner?
+  if ($pid) {
+    my $pst  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $pid }); 
+    if (!$pst->{id}) {
+      $res{status}=0; 
+      push @errors, $lang->{error_pid}; 
+      $res{errors}=\@errors; 
+      return $json_xs->encode(\%res);    
+    }
+    if ($pst->{username} ne $auth->{username} && $auth->{status} ne 2) {
+      $res{status}=0; 
+      push @errors, $lang->{error_pid}; 
+      $res{errors}=\@errors; 
+      return $json_xs->encode(\%res);    
+    }
+  }
+  # End: post owner check
+  my $blog_title = params->{blog_title} || '';  
+  $blog_title =~ s/[\<\>\\\/\"\']+//g;
+  $blog_title =~ s/^\s+//;
+  $blog_title =~ s/\s+$//;
+  $blog_title =~ tr/ //s;
+  if (!$blog_title || length($blog_title) > 250) {
+    $res{status}=0; 
+    push @errors, $lang->{error_title}; 
+    push @fields, 'blog_title';    
+  }
+  my $blog_tags = params->{blog_tags} || '';
+  my @tags = split(/,/, $blog_tags);
+  $blog_tags = '';
+  foreach my $item (@tags) {
+    $item =~ s/^\s+//;
+    $item =~ s/\s+$//;
+    $item =~ tr/ //s;
+    $item =~ s/[^\w\nА-Яа-я ]//g;
+    if (length($item) > 0) {
+      $blog_tags.=", $item";
+    }
+  }
+  $blog_tags =~ s/, //;
+  if (!$blog_tags || length($blog_tags) > 250) {
+    $res{status}=0; 
+    push @errors, $lang->{error_tags}; 
+    push @fields, 'blog_tags';
+  }
+  my $blog_hub = params->{blog_hub} || '';
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my %hub_data;
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+    }
+  }
+  if (!$hub_data{$blog_hub}) {
+    $res{status}=0; 
+    push @errors, $lang->{error_hub}; 
+    push @fields, 'blog_hub';    
+  }
+  my $blog_state = int(params->{blog_state}) || 0;
+  if ($blog_state < 0 || $blog_state > 2) {
+    $res{status}=0; 
+    push @errors, $lang->{error_state}; 
+    push @fields, 'blog_state';    
+  }
+  # Errors? return
+  if (!$res{status}) {
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;     
+    return $json_xs->encode(\%res);  
+  }  
+  # End if errors  
+  my $blog_data = params->{blog_data} || '';  
+  my $aubbc = taracot::AUBBC->new();
+  $blog_data = $aubbc->do_all_ubbc($blog_data);
+  if ($pid) {
+    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, pstate => $blog_state, lastchanged => time }); 
+      $pid = database->{q{mysql_insertid}};
+
+  } else {
+    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time }); 
+      $pid = database->{q{mysql_insertid}};
+  }
+  if ($pid) {    
+    $res{pid}=$pid; 
+    return $json_xs->encode(\%res); 
+  } else {
+    $res{status}=0;     
+    push @errors, $lang->{error_db}; 
+    $res{errors}=\@errors;
+    return $json_xs->encode(\%res); 
   }
   pass();
 };
