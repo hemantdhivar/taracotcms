@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jul 26, 2013 at 05:05 PM
+-- Generation Time: Jul 27, 2013 at 03:56 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -548,16 +548,30 @@ CREATE TABLE `taracot_blog_posts` (
   `pstate` tinyint(3) default '1',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
+) ENGINE=MyISAM AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 AUTO_INCREMENT=41 ;
 
 -- 
 -- Dumping data for table `taracot_blog_posts`
 -- 
 
 INSERT INTO `taracot_blog_posts` VALUES (1, 'admin', 'test', '1Тестовый пост! Ура, товарищи', 'Это теги, такие дела!, это - очень длинный и очень бессмысленный тег который юзер забил, ништяк', 1834383883, 'Тут текст первого поста! \r\n\r\n12 апреля в Москве прошел Dribbble Meetup 2013. На этой неформальной конференции для дизайнеров выступили[cut]два десятка сильных и интересных специалистов, представленных в одной из главных тематических социальных сетей Dribbble. Это Евгений Беляев (Mail.Ru Group), Николай Верин, Павел Грозян и Дмитрий Новиков (MacPaw), Фил Дунский, Дмитрий Зимин (Киноход, экс-Рамблер), Алексей Кандауров и Александр Киров (Mail.Ru Group), Мысмаксом, Павел Прошин (Gipis), Дмитрий Чута, Вадим Щербаков, Алишер Якупов (Одноклассники), [b]Юра Ярохович[/b], а также внеплановые Александр Хмелевский и Дмитрий Цозик (SoftFacade), Денис Пахалюк (Ramotion) и Игорь Степахин (TracksFlow). Было много практически полезных рассказов и историй из жизни компаний с живым и веселым диалогом со слушателями.', 15, 'en', NULL, 1);
-INSERT INTO `taracot_blog_posts` VALUES (2, 'admin', 'test', 'Вторая запись', 'ништяк, крутанская запись, Vorname anhängen', 1984398422, 'Ну что тут еще скажешь!\r\nВот она - вторая запись суперблога! \r\nФонд электронных рубежей (EFF) подал официальное заявление в окружной суд Северной Калифорнии, от лица ряда физических лиц и 19-ти организаций, включая религиозные, правозащитные и ассоциации владельцев оружия.\r\n\r\nВ качестве ответчика по делу названы Агентство национальной безопасности, Министерство юстиции и Федеральное бюро расследований. Их обвиняют в нарушении Первой, Четвёртой и Пятой поправок к Конституции США и закона Patriot Act (статья 215). Дополнительные судебные иски могут быть выдвинуты в ходе процесса.', 27, 'en', NULL, 1);
+INSERT INTO `taracot_blog_posts` VALUES (2, 'admin', 'test', 'Вторая запись', 'ништяк, крутанская запись, Vorname anhängen', 1984398422, 'Ну что тут еще скажешь!\r\nВот она - вторая запись суперблога! \r\nФонд электронных рубежей (EFF) подал официальное заявление в окружной суд Северной Калифорнии, от лица ряда физических лиц и 19-ти организаций, включая религиозные, правозащитные и ассоциации владельцев оружия.\r\n\r\nВ качестве ответчика по делу названы Агентство национальной безопасности, Министерство юстиции и Федеральное бюро расследований. Их обвиняют в нарушении Первой, Четвёртой и Пятой поправок к Конституции США и закона Patriot Act (статья 215). Дополнительные судебные иски могут быть выдвинуты в ходе процесса.', 29, 'en', NULL, 1);
 INSERT INTO `taracot_blog_posts` VALUES (3, 'admin', 'test', '2Тестовый пост! Ура, товарищи', 'Это теги, такие дела, ништяк', 1834383883, 'Тут текст первого поста! \r\n\r\n12 апреля в Москве прошел Dribbble Meetup 2013. На этой неформальной конференции для дизайнеров выступили[cut]два десятка сильных и интересных специалистов, представленных в одной из главных тематических социальных сетей Dribbble. Это Евгений Беляев (Mail.Ru Group), Николай Верин, Павел Грозян и Дмитрий Новиков (MacPaw), Фил Дунский, Дмитрий Зимин (Киноход, экс-Рамблер), Алексей Кандауров и Александр Киров (Mail.Ru Group), Мысмаксом, Павел Прошин (Gipis), Дмитрий Чута, Вадим Щербаков, Алишер Якупов (Одноклассники), [b]Юра Ярохович[/b], а также внеплановые Александр Хмелевский и Дмитрий Цозик (SoftFacade), Денис Пахалюк (Ramotion) и Игорь Степахин (TracksFlow). Было много практически полезных рассказов и историй из жизни компаний с живым и веселым диалогом со слушателями.', 0, 'en', NULL, 1);
 INSERT INTO `taracot_blog_posts` VALUES (26, 'admin', 'test', 'Post title', 'медвед, очень любить, хавать мёд', 1374843881, '', 0, 'en', 1374843881, 1);
+INSERT INTO `taracot_blog_posts` VALUES (27, 'admin', 'site', 'aaa', 'aaa', 1374908361, 'aaa', 0, 'en', 1374908361, 0);
+INSERT INTO `taracot_blog_posts` VALUES (28, 'admin', 'site', 'aaa', 'aaa', 1374910075, 'aaa', 0, 'en', 1374910075, 0);
+INSERT INTO `taracot_blog_posts` VALUES (29, 'admin', 'site', 'aaa', 'aaa', 1374910929, '111', 0, 'en', 1374910929, 0);
+INSERT INTO `taracot_blog_posts` VALUES (30, 'admin', 'site', 'aaa', 'aaa', 1374911050, '111', 1, 'en', 1374911050, 0);
+INSERT INTO `taracot_blog_posts` VALUES (31, 'admin', 'site', 'aaa', 'aaa', 1374911208, '111', 0, 'en', 1374911208, 0);
+INSERT INTO `taracot_blog_posts` VALUES (32, 'admin', 'test', '111', '111', 1374911253, '111', 0, 'en', 1374911253, 0);
+INSERT INTO `taracot_blog_posts` VALUES (33, 'admin', 'test', '111', '111', 1374911315, '111', 0, 'en', 1374911315, 0);
+INSERT INTO `taracot_blog_posts` VALUES (34, 'admin', 'misc', 'Медвед наносит ответный удар', 'медвед, неведомая ебанина', 1374911518, 'Такие дела. <b>Надеюсь</b>, это работает :&#41;<br />\nЧто еще скажешь?<br />\n<div id="aubbcode1374906480620001"><code>\nТут какой-то неведомый код<br />\n</code></div><a href="javascript:void(0)" onclick="javascript:MyCodePrint(''aubbcode1374906480620001'');">^Download above code^</a><br />\n<ul>\n<li>[/list][list]</li>\n<li>1212122[/*]</li>\n<li>12121212[/*]</li>\n</ul>\n121212', 1, 'en', 1374911518, 1);
+INSERT INTO `taracot_blog_posts` VALUES (35, 'admin', 'misc', 'Медвед наносит ответный удар', 'медвед, неведомая ебанина', 1374912008, '[b]', 1, 'en', 1374912008, 1);
+INSERT INTO `taracot_blog_posts` VALUES (36, 'admin', 'misc', 'Медвед наносит ответный удар', 'медвед, неведомая ебанина', 1374913117, '1111', 1, 'en', 1374913117, 1);
+INSERT INTO `taracot_blog_posts` VALUES (37, 'admin', 'misc', 'Медвед наносит ответный удар', 'медвед, неведомая ебанина', 1374913146, '[b]OK Computer\n[i]What a phuck?\n[/i][/b][s]No way.[/s]', 1, 'en', 1374913146, 1);
+INSERT INTO `taracot_blog_posts` VALUES (38, 'admin', 'misc', 'Медвед наносит ответный удар', 'медвед, неведомая ебанина', 1374913224, '[b]Test test\n[/b][i]Editor works.\n[/i][s]No way.[/s]', 5, 'en', 1374913224, 1);
+INSERT INTO `taracot_blog_posts` VALUES (39, 'admin', 'misc', 'Медвед наносит ответный удар', 'медвед, неведомая ебанина', 1374914199, '[b]Bold\n[/b][i]Italic\n[/i][u]Underline\n[/u][s]Strike\n[/s][sup]Superscript\n[/sup][sub]Subscript[/sub]\n[img]https://www.google.ru/images/srpr/logo4w.png[/img]﻿\n[url=http://www.fontanka.ru/]News[/url]\n[list][*]List UO IT1[/*][*]List UO IT2[/*][*]List UO IT3[/*][/list][list=1][*]List O IT1[/*][*]List O IT2[/*][/list][color=#ff0000]Red text\n[color=#000000][size=200]Very big font[/size][/color][/color][cut]\n[font=Comic Sans MS]Fucking comic\n[center]Center\n\nRight\n[/center][quote]Quote[/quote]\n[/font][offtop]Offtop\n[table][tr][td]﻿[/td][td]﻿[/td][td]﻿[/td][/tr][tr][td]﻿[/td][td]﻿[/td][td]﻿[/td][/tr][/table][/offtop]\n', 1, 'en', 1374914199, 1);
+INSERT INTO `taracot_blog_posts` VALUES (40, 'admin', 'misc', 'Медвед наносит ответный удар', 'медвед, неведомая ебанина', 1374915074, '[img]http://yandex.st/www/1.639/yaru/i/logo.png[/img]', 1, 'en', 1374915074, 1);
 
 -- --------------------------------------------------------
 

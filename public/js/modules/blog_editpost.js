@@ -1,4 +1,5 @@
 $('#btn_submit').click(function() {
+    blog_data: $("#wbbeditor").bbcode()
 	$('#form_error_msg').hide();
 	$('#form_error_msg_text').html('');
 	$('#cg_blog_title').removeClass('error');
@@ -47,9 +48,9 @@ $('#btn_submit').click(function() {
                 dataType: "json",
                 success: function (data) {
                     if (data.status == 1) {
-                        $('#form_success_msg').html("[== $lang->{success_save} =]&nbsp;<a href=\"/blog/post/"+data.pid+"\"></a>");
+                        $('#form_success_msg').html(js_lang_success_save +"&nbsp;<a href=\"/blog/post/"+data.pid+"\">"+ js_lang_click_here +"</a>.<br/><br/>"+js_lang_success_new);
                         $('#blog_form_ajax').hide();
-                        $('#form_success_msg').show;
+                        $('#form_success_msg').show();
                     }
                 },
                 error: function () {

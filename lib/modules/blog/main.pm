@@ -232,8 +232,7 @@ get '/post/:post_id' => sub {
     pass();
   }
   my $auth = &taracot::_auth();
-  my $_current_lang=_load_lang(); 
-  my $aubbc = taracot::AUBBC->new();
+  my $_current_lang=_load_lang();   
   my $item_template;
   my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
   my %hub_data;
@@ -273,7 +272,8 @@ get '/post/:post_id' => sub {
    if ($hub_data{$phub}) {
     $phub = $hub_data{$phub};
    }
-   $ptext =~s/\[cut\]/ /igm;
+   $ptext =~s/\[cut\]/ /igm;   
+   my $aubbc = taracot::AUBBC->new();
    $ptext = $aubbc->do_all_ubbc($ptext);
    $ptags =~ s/[^\w\n ,]//g;
     my @tags = split(/,/, $ptags);
@@ -285,8 +285,8 @@ get '/post/:post_id' => sub {
       $tagurl=~s/%/_/gm;
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
-    $ptags=~s/, //;
-    $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
+  $ptags=~s/, //;
+  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -415,9 +415,9 @@ post '/post/process' => sub {
     return $json_xs->encode(\%res);  
   }  
   # End if errors  
-  my $blog_data = params->{blog_data} || '';  
-  my $aubbc = taracot::AUBBC->new();
-  $blog_data = $aubbc->do_all_ubbc($blog_data);
+  my $blog_data = params->{blog_data} || '';    
+  $blog_data =~ s/\</&lt;/gm;
+  $blog_data =~ s/\>/&gt;/gm;
   if ($pid) {
     database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, pstate => $blog_state, lastchanged => time }); 
       $pid = database->{q{mysql_insertid}};

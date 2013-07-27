@@ -30,3 +30,4 @@ error_pid: Invalid post or access denied
 error_db: Error while saving data, please try again later
 success_save: The post has been saved. Go to post&#58;
 click_here: click here
+success_new: You can also <a href="/blog/post">create a new post</a>.
