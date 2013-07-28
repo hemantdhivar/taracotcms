@@ -50,8 +50,7 @@ sub flow() {
   my $page = int($_[0]) || 1;
   my $hub = $_[1] || '';
   my $tag = $_[2] || '';
-  my $_current_lang=_load_lang(); 
-  my $aubbc = taracot::AUBBC->new();
+  my $_current_lang=_load_lang();   
   my $auth = &taracot::_auth();
   my $where = 'plang='.database->quote($_current_lang);
   if ($auth->{id}) {
@@ -152,6 +151,7 @@ sub flow() {
       ($ptext) = split(/\[cut\]/i, $ptext);
       $read_more_url = $post_url;
     }
+    my $aubbc = taracot::AUBBC->new();
     $ptext = $aubbc->do_all_ubbc($ptext);
     $ptags =~ s/[^\w\n ,]//g;
     my @tags = split(/,/, $ptags);
@@ -273,6 +273,8 @@ get '/post/:post_id' => sub {
     $phub = $hub_data{$phub};
    }
    $ptext =~s/\[cut\]/ /igm;   
+   $ptext =~s/\[list\=1\]\[\*\]/[list][*=1]/igm;
+   $ptext =~s/\[\/\*]//gm;
    my $aubbc = taracot::AUBBC->new();
    $ptext = $aubbc->do_all_ubbc($ptext);
    $ptags =~ s/[^\w\n ,]//g;
