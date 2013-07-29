@@ -252,6 +252,7 @@ $2<\/div>$AUBBC{quote_extra}/g;
  $msg =~ s/\[(left|right|center)\](?s)(.+?)\[\/\1\]/<div style=\"text-align: $1;\">$2<\/div>/g;
  $msg =~ s/\[li=(\d+)\](?s)(.+?)\[\/li\]/<li value="$1">$2<\/li>/g;
  $msg =~ s/\[u\](?s)(.+?)\[\/u\]/<span style="text-decoration: underline;">$1<\/span>/g;
+ $msg =~ s/\[s\](?s)(.+?)\[\/s\]/<span style="text-decoration: line-through;">$1<\/span>/g;
  $msg =~ s/\[strike\](?s)(.+?)\[\/strike\]/<span style="text-decoration: line-through;">$1<\/span>/g;
  $msg =~ s/\[([bh]r)\]/<$1$AUBBC{html_type}>/g;
  $msg =~ s/\[list\](?s)(.+?)\[\/list\]/fix_list($1)/ge;

@@ -134,10 +134,10 @@ sub flow() {
 
   my $limx = $page*$ipp-$ipp;
   $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html_cut,pcut,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
   );
   if ($sth->execute()) {
-   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array) {
+   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html_cut,$pcut,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array) {
     my $phub_url;
     if ($phub) {
       $phub_url = '/blog/hub/'.$phub.'/1';
@@ -147,12 +147,9 @@ sub flow() {
     }
     my $post_url = '/blog/post/'.$id;
     my $read_more_url;
-    if ($ptext=~/\[cut\]/i) {
-      ($ptext) = split(/\[cut\]/i, $ptext);
+    if ($pcut) {
       $read_more_url = $post_url;
-    }
-    my $aubbc = taracot::AUBBC->new();
-    $ptext = $aubbc->do_all_ubbc($ptext);
+    }    
     $ptags =~ s/[^\w\n ,]//g;
     my @tags = split(/,/, $ptags);
     if ($hub_data{$phub}) {
@@ -167,7 +164,7 @@ sub flow() {
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
     $ptags=~s/, //;
-    my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_read_more => $read_more_url, blog_post_url => $post_url, read_more => $lang->{read_more} }, { layout => undef };
+    my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext_html_cut, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_read_more => $read_more_url, blog_post_url => $post_url, read_more => $lang->{read_more} }, { layout => undef };
     $flow .= $item_template;    
    }
   }
@@ -251,7 +248,7 @@ get '/post/:post_id' => sub {
   );  
 
   if ($sth->execute()) {
-   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array();   
+   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array();   
    if ($pstate eq 2 && !$auth->{id}) {
     $sth->finish(); 
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
@@ -271,12 +268,7 @@ get '/post/:post_id' => sub {
    }    
    if ($hub_data{$phub}) {
     $phub = $hub_data{$phub};
-   }
-   $ptext =~s/\[cut\]/ /igm;   
-   $ptext =~s/\[list\=1\]\[\*\]/[list][*=1]/igm;
-   $ptext =~s/\[\/\*]//gm;
-   my $aubbc = taracot::AUBBC->new();
-   $ptext = $aubbc->do_all_ubbc($ptext);
+   }   
    $ptags =~ s/[^\w\n ,]//g;
     my @tags = split(/,/, $ptags);
     $ptags='';
@@ -288,7 +280,23 @@ get '/post/:post_id' => sub {
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
   $ptags=~s/, //;
-  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
+  # Debug
+  my $aubbc = taracot::AUBBC->new();
+  $aubbc->add_build_tag(
+        name     => 's',
+        pattern  => 'l',
+        type     => 2,
+        function => 'modules::blog::main::get_tag',
+  );
+  $aubbc->add_build_tag(
+        name     => 'cut',
+        pattern  => 'l',
+        type     => 3,
+        function => 'modules::blog::main::get_tag',
+  );  
+  $ptext_html = $aubbc->do_all_ubbc($ptext_html);
+  # Debug: end
+  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -341,7 +349,7 @@ post '/post/process' => sub {
   }   
   # End if not authorized
   my $pid = int(params->{id}) || 0;
-  # Post owner?
+  # Post owner check
   if ($pid) {
     my $pst  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $pid }); 
     if (!$pst->{id}) {
@@ -418,14 +426,30 @@ post '/post/process' => sub {
   }  
   # End if errors  
   my $blog_data = params->{blog_data} || '';    
+  my $blog_data_html_cut = $blog_data;
+  my $cut = 0;
+  if ($blog_data_html_cut=~/\[cut\]/i) {
+    ($blog_data_html_cut) = split(/\[cut\]/i, $blog_data);
+    $cut=1;
+  }
+  my $aubbc = taracot::AUBBC->new();
+  $aubbc->add_build_tag(
+        name     => 's',
+        pattern  => 'l',
+        type     => 3,
+        function => 'modules::blog::main::get_tag',
+  );
+  my $blog_data_html = $aubbc->do_all_ubbc($blog_data);
+  $blog_data_html =~s/\[cut\]/ /igm;
+  $blog_data_html_cut = $aubbc->do_all_ubbc($blog_data_html_cut);
   $blog_data =~ s/\</&lt;/gm;
   $blog_data =~ s/\>/&gt;/gm;
   if ($pid) {
-    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, pstate => $blog_state, lastchanged => time }); 
+    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time }); 
       $pid = database->{q{mysql_insertid}};
 
   } else {
-    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time }); 
+    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time }); 
       $pid = database->{q{mysql_insertid}};
   }
   if ($pid) {    
@@ -439,6 +463,16 @@ post '/post/process' => sub {
   }
   pass();
 };
+
+sub get_tag {  
+  my ($tag_name, $text_from_AUBBC) = @_;
+  open(DATA, ">>C:/XTreme/log.txt");
+  print DATA "TAG_NAME: $tag_name text_from_AUBBC: $text_from_AUBBC\n";
+  close(DATA);
+  if ($tag_name eq 's') {
+    return '<s>';
+  }  
+}
 
 # End
 
