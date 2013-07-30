@@ -23,8 +23,8 @@ my %AUBBC        = (
     for_links           => 0,
     aubbc_escape        => 1,
     no_img              => 0,
-    icon_image          => 1,
-    image_hight         => '60',
+    icon_image          => 0,
+    image_height         => '60',
     image_width         => '90',
     image_border        => '0',
     image_wrap          => ' ',
@@ -35,7 +35,7 @@ my %AUBBC        = (
     line_break          => '1',
     code_class          => '',
     code_extra          => '',
-    code_download       => '^Download above code^',
+    code_download       => '',
     href_class          => '',
     quote_class         => '',
     quote_extra         => '',
@@ -235,27 +235,43 @@ sub do_ubbc {
  $do_f[9] = '' if $do_f[9];
 
  $msg =~ s/\[(img|right_img|left_img)\](.+?)\[\/img\]/fix_image($1, $2)/ge if ! $AUBBC{no_img};
+ $msg =~ s/\[img width=(\d+),height=(\d+)\](.+?)\[\/img\]/fix_image('img', $3, $1, $2)/ge if ! $AUBBC{no_img};
 
  $msg =~ s/\[email\](?![\w\.\-\&\+]+\@[\w\.\-]+).+?\[\/email\]/\[<font color=red>$BAD_MESSAGE<\/font>\]email/g;
  $AUBBC{protect_email}
   ? $msg =~ s/\[email\]([\w\.\-\&\+]+\@[\w\.\-]+)\[\/email\]/protect_email($1)/ge
   : $msg =~ s/\[email\]([\w\.\-\&\+]+\@[\w\.\-]+)\[\/email\]/link_check("mailto:$1",$1,'','')/ge;
 
+ $msg =~ s/\[color=rgb\&#40;(\d+),\s?(\d+),\s?(\d+)\&#41;\](?s)(.+?)\[\/color\]/<span style="color:rgb($1,$2,$3);">$4<\/span>/g;
  $msg =~ s/\[color=([\w#]+)\](?s)(.+?)\[\/color\]/<span style="color:$1;">$2<\/span>/g;
+ $msg =~ s/\[color=#(\d+)\](?s)(.+?)\[\/color\]/<span style="color:#$1;">$2<\/span>/g;
+
+ $msg =~ s/\[font=([a-zA-Z0-9_ ]+)\](?s)(.+?)\[\/font\]/<span style="font-family:$1;">$2<\/span>/g;
 
  1 while $msg =~
-  s/\[quote=([\w\s]+)\](?s)(.+?)\[\/quote\]/<div$AUBBC{quote_class}><small><strong>$1:<\/strong><\/small><br$AUBBC{html_type}>
-$2<\/div>$AUBBC{quote_extra}/g;
+  s/\[quote=([\w\s]+)\](?s)(.+?)\[\/quote\]/<blockquote><small><strong>$1:<\/strong><\/small><br$AUBBC{html_type}>
+$2<\/blockquote>$AUBBC{quote_extra}/g;
  1 while $msg =~
-  s/\[quote\](?s)(.+?)\[\/quote\]/<div$AUBBC{quote_class}>$1<\/div>$AUBBC{quote_extra}/g;
+  s/\[quote\](?s)(.+?)\[\/quote\]/<blockquote>$1<\/blockquote>$AUBBC{quote_extra}/g;
+
+ $msg =~ s/\[\/\*\]//gm;
 
  $msg =~ s/\[(left|right|center)\](?s)(.+?)\[\/\1\]/<div style=\"text-align: $1;\">$2<\/div>/g;
  $msg =~ s/\[li=(\d+)\](?s)(.+?)\[\/li\]/<li value="$1">$2<\/li>/g;
  $msg =~ s/\[u\](?s)(.+?)\[\/u\]/<span style="text-decoration: underline;">$1<\/span>/g;
+ $msg =~ s/\[offtop\](?s)(.+?)\[\/offtop\]/<span style="color:#666;">$1<\/span>/g; 
  $msg =~ s/\[s\](?s)(.+?)\[\/s\]/<span style="text-decoration: line-through;">$1<\/span>/g;
  $msg =~ s/\[strike\](?s)(.+?)\[\/strike\]/<span style="text-decoration: line-through;">$1<\/span>/g;
  $msg =~ s/\[([bh]r)\]/<$1$AUBBC{html_type}>/g;
  $msg =~ s/\[list\](?s)(.+?)\[\/list\]/fix_list($1)/ge;
+ $msg =~ s/\[list=(\d+)\](?s)(.+?)\[\/list\]/fix_list($2, $1)/ge;
+ $msg =~ s/\[table\](?s)(.+?)\[\/table\]/<table class="table table-striped table-bordered">$1<\/table>/g;
+ $msg =~ s/\[tr\](?s)(.+?)\[\/tr\]/<tr>$1<\/tr>/g;
+ $msg =~ s/\[td\](?s)(.+?)\[\/td\]/<td>$1<\/td>/g;
+ $msg =~ s/\[th\](?s)(.+?)\[\/th\]/<th>$1<\/th>/g;
+
+ # Strange size notation used by WysiBB
+ $msg =~ s/\[size=(\d+)\](?s)(.+?)\[\/size\]/<span style="font-size: $1%;">$2<\/span>/g; 
 
  1 while $msg =~
   s/\[(blockquote|big|h[123456]|[ou]l|li|em|pre|s(?:mall|trong|u[bp])|[bip])\](?s)(.+?)\[\/\1\]/<$1>$2<\/$1>/g;
@@ -274,11 +290,13 @@ sub link_check {
 }
 
 sub fix_list {
-my $list = shift;
+ my $list = shift;
+ my $list_type = shift;
  if ($list =~ m/\[\*/) {
  $list =~ s/<br$AUBBC{html_type}>//g;
  my $type = 'ul';
  $type = 'ol' if $list =~ s/\[\*=(\d+)\]/\[\*\]$1\|/g;
+ $type = 'ol' if $list_type;
   my @clean = split('\[\*\]', $list);
   $list = "<$type>\n";
   foreach (@clean) {
@@ -294,7 +312,7 @@ my $list = shift;
 }
 
 sub fix_image {
- my ($tmp2, $tmp) = @_;
+ my ($tmp2, $tmp, $w, $h) = @_;
  if (check_access('img')) {
  if ($tmp !~ m/\A\w+:\/\/|\// || $tmp =~ m/\?|\#|\.\bjs\b\z/i) {
   $tmp = "[<font color=red>$BAD_MESSAGE</font>]$tmp2";
@@ -303,10 +321,12 @@ sub fix_image {
   $tmp2 = '' if $tmp2 eq 'img';
   $tmp2 = ' align="right"' if $tmp2 eq 'right_img';
   $tmp2 = ' align="left"' if $tmp2 eq 'left_img';
+  my $width = $w || $AUBBC{image_width};
+  my $height = $h || $AUBBC{image_height};
   $tmp = $AUBBC{icon_image}
-   ? make_link($tmp,make_image($tmp2,$tmp,$AUBBC{image_width},
-      $AUBBC{image_hight},''),'',1).$AUBBC{image_wrap}
-   : make_image($tmp2,$tmp,'','','').$AUBBC{image_wrap};
+   ? make_link($tmp,make_image($tmp2,$tmp,$width,
+      $height,''),'',1).$AUBBC{image_wrap}
+   : make_image($tmp2,$tmp,$width,$height,'').$AUBBC{image_wrap};
  }
  return $tmp;
  }

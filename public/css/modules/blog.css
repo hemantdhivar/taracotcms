@@ -12,3 +12,7 @@
  	height:5px; 	
  	margin-bottom:5px;
  }
+ code {
+ 	display:block;
+ 	padding:5px;
+ }
