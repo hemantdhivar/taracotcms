@@ -224,7 +224,7 @@ get '/tag/:tag/:page' => sub {
 
 get '/post/:post_id' => sub {
   my $post_id = params->{post_id};  
-  $post_id=~s/[^0-9]//gm; 
+  $post_id=~s/[^0-9]+//gm; 
   if (!$post_id) {
     pass();
   }
@@ -244,9 +244,8 @@ get '/post/:post_id' => sub {
     }
   }
   my $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
   );  
-
   if ($sth->execute()) {
    my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array();   
    if ($pstate eq 2 && !$auth->{id}) {
@@ -279,23 +278,7 @@ get '/post/:post_id' => sub {
       $tagurl=~s/%/_/gm;
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
-  $ptags=~s/, //;
-  # Debug
-  my $aubbc = taracot::AUBBC->new();
-  $aubbc->add_build_tag(
-        name     => 's',
-        pattern  => 'l',
-        type     => 2,
-        function => 'modules::blog::main::get_tag',
-  );
-  $aubbc->add_build_tag(
-        name     => 'cut',
-        pattern  => 'l',
-        type     => 3,
-        function => 'modules::blog::main::get_tag',
-  );  
-  $ptext_html = $aubbc->do_all_ubbc($ptext_html);
-  # Debug: end
+  $ptags=~s/, //;  
   $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
@@ -314,6 +297,9 @@ get '/post' => sub {
   my $auth = &taracot::_auth();
   my $_current_lang=_load_lang(); 
   my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  if (!$auth->{id}) {
+    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang } );
+  }
   my %hub_data;
   if ($page_data->{blog_hubs}) {
     foreach my $item (split(/;/, $page_data->{blog_hubs})) {
@@ -325,11 +311,72 @@ get '/post' => sub {
       $hub_data{$par}=$val;
     }
   }
-  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($edit_template) {
     return $edit_template;
   }
   pass();
+};
+
+get '/post/edit/:post_id' => sub {
+  my $post_id = params->{post_id};  
+  $post_id=~s/[^0-9]+//gm; 
+  if (!$post_id) {
+    pass();
+  }
+  my $auth = &taracot::_auth();
+  my $_current_lang=_load_lang(); 
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  if (!$auth->{id}) {
+    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang } );
+  }
+  my $pst  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $post_id }); 
+  if (!$pst->{id}) {
+    pass();
+  }
+  if ($pst->{pusername} ne $auth->{username} && $auth->{status} < 2) {
+    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_rights_long} }, { layout => config->{layout}.'_'.$_current_lang } );
+  }
+  my %hub_data;
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+    }
+  }
+  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data, post => $pst, post_id => $post_id }, { layout => config->{layout}.'_'.$_current_lang } );
+  if ($edit_template) {
+    return $edit_template;
+  }
+  pass();
+};
+
+any '/post/load' => sub {
+  my $post_id = params->{pid}; 
+  my $auth = &taracot::_auth();
+  my $json_xs = JSON::XS->new(); 
+  my %res;
+  if (!$auth->{id}) {
+    $res{status}=0;     
+    return $json_xs->encode(\%res); 
+  }
+  my $pst  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $post_id }); 
+  if (!$pst->{id}) {
+    $res{status}=0;     
+    return $json_xs->encode(\%res); 
+  }
+  if ($pst->{pusername} ne $auth->{username} && $auth->{status} < 2) {
+    $res{status}=0;     
+    return $json_xs->encode(\%res); 
+  }
+  $pst->{ptext_html}='';
+  $pst->{ptext_html_cut}='';
+  $pst->{status} = 1;
+  return $json_xs->encode($pst); 
 };
 
 post '/post/process' => sub {
@@ -446,8 +493,6 @@ post '/post/process' => sub {
   $blog_data =~ s/\>/&gt;/gm;
   if ($pid) {
     database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time }); 
-      $pid = database->{q{mysql_insertid}};
-
   } else {
     database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time }); 
       $pid = database->{q{mysql_insertid}};
@@ -463,16 +508,6 @@ post '/post/process' => sub {
   }
   pass();
 };
-
-sub get_tag {  
-  my ($tag_name, $text_from_AUBBC) = @_;
-  open(DATA, ">>C:/XTreme/log.txt");
-  print DATA "TAG_NAME: $tag_name text_from_AUBBC: $text_from_AUBBC\n";
-  close(DATA);
-  if ($tag_name eq 's') {
-    return '<s>';
-  }  
-}
 
 # End
 

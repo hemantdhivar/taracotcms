@@ -1,5 +1,9 @@
+if (post_id) {
+    $('#editpost_title').html(js_lang_edit_post);
+} else {
+    $('#editpost_title').html(js_lang_add_post);
+}
 $('#btn_submit').click(function() {
-    blog_data: $("#wbbeditor").bbcode()
 	$('#form_error_msg').hide();
 	$('#form_error_msg_text').html('');
 	$('#cg_blog_title').removeClass('error');
@@ -43,7 +47,8 @@ $('#btn_submit').click(function() {
                     blog_tags: $('#blog_tags').val(),
                     blog_hub: $('#blog_hub').val(),
                     blog_state: $('#blog_state').val(),
-                    blog_data: $("#wbbeditor").bbcode()
+                    blog_data: $("#wbbeditor").bbcode(),
+                    id: post_id
                 },
                 dataType: "json",
                 success: function (data) {
@@ -51,11 +56,79 @@ $('#btn_submit').click(function() {
                         $('#form_success_msg').html(js_lang_success_save +"&nbsp;<a href=\"/blog/post/"+data.pid+"\">"+ js_lang_click_here +"</a>.<br/><br/>"+js_lang_success_new);
                         $('#blog_form_ajax').hide();
                         $('#form_success_msg').show();
+                    } else {
+                        $('#blog_form_ajax').hide();
+                        $('#blog_form').show();
+                        $('#form_error_msg_text').html("&nbsp;<b>" + js_lang_error_save + "</b><br/>");
+                        if (data.errors) {
+                            $('#form_error_msg_text').append("<br/>");
+                            for (var i = 0; i < data.errors.length; i++) {
+                                $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + data.errors[i] + "<br/>");
+                            }
+                        }
+                        $('#form_error_msg').fadeIn(400);
+                        $('#form_error_msg').alert();
+                        $(window).scrollTop($('#form_error_msg').position().top);                    
+                        if (data.fields) {
+                            for (var i = 0; i < data.fields.length; i++) {
+                                $('#cg_' + data.fields[i]).addClass('error');
+                                if (i == 0) {
+                                    $('#' + data.fields[i]).focus();
+                                }
+                            }
+                        }
                     }
                 },
                 error: function () {
-
+                    $('#blog_form_ajax').hide();
+                    $('#blog_form').show();
+                    $('#form_error_msg_text').html("&nbsp;<b>" + js_lang_error_save + "</b><br/>");
+                    $('#form_error_msg').fadeIn(400);
+                    $('#form_error_msg').alert();
+                    $(window).scrollTop($('#form_error_msg').position().top);
                 }
             });
     }
 });
+
+function loadData(wbbOpt) {
+    $.ajax({
+        type: 'POST',
+        url: '/blog/post/load',
+        data: {
+            pid: post_id
+        },
+        dataType: "json",
+        success: function (data) {
+            $('#blog_form_ajax').hide();
+            if (data.status == 1) {
+                if (data.ptitle) {
+                    $('#blog_title').val(data.ptitle);
+                }
+                if (data.phub) {
+                    $('#blog_hub').val(data.phub);
+                }
+                if (data.ptags) {
+                    $('#blog_tags').val(data.ptags);
+                }
+                if (data.pstate) {
+                    $('#blog_state').val(data.pstate);
+                }
+                if (data.pstate) {
+                    $('#blog_state').val(data.pstate);
+                }
+                if (data.ptext) {     
+                  $('#wbbeditor').val(data.ptext);                  
+                }
+                $('#wbbeditor').wysibb(wbbOpt);
+                $('#blog_form').show();
+            } else {
+                $('#blog_form_error').show();
+            }
+        },
+        error: function () {
+            $('#blog_form_ajax').hide();
+            $('#blog_form_error').show();
+        }
+    });    
+}

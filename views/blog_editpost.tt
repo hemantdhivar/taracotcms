@@ -1,4 +1,4 @@
-<h1>[== $lang->{edit_post} =]</h1>
+<h1 id="editpost_title">[== $lang->{edit_post} =]</h1>
 <?pl
  my $hub_html='';
  foreach my $key (keys %$hub_data) { 
@@ -10,7 +10,7 @@
 </div>
 <div class="hide" id="form_success_msg">
 </div>
-<form class="form-horizontal" id="blog_form">
+<form class="form-horizontal hide" id="blog_form">
 	<div class="control-group" id="cg_blog_title">
     	<label class="control-label" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
@@ -48,6 +48,9 @@
 <div id="blog_form_ajax" style="display:none">
     <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{blog_processing} =]
 </div>
+<div id="blog_form_error" style="display:none">
+    [== $lang->{blog_load_error} =]
+</div>
 <script type="text/javascript">
     var js_lang_invalid_post_title = "[== $lang->{invalid_post_title} =]";
     var js_lang_invalid_post_tags = "[== $lang->{invalid_post_tags} =]";
@@ -56,6 +59,10 @@
     var js_lang_success_save = "[== $lang->{success_save} =]";
     var js_lang_click_here = "[== $lang->{click_here} =]";
     var js_lang_success_new = '[== $lang->{success_new} =]';
+    var js_lang_error_save = "[== $lang->{error_save} =]";
+    var js_lang_edit_post = "[== $lang->{edit_post} =]";
+    var js_lang_add_post = "[== $lang->{add_post} =]";
+    var post_id = '[== $post_id =]';
 </script>
 <script src="/js/modules/blog_editpost.js"></script>
 <script src="/js/wysibb/jquery.wysibb.min.js" charset="utf-8"></script>
@@ -68,7 +75,13 @@ $(document).ready(function() {
     imgupload:false,buttons:"bold,italic,underline,strike,sup,sub,|,img,video,link,|,bullist,numlist,|,fontcolor,fontsize,fontfamily,|,justifyleft,justifycenter,justifyright,|,quote,code,offtop,table,removeFormat,cutpage",
   allButtons:{cutpage:{title:'[== $lang->{btn_cut} =]',buttonText:'CUT',transform: {'<div class="blog-post-cut"></div>':'[cut]'}}}
   };
-  if (lng != 'ru'){wbbOpt['lang']=lng}
-  $('#wbbeditor').wysibb(wbbOpt);
+  if (lng != 'ru'){wbbOpt['lang']=lng}  
+  if (post_id) {
+    $('#blog_form_ajax').show();
+    loadData(wbbOpt);
+  } else {
+    $('#blog_form').show();
+    $('#wbbeditor').wysibb(wbbOpt);
+  }
 })
 </script>

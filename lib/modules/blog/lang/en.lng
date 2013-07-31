@@ -3,6 +3,7 @@ read_more: Read more
 error_unauth: You need to be <a href="/user/authorize">logged in</a> to view this post.
 error_draft: The post is currently saved as a draft. Please try again later.
 edit_post: Edit post
+add_post: Add post
 edit_form_post_title: Post title
 edit_form_post_hub: Hub
 edit_form_post_tags: Tags (comma sep.)
@@ -28,6 +29,10 @@ error_title: Invalid post title
 error_state: Invalid post state
 error_pid: Invalid post or access denied
 error_db: Error while saving data, please try again later
+error_save: Error while saving your post
 success_save: The post has been saved. Go to post&#58;
 click_here: click here
 success_new: You can also <a href="/blog/post">create a new post</a>.
+error_unauth_long: You don't have permission to create new posts, please authorize first.
+error_rights_long: You don't have rights to edit the post you've requested.
+blog_load_error: Error while loading data. Please try again later or contact website administrator.
