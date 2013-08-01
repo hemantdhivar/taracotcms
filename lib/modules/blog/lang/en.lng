@@ -36,3 +36,10 @@ success_new: You can also <a href="/blog/post">create a new post</a>.
 error_unauth_long: You don't have permission to create new posts, please authorize first.
 error_rights_long: You don't have rights to edit the post you've requested.
 blog_load_error: Error while loading data. Please try again later or contact website administrator.
+post_comments: Comments
+post_comment_label: Type your comment
+comment_write: Write a new comment
+comments_unauth: Please authorize to write comments
+comment_deleted: Comment is deleted by moderator
+comment_reply: Reply
+comment_date_template: \%Y/\%m/\%d %l&#58;%M %p

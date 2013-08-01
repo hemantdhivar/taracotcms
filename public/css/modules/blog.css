@@ -16,3 +16,25 @@
  	display:block;
  	padding:5px;
  }
+ .comment {
+ 	margin-bottom: 5px;
+ }
+ .comment_reply {
+ 	color: #40627c;
+ 	cursor: pointer;
+ 	font-size: 90%;
+ 	border-bottom: 1px dashed;
+ }
+.muted {
+	padding-top: 10px;
+}
+.comment_timestamp {
+	font-size: 85%;
+	color: #666;
+}
+.blog_comment_write_link {
+	color: #40627c;
+	border-bottom: 1px dashed;	
+	cursor: pointer;
+	font-size: 120%;
+}

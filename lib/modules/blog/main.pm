@@ -251,12 +251,12 @@ get '/post/:post_id' => sub {
    if ($pstate eq 2 && !$auth->{id}) {
     $sth->finish(); 
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
-    return &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $lang->{error_unauth}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
+    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_unauth}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
    }
    if ($pstate eq 0 && $auth->{status} ne 2) {
     $sth->finish(); 
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
-    return &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
+    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
    }
    my $phub_url;
    if ($phub) {
@@ -278,8 +278,33 @@ get '/post/:post_id' => sub {
       $tagurl=~s/%/_/gm;
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
-  $ptags=~s/, //;  
-  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } );
+  $ptags=~s/, //;
+  my $comments_flow='';
+  my $sth = database->prepare(
+   'SELECT id,post_id,deleted,cusername,ctext,cdate,chash,level FROM '.config->{db_table_prefix}.'_blog_comments WHERE post_id='.$post_id.' ORDER BY left_key'
+  );
+  my $comments_count='0';
+  if ($sth->execute()) {
+    my %avatars;
+    while (my ($id,$post_id,$deleted,$cusername,$ctext,$cdate,$chash,$level) = $sth->fetchrow_array) {      
+      $comments_count++;
+      $cdate = time2str($lang->{comment_date_template}, $cdate);
+      $cdate =~ s/\\//gm;
+      my $avatar = '/images/default_avatar.png';
+      if ($avatars{$cusername}) {
+        $avatar = $avatars{$cusername}
+      } else {
+        if (-e config->{files_dir}.'/avatars/'.$cusername.'.jpg') {
+          $avatar = config->{files_url}.'/avatars/'.$cusername.'.jpg';
+          $avatars{$cusername} = $avatar;
+        } 
+      }
+      $comments_flow .= template 'blog_comment', { lang => $lang, auth => $auth, id => $id, post_id => $post_id, deleted => $deleted, username => $cusername, text => $ctext, ts => $cdate, level => $level, avatar => $avatar }, { layout => undef }
+    }   
+  }  
+  $sth->finish();
+  my $comments = template 'blog_comments', { lang => $lang, auth => $auth, post_id => $post_id, comments => $comments_flow, comments_count => $comments_count }, { layout => undef };
+  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -380,7 +405,7 @@ any '/post/load' => sub {
 };
 
 post '/post/process' => sub {
-  my $_current_lang=_load_lang(); 
+  my $_current_lang=_load_lang();
   my @errors;
   my @fields;
   my $json_xs = JSON::XS->new(); 
@@ -508,6 +533,116 @@ post '/post/process' => sub {
   }
   pass();
 };
+
+# Comment-related subroutines
+
+post '/comment/put' => sub {
+  my $_current_lang=_load_lang();
+  my $auth = &taracot::_auth();
+  my $ctext = params->{ctext} || '';
+  my $cpid = int(params->{cpid}) || 0;
+  my $cmid = int(params->{cmid}) || 0;
+  $ctext =~ s/\&/&amp;/gm;
+  $ctext =~ s/\</&lt;/gm;
+  $ctext =~ s/\>/&gt;/gm;
+  $ctext =~ s/\"/&quot;/gm;
+  $ctext =~ s/[\n\r]//gm;
+  if ($cpid < 0) {
+    $cpid = undef;
+  }
+  if ($cmid < 0) {
+    $cmid = 0;
+  }
+  my %res;
+  my $json_xs = JSON::XS->new(); 
+  if (!$ctext || !$cpid) {
+    $res{'status'} = 0;
+    return $json_xs->encode(\%res); 
+  }
+  my $comments_count=0;
+  my $sth = database->prepare(
+   'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_comments WHERE post_id='.$cpid
+  );
+  if ($sth->execute()) {
+   ($comments_count) = $sth -> fetchrow_array;
+  }
+  $sth->finish();
+  my $left_key = 0;
+  my $right_key = 0;
+  my $level = 0;
+  my $deleted = 0;
+  if ($cmid) {
+    my $sth = database->prepare(
+     'SELECT left_key, right_key, level, deleted FROM '.config->{db_table_prefix}.'_blog_comments WHERE id='.$cmid.' AND post_id='.$cpid
+    );
+    if ($sth->execute()) {
+     ($left_key, $right_key, $level, $deleted) = $sth -> fetchrow_array;     
+    }  
+    $sth->finish();
+  } else {
+    my $sth = database->prepare(
+     'SELECT left_key, right_key FROM '.config->{db_table_prefix}.'_blog_comments WHERE post_id='.$cpid.' ORDER BY right_key DESC LIMIT 1'
+    );
+    if ($sth->execute()) {
+     ($left_key, $right_key) = $sth -> fetchrow_array;
+     $right_key++;
+    }  
+    $sth->finish();
+  }
+  if ((!$right_key && $comments_count) || $deleted) {
+    $res{'status'} = 0;
+    return $json_xs->encode(\%res); 
+  }
+  # Find last child ID
+  my $last_child_id = 0;
+  if ($left_key && $right_key) {
+    $sth = database->prepare(
+      'SELECT id FROM '.config->{db_table_prefix}.'_blog_comments WHERE left_key >= '.$left_key.' AND right_key <= '.$right_key.' AND post_id='.$cpid.' ORDER BY left_key DESC'
+    );
+    if ($sth->execute()) {
+     ($last_child_id) = $sth -> fetchrow_array;
+    }  
+    $sth->finish();
+  }
+  # Update 1
+  $sth = database->prepare(
+   'UPDATE '.config->{db_table_prefix}.'_blog_comments SET left_key = left_key + 2, right_key = right_key + 2 WHERE left_key > '.$right_key.' AND post_id='.$cpid
+  );  
+  $sth->execute();
+  $sth->finish();
+  # Update 2
+  $sth = database->prepare(
+   'UPDATE '.config->{db_table_prefix}.'_blog_comments SET right_key = right_key + 2 WHERE right_key >= '.$right_key.' AND left_key < '.$right_key.' AND post_id='.$cpid
+  );  
+  $sth->execute();
+  $sth->finish();  
+  # Insert
+  $sth = database->prepare(
+   'INSERT INTO '.config->{db_table_prefix}.'_blog_comments SET left_key = '.$right_key.', right_key = '.($right_key+1).', level = '.($level+1).', cusername='.database->quote($auth->{username}).', deleted=0, post_id='.$cpid.', ctext='.database->quote($ctext).', cdate='.time
+  );
+  $sth->execute();
+  $sth->finish();
+  my $cid = database->{q{mysql_insertid}};
+  # Check
+  $sth = database->prepare(
+   'UPDATE '.config->{db_table_prefix}.'_blog_comments SET right_key = right_key + 2, left_key = IF(left_key > '.$right_key.', left_key + 2, left_key) WHERE right_key >= '.$right_key.' AND post_id='.$cpid
+  ); 
+  $sth->execute();
+  $sth->finish();  
+  # Return data
+  $res{'status'} = 1;
+  my $cdate = time2str($lang->{comment_date_template}, time);
+  $cdate =~ s/\\//gm;
+  my $avatar = '/images/default_avatar.png';
+  if (-e config->{files_dir}.'/avatars/'.$auth->{username}.'.jpg') {
+    $avatar = config->{files_url}.'/avatars/'.$auth->{username}.'.jpg';    
+  } 
+  $res{last_child_id} = $last_child_id;
+  $res{html} = template 'blog_comment', { lang => $lang, auth => $auth, id => $cid, post_id => $cpid, deleted => 0, username => $auth->{username}, text => $ctext, ts => $cdate, level => $level+1, avatar => $avatar }, { layout => undef };
+  return $json_xs->encode(\%res); 
+};
+
+# Comment-related subroutines: end
 
 # End
 
