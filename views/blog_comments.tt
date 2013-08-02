@@ -1,5 +1,5 @@
 <h2>[== $lang->{post_comments} =] (<span id="comment_count">0</span>)</h2>
-[== $comments =]
+[== $comments =]<span id="blog_comment_dock_0"></span>
 <div style="height:24px"></div>
 <?pl if ($auth->{id}) { ?>
 <div id="comments_form_wrap">
@@ -15,12 +15,13 @@
 <div id="blog_comment_write" class="hide">
 	<img src="/images/comment.png" width="24" height="24" alt="" />&nbsp;<span class="blog_comment_write_link">[== $lang->{comment_write} =]</span></span>
 </div>
-<span id="blog_comment_dock"></id>
+<span id="blog_comment_dock"></span>
 <?pl } else { ?>
 [== $lang->{comments_unauth} =]
 <?pl } ?>
 <script type="text/javascript">    
     var post_id = '[== $post_id =]';
-    $('#comment_count').html('[== $comments_count =]');
+    var js_lang_comment_error_db = "[== $lang->{comment_error_db} =]";
+    $('#comment_count').html('[== $comments_count =]');    
 </script>
 <script src="/js/modules/blog_comments.js"></script>

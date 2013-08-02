@@ -134,10 +134,10 @@ sub flow() {
 
   my $limx = $page*$ipp-$ipp;
   $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html_cut,pcut,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html_cut,pcut,lastchanged,pviews,pcomments,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
   );
   if ($sth->execute()) {
-   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html_cut,$pcut,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array) {
+   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html_cut,$pcut,$lastchanged,$pviews,$pcomments,$pstate) = $sth -> fetchrow_array) {
     my $phub_url;
     if ($phub) {
       $phub_url = '/blog/hub/'.$phub.'/1';
@@ -164,7 +164,7 @@ sub flow() {
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
     $ptags=~s/, //;
-    my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext_html_cut, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_read_more => $read_more_url, blog_post_url => $post_url, read_more => $lang->{read_more} }, { layout => undef };
+    my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext_html_cut, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_comments => $pcomments, blog_read_more => $read_more_url, blog_post_url => $post_url, read_more => $lang->{read_more} }, { layout => undef };
     $flow .= $item_template;    
    }
   }
@@ -539,6 +539,13 @@ post '/post/process' => sub {
 post '/comment/put' => sub {
   my $_current_lang=_load_lang();
   my $auth = &taracot::_auth();
+  my %res;
+  my $json_xs = JSON::XS->new(); 
+  if (!$auth->{id}) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{comment_error_unauth};
+    return $json_xs->encode(\%res); 
+  }
   my $ctext = params->{ctext} || '';
   my $cpid = int(params->{cpid}) || 0;
   my $cmid = int(params->{cmid}) || 0;
@@ -552,15 +559,37 @@ post '/comment/put' => sub {
   }
   if ($cmid < 0) {
     $cmid = 0;
-  }
-  my %res;
-  my $json_xs = JSON::XS->new(); 
+  }  
   if (!$ctext || !$cpid) {
     $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{comment_error_mandatory};
     return $json_xs->encode(\%res); 
   }
-  my $comments_count=0;
+  my $chash = md5_hex($ctext);
+  # Find duplicates
+  my $hash_dupe  = database->quick_select(config->{db_table_prefix}.'_blog_comments', { post_id => $cpid, chash => $chash, cusername => $auth->{username} });
+  if ($hash_dupe->{id}) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{comment_error_dupe};
+    return $json_xs->encode(\%res);   
+  }
+  # User posted a comment less than 10 seconds ago?
+  my $last_post = 0;
   my $sth = database->prepare(
+   'SELECT cdate FROM '.config->{db_table_prefix}.'_blog_comments WHERE cusername='.database->quote($auth->{username}).' ORDER BY cdate DESC'
+  );
+  if ($sth->execute()) {
+   ($last_post) = $sth -> fetchrow_array;
+  }
+  $sth->finish();
+  if ($last_post && time-$last_post < 10) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{comment_error_time};
+    return $json_xs->encode(\%res);   
+  }
+  # Get comment count
+  my $comments_count=0;
+  $sth = database->prepare(
    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_comments WHERE post_id='.$cpid
   );
   if ($sth->execute()) {
@@ -616,9 +645,9 @@ post '/comment/put' => sub {
   );  
   $sth->execute();
   $sth->finish();  
-  # Insert
+  # Insert  
   $sth = database->prepare(
-   'INSERT INTO '.config->{db_table_prefix}.'_blog_comments SET left_key = '.$right_key.', right_key = '.($right_key+1).', level = '.($level+1).', cusername='.database->quote($auth->{username}).', deleted=0, post_id='.$cpid.', ctext='.database->quote($ctext).', cdate='.time
+   'INSERT INTO '.config->{db_table_prefix}.'_blog_comments SET left_key = '.$right_key.', right_key = '.($right_key+1).', level = '.($level+1).', cusername='.database->quote($auth->{username}).', deleted=0, post_id='.$cpid.', ctext='.database->quote($ctext).', chash='.database->quote($chash).', cdate='.time
   );
   $sth->execute();
   $sth->finish();
@@ -629,6 +658,12 @@ post '/comment/put' => sub {
   ); 
   $sth->execute();
   $sth->finish();  
+  # Update comment count
+  $sth = database->prepare(
+   'UPDATE '.config->{db_table_prefix}.'_blog_posts SET pcomments = pcomments + 1 WHERE id='.$cpid
+  );  
+  $sth->execute();
+  $sth->finish();
   # Return data
   $res{'status'} = 1;
   my $cdate = time2str($lang->{comment_date_template}, time);
@@ -638,7 +673,8 @@ post '/comment/put' => sub {
     $avatar = config->{files_url}.'/avatars/'.$auth->{username}.'.jpg';    
   } 
   $res{last_child_id} = $last_child_id;
-  $res{html} = template 'blog_comment', { lang => $lang, auth => $auth, id => $cid, post_id => $cpid, deleted => 0, username => $auth->{username}, text => $ctext, ts => $cdate, level => $level+1, avatar => $avatar }, { layout => undef };
+  $res{comments_count} = $comments_count+1;
+  $res{html} = template 'blog_comment', { lang => $lang, auth => $auth, id => $cid, post_id => $cpid, deleted => 0, username => $auth->{username}, text => $ctext, ts => $cdate, level => $level+1, avatar => $avatar  }, { layout => undef };
   return $json_xs->encode(\%res); 
 };
 
