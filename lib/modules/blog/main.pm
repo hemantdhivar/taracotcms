@@ -516,10 +516,14 @@ post '/post/process' => sub {
   $blog_data_html_cut = $aubbc->do_all_ubbc($blog_data_html_cut);
   $blog_data =~ s/\</&lt;/gm;
   $blog_data =~ s/\>/&gt;/gm;
+  my $remote_ip = $ENV{'HTTP_X_REAL_IP'};
+  if (!$remote_ip) {
+    $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
+  }
   if ($pid) {
-    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time }); 
+    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip }); 
   } else {
-    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time }); 
+    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip }); 
       $pid = database->{q{mysql_insertid}};
   }
   if ($pid) {    
@@ -645,9 +649,14 @@ post '/comment/put' => sub {
   );  
   $sth->execute();
   $sth->finish();  
+  # Get remote IP
+  my $remote_ip = $ENV{'HTTP_X_REAL_IP'};
+  if (!$remote_ip) {
+    $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
+  }  
   # Insert  
   $sth = database->prepare(
-   'INSERT INTO '.config->{db_table_prefix}.'_blog_comments SET left_key = '.$right_key.', right_key = '.($right_key+1).', level = '.($level+1).', cusername='.database->quote($auth->{username}).', deleted=0, post_id='.$cpid.', ctext='.database->quote($ctext).', chash='.database->quote($chash).', cdate='.time
+   'INSERT INTO '.config->{db_table_prefix}.'_blog_comments SET left_key = '.$right_key.', right_key = '.($right_key+1).', level = '.($level+1).', cusername='.database->quote($auth->{username}).', deleted=0, post_id='.$cpid.', ctext='.database->quote($ctext).', chash='.database->quote($chash).', cdate='.time.', ipaddr='.database->quote($remote_ip)
   );
   $sth->execute();
   $sth->finish();

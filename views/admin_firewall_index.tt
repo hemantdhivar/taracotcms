@@ -1,0 +1,259 @@
+<script type="text/javascript" src="/js/admin/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.jeditable.min.js"></script>
+
+<h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
+<br />
+
+<!-- 
+ Data table 
+-->
+<div class="visible-phone visible-tablet" id="mobile_mode"></div>  
+<div id="data_overview">
+  <div class="btn-toolbar">
+    <div class="btn-group">
+      <button type="button" id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_add} =]</span></button>
+      <button type="button" id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_del} =]</span></button>
+    </div>
+    <div class="btn-group">
+      <button type="button" id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');$('#data_table_mobile').checkAll('table_cbx');"><i class="icon-ok-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_all} =]</span></button>
+      <button type="button" id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');$('#data_table_mobile').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_none} =]</span></button>
+    </div>
+  </div>  
+  <div><img src="/images/blank.gif" width="1" height="50" alt="" /></div>  
+  <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" style="display:none" id="data_table">
+    <thead>
+      <tr>
+        <th style="width:40px">[== $lang->{id} =]</th>
+        <th>[== $lang->{ipaddr} =]</th>
+        <th style="width:60px;text-align:center">[== $lang->{status} =]</th>
+        <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+      </tr>
+      </thead>
+      <tbody>
+      </tbody>
+  </table>  
+</div>
+<!-- data_overview -->
+
+<!-- 
+ "Delete" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="delete_confirmation">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{delete_confirmation_title} =]</h3>
+ </div>
+ <div class="modal-body">
+  <p>[== $lang->{delete_confirmation_msg1} =]<br /><br /><span id="delete_row_list">none</span><br /><br />[== $lang->{delete_confirmation_msg2} =]</p>
+ </div>
+  <div class="modal-footer">
+     <button type="button" class="btn" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</button>
+     <button type="button" class="btn btn-danger" id="btn_delete">[== $lang->{delete} =]</button>
+ </div>
+</div>
+
+<!-- 
+ "None selected" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="none_selected">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{delete_none_selected_title} =]</h3>
+ </div>
+ <div class="modal-body">
+  <p>[== $lang->{delete_none_selected_msg} =]</p>
+ </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" id="btn_none_selected_close">[== $lang->{btn_close} =]</button>
+ </div>
+</div>
+
+<!-- 
+ Status select modal dialog 
+-->
+
+<div class="modal" style="display:none" id="status_select">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{status_select_title} =]</h3>
+ </div>
+ <div class="modal-body">
+  <div class="well">
+    <div id="status_select_ipaddr"></div>
+  </div>
+  <span class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label">[== $lang->{status} =]</label>
+      <div class="controls">
+      <label class="radio">
+      <input type="radio" name="status_select_status" id="status_select_radio_status_disabled" value="0">
+      [== $lang->{status0} =] </label>
+      <label class="radio">
+      <input type="radio" name="status_select_status" id="status_select_radio_status_normal" value="1" checked>
+      [== $lang->{status1} =] </label>
+      </div>
+    </div>
+  </span>
+ </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" id="btn_status_select_close">[== $lang->{edit_cancel} =]</button>
+    <button type="button" class="btn btn-success" id="btn_status_select_save">[== $lang->{edit_save} =]</button>
+ </div>
+</div>
+
+<!-- 
+ "Error" modal dialog 
+-->
+
+<div class="modal" style="display:none" id="error_dialog">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{error} =]</h3>
+ </div>
+ <div class="modal-body">
+  <span id="error_dialog_msg"></span>
+ </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" id="btn_error_dialog_close">[== $lang->{btn_close} =]</button>
+ </div>
+</div>
+
+<!-- 
+ Data edit form 
+-->
+<div id="data_edit" style="display:none">
+  <h2 id="h_data_actions">[== $lang->{edit_record} =]</h2>
+  <div id="data_edit_form">
+    <div id="form_notice">
+    </div>
+    <br />
+    <div class="alert alert-block alert-error" id="form_error_msg">
+      <span id="form_error_msg_text"></span>
+    </div>
+    <br />
+    <span class="form-horizontal">
+      <span id="form_controls">
+        <div class="control-group" id="cg_ipaddr">
+          <label class="control-label" for="ipaddr">[== $lang->{ipaddr} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="controls">
+            <input type="text" class="input-xlarge data-edit-field" id="ipaddr">
+            <p class="help-block">[== $lang->{ipaddr_hint} =]</p>
+          </div>
+        </div>
+        <div class="control-group" id="cg_password">
+          <label class="control-label" for="password" id="label_password">[== $lang->{password} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="controls">
+            <input type="password" class="input-small data-edit-field" id="password">&nbsp;<input type="password" class="input-small data-edit-field" id="password_repeat">
+            <p class="help-block" id="password_hint">[== $lang->{password_hint} =]</p>
+          </div>
+        </div>
+        <div class="control-group" id="cg_phone">
+          <label class="control-label" for="phone">[== $lang->{phone} =]</label>
+          <div class="controls">
+            <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium data-edit-field" id="phone"></div>
+          </div>
+        </div>
+        <div class="control-group" id="cg_email">
+          <label class="control-label" for="email">[== $lang->{email} =]</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge data-edit-field" id="email">
+          </div>
+        </div>
+        <div class="control-group" id="cg_realname">
+          <label class="control-label" for="realname">[== $lang->{realname} =]</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge data-edit-field" id="realname">
+          </div>
+        </div>
+        <div class="control-group" id="cg_groups">
+          <label class="control-label" for="realname">[== $lang->{groups} =]</label>
+          <div class="controls">
+            <input type="text" class="input-xxlarge data-edit-field" id="groups">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="controls">
+            <label class="radio">
+            <input type="radio" name="status" id="radio_status_disabled" class="data-edit-field" value="0">
+            [== $lang->{status0} =] </label>
+            <label class="radio">
+            <input type="radio" name="status" id="radio_status_normal" class="data-edit-field" value="1" checked>
+            [== $lang->{status1} =] </label>
+            <label class="radio">
+            <input type="radio" name="status" id="radio_status_admin" class="data-edit-field" value="2">
+            [== $lang->{status2} =] </label>
+          </div>
+        </div>
+      </span> <!-- form_controls -->
+    </div>
+    <!-- data_edit_form -->
+    <div class="form-actions">
+      <div id="ajax_loading" style="display:none">
+        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
+      </div>
+      <div id="data_edit_form_buttons">
+        <button type="button" class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</button>&nbsp;<button type="button" class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</button>
+      </div>
+      <button type="button" class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</button>
+      <!-- data_edit_form_buttons -->
+    </div>
+  </span> <!-- form_horizontal -->                              
+</div>
+<!-- data_edit -->
+<script type="text/javascript">
+var js_lang_module_name_long = "[== $lang->{module_name_long} =]";
+var js_lang_btn_add = "[== $lang->{btn_add} =]";
+var js_lang_btn_del = "[== $lang->{btn_del} =]";
+var js_lang_btn_select_all = "[== $lang->{btn_select_all} =]";
+var js_lang_btn_select_none = "[== $lang->{btn_select_none} =]";
+var js_lang_id = "[== $lang->{id} =]";
+var js_lang_ipaddr = "[== $lang->{ipaddr} =]";
+var js_lang_status = "[== $lang->{status} =]";
+var js_lang_actions = "[== $lang->{actions} =]";
+var js_lang_delete_confirmation_title = "[== $lang->{delete_confirmation_title} =]";
+var js_lang_delete_confirmation_msg1 = "[== $lang->{delete_confirmation_msg1} =]";
+var js_lang_delete_confirmation_msg2 = "[== $lang->{delete_confirmation_msg2} =]";
+var js_lang_delete_cancel = "[== $lang->{delete_cancel} =]";
+var js_lang_delete = "[== $lang->{delete} =]";
+var js_lang_delete_none_selected_title = "[== $lang->{delete_none_selected_title} =]";
+var js_lang_delete_none_selected_msg = "[== $lang->{delete_none_selected_msg} =]";
+var js_lang_btn_close = "[== $lang->{btn_close} =]";
+var js_lang_status_select_title = "[== $lang->{status_select_title} =]";
+var js_lang_status0 = "[== $lang->{status0} =]";
+var js_lang_status1 = "[== $lang->{status1} =]";
+var js_lang_edit_cancel = "[== $lang->{edit_cancel} =]";
+var js_lang_edit_save = "[== $lang->{edit_save} =]";
+var js_lang_error = "[== $lang->{error} =]";
+var js_lang_edit_record = "[== $lang->{edit_record} =]";
+var js_lang_ipaddr_hint = '[== $lang->{ipaddr_hint} =]';
+var js_lang_abort = "[== $lang->{abort} =]";
+var js_lang_sPrevious = "[== $lang->{sPrevious} =]";
+var js_lang_sNext = "[== $lang->{sNext} =]";
+var js_lang_sLengthMenu = "[== $lang->{sLengthMenu} =]";
+var js_lang_sZeroRecords = "[== $lang->{sZeroRecords} =]";
+var js_lang_sInfo = "[== $lang->{sInfo} =]";
+var js_lang_sInfoEmpty = "[== $lang->{sInfoEmpty} =]";
+var js_lang_sInfoFiltered = "[== $lang->{sInfoFiltered} =]";
+var js_lang_sSearch = "[== $lang->{sSearch} =]";
+var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
+var js_lang_add_record = "[== $lang->{add_record} =]";
+var js_lang_form_notice_add = "[== $lang->{form_notice_add} =]";
+var js_lang_password_mismatch = "[== $lang->{password_mismatch} =]";
+var js_lang_form_errors = "[== $lang->{form_errors} =]";
+var js_lang_ajax_saving = "[== $lang->{ajax_saving} =]";
+var js_lang_success = "[== $lang->{success} =]";
+var js_lang_add_success_notify = "[== $lang->{add_success_notify} =]";
+var js_lang_edit_success_notify = "[== $lang->{edit_success_notify} =]";
+var js_lang_form_notice_edit = "[== $lang->{form_notice_edit} =]";
+var js_lang_ajax_loading = "[== $lang->{ajax_loading} =]";
+var js_lang_data_loading_error = "[== $lang->{data_loading_error} =]";
+var js_lang_password_hint_edit = "[== $lang->{password_hint_edit} =]";
+var js_lang_delete_error_notify = "[== $lang->{delete_error_notify} =]";
+var js_lang_delete_success_notify = "[== $lang->{delete_success_notify} =]";
+</script>
+<script type="text/javascript" src="/js/modules/admin_firewall_index.js"></script>
+<script type="text/javascript">$('#nav_firewall').addClass('active')</script>

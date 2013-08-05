@@ -1,0 +1,53 @@
+module_name: Firewall
+module_name_long: Firewall management
+id: ID
+ipaddr: IP address
+ipaddr_hint: Like 192.168.1.1
+status: Status
+status0: Banned
+status1: Whitelisted
+actions: Actions
+btn_add: Add IP
+btn_del: Delete selected
+btn_select_all: Select all
+btn_select_none: Select none
+edit_record: Edit record
+add_record: Add record
+form_notice_add: Please fill in the following form to add new IP to the database. The required fields are marked with an asterisk.
+edit_record: Edit user
+form_notice_edit: Please fill in the following form to change record data. The required fields are marked with an asterisk.
+edit_save: Save changes
+edit_cancel: Cancel
+form_errors: Form contain errors, please check and try again
+ajax_saving: Saving data, please wait...
+ajax_loading: Loading data, please wait...
+form_error_invalid_ipaddr: Invalid IP address
+form_error_duplicate_ipaddr: Duplicate IP address (such IP address already exists)   
+form_error_invalid_status: Invalid status
+add_success_notify: New IP has been added
+edit_success_notify: Record data has been changed
+data_loading_error: Error while loading data from server. Please check your connection and try again.
+abort: Abort
+delete_confirmation_title: Delete confirmation
+delete_confirmation_msg1: The following record(s) will be deleted pemanently from system database&#058;
+delete_confirmation_msg2: Are you sure you wish to continue?                    
+delete: Delete                                                  
+delete_cancel: Cancel
+delete_success_notify: Record(s) has been deleted
+delete_error_notify: Error while deleting record(s)
+delete_none_selected_title: None selected
+delete_none_selected_msg: No items selected to delete. Please select some users in the table using checkboxes first.
+btn_close: Close
+field_edit_error_unknown: Unknown error while saving field
+error: Error
+success: Success
+status_select_title: Select record status 
+sLengthMenu: Display _MENU_ records per page
+sZeroRecords: Nothing found - sorry
+sInfo: Showing _START_ to _END_ of _TOTAL_ records
+sInfoEmpty: Showing 0 to 0 of 0 records
+sInfoFiltered: (filtered from _MAX_ total records)
+sPrevious: Previous page
+sNext: Next page   
+sSearch: Search
+error_ajax: Error while connecting to server. Please try again later.

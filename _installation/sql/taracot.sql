@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 01, 2013 at 08:00 PM
+-- Generation Time: Aug 05, 2013 at 06:02 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -541,21 +541,31 @@ CREATE TABLE `taracot_blog_comments` (
   `cusername` varchar(255) NOT NULL,
   `ctext` text,
   `cdate` int(11) default NULL,
-  `chash` varchar(24) default NULL,
+  `chash` varchar(32) default NULL,
   `left_key` int(10) NOT NULL,
   `right_key` int(10) NOT NULL,
   `level` int(10) NOT NULL,
+  `ipaddr` varchar(45) default NULL,
   PRIMARY KEY  (`id`),
   KEY `left_key` (`left_key`,`right_key`,`level`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
 
 -- 
 -- Dumping data for table `taracot_blog_comments`
 -- 
 
-INSERT INTO `taracot_blog_comments` VALUES (1, 51, 0, 'admin', 'First comment goes here! However, what I do (this is cheating) is I combined the nested set with adjacency lists -- I embed a &quot;parent_id&quot; in the table, so I can easily ask for the children of a node.', 1375372669, NULL, 1, 8, 1);
-INSERT INTO `taracot_blog_comments` VALUES (2, 51, 0, 'admin', 'User &quot;bobince&quot; almost had it. I figured it out and got it to work for me because I have a little more MySQL experience than most. However, I can see why bobince''s answer might scare people off. His query is incomplete. You need to select the parent_left and parent_right into mysql variables first. ', 1375372696, NULL, 4, 7, 2);
-INSERT INTO `taracot_blog_comments` VALUES (3, 51, 0, 'admin', 'Another comment within root node', 1375372706, NULL, 9, 12, 1);
+INSERT INTO `taracot_blog_comments` VALUES (1, 51, 0, 'admin', 'OK Computer ', 1375433375, '52374cbe8bc759fef12c7bd7f929ad0f', 1, 12, 1, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (2, 51, 0, 'admin', 'OK Computer1', 1375433778, 'a9750136ffafa431427041c387f68ede', 13, 20, 1, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (3, 51, 0, 'admin', 'OK Computer2', 1375433795, 'acd348e68e624fd018afdd40cc9e12c1', 21, 24, 1, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (4, 51, 0, 'admin', 'Yeah', 1375435031, '71625e2d4d99b11fef6e5184912d7cf6', 16, 19, 2, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (5, 51, 0, 'admin', 'fff', 1375437806, '343d9040a671c45832ee5381860e2996', 25, 32, 1, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (6, 51, 0, 'medved', 'OK!', 1375441798, '36f919521848d86b55d4bf823d1f7232', 4, 11, 2, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (7, 51, 0, 'medved', 'oooooooooooooooooooooooooooooooooooooooooooooooooook', 1375441985, '1d2762ecf12fc417bcdebd8303db883f', 7, 10, 3, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (8, 51, 0, 'medved', 'Left my comment here.', 1375444217, '2cfcbb89bb50aa459997e8deb5c92cf1', 28, 31, 2, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (9, 51, 0, 'medved', 'Just posted another one.', 1375444237, 'f9785a4eb59550f456eeda427db9bd1c', 33, 36, 1, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (10, 51, 0, 'medved', 'aaaaaaaaaaa', 1375444468, 'd57f21e6a273781dbf8b7657940f3b03', 37, 40, 1, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (11, 51, 0, 'medved', 'bbbbbbbb', 1375444480, '810247419084c82d03809fc886fedaad', 41, 44, 1, NULL);
+INSERT INTO `taracot_blog_comments` VALUES (12, 52, 0, 'admin', 'IP addresses are logged now.', 1375703269, 'a9d2401e1bbd20a1df9f311c15145712', 1, 4, 1, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -577,16 +587,40 @@ CREATE TABLE `taracot_blog_posts` (
   `pcut` tinyint(1) default '0',
   `ptext_html` text,
   `pviews` int(11) default '0',
+  `pcomments` int(11) default '0',
+  `ipaddr` varchar(45) default NULL,
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`)
-) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 AUTO_INCREMENT=52 ;
+) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8 AUTO_INCREMENT=53 ;
 
 -- 
 -- Dumping data for table `taracot_blog_posts`
 -- 
 
-INSERT INTO `taracot_blog_posts` VALUES (51, 'en', 'admin', 'misc', 1, 'Тестовый пост!', 'теги, bbcode', 1375085854, '[b]Bold\n[/b][i]Ital[/i]ic\n[u]Underline\n[/u][s]Strike\n[/s][sup]Sup\n[/sup][sub]Sub[/sub]\n[img]http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png[/img]﻿\n[img width=100,height=100]http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png[/img]﻿\n[url=http://google.com]Google[/url]\nList type 1:\n[list][*]LI1[/*][*]LI2[/*][*]LI3[/*][/list][cut]Another list:\n[list=1][*]LI1[/*][*]LI2[/*][*]LI3[/*][/list]\n[color=rgb(168,168,168)]RGB Color test[/color]\n[color=#ff0000]Red text\n[color=rgb(68, 68, 68)]Auto text\n[color=#000000]Black text\n[font=Verdana]Verdana text[/font][/color][/color][/color]\nAlign left\n[center]Align center[/center]\n[right]Align right\nAnother one[/right][code]package taracot::AUBBC;\nuse strict;\nuse warnings;\n\nour $VERSION     = ''4.06'';\nour $BAD_MESSAGE = ''Unathorized'';\nour $DEBUG_AUBBC = 0;\nour $MEMOIZE     = 1;[/code]\n[offtop]And offtop goes here[/offtop]\n[table][tr][td]cell1﻿[/td][td]cell2﻿[/td][/tr][tr][td]﻿cell3[/td][td]﻿cell4[/td][/tr][/table]\n[size=100]Нормальный текст[/size]\n[size=85]Маленький текст[/size]\n[size=200]Очень большой текст[/size]\n[size=100]Нормальный текст[/size]\n[size=50]Очень маленький текст[/size]\n\n[quote]Цитата[/quote]\n[quote=Цитата великого медведа]Цитата[/quote]', '<b>Bold<br />\n</b><i>Ital</i>ic<br />\n<span style="text-decoration: underline;">Underline<br />\n</span><span style="text-decoration: line-through;">Strike<br />\n</span><sup>Sup<br />\n</sup><sub>Sub</sub><br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="90" height="60" alt="" border="0" /> ﻿<br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="100" height="100" alt="" border="0" /> ﻿<br />\n<a href="http://google.com" target="_blank">Google</a><br />\nList type 1:<br />\n<ul>\n<li>LI1</li>\n<li>LI2</li>\n<li>LI3</li>\n</ul>', 1, '<b>Bold<br />\n</b><i>Ital</i>ic<br />\n<span style="text-decoration: underline;">Underline<br />\n</span><span style="text-decoration: line-through;">Strike<br />\n</span><sup>Sup<br />\n</sup><sub>Sub</sub><br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="90" height="60" alt="" border="0" /> ﻿<br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="100" height="100" alt="" border="0" /> ﻿<br />\n<a href="http://google.com" target="_blank">Google</a><br />\nList type 1:<br />\n<ul>\n<li>LI1</li>\n<li>LI2</li>\n<li>LI3</li>\n</ul> Another list:<br />\n<ol>\n<li>LI1</li>\n<li>LI2</li>\n<li>LI3</li>\n</ol>\n<span style="color:rgb(168,168,168);">RGB Color test</span><br />\n<span style="color:#ff0000;">Red text<br />\n<span style="color:rgb(68,68,68);">Auto text<br />\n<span style="color:#000000;">Black text<br />\n<span style="font-family:Verdana;">Verdana text</span></span></span></span><br />\nAlign left<br />\n<div style="text-align: center;">Align center</div><br />\n<div style="text-align: right;">Align right<br />\nAnother one</div><div><code>\n<span>package</span> taracot&#58;&#58;AUBBC&#59;<br />\n<span>use</span> <span>strict</span>&#59;<br />\n<span>use</span> warnings&#59;<br />\n<br />\nour <span>$VERSION</span> &nbsp; &nbsp; = <span>&#39;<span>4</span>.<span>06</span>&#39;</span>&#59;<br />\nour <span>$BAD_MESSAGE</span> = <span>&#39;Unathorized&#39;</span>&#59;<br />\nour <span>$DEBUG_AUBBC</span> = <span>0</span>&#59;<br />\nour <span>$MEMOIZE</span> &nbsp; &nbsp; = <span>1</span>&#59;<br />\n</code></div><br />\n<span style="color:#666;">And offtop goes here</span><br />\n<table class="table table-striped table-bordered"><tr><td>cell1﻿</td><td>cell2﻿</td></tr><tr><td>﻿cell3</td><td>﻿cell4</td></tr></table><br />\n<span style="font-size: 100%;">Нормальный текст</span><br />\n<span style="font-size: 85%;">Маленький текст</span><br />\n<span style="font-size: 200%;">Очень большой текст</span><br />\n<span style="font-size: 100%;">Нормальный текст</span><br />\n<span style="font-size: 50%;">Очень маленький текст</span><br />\n<br />\n<blockquote>Цитата</blockquote><br />\n<blockquote><small><strong>Цитата великого медведа:</strong></small><br />\nЦитата</blockquote>', 344, 1375276341);
+INSERT INTO `taracot_blog_posts` VALUES (51, 'en', 'admin', 'misc', 1, 'Тестовый пост!', 'теги, bbcode', 1375085854, '[b]Bold\n[/b][i]Ital[/i]ic\n[u]Underline\n[/u][s]Strike\n[/s][sup]Sup\n[/sup][sub]Sub[/sub]\n[img]http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png[/img]﻿\n[img width=100,height=100]http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png[/img]﻿\n[url=http://google.com]Google[/url]\nList type 1:\n[list][*]LI1[/*][*]LI2[/*][*]LI3[/*][/list][cut]Another list:\n[list=1][*]LI1[/*][*]LI2[/*][*]LI3[/*][/list]\n[color=rgb(168,168,168)]RGB Color test[/color]\n[color=#ff0000]Red text\n[color=rgb(68, 68, 68)]Auto text\n[color=#000000]Black text\n[font=Verdana]Verdana text[/font][/color][/color][/color]\nAlign left\n[center]Align center[/center]\n[right]Align right\nAnother one[/right][code]package taracot::AUBBC;\nuse strict;\nuse warnings;\n\nour $VERSION     = ''4.06'';\nour $BAD_MESSAGE = ''Unathorized'';\nour $DEBUG_AUBBC = 0;\nour $MEMOIZE     = 1;[/code]\n[offtop]And offtop goes here[/offtop]\n[table][tr][td]cell1﻿[/td][td]cell2﻿[/td][/tr][tr][td]﻿cell3[/td][td]﻿cell4[/td][/tr][/table]\n[size=100]Нормальный текст[/size]\n[size=85]Маленький текст[/size]\n[size=200]Очень большой текст[/size]\n[size=100]Нормальный текст[/size]\n[size=50]Очень маленький текст[/size]\n\n[quote]Цитата[/quote]\n[quote=Цитата великого медведа]Цитата[/quote]', '<b>Bold<br />\n</b><i>Ital</i>ic<br />\n<span style="text-decoration: underline;">Underline<br />\n</span><span style="text-decoration: line-through;">Strike<br />\n</span><sup>Sup<br />\n</sup><sub>Sub</sub><br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="90" height="60" alt="" border="0" /> ﻿<br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="100" height="100" alt="" border="0" /> ﻿<br />\n<a href="http://google.com" target="_blank">Google</a><br />\nList type 1:<br />\n<ul>\n<li>LI1</li>\n<li>LI2</li>\n<li>LI3</li>\n</ul>', 1, '<b>Bold<br />\n</b><i>Ital</i>ic<br />\n<span style="text-decoration: underline;">Underline<br />\n</span><span style="text-decoration: line-through;">Strike<br />\n</span><sup>Sup<br />\n</sup><sub>Sub</sub><br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="90" height="60" alt="" border="0" /> ﻿<br />\n<img src="http://yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png" width="100" height="100" alt="" border="0" /> ﻿<br />\n<a href="http://google.com" target="_blank">Google</a><br />\nList type 1:<br />\n<ul>\n<li>LI1</li>\n<li>LI2</li>\n<li>LI3</li>\n</ul> Another list:<br />\n<ol>\n<li>LI1</li>\n<li>LI2</li>\n<li>LI3</li>\n</ol>\n<span style="color:rgb(168,168,168);">RGB Color test</span><br />\n<span style="color:#ff0000;">Red text<br />\n<span style="color:rgb(68,68,68);">Auto text<br />\n<span style="color:#000000;">Black text<br />\n<span style="font-family:Verdana;">Verdana text</span></span></span></span><br />\nAlign left<br />\n<div style="text-align: center;">Align center</div><br />\n<div style="text-align: right;">Align right<br />\nAnother one</div><div><code>\n<span>package</span> taracot&#58;&#58;AUBBC&#59;<br />\n<span>use</span> <span>strict</span>&#59;<br />\n<span>use</span> warnings&#59;<br />\n<br />\nour <span>$VERSION</span> &nbsp; &nbsp; = <span>&#39;<span>4</span>.<span>06</span>&#39;</span>&#59;<br />\nour <span>$BAD_MESSAGE</span> = <span>&#39;Unathorized&#39;</span>&#59;<br />\nour <span>$DEBUG_AUBBC</span> = <span>0</span>&#59;<br />\nour <span>$MEMOIZE</span> &nbsp; &nbsp; = <span>1</span>&#59;<br />\n</code></div><br />\n<span style="color:#666;">And offtop goes here</span><br />\n<table class="table table-striped table-bordered"><tr><td>cell1﻿</td><td>cell2﻿</td></tr><tr><td>﻿cell3</td><td>﻿cell4</td></tr></table><br />\n<span style="font-size: 100%;">Нормальный текст</span><br />\n<span style="font-size: 85%;">Маленький текст</span><br />\n<span style="font-size: 200%;">Очень большой текст</span><br />\n<span style="font-size: 100%;">Нормальный текст</span><br />\n<span style="font-size: 50%;">Очень маленький текст</span><br />\n<br />\n<blockquote>Цитата</blockquote><br />\n<blockquote><small><strong>Цитата великого медведа:</strong></small><br />\nЦитата</blockquote>', 391, 4, NULL, 1375276341);
+INSERT INTO `taracot_blog_posts` VALUES (52, 'en', 'admin', 'site', 1, 'Test post', 'my, cool, suprt, tags', 1375703009, 'OK Computer', 'OK Computer', 0, 'OK Computer', 2, 1, '127.0.0.1', 1375703009);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `taracot_firewall`
+-- 
+
+CREATE TABLE `taracot_firewall` (
+  `id` int(11) NOT NULL auto_increment,
+  `ipaddr` varchar(45) default NULL,
+  `status` tinyint(4) NOT NULL default '0',
+  `lastchanged` int(11) default NULL,
+  UNIQUE KEY `id` (`id`),
+  FULLTEXT KEY `ftdata` (`ipaddr`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- 
+-- Dumping data for table `taracot_firewall`
+-- 
+
+INSERT INTO `taracot_firewall` VALUES (1, '127.0.0.2', 1, 1375709370);
 
 -- --------------------------------------------------------
 
@@ -631,7 +665,7 @@ CREATE TABLE `taracot_settings` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=29 ;
+) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 AVG_ROW_LENGTH=80 AUTO_INCREMENT=30 ;
 
 -- 
 -- Dumping data for table `taracot_settings`
@@ -661,6 +695,7 @@ INSERT INTO `taracot_settings` VALUES (25, 'billing_domain_zone_com', '500', '',
 INSERT INTO `taracot_settings` VALUES (26, 'billing_nss_ns1', 'ns1.re-hash.org', '', '', 1357642095);
 INSERT INTO `taracot_settings` VALUES (27, 'billing_nss_ns2', 'ns2.re-hash.org', '', '', 1357642114);
 INSERT INTO `taracot_settings` VALUES (28, 'blog_hubs', 'test,Тестовый хаб;site,Новости сайта;misc,Разные записи', '', 'en', 1374575717);
+INSERT INTO `taracot_settings` VALUES (29, 'blog_mode', 'public', '<p>Possbile values:</p>\n\n<p><strong>public</strong> - everyone can make new posts<br />\n<strong>restricted</strong> - only special users can make new posts<br />\n<strong>private</strong> - only administrators can make new posts<br />\n&nbsp;</p>\n', '', 1375441246);
 
 -- --------------------------------------------------------
 
@@ -690,5 +725,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 0, 'Medved', 'xtreme@rh1.ru', '79217998111', 'blog_admin', 2, '', NULL, 'en', 1375267187);
-INSERT INTO `taracot_users` VALUES (9, 'medved', '401568e9e2faae21d0341397972cd10b', 0, '', 'medved@medved.com', '', NULL, 1, '', NULL, NULL, 1357033313);
+INSERT INTO `taracot_users` VALUES (1, 'admin', '6442e843969ddd1299860e447a593b4f', 0, 'Medved', 'xtreme@rh1.ru', '79217998111', 'blog_admin', 2, '', NULL, 'en', 1375699653);
+INSERT INTO `taracot_users` VALUES (9, 'medved', '401568e9e2faae21d0341397972cd10b', 0, '', 'medved@medved.com', '', NULL, 1, '', NULL, 'en', 1375445260);
