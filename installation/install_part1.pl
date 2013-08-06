@@ -1,34 +1,13 @@
-#!/usr/bin/perl
+
+ #!/usr/bin/perl
 use strict;
 use Path::Class qw(file);
-print "Taracot installation script, v. 0.01, part 1 (C) 2013 Michael Matveev\n\n";
-print "Install possible missing modules? [y/n] ";
-my $res =  <STDIN>;
-chomp($res);
-if (!$res) {
-print "Yes\n";
-}
-if ($res ne 'n') {
-my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Template::Tenjin','Dancer::Session::Storable','Time::Duration::Parse','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','Crypt::SSLeay','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout');
-foreach my $rm (@required_modules) {
-print "Checking $rm...\n";
-if ($rm eq 'Log::Log4perl::Layout::PatternLayout') {
-eval("use Dancer::Logger::Log4perl; use $rm;");
-} else {
-eval("use $rm");
-}
-if ($@) {
-print "Module $rm is possible missing, trying to install\n";
-system('cpan '.$rm);
-}
-}
-print "\n";
-}
+print "Taracot installation script\nSystem configuration\n\n";
 my $root = file($0)->absolute->dir;
 $root =~s/\\/\//gm;
 $root =~s/\/installation$//;
 print "\nDetected root directory: $root\n";
-print "If correct, press Enter, type the correct path otherwise (no trailing slash): ";
+print "If correct, press Enter, otherwise type the path (no trailing slash): ";
 my $root_user = <STDIN>;
 chomp ($root_user);
 if ($root_user) { 
@@ -119,4 +98,4 @@ close(DATA);
 if (!$password) {
 	print "\nWarning: MySQL password is not set. Please set it manually (config.yml)\n"
 }
-print "\nInstallation (part 1) is done.\n";
+print "\nConfiguration is complete. If any error messages are displayed, you may need to re-run this script.\n";

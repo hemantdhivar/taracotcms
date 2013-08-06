@@ -2,3 +2,5 @@ Daemon::Generic
 Log::Trivial
 URL::Encode
 URL::Encode::XS
+Crypt::SSLeay
+Net::Whois::Parser

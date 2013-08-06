@@ -47,4 +47,4 @@ $sth->finish();
 print "Disconnecting from the database...\n";
 $dbh->disconnect();
 $dbh = undef;
-print "\nInstallation complete!";
+print "\nInstallation complete!\n";
