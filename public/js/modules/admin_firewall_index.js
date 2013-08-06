@@ -96,11 +96,10 @@ $(document).ready(function () {
             }, 
             {
                 "fnRender": function (oObj, sVal) {
-                    var pic = 'user.png';
                     if (sVal == 0) {
                     pic = 'lamp_off.png';
                     }
-                    if (sVal == 2) {
+                    if (sVal == 1) {
                     pic = 'lamp_on.png';
                     }
                     return '<div style="text-align:center;cursor:pointer" class="editable_select" onclick="selectStatus(' + row_id + ')" id="status_' + row_id + '"><span style="display:none" id="statusval_' + row_id + '">' + sVal + '</span><img src="/images/' + pic + '" width="16" height="16" alt="" /></div>';
@@ -131,7 +130,7 @@ $(document).ready(function () {
 });
 
 function selectStatus(row_id) {
-    $('#status_select_recordname').html($('#ipaddr_' + row_id).html());
+    $('#status_select_ipaddr').html($('#ipaddr_' + row_id).html());
     $('#status_select').modal({
         keyboard: true
     });
@@ -179,7 +178,6 @@ function submitEdit(value, settings) {
 // "Add" button handler (form mode)
 $('#btn_add').click(function () {
     edit_id = 0;
-    $('#label_password').html(js_lang_password + "&nbsp;<span class=required_field>*</span>");
     $('#form_error_msg').hide();
     $('#data_overview').hide();
     resetFormState();
@@ -187,13 +185,7 @@ $('#btn_add').click(function () {
     $('#h_data_actions').html(js_lang_add_record);
     $('#form_notice').html(js_lang_form_notice_add);
     $('#ipaddr').val('');
-    $('#password').val('');
-    $('#password_repeat').val('');
-    $('#realname').val('');
-    $('#groups').val('');
-    $('#email').val('');
-    $('#phone').val('');
-    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
+    $('input:radio[name="status"]').filter('[value="0"]').attr('checked', true);
     $('#ipaddr').focus();
 });
 // "Cancel" button handler (form mode)
@@ -240,38 +232,10 @@ $('#btn_edit_save').click(function () {
     $('#form_error_msg').hide();
     resetFormState();
     var errors = false;
-    if (!$('#ipaddr').val().match(/^[A-Za-z0-9_\-\.]{1,100}$/)) {
-        $('#cg_recordname').addClass('error');
+    if (!$('#ipaddr').val().match(/^[A-Fa-f0-9\.\:]{1,45}$/)) {
+        $('#cg_ipaddr').addClass('error');
         errors = true;
-    }
-    if ($('#password').val() != $('#password_repeat').val()) {
-        $('#cg_password').addClass('error');
-        errors = true;
-        $('#password_hint').html(js_lang_password_mismatch);
-    } else {
-        if ((edit_id != 0 && $('#password').val().length > 0) || edit_id == 0) {
-            if (!$('#password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/) || !$('#password_repeat').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/)) {
-                $('#cg_password').addClass('error');
-                errors = true;
-            }
-        }
-    }
-    if ($('#email').val() && !$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
-        $('#cg_email').addClass('error');
-        errors = true;
-    }
-    if (!$('#phone').val().match(/^[0-9]{0,40}$/)) {
-        $('#cg_phone').addClass('error');
-        errors = true;
-    }
-    if (!$('#realname').val().match(/^.{0,80}$/)) {
-        $('#cg_realname').addClass('error');
-        errors = true;
-    }
-    if (!$('#groups').val().match(/^[A-Za-z0-9_\-\.]{0,254}$/)) {
-        $('#cg_groups').addClass('error');
-        errors = true;
-    }
+    }    
     if (errors) {
         $('#form_error_msg_text').html(js_lang_form_errors);
         $('#form_error_msg').fadeIn(400);
@@ -286,12 +250,7 @@ $('#btn_edit_save').click(function () {
             url: '/admin/firewall/data/save',
             data: {
                 id: edit_id,
-                ipaddr: $('#ipaddr').val(),
-                password: $('#password').val(),
-                email: $('#email').val(),
-                phone: $('#phone').val(),
-                realname: $('#realname').val(),
-                groups: $('#groups').val(),
+                ipaddr: $('#ipaddr').val(),                
                 status: $("input[name='status']:checked").val()
             },
             dataType: "json",
@@ -347,7 +306,6 @@ $('#btn_abort').click(function () {
 // Edit record
 function editData(id) {
     edit_id = id;
-    $('#label_password').html(js_lang_password);
     $('#form_error_msg').hide();
     $('#data_overview').hide();
     resetFormState();
@@ -355,12 +313,6 @@ function editData(id) {
     $('#h_data_actions').html(js_lang_edit_record);
     $('#form_notice').html(js_lang_form_notice_edit);
     $('#ipaddr').val('');
-    $('#password').val('');
-    $('#password_repeat').val('');
-    $('#realname').val('');
-    $('#groups').val('');
-    $('#email').val('');
-    $('#phone').val('');
     $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
     $('#data_edit_form').hide();
     $('#data_edit_form_buttons').hide();
@@ -387,21 +339,8 @@ function editData(id) {
                 $('#data_edit_form').show();
                 $('#form_controls').show();
                 $('#data_edit_form_buttons').show();
-                $('#password_hint').html(js_lang_password_hint_edit);
                 if (data.ipaddr) {
                     $('#ipaddr').val(data.ipaddr);
-                }
-                if (data.email) {
-                    $('#email').val(data.email);
-                }
-                if (data.phone) {
-                    $('#phone').val(data.phone);
-                }
-                if (data.realname) {
-                    $('#realname').val(data.realname);
-                }
-                if (data.groups) {
-                    $('#groups').val(data.groups);
                 }
                 if (data.status) {
                     $('input:radio[name="status"]').filter('[value="' + data.status + '"]').attr('checked', true);
@@ -503,13 +442,7 @@ function deleteData(id) {
 }
 // Remove all "error" notification classes from form items
 function resetFormState() {
-    $('#cg_recordname').removeClass('error');
-    $('#cg_password').removeClass('error');
-    $('#cg_email').removeClass('error');
-    $('#cg_phone').removeClass('error');
-    $('#cg_realname').removeClass('error');
-    $('#cg_groups').removeClass('error');
-    $('#password_hint').html(js_lang_password_hint);
+    $('#cg_ipaddr').removeClass('error');
 }
 // dataTable ajax fix
 jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {

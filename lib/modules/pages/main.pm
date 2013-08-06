@@ -74,6 +74,8 @@ get qr{(.*)} => sub {
   }
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { filename => $url, lang => $_current_lang });
   my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);  
+  $db_data->{keywords} = $db_data->{keywords} || '';
+  $db_data->{description} = $db_data->{description} || '';
   my $page_keywords = $db_data->{keywords}.', '.$page_data->{site_keywords};
   my $page_description = $db_data->{description}.'. '.$page_data->{site_description};
   $page_keywords=~s/^, //;

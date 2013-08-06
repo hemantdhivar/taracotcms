@@ -220,7 +220,7 @@ $(document).ready(function () {
 });
 
 function selectLanguage(row_id) {
-    $('#language_select_s_name').html($('#s_name_' + row_id).html());
+    $('#language_select_s_name').html($('#s_name-' + row_id).html());
     $('#language_select').modal({
         keyboard: true
     });

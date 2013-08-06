@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>403 | [== $lang->{error_403_title} =]</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+     #outer{position:absolute;top:50%;left:0;width:100%;height:1px;overflow:visible}
+     #inner{width:400px;height:200px;margin-left:-150px;position:absolute;top:-100px;text-align:center;left:50%}
+    </style>
+  </head>
+  <body>
+    <div id="outer">
+     <div id="inner">
+      <h1>[== $lang->{error_403_title} =]</h1><br/>
+      [== $lang->{error_403_desc} =]
+     </div>
+    </div>
+  </body>
+</html> 

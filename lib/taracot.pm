@@ -14,6 +14,11 @@ prefix undef;
 
 our $taracot_current_version='0.20528';
 
+# Don't show any warnings to console in production mode
+if (config->{environment} eq 'production') {
+  $SIG{__WARN__} = sub {};
+}
+
 my $load_modules = config->{load_modules_frontend};
 $load_modules=~s/ //gm;
 my @modules = split(/,/, $load_modules);
@@ -29,6 +34,41 @@ foreach my $block (@blocks) {
   my $taracot_block_load="blocks::".lc($block)."::main";
   loadpm $taracot_block_load;   
 }
+
+hook before => sub {
+  # Firewall-related routines
+  if (config->{firewall_mode} eq 'blacklist' || config->{firewall_mode} eq 'whitelist') {
+    my $remote_ip = $ENV{'HTTP_X_REAL_IP'};
+    if (!$remote_ip) {
+      $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
+    }
+    my $remote_ip_p1 = $remote_ip;
+    $remote_ip_p1 =~s/\.[\d]+$//;
+    my $remote_ip_p2 = $remote_ip_p1;
+    $remote_ip_p2 =~s/\.[\d]+$//;    
+    my $id;
+    my $status;
+    my $sth = database->prepare(
+     'SELECT id, status FROM '.config->{db_table_prefix}.'_firewall WHERE ipaddr='.database->quote($remote_ip).' OR ipaddr='.database->quote($remote_ip_p1).' OR ipaddr='.database->quote($remote_ip_p2)
+    );
+    if ($sth->execute()) {
+      ($id, $status) = $sth -> fetchrow_array;
+    }
+    $sth->finish();
+    if (config->{firewall_mode} eq 'blacklist') {
+      if ($id && $status eq 0) {
+        request->path_info('/403');
+        return;
+      }
+    }
+    if (config->{firewall_mode} eq 'whitelist') {
+      if ($status ne 1) {
+        request->path_info('/403');
+        return;
+      }
+    }
+  }  
+};
 
 sub _auth() {
   my $authdata;
@@ -184,6 +224,13 @@ get '/captcha_img' => sub {
   my $data;  
   $image->write(data => \$data, type => 'png') or die $image->errstr;
   return $data;
+};
+
+get '/403' => sub { 
+ &_load_lang;
+ status 'forbidden';
+ my $render_403 = template 'error_403', { lang => $lang }, { layout => undef };
+ return $render_403;
 };
 
 any qr{.*} => sub { 

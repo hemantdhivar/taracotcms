@@ -143,37 +143,6 @@
             <p class="help-block">[== $lang->{ipaddr_hint} =]</p>
           </div>
         </div>
-        <div class="control-group" id="cg_password">
-          <label class="control-label" for="password" id="label_password">[== $lang->{password} =]&nbsp;<span class="required_field">*</span></label>
-          <div class="controls">
-            <input type="password" class="input-small data-edit-field" id="password">&nbsp;<input type="password" class="input-small data-edit-field" id="password_repeat">
-            <p class="help-block" id="password_hint">[== $lang->{password_hint} =]</p>
-          </div>
-        </div>
-        <div class="control-group" id="cg_phone">
-          <label class="control-label" for="phone">[== $lang->{phone} =]</label>
-          <div class="controls">
-            <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium data-edit-field" id="phone"></div>
-          </div>
-        </div>
-        <div class="control-group" id="cg_email">
-          <label class="control-label" for="email">[== $lang->{email} =]</label>
-          <div class="controls">
-            <input type="text" class="input-xlarge data-edit-field" id="email">
-          </div>
-        </div>
-        <div class="control-group" id="cg_realname">
-          <label class="control-label" for="realname">[== $lang->{realname} =]</label>
-          <div class="controls">
-            <input type="text" class="input-xlarge data-edit-field" id="realname">
-          </div>
-        </div>
-        <div class="control-group" id="cg_groups">
-          <label class="control-label" for="realname">[== $lang->{groups} =]</label>
-          <div class="controls">
-            <input type="text" class="input-xxlarge data-edit-field" id="groups">
-          </div>
-        </div>
         <div class="control-group">
           <label class="control-label">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
           <div class="controls">
@@ -184,8 +153,6 @@
             <input type="radio" name="status" id="radio_status_normal" class="data-edit-field" value="1" checked>
             [== $lang->{status1} =] </label>
             <label class="radio">
-            <input type="radio" name="status" id="radio_status_admin" class="data-edit-field" value="2">
-            [== $lang->{status2} =] </label>
           </div>
         </div>
       </span> <!-- form_controls -->

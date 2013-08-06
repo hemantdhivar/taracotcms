@@ -82,6 +82,9 @@ post '/authorize' => sub {
   content_type 'application/json';
   my $username = param('username');
   my $password = md5_hex(config->{salt}.param('password'));
+  open(DATA,"C:/XTreme/log.txt");
+  print DATA $password;
+  close(DATA);
   my $ud  = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, password => $password });
   if ($ud) {
     if ($ud->{status} == 2) {

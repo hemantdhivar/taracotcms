@@ -47,7 +47,8 @@ sub _load_lang {
 sub flow() {  
   my $flow = '';
   my $ipp = 2; # items per page
-  my $page = int($_[0]) || 1;
+  my $page = $_[0] || 1;
+  $page = int($page);
   my $hub = $_[1] || '';
   my $tag = $_[2] || '';
   my $_current_lang=_load_lang();   
@@ -485,7 +486,7 @@ post '/post/process' => sub {
     push @fields, 'blog_hub';    
   }
   my $blog_state = int(params->{blog_state}) || 0;
-  if ($blog_state < 0 || $blog_state > 2) {
+  if ($blog_state < 0 || $blog_state > 1) {
     $res{status}=0; 
     push @errors, $lang->{error_state}; 
     push @fields, 'blog_state';    

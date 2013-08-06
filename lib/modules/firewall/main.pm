@@ -147,7 +147,7 @@ post '/data/save' => sub {
   my $id=param('id') || 0;
   $id=int($id);
   
-  if ($ipaddr !~ /^\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}$/) {
+  if ($ipaddr !~ /^[A-Fa-f0-9\.\:]{1,45}$/) {
    return qq~{"result":"0","field":"ipaddr","error":"~.$lang->{form_error_invalid_ipaddr}.qq~"}~;
   }
   if ($status < 0 || $status > 1) {
@@ -200,7 +200,7 @@ post '/data/save/field' => sub {
   
   if ($field_name eq 'ipaddr') {
    my $ipaddr=$field_value;
-   if ($ipaddr !~ /^\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}$/) {
+   if ($ipaddr !~ /^[A-Fa-f0-9\.\:]{1,45}$/) {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_ipaddr}.qq~"}~;
    }
    my $sth = database->prepare(

@@ -19,3 +19,5 @@ Date::Parse
 Crypt::SSLeay
 Net::Whois::Parser 
 URI::Encode
+Dancer::Logger::Log4perl
+Log::Log4perl::Layout::PatternLayout

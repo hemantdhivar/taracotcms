@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8" />
-  <title>[== $pagetitle =] | [== $page_data->{site_title} =]</title>
+  <title>[== $pagetitle || '' =] | [== $page_data->{site_title} || '' =]</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="[== $page_data->{site_keywords} =]">
   <meta name="description" content="[== $page_data->{site_description} =]"> 
@@ -14,7 +14,7 @@
   <link rel="shortcut icon" href="/favicon.ico">
   <script src="/js/taracot.min.js"></script>
   <!--[if lt IE 9]><script src="/js/html5.js"></script><![endif]-->  
-  <!-- module css --> [== $head_html =]  
+  <!-- module css --> [== $head_html || '' =]  
 </head>
 <body>
   <div class="container navbar-wrapper">
@@ -22,7 +22,7 @@
     <a href="/"><img id="taracot-logo-small" src="/taracot/logo_white_51.png" width="51" height="51" alt="Taracot CMS" class="visible-phone" /></a>
     <div class="taracot-header container">
       <?pl if ($auth_data->{id}) { ?>
-      <div class="taracot-logged-in-as"><span class="label label-inverse">Logged in as: [== $auth_data->{username} =]</span></div><div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
+      <div class="taracot-logged-in-as"><span class="label label-inverse">Logged in as: [== $auth_data->{username} || '' =]</span></div><div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
       <?pl } else { ?>
       <div class="taracot-logged-in-as"><span class="label label-inverse">Not logged in</span></div><div class="btn btn-mini" onclick="location.href='/user/authorize'">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
       <?pl } ?>
@@ -50,7 +50,7 @@
   </div>
   <div id="taracot-top-img"></div>  
   <div class="container taracot-after-header" id="taracot-content">
-    [== $content =]     
+    [== $content || '' =]     
   </div>  
   <footer id="taracot-footer">
     <div class="container">
