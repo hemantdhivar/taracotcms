@@ -1,9 +1,10 @@
 
  #!/usr/bin/perl
 use strict;
-use Path::Class qw(file);
+use Cwd qw(abs_path);
+use File::Basename qw(dirname);
 print "Taracot installation script\nSystem configuration\n\n";
-my $root = file($0)->absolute->dir;
+my $root = dirname(abs_path($0));
 $root =~s/\\/\//gm;
 $root =~s/\/installation$//;
 print "\nDetected root directory: $root\n";
@@ -67,10 +68,10 @@ my $sendmail = <STDIN>;
 chomp($sendmail);
 if (!$sendmail) { $sendmail = '/usr/sbin/sendmail'; print "Using /usr/sbin/sendmail\n"; }
 $config_dist =~s/\[sendmail\]/$sendmail/gm;
-print "\nSession domain [.taracot.org]: ";
+print "\nSession domain starting with a dot []: ";
 my $sd = <STDIN>;
 chomp($sd);
-if (!$sd) { $sd = '.taracot.org'; print "Using .taracot.org\n"; }
+if (!$sd) { $sd = ''; print "Using an empty value\n"; }
 $config_dist =~s/\[sessiondomain\]/$sd/gm;
 print "\nWriting new configuration file: config.yml...\n";
 open(DATA, ">../config.yml");

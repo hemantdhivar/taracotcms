@@ -75,11 +75,22 @@ sub _auth() {
   if (session('user')) { 
    my $id = session('user');
    $authdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id });
+   my %grpdata;
+   if ($authdata->{groups}) {
+      my @groups=split(/,/, $authdata->{groups});     
+      foreach my $item(@groups) {
+        $item =~ s/^\s+//;
+        $item =~ s/\s+$//;
+        $item =~ tr/ //s;
+        $grpdata{$item} = 1;
+      }
+      $authdata->{groups_hash} = \%grpdata;
+   }
   } else {
    $authdata->{id} = 0;
    $authdata->{status} = 0;
    $authdata->{username} = '';
-   $authdata->{password} = '';
+   $authdata->{password} = '';   
   }
   if ($authdata->{status}) {
    if ($authdata->{status} > 0) {
@@ -102,7 +113,7 @@ sub _load_settings() {
   $sql=~s/ OR //;  
   my $sth; 
   $sth = database->prepare(
-   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE ('.$sql.') AND lang='.database->quote($lang)
+   'SELECT s_name, s_value FROM '.config->{db_table_prefix}.'_settings WHERE ('.$sql.') AND lang='.database->quote($lang).' OR lang=NULL OR lang=\'\''
   );
   if ($sth->execute()) {
    while(my ($s_name, $s_value) = $sth -> fetchrow_array) {

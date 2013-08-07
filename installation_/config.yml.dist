@@ -1,22 +1,22 @@
 appname: 'taracot'
 server: '0.0.0.0'
-port: '2999'
+port: '[port]'
 daemon: 'false'
 layout: 'taracot'
 layouts_available: 'taracot'
 charset: 'UTF-8'
 template: 'taracot'
-environment: 'production'
-root_dir: 'c:/xtreme/taracot/'
+environment: 'development'
+root_dir: '[root]'
 data_dir: 'data'
-files_dir: 'c:/xtreme/taracot/public/files/'
+files_dir: '[files]'
 files_url: '/files'
 modules_css_url: '/css/modules/'
-session_dir: 'c:/xtreme/taracot/tmp/sessions/'
+session_dir: '[sessions]'
 session: 'Storable'
 session_name: 'taracot_session'
-session_domain: '.sandbox.taracot.org'
 session_expires: '1 week'
+session_domain: '[sessiondomain]'
 load_modules_admin: 'users, pages, sitemap, files, settings, firewall'
 load_modules_frontend: 'pages, imgbrowser, user, blog'
 load_blocks_frontend: 'menu, blocks'
@@ -24,36 +24,33 @@ lang_available: 'en, ru, de'
 lang_available_long: 'English, Russian, German'
 lang_default: 'en'
 db_table_prefix: 'taracot'
-salt: 'zuwrezathutebruhap6a558efane7asethe87caC44spa6upebrajaDrasares6u'
+salt: '[salt]'
 cached_settings: 'block_left, block_right'
 agreement: '/agreement'
 captcha_font: 'ank.ttf'
 site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
-billing_cpanel_plugin: 'ispmanager'
 # possible values are: blacklist, whitelist, off
 firewall_mode: 'blacklist'
-
 auth_facebook_app_id: ''
 auth_facebook_app_secret: ''
-auth_facebook_redirect_uri: 'http://sandbox.taracot.org/user/authorize/facebook/'
+auth_facebook_redirect_uri: 'http://site.com/user/authorize/facebook/'
 auth_google_client_id: ''
 auth_google_client_secret: ''
-auth_google_redirect_uri: 'http://sandbox.taracot.org/user/authorize/google/'
+auth_google_redirect_uri: 'http://site.com/user/authorize/google/'
 auth_yandex_client_id: ''
 auth_yandex_client_secret: ''
 auth_vk_client_id: ''
 auth_vk_client_secret: ''
-auth_vk_redirect_uri: 'http://sandbox.taracot.org/user/authorize/vk/'
-
+auth_vk_redirect_uri: 'http://site.com/user/authorize/vk/'
 plugins:
  Database:
   driver: 'mysql'
-  database: 'taracot'
-  host: 'localhost'
-  port: 3306
-  username: 'root'
-  password: ""
+  database: '[database]'
+  host: '[host]'
+  port: [sqlport]
+  username: '[username]'
+  password: "[password]"
   connection_check_threshold: 10
   dbi_params:
    RaiseError: 1
@@ -62,8 +59,8 @@ plugins:
   log_queries: 1
  Email:
   headers:
-    from: 'Taracot CMS <noreply@taracot.org>'
+    from: '[mailfrom]'
     X-Mailer: 'Taracot CMS'
   transport:
     Sendmail:
-      sendmail: 'c:/Denwer/usr/bin/sendmail.exe'
+      sendmail: '[sendmail]'

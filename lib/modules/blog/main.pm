@@ -248,7 +248,11 @@ get '/post/:post_id' => sub {
    'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
   );  
   if ($sth->execute()) {
-   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array();   
+   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array();
+   if (!$id) {
+    $sth->finish();
+    pass();
+   }
    if ($pstate eq 2 && !$auth->{id}) {
     $sth->finish(); 
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
@@ -322,11 +326,12 @@ get '/post/:post_id' => sub {
 get '/post' => sub {
   my $auth = &taracot::_auth();
   my $_current_lang=_load_lang(); 
-  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my $page_data = &taracot::_load_settings('site_title,keywords,description,blog_hubs,blog_mode', $_current_lang);
   if (!$auth->{id}) {
     return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang } );
-  }
+  }  
   my %hub_data;
+  my @hubs_arr;
   if ($page_data->{blog_hubs}) {
     foreach my $item (split(/;/, $page_data->{blog_hubs})) {
       my ($par,$val) = split(/,/, $item);
@@ -335,6 +340,21 @@ get '/post' => sub {
       $val =~ s/^\s+//;
       $val =~ s/\s+$//;
       $hub_data{$par}=$val;
+      push @hubs_arr, $par;
+    }
+  }
+  if ($page_data->{blog_mode} eq 'private' && $auth->{status} ne 2) {
+    my $let = 0;
+    if ($auth->{groups_hash}->{'blog_post'}) {
+      $let = 1;
+    } 
+    foreach my $hub (@hubs_arr) {
+      if ($auth->{groups_hash}->{'blog_post_'.$hub}) {
+        $let = 1;
+      } 
+    }    
+    if (!$let) {
+      return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_private_long} }, { layout => config->{layout}.'_'.$_current_lang } );        
     }
   }
   my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );

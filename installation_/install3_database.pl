@@ -5,7 +5,7 @@ use Dancer ':script';
 use Path::Class qw(file);
 use Digest::MD5 qw(md5_hex);
 use DBI;
-print "Taracot installation script, v. 0.01, part 2 (C) 2013 Michael Matveev\n\n";
+print "Taracot installation script\nDatabase configuration\n\n";
 my $root = file($0)->absolute->dir;
 $root =~s/\\/\//gm;
 $root =~s/\/installation$//; 

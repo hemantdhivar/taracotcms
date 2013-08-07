@@ -33,7 +33,8 @@ error_save: Error while saving your post
 success_save: The post has been saved. Go to post&#58;
 click_here: click here
 success_new: You can also <a href="/blog/post">create a new post</a>.
-error_unauth_long: You don't have permission to create new posts, please authorize first.
+error_unauth_long: You don't have permission to create or edit posts, please authorize first.
+error_private_long: The blog is currently in private mode, only the users with special permissions can create new posts.
 error_rights_long: You don't have rights to edit the post you've requested.
 blog_load_error: Error while loading data. Please try again later or contact website administrator.
 post_comments: Comments
