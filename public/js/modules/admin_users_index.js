@@ -380,6 +380,7 @@ $('#btn_edit_save').click(function () {
                 phone: $('#phone').val(),
                 realname: $('#realname').val(),
                 groups: $('#groups').val(),
+                banned: $('#banned').is(':checked'),
                 status: $("input[name='status']:checked").val()
             },
             dataType: "json",
@@ -493,6 +494,13 @@ function editData(id) {
                 }
                 if (data.status) {
                     $('input:radio[name="status"]').filter('[value="' + data.status + '"]').attr('checked', true);
+                }
+                if (data.banned && data.banned != 0) {
+                    $('#banned_till').html(data.banned);
+                    $('#banned').attr('checked', true);
+                } else {
+                    $('#banned_till').html('');
+                    $('#banned').attr('checked', false);
                 }
                 $('#username').focus();
             }

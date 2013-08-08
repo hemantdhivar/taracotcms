@@ -206,6 +206,14 @@
             [== $lang->{status2} =] </label>
           </div>
         </div>
+        <div class="control-group">
+          <label class="control-label">[== $lang->{banned} =]</label>
+          <div class="controls">
+            <label class="checkbox">
+              <input type="checkbox" id="banned">&nbsp;<span id="banned_till"></span>
+            </label>
+          </div>
+        </div>
       </span> <!-- form_controls -->
     </div>
     <!-- data_edit_form -->

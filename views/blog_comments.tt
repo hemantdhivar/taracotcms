@@ -22,6 +22,7 @@
 <script type="text/javascript">    
     var post_id = '[== $post_id =]';
     var js_lang_comment_error_db = "[== $lang->{comment_error_db} =]";
+    var js_lang_comment_deleted = "[== $lang->{comment_deleted} =]";
     $('#comment_count').html('[== $comments_count =]');    
 </script>
 <script src="/js/modules/blog_comments.js"></script>

@@ -4,12 +4,20 @@ error_unauth: You need to be <a href="/user/authorize">logged in</a> to view thi
 error_draft: The post is currently saved as a draft. Please try again later.
 edit_post: Edit post
 add_post: Add post
+add_post_hint: You can add a new post to the blog. Please choose the appropriate hub and don't forget about the other fields too ;-) 
+post_hint_premod: Notice&#58; this blog is in a pre-moderation mode. This means that your post has to be approved by moderator before it's actually published.
+edit_post_hint: You can edit a post by changing the corresponding fields below.
 edit_form_post_title: Post title
+edit_form_post_title_hint: The title should clearly represent the post topic
 edit_form_post_hub: Hub
+edit_form_post_hub_hint: Hub is actually an area where your post will be placed
 edit_form_post_tags: Tags (comma sep.)
+edit_form_post_tags_hint: Please choose some words describing your post, separated with comma
 edit_form_post_state: State
+edit_form_post_state_hint: Save your post as a draft, publish it for everyone or for authorized users only
 edit_form_post_text: Post text
 edit_form_btn_save: Save
+edit_form_btn_preview: Preview
 edit_form_btn_cancel: Cancel
 blog_processing: Processing, please wait...
 state_draft: Draft
@@ -51,3 +59,12 @@ comment_error_dupe: Duplicate comment
 comment_error: Error writing a comment
 comment_error_close: Close
 comment_error_db: Error while connecting to the database
+delete_comment: Delete comment
+delete_comment_info: You are going to delete the following comment
+delete_comment_ban_72: Restrict user activiy for 72 hours
+delete_comment_ban_perm: Ban user permanently
+delete_comment_continue: Continue
+delete_comment_cancel: Cancel
+comment_delete_error: Error while deleting comment, please try again later
+moderator_dialog: Post moderation panel
+moderator_dialog_info: As a moderator you can perform some some tasks with the current post.

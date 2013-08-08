@@ -1,7 +1,6 @@
 if (post_id) {
     $('#editpost_title').html(js_lang_edit_post);
-} else {
-    $('#editpost_title').html(js_lang_add_post);
+    $('#editpost_hint').html(js_lang_edit_post_hint);
 }
 $('#btn_submit').click(function() {
 	$('#form_error_msg').hide();

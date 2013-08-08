@@ -66,3 +66,5 @@ sNext: Nächste Seite
 sSearch: Suchen
 error_ajax: Fehler bei der Verbindung zum Server. Versuchen Sie es bitte später erneut.
 groups: Gruppen (Leerzeichen als Trennzeichen)
+banned: Temporär verboten
+datetime_template: \%d/\%m/\%Y %H&#58;%M

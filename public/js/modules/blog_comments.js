@@ -74,3 +74,48 @@ $('#blog_comment_write').click(function() {
     $('#comment').val('');
     $('#comment').focus();
 });
+var delete_comment_id = 0;
+function deleteComment(id) {
+    delete_comment_id = id;
+    $('#comment_delete_dialog').modal();
+    $('#comment_delete_error').hide();
+    $('#delete_comment_info').html(':<div style="height:16px"></div><div class="well">'+$('#comment_'+id+'_data').html()+'<div style="height:4px"></div>'+$('#comment_'+id+'_text').html()+'</div>');
+    $('#delete_comment_ban_72').attr('checked', false);
+    $('#delete_comment_ban_perm').attr('checked', false);
+}
+$('#btn_delete_comment').click(function() {
+    $('#comment_delete_div').hide();
+    $('#comment_delete_buttons').hide();
+    $('#comment_delete_error').hide();
+    $('#comment_delete_progress').show();
+    $.ajax({
+        type: 'POST',
+        url: '/blog/comment/delete',
+        data: {
+            cid: delete_comment_id,
+            ban72: $('#delete_comment_ban_72').is(':checked'),
+            banperm: $('#delete_comment_ban_perm').is(':checked')
+        },
+        dataType: "json",
+        success: function (data) {   
+            if (data.status==1) {
+                $('#comment_delete_div').show();
+                $('#comment_delete_buttons').show();
+                $('#comment_delete_progress').hide();
+                $('#comment_delete_dialog').modal('hide');
+                $('#comment_'+delete_comment_id).html('<div class="muted">'+js_lang_comment_deleted+'</div>')
+            } else {         
+                $('#comment_delete_div').show();
+                $('#comment_delete_buttons').show();
+                $('#comment_delete_error').show();
+                $('#comment_delete_progress').hide();    
+            }            
+        },
+        error: function () {
+            $('#comment_delete_div').show();
+            $('#comment_delete_buttons').show();
+            $('#comment_delete_error').show();
+            $('#comment_delete_progress').hide();
+        }
+    });       
+});

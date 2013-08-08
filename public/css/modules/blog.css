@@ -25,6 +25,11 @@
  	font-size: 90%;
  	border-bottom: 1px dashed;
  }
+ .comment_span_link {
+ 	color: #40627c;
+ 	cursor: pointer;
+ 	border-bottom: 1px dashed;	
+ }
 .muted {
 	padding-top: 10px;
 }

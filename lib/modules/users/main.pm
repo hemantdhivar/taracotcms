@@ -3,6 +3,7 @@ use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
+use Date::Format;
 
 # Configuration
 
@@ -148,9 +149,16 @@ post '/data/save' => sub {
   my $realname=param('realname') || '';
   my $groups=param('groups') || '';
   my $status=param('status') || 0;
+  my $banned=param('banned');
+  if ($banned eq 'false') {
+    $banned = 0;
+  } else {
+    $banned = time + 259200; # 72 hours
+  }
   $status=int($status);
   my $id=param('id') || 0;
   $id=int($id);
+  if ($id<0) { $id = 0; }
   
   if ($username !~ /^[A-Za-z0-9_\-\.]{1,100}$/) {
    return qq~{"result":"0","field":"username","error":"~.$lang->{form_error_invalid_username}.qq~"}~;
@@ -215,14 +223,18 @@ post '/data/save' => sub {
   }
   
   if ($id > 0) {
-   if ($password) {
+   my $dbd  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id }); 
+   if ($dbd->{banned} && $banned) {
+    $banned = $dbd->{banned};
+   }
+   if ($password) {    
     $password = md5_hex(config->{salt}.$password);
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, banned => $banned, lastchanged => time });
    } else {
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, email => $email, phone => $phone, realname => $realname, status => $status, banned => $banned, lastchanged => time });
    }
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, banned => $banned, lastchanged => time });
   }
       
   return qq~{"result":"1"}~;
@@ -348,6 +360,10 @@ post '/data/load' => sub {
   if ($db_data->{id}) {
    $db_data->{result} = 1;
    $db_data->{password} = 0;
+   if ($db_data->{banned}) {
+    $db_data->{banned} = time2str($lang->{datetime_template}, $db_data->{banned});    
+    $db_data->{banned} =~ s/\\//gm; 
+   }
    my $json_xs = JSON::XS->new();
    my $json = $json_xs->encode($db_data);
    return $json;

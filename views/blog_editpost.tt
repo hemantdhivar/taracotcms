@@ -1,10 +1,10 @@
-<h1 id="editpost_title">[== $lang->{edit_post} =]</h1>
+<h1 id="editpost_title">[== $lang->{add_post} =]</h1>
+<span id="editpost_hint">[== $lang->{add_post_hint} =]</span><br/><hr/>
 <?pl
  my $hub_html='';
  foreach my $key (keys %$hub_data) { 
   $hub_html.=qq~<option value="$key">$$hub_data{$key}</option>~;
- }
-?>
+ }?>
 <div class="alert alert-block alert-error hide" id="form_error_msg">
 <span id="form_error_msg_text"></span>
 </div>
@@ -15,24 +15,28 @@
     	<label class="control-label" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
     		<input type="text" class="input-xxlarge" id="blog_title">
+            <span class="help-block">[== $lang->{edit_form_post_title_hint} =]</span>
     	</div>
     </div>
     <div class="control-group" id="cg_blog_hub">
     	<label class="control-label" for="blog_hub">[== $lang->{edit_form_post_hub} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
     		<select class="input-large" id="blog_hub">[== $hub_html =]</select>
+            <span class="help-block">[== $lang->{edit_form_post_hub_hint} =]</span>
     	</div>
     </div>    
     <div class="control-group" id="cg_blog_tags">
     	<label class="control-label" for="blog_tags">[== $lang->{edit_form_post_tags} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
     		<input type="text" class="input-xlarge" id="blog_tags">
+            <span class="help-block">[== $lang->{edit_form_post_tags_hint} =]</span>
     	</div>
     </div>    
     <div class="control-group" id="cg_blog_state">
     	<label class="control-label" for="blog_state">[== $lang->{edit_form_post_state} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
     		<select class="input-xlarge" id="blog_state"><option value="0">[== $lang->{state_draft} =]</option><option value="1">[== $lang->{state_published} =]</option><option value="2">[== $lang->{state_published_auth} =]</option></select>
+            <span class="help-block">[== $lang->{edit_form_post_state_hint} =]</span>
     	</div>
     </div>
     <div class="control-group" id="cg_blog_state">        
@@ -42,7 +46,8 @@
     </div>
     <div class="form-actions">
         <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{edit_form_btn_save} =]</button>
-        <button type="button" class="btn" id="btn_register" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
+        <button type="button" class="btn" id="btn_preview">[== $lang->{edit_form_btn_preview} =]</button>
+        <button type="button" class="btn" id="btn_cancel" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
     </div>
 </form>
 <div id="blog_form_ajax" style="display:none">
@@ -61,7 +66,8 @@
     var js_lang_success_new = '[== $lang->{success_new} =]';
     var js_lang_error_save = "[== $lang->{error_save} =]";
     var js_lang_edit_post = "[== $lang->{edit_post} =]";
-    var js_lang_add_post = "[== $lang->{add_post} =]";
+    var js_lang_edit_post_hint = "[== $lang->{edit_post_hint} =]";
+    var js_lang_post_hint_premod = "[== $lang->{post_hint_premod} =]";
     var post_id = '[== $post_id =]';
 </script>
 <script src="/js/modules/blog_editpost.js"></script>

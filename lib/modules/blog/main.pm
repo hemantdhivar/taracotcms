@@ -286,12 +286,12 @@ get '/post/:post_id' => sub {
   $ptags=~s/, //;
   my $comments_flow='';
   my $sth = database->prepare(
-   'SELECT id,post_id,deleted,cusername,ctext,cdate,chash,level FROM '.config->{db_table_prefix}.'_blog_comments WHERE post_id='.$post_id.' ORDER BY left_key'
+   'SELECT id,post_id,deleted,cusername,ctext,cdate,chash,level,ipaddr FROM '.config->{db_table_prefix}.'_blog_comments WHERE post_id='.$post_id.' ORDER BY left_key'
   );
   my $comments_count='0';
   if ($sth->execute()) {
     my %avatars;
-    while (my ($id,$post_id,$deleted,$cusername,$ctext,$cdate,$chash,$level) = $sth->fetchrow_array) {      
+    while (my ($id,$post_id,$deleted,$cusername,$ctext,$cdate,$chash,$level,$ipaddr) = $sth->fetchrow_array) {      
       $comments_count++;
       $cdate = time2str($lang->{comment_date_template}, $cdate);
       $cdate =~ s/\\//gm;
@@ -304,12 +304,21 @@ get '/post/:post_id' => sub {
           $avatars{$cusername} = $avatar;
         } 
       }
-      $comments_flow .= template 'blog_comment', { lang => $lang, auth => $auth, id => $id, post_id => $post_id, deleted => $deleted, username => $cusername, text => $ctext, ts => $cdate, level => $level, avatar => $avatar }, { layout => undef }
+      my $mod_actions=1;
+      if ($auth->{status} < 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$phub}) {
+        $ipaddr = undef;
+        $mod_actions = undef;
+      }
+      $comments_flow .= template 'blog_comment', { lang => $lang, auth => $auth, id => $id, post_id => $post_id, deleted => $deleted, username => $cusername, text => $ctext, ts => $cdate, level => $level, avatar => $avatar, ipaddr => $ipaddr, mod_actions => $mod_actions }, { layout => undef }
     }   
   }  
   $sth->finish();
   my $comments = template 'blog_comments', { lang => $lang, auth => $auth, post_id => $post_id, comments => $comments_flow, comments_count => $comments_count }, { layout => undef };
-  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $moderator = undef;
+  if ($auth->{status} eq 2 || $auth->{groups_hash}->{'blog_moderator'} || $auth->{groups_hash}->{'blog_moderator_'.$phub}) {
+    $moderator = 1;
+  }
+  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -705,6 +714,46 @@ post '/comment/put' => sub {
   $res{last_child_id} = $last_child_id;
   $res{comments_count} = $comments_count+1;
   $res{html} = template 'blog_comment', { lang => $lang, auth => $auth, id => $cid, post_id => $cpid, deleted => 0, username => $auth->{username}, text => $ctext, ts => $cdate, level => $level+1, avatar => $avatar  }, { layout => undef };
+  return $json_xs->encode(\%res); 
+};
+
+post '/comment/delete' => sub {
+  my $_current_lang=_load_lang();
+  my $auth = &taracot::_auth();
+  my %res;
+  my $json_xs = JSON::XS->new();   
+  my $cmid = int(params->{cid}) || 0;
+  if (!$auth || $cmid < 0 || !$cmid) {
+    $res{status} = -1;
+    return $json_xs->encode(\%res); 
+  }
+  my $ban72 = undef;
+  my $banperm = undef;
+  if (params->{ban72} eq 'true') {
+    $ban72 = 1;
+  }
+  if (params->{banperm} eq 'true') {
+    $banperm = 1;
+  }
+  my $cmnt  = database->quick_select(config->{db_table_prefix}.'_blog_comments', { id => $cmid });
+  if (!$cmnt) {
+    $res{status} = -2;
+    return $json_xs->encode(\%res); 
+  }
+  my $post_id = $cmnt->{post_id};
+  my $post  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $post_id });
+  if ($auth->{status} < 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$post->{phub}}) {
+    $res{status} = -3;
+    return $json_xs->encode(\%res); 
+  }
+  database->quick_update(config->{db_table_prefix}.'_blog_comments', { id => $cmid }, { deleted => 1 });
+  if ($ban72) {
+    database->quick_update(config->{db_table_prefix}.'_users', { username => $cmnt->{cusername} }, { banned => time + 259200 }); # 72 hours
+  }
+  if ($banperm) {
+    database->quick_update(config->{db_table_prefix}.'_users', { username => $cmnt->{cusername} }, { status => 0 }); # 72 hours
+  }
+  $res{status} = 1;
   return $json_xs->encode(\%res); 
 };
 
