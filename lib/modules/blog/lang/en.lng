@@ -56,6 +56,7 @@ comment_error_mandatory: One of the mandatory fields is missing
 comment_error_unauth: You are not authorized to write comments
 comment_error_time: You are writing comments too frequently, please wait some time
 comment_error_dupe: Duplicate comment
+comment_error_not_allowed: Comments are disbaled for this post
 comment_error: Error writing a comment
 comment_error_close: Close
 comment_error_db: Error while connecting to the database

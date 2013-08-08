@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 07, 2013 at 06:50 PM
+-- Generation Time: Aug 08, 2013 at 07:10 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -30,14 +30,20 @@ CREATE TABLE `taracot_blog_comments` (
   `ipaddr` varchar(45) default NULL,
   PRIMARY KEY  (`id`),
   KEY `left_key` (`left_key`,`right_key`,`level`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 -- 
 -- Dumping data for table `taracot_blog_comments`
 -- 
 
 INSERT INTO `taracot_blog_comments` VALUES (1, 1, 0, 'xtreme', 'Test message', 1375872177, '82dfa5549ebc9afc168eb7931ebece5f', 1, 8, 1, '127.0.0.1');
-INSERT INTO `taracot_blog_comments` VALUES (2, 1, 0, 'xtreme', 'It works!', 1375872215, '661d154abfc42a49970f3d53b758fd50', 4, 7, 2, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (2, 1, 1, 'xtreme', 'It works!', 1375872215, '661d154abfc42a49970f3d53b758fd50', 4, 7, 2, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (3, 1, 1, 'medved', 'OK OK', 1375962249, 'd19a30d9ba083203e9514f06dbbe9667', 9, 12, 1, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (4, 1, 0, 'medved', 'OK Computer', 1375974315, 'cc33c5eaa06aeaf631e4c7dcf08eb533', 13, 16, 1, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (5, 1, 0, 'medved', 'ghfgfg', 1375974390, '6978faa8bdf211745b946971787576c1', 17, 20, 1, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (6, 1, 0, 'medved', 'Hellow', 1375974428, '0547bca99c4c06f4f614514e3bd2b4e7', 21, 24, 1, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (7, 1, 0, 'medved', 'WTF?', 1375974461, 'ca948fac1b625e2883a4659bc14e98d2', 25, 28, 1, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (8, 1, 0, 'medved', 'HEY!', 1375974594, '201bf4a704762707feaec1df2baf205a', 29, 32, 1, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -62,6 +68,8 @@ CREATE TABLE `taracot_blog_posts` (
   `pcomments` int(11) default '0',
   `ipaddr` varchar(45) default NULL,
   `mod_require` tinyint(1) default '0',
+  `deleted` tinyint(1) default '0',
+  `comments_allowed` tinyint(1) default '1',
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`)
@@ -71,7 +79,7 @@ CREATE TABLE `taracot_blog_posts` (
 -- Dumping data for table `taracot_blog_posts`
 -- 
 
-INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'xtreme', 'test1', 1, 'Test post', 'medved, rules', 1375872159, 'Hello world', 'Hello world', 0, 'Hello world', 5, 2, '127.0.0.1', 0, 1375872159);
+INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'xtreme', 'test1', 1, 'Test post', 'medved, rules', 1375872159, 'Hello world', 'Hello world', 0, 'Hello world', 177, 8, '127.0.0.1', 0, 0, 1, 1375872159);
 
 -- --------------------------------------------------------
 
@@ -166,6 +174,7 @@ CREATE TABLE `taracot_users` (
   `verification` varchar(36) default NULL,
   `regdate` int(11) default NULL,
   `last_lang` varchar(2) default NULL,
+  `banned` int(11) default '0',
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ftdata` (`username`,`realname`,`email`)
@@ -175,5 +184,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'xtreme', 'f4932e9f0bd95a312bb5e0409ca3c804', 0, '', '', '', 'blog_post', 1, NULL, 1375879219, 'en', 1375885118);
-INSERT INTO `taracot_users` VALUES (2, 'medved', 'bce6f24a213ca19ec34dab4c3f2a37ab', 0, '', '', '', '', 2, NULL, NULL, 'en', 1375880553);
+INSERT INTO `taracot_users` VALUES (1, 'xtreme', 'f4932e9f0bd95a312bb5e0409ca3c804', 0, '', '', '', 'blog_post', 1, NULL, 1375879219, 'en', 1376225046, 1375965846);
+INSERT INTO `taracot_users` VALUES (2, 'medved', 'bce6f24a213ca19ec34dab4c3f2a37ab', 0, '', '', '', '', 2, NULL, NULL, 'en', 0, 1375951726);

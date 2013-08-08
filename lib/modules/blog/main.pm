@@ -53,7 +53,7 @@ sub flow() {
   my $tag = $_[2] || '';
   my $_current_lang=_load_lang();   
   my $auth = &taracot::_auth();
-  my $where = 'plang='.database->quote($_current_lang);
+  my $where = 'deleted=0 AND plang='.database->quote($_current_lang);
   if ($auth->{id}) {
     $where.=' AND pstate > 0';
   } else {
@@ -245,10 +245,10 @@ get '/post/:post_id' => sub {
     }
   }
   my $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate,comments_allowed FROM '.config->{db_table_prefix}.'_blog_posts WHERE deleted = 0 AND id = '.$post_id.' ORDER BY pdate DESC'
   );  
   if ($sth->execute()) {
-   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate) = $sth -> fetchrow_array();
+   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate,$comments_allowed) = $sth -> fetchrow_array();
    if (!$id) {
     $sth->finish();
     pass();
@@ -289,7 +289,7 @@ get '/post/:post_id' => sub {
    'SELECT id,post_id,deleted,cusername,ctext,cdate,chash,level,ipaddr FROM '.config->{db_table_prefix}.'_blog_comments WHERE post_id='.$post_id.' ORDER BY left_key'
   );
   my $comments_count='0';
-  if ($sth->execute()) {
+  if ($comments_allowed && $sth->execute()) {
     my %avatars;
     while (my ($id,$post_id,$deleted,$cusername,$ctext,$cdate,$chash,$level,$ipaddr) = $sth->fetchrow_array) {      
       $comments_count++;
@@ -311,9 +311,14 @@ get '/post/:post_id' => sub {
       }
       $comments_flow .= template 'blog_comment', { lang => $lang, auth => $auth, id => $id, post_id => $post_id, deleted => $deleted, username => $cusername, text => $ctext, ts => $cdate, level => $level, avatar => $avatar, ipaddr => $ipaddr, mod_actions => $mod_actions }, { layout => undef }
     }   
-  }  
+  }    
   $sth->finish();
-  my $comments = template 'blog_comments', { lang => $lang, auth => $auth, post_id => $post_id, comments => $comments_flow, comments_count => $comments_count }, { layout => undef };
+  my $comments;
+  if ($comments_allowed) {
+    $comments = template 'blog_comments', { lang => $lang, auth => $auth, post_id => $post_id, comments => $comments_flow, comments_count => $comments_count }, { layout => undef };    
+  } else {
+    $comments = $lang->{comment_error_not_allowed};
+  }
   my $moderator = undef;
   if ($auth->{status} eq 2 || $auth->{groups_hash}->{'blog_moderator'} || $auth->{groups_hash}->{'blog_moderator_'.$phub}) {
     $moderator = 1;
@@ -579,7 +584,7 @@ post '/comment/put' => sub {
     $res{'status'} = 0;
     $res{'errmsg'} = $lang->{comment_error_unauth};
     return $json_xs->encode(\%res); 
-  }
+  }  
   my $ctext = params->{ctext} || '';
   my $cpid = int(params->{cpid}) || 0;
   my $cmid = int(params->{cmid}) || 0;
@@ -598,6 +603,12 @@ post '/comment/put' => sub {
     $res{'status'} = 0;
     $res{'errmsg'} = $lang->{comment_error_mandatory};
     return $json_xs->encode(\%res); 
+  }
+  my $post  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $cpid });
+  if (!$post->{comments_allowed} || $post->{deleted}) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{comment_error_not_allowed};
+    return $json_xs->encode(\%res);  
   }
   my $chash = md5_hex($ctext);
   # Find duplicates
