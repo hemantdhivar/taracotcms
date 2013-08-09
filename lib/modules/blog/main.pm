@@ -51,9 +51,42 @@ sub flow() {
   $page = int($page);
   my $hub = $_[1] || '';
   my $tag = $_[2] || '';
+  my $modreq = $_[3] || '';
   my $_current_lang=_load_lang();   
   my $auth = &taracot::_auth();
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my %hub_data;
+  my @hubs_arr;
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+      push @hubs_arr, $par;
+    }
+  }  
   my $where = 'deleted=0 AND plang='.database->quote($_current_lang);
+  my $mr = undef;
+  if ($auth->{status} eq 2 || $auth->{groups_hash}->{'blog_moderator'}) {
+     $mr = 1;
+  }
+  foreach my $hub (@hubs_arr) {
+    if ($auth->{groups_hash}->{'blog_moderator_'.$hub}) { 
+      $mr = 1;
+    }
+  }
+  if (!$mr) {
+    $where.=' AND mod_require=0';
+  } else {
+    if ($modreq) {
+      $where.=' AND mod_require=1';
+    } else {
+      $where.=' AND mod_require=0';
+    }
+  }
   if ($auth->{id}) {
     $where.=' AND pstate > 0';
   } else {
@@ -72,19 +105,7 @@ sub flow() {
   if ($sth->execute()) {
    ($total) = $sth -> fetchrow_array;
   }
-  $sth->finish();
-  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
-  my %hub_data;
-  if ($page_data->{blog_hubs}) {
-    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
-      my ($par,$val) = split(/,/, $item);
-      $par =~ s/^\s+//;
-      $par =~ s/\s+$//;
-      $val =~ s/^\s+//;
-      $val =~ s/\s+$//;
-      $hub_data{$par}=$val;
-    }
-  }
+  $sth->finish();  
   my $pc = int($total / $ipp);
   if ($total % $ipp) {
     $pc++;
@@ -100,6 +121,9 @@ sub flow() {
       my $tagurl = uri_encode($tag);
       $tagurl=~s/%/_/gm;
       $url='/blog/tag/'.$tagurl.'/';
+    }
+    if ($modreq) {
+      $url='/blog/moderate/';
     }
     my $pitems='';
     if ($page ne 1) {
@@ -223,6 +247,27 @@ get '/tag/:tag/:page' => sub {
   pass();
 };
 
+get '/moderate/:page' => sub {  
+  my $bpage = int(params->{page}) || 1;
+  if ($bpage<1) {
+    pass();
+  }
+  my $render_template = &flow($bpage, undef, undef, 1);
+  if ($render_template) {
+    return $render_template;
+  }
+  pass();
+};
+
+get '/moderate' => sub {  
+  my $bpage = 1;
+  my $render_template = &flow($bpage, undef, undef, 1);
+  if ($render_template) {
+    return $render_template;
+  }
+  pass();
+};
+
 get '/post/:post_id' => sub {
   my $post_id = params->{post_id};  
   $post_id=~s/[^0-9]+//gm; 
@@ -245,10 +290,10 @@ get '/post/:post_id' => sub {
     }
   }
   my $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate,comments_allowed FROM '.config->{db_table_prefix}.'_blog_posts WHERE deleted = 0 AND id = '.$post_id.' ORDER BY pdate DESC'
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate,comments_allowed,mod_require FROM '.config->{db_table_prefix}.'_blog_posts WHERE deleted = 0 AND id = '.$post_id.' ORDER BY pdate DESC'
   );  
   if ($sth->execute()) {
-   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate,$comments_allowed) = $sth -> fetchrow_array();
+   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate,$comments_allowed,$mod_require) = $sth -> fetchrow_array();
    if (!$id) {
     $sth->finish();
     pass();
@@ -258,11 +303,12 @@ get '/post/:post_id' => sub {
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
     return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_unauth}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
    }
-   if ($pstate eq 0 && $auth->{status} ne 2) {
-    $sth->finish(); 
-    &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
-    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
-   }
+
+   if (($pstate eq 0 || $mod_require eq 1) && $auth->{status} ne 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$phub}) {
+      $sth->finish(); 
+      &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
+      return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
+   }   
    my $phub_url;
    if ($phub) {
      $phub_url = '/blog/hub/'.$phub.'/1';
@@ -323,7 +369,7 @@ get '/post/:post_id' => sub {
   if ($auth->{status} eq 2 || $auth->{groups_hash}->{'blog_moderator'} || $auth->{groups_hash}->{'blog_moderator_'.$phub}) {
     $moderator = 1;
   }
-  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator }, { layout => config->{layout}.'_'.$_current_lang } );
+  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator, mod_require => $mod_require }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -386,7 +432,7 @@ get '/post/edit/:post_id' => sub {
   }
   my $auth = &taracot::_auth();
   my $_current_lang=_load_lang(); 
-  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs,blog_mode', $_current_lang);
   if (!$auth->{id}) {
     return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang } );
   }
@@ -465,7 +511,7 @@ post '/post/process' => sub {
       $res{errors}=\@errors; 
       return $json_xs->encode(\%res);    
     }
-    if ($pst->{username} ne $auth->{username} && $auth->{status} ne 2) {
+    if ($pst->{pusername} ne $auth->{username} && $auth->{status} ne 2) {
       $res{status}=0; 
       push @errors, $lang->{error_pid}; 
       $res{errors}=\@errors; 
@@ -502,7 +548,7 @@ post '/post/process' => sub {
     push @fields, 'blog_tags';
   }
   my $blog_hub = params->{blog_hub} || '';
-  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs,blog_mode', $_current_lang);
   my %hub_data;
   if ($page_data->{blog_hubs}) {
     foreach my $item (split(/;/, $page_data->{blog_hubs})) {
@@ -524,14 +570,24 @@ post '/post/process' => sub {
     $res{status}=0; 
     push @errors, $lang->{error_state}; 
     push @fields, 'blog_state';    
-  }
+  }  
   # Errors? return
   if (!$res{status}) {
     $res{errors}=\@errors;
     $res{fields}=\@fields;     
     return $json_xs->encode(\%res);  
   }  
+  my $mod_require = 0;
+  if ($page_data->{blog_mode} eq 'moderate') {
+   if ($auth->{status} < 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$blog_hub}) {
+    $mod_require = 1;
+   }
+  }
   # End if errors  
+  my $comments_allowed = 0;
+  if (params->{comments_allowed} eq 'true') {
+    $comments_allowed = 1;
+  }
   my $blog_data = params->{blog_data} || '';    
   my $blog_data_html_cut = $blog_data;
   my $cut = 0;
@@ -556,9 +612,9 @@ post '/post/process' => sub {
     $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
   }
   if ($pid) {
-    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip }); 
+    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require }); 
   } else {
-    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip }); 
+    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require }); 
       $pid = database->{q{mysql_insertid}};
   }
   if ($pid) {    

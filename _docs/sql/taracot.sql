@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Aug 08, 2013 at 07:10 PM
+-- Generation Time: Aug 09, 2013 at 04:26 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -42,7 +42,7 @@ INSERT INTO `taracot_blog_comments` VALUES (3, 1, 1, 'medved', 'OK OK', 13759622
 INSERT INTO `taracot_blog_comments` VALUES (4, 1, 0, 'medved', 'OK Computer', 1375974315, 'cc33c5eaa06aeaf631e4c7dcf08eb533', 13, 16, 1, '127.0.0.1');
 INSERT INTO `taracot_blog_comments` VALUES (5, 1, 0, 'medved', 'ghfgfg', 1375974390, '6978faa8bdf211745b946971787576c1', 17, 20, 1, '127.0.0.1');
 INSERT INTO `taracot_blog_comments` VALUES (6, 1, 0, 'medved', 'Hellow', 1375974428, '0547bca99c4c06f4f614514e3bd2b4e7', 21, 24, 1, '127.0.0.1');
-INSERT INTO `taracot_blog_comments` VALUES (7, 1, 0, 'medved', 'WTF?', 1375974461, 'ca948fac1b625e2883a4659bc14e98d2', 25, 28, 1, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (7, 1, 1, 'medved', 'WTF?', 1375974461, 'ca948fac1b625e2883a4659bc14e98d2', 25, 28, 1, '127.0.0.1');
 INSERT INTO `taracot_blog_comments` VALUES (8, 1, 0, 'medved', 'HEY!', 1375974594, '201bf4a704762707feaec1df2baf205a', 29, 32, 1, '127.0.0.1');
 
 -- --------------------------------------------------------
@@ -73,13 +73,15 @@ CREATE TABLE `taracot_blog_posts` (
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 -- 
 -- Dumping data for table `taracot_blog_posts`
 -- 
 
-INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'xtreme', 'test1', 1, 'Test post', 'medved, rules', 1375872159, 'Hello world', 'Hello world', 0, 'Hello world', 177, 8, '127.0.0.1', 0, 0, 1, 1375872159);
+INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'xtreme', 'test1', 1, 'Test post', 'medved, rules', 1375872159, 'Hello world', 'Hello world', 0, 'Hello world', 183, 8, '127.0.0.1', 0, 0, 0, 1376035481);
+INSERT INTO `taracot_blog_posts` VALUES (2, 'en', 'xtreme', 'test1', 1, 'Ours test', 'OK', 1376037168, 'OK Computer. This post will require the moderation', 'OK Computer. This post will require the moderation', 0, 'OK Computer. This post will require the moderation', 7, 0, '127.0.0.1', 1, 0, 1, 1376037438);
+INSERT INTO `taracot_blog_posts` VALUES (3, 'en', 'xtreme', 'test1', 1, 'Another post that will require moderation', 'fuck', 1376038355, 'Another post that will require moderation!', 'Another post that will require moderation!', 0, 'Another post that will require moderation!', 3, 0, '127.0.0.1', 1, 0, 1, 1376038355);
 
 -- --------------------------------------------------------
 
@@ -153,7 +155,7 @@ INSERT INTO `taracot_settings` VALUES (1, 'site_title', 'Taracot CMS', '', 'en',
 INSERT INTO `taracot_settings` VALUES (2, 'site_description', 'This is the global site description', '', 'en', 1350564084);
 INSERT INTO `taracot_settings` VALUES (3, 'site_keywords', 'these, are, global, site, keywords', '', 'en', 1350564057);
 INSERT INTO `taracot_settings` VALUES (4, 'blog_hubs', 'test1,Test hub 1;test2,Test hub 2', '', 'en', 1375872043);
-INSERT INTO `taracot_settings` VALUES (5, 'blog_mode', 'private', '<p>Blog mode can be set as:</p>\r\n\r\n<ul style="list-style-type: square;">\r\n	<li>public (everyone can create new posts, no moderation)</li>\r\n	<li>moderate (new posts are created with &quot;mod_require&quot; flag)</li>\r\n	<li>private (only the users with special permissions are allowed to make new posts)</li>\r\n</ul>\r\n', '', 1375881134);
+INSERT INTO `taracot_settings` VALUES (5, 'blog_mode', 'moderate', '<p>Blog mode can be set as:</p>\n\n<ul style="list-style-type:square">\n	<li>public (everyone can create new posts, no moderation)</li>\n	<li>moderate (new posts are created with &quot;mod_require&quot; flag)</li>\n	<li>private (only the users with special permissions are allowed to make new posts)</li>\n</ul>\n', '', 1376033601);
 
 -- --------------------------------------------------------
 
@@ -184,5 +186,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'xtreme', 'f4932e9f0bd95a312bb5e0409ca3c804', 0, '', '', '', 'blog_post', 1, NULL, 1375879219, 'en', 1376225046, 1375965846);
+INSERT INTO `taracot_users` VALUES (1, 'xtreme', 'b989193acec2a3aa8c66149f4f1c9c4f', 0, '', '', '', 'blog_post, blog_moderator', 1, NULL, 1375879219, 'en', 0, 1376037134);
 INSERT INTO `taracot_users` VALUES (2, 'medved', 'bce6f24a213ca19ec34dab4c3f2a37ab', 0, '', '', '', '', 2, NULL, NULL, 'en', 0, 1375951726);

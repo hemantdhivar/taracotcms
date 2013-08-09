@@ -47,6 +47,7 @@ $('#btn_submit').click(function() {
                     blog_hub: $('#blog_hub').val(),
                     blog_state: $('#blog_state').val(),
                     blog_data: $("#wbbeditor").bbcode(),
+                    comments_allowed: $('#comments_allowed').is(':checked'),
                     id: post_id
                 },
                 dataType: "json",
@@ -117,7 +118,12 @@ function loadData(wbbOpt) {
                     $('#blog_state').val(data.pstate);
                 }
                 if (data.ptext) {     
-                  $('#wbbeditor').val(data.ptext);                  
+                  $('#wbbeditor').val(data.ptext);
+                }
+                if (data.comments_allowed == 1) {     
+                  $('#comments_allowed').attr('checked', true);
+                } else {
+                  $('#comments_allowed').attr('checked', false); 
                 }
                 $('#wbbeditor').wysibb(wbbOpt);
                 $('#blog_form').show();

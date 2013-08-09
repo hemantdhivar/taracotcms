@@ -1,5 +1,5 @@
 <h1 id="editpost_title">[== $lang->{add_post} =]</h1>
-<span id="editpost_hint">[== $lang->{add_post_hint} =]</span><br/><hr/>
+<span id="editpost_hint">[== $lang->{add_post_hint} =]</span><br/><?pl if ($page_data->{blog_mode} eq 'moderate') { ?><br/>[== $lang->{post_hint_premod} =]<?pl } ?><hr/>
 <?pl
  my $hub_html='';
  foreach my $key (keys %$hub_data) { 
@@ -35,9 +35,17 @@
     <div class="control-group" id="cg_blog_state">
     	<label class="control-label" for="blog_state">[== $lang->{edit_form_post_state} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="controls">
-    		<select class="input-xlarge" id="blog_state"><option value="0">[== $lang->{state_draft} =]</option><option value="1">[== $lang->{state_published} =]</option><option value="2">[== $lang->{state_published_auth} =]</option></select>
+    		<select class="input-xlarge" id="blog_state"><option value="0">[== $lang->{state_draft} =]</option><option value="1" selected="selected">[== $lang->{state_published} =]</option><option value="2">[== $lang->{state_published_auth} =]</option></select>
             <span class="help-block">[== $lang->{edit_form_post_state_hint} =]</span>
     	</div>
+    </div>
+    <div class="control-group" id="cg_comments_allowed">
+        <label class="control-label" for="comments_allowed">[== $lang->{comments_allowed} =]</label>
+        <div class="controls">
+            <label class="checkbox">
+              <input type="checkbox" id="comments_allowed" checked="checked">
+            </label> 
+        </div>
     </div>
     <div class="control-group" id="cg_blog_state">        
         <div class="controls">

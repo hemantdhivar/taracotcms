@@ -60,12 +60,14 @@ comment_error_not_allowed: Comments are disbaled for this post
 comment_error: Error writing a comment
 comment_error_close: Close
 comment_error_db: Error while connecting to the database
+comments_allowed: Comments allowed
 delete_comment: Delete comment
 delete_comment_info: You are going to delete the following comment
-delete_comment_ban_72: Restrict user activiy for 72 hours
+delete_comment_ban_72: Restrict user activity for 72 hours
 delete_comment_ban_perm: Ban user permanently
 delete_comment_continue: Continue
 delete_comment_cancel: Cancel
 comment_delete_error: Error while deleting comment, please try again later
 moderator_dialog: Post moderation panel
-moderator_dialog_info: As a moderator you can perform some some tasks with the current post.
+moderator_dialog_info: As a moderator you can perform some tasks with the current post.
+mod_required: Moderation required
