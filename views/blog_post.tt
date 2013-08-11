@@ -31,6 +31,7 @@
             <label class="checkbox"><input type="checkbox" id="editpost">[== $lang->{edit_post} =]</label>
             <label class="checkbox"><input type="checkbox" id="ban72">[== $lang->{delete_comment_ban_72} =]</label>
             <label class="checkbox"><input type="checkbox" id="banperm">[== $lang->{delete_comment_ban_perm} =]</label>
+            <label class="checkbox"><input type="checkbox" id="delpost">[== $lang->{delete_post} =]</label>
             </fieldset>
         </div>
     </div>
