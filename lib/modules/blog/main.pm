@@ -159,10 +159,10 @@ sub flow() {
 
   my $limx = $page*$ipp-$ipp;
   $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html_cut,pcut,lastchanged,pviews,pcomments,pstate FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html_cut,pcut,lastchanged,pviews,pcomments,pstate,mod_require,deleted FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where.' ORDER BY pdate DESC LIMIT '.$limx.', '.$ipp
   );
   if ($sth->execute()) {
-   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html_cut,$pcut,$lastchanged,$pviews,$pcomments,$pstate) = $sth -> fetchrow_array) {
+   while(my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html_cut,$pcut,$lastchanged,$pviews,$pcomments,$pstate,$mod_require,$deleted) = $sth -> fetchrow_array) {
     my $phub_url;
     if ($phub) {
       $phub_url = '/blog/hub/'.$phub.'/1';
@@ -189,7 +189,7 @@ sub flow() {
       $ptags.=', <a href="/blog/tag/'.$tagurl.'/1">'.$tag.'</a>';
     }
     $ptags=~s/, //;
-    my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext_html_cut, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_comments => $pcomments, blog_read_more => $read_more_url, blog_post_url => $post_url, read_more => $lang->{read_more} }, { layout => undef };
+    my $item_template = template 'blog_feed', { post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text_cut => $ptext_html_cut, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, blog_comments => $pcomments, blog_read_more => $read_more_url, blog_post_url => $post_url, read_more => $lang->{read_more}, mod_require => $mod_require, deleted => $deleted, lang => $lang }, { layout => undef };
     $flow .= $item_template;    
    }
   }
@@ -290,12 +290,20 @@ get '/post/:post_id' => sub {
     }
   }
   my $sth = database->prepare(
-   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate,comments_allowed,mod_require FROM '.config->{db_table_prefix}.'_blog_posts WHERE deleted = 0 AND id = '.$post_id.' ORDER BY pdate DESC'
+   'SELECT id,pusername,phub,ptitle,ptags,pdate,ptext_html,lastchanged,pviews,pstate,comments_allowed,mod_require,deleted FROM '.config->{db_table_prefix}.'_blog_posts WHERE id = '.$post_id.' ORDER BY pdate DESC'
   );  
   if ($sth->execute()) {
-   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate,$comments_allowed,$mod_require) = $sth -> fetchrow_array();
+   my ($id,$pusername,$phub,$ptitle,$ptags,$pdate,$ptext_html,$lastchanged,$pviews,$pstate,$comments_allowed,$mod_require,$deleted) = $sth -> fetchrow_array();
    if (!$id) {
     $sth->finish();
+    pass();
+   }
+   if (!$id) {
+    $sth->finish();
+    pass();
+   }
+   if ($deleted && $auth->{status} ne 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$phub} && $pusername ne $auth->{username}) {
+   	$sth->finish();
     pass();
    }
    if ($pstate eq 2 && !$auth->{id}) {
@@ -304,7 +312,7 @@ get '/post/:post_id' => sub {
     return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_unauth}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
    }
 
-   if (($pstate eq 0 || $mod_require eq 1) && $auth->{status} ne 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$phub}) {
+   if (($pstate eq 0 || $mod_require eq 1) && $auth->{status} ne 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$phub} && $pusername ne $auth->{username}) {
       $sth->finish(); 
       &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
       return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
@@ -369,7 +377,7 @@ get '/post/:post_id' => sub {
   if ($auth->{status} eq 2 || $auth->{groups_hash}->{'blog_moderator'} || $auth->{groups_hash}->{'blog_moderator_'.$phub}) {
     $moderator = 1;
   }
-  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator, mod_require => $mod_require }, { layout => config->{layout}.'_'.$_current_lang } );
+  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator, mod_require => $mod_require, deleted => $deleted, post_id => $id }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -661,7 +669,7 @@ post '/comment/put' => sub {
     return $json_xs->encode(\%res); 
   }
   my $post  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $cpid });
-  if (!$post->{comments_allowed} || $post->{deleted}) {
+  if (!$post->{comments_allowed} || $post->{deleted} || $post->{pstate} eq 0 || $post->{mod_require}) {
     $res{'status'} = 0;
     $res{'errmsg'} = $lang->{comment_error_not_allowed};
     return $json_xs->encode(\%res);  
@@ -819,6 +827,53 @@ post '/comment/delete' => sub {
   }
   if ($banperm) {
     database->quick_update(config->{db_table_prefix}.'_users', { username => $cmnt->{cusername} }, { status => 0 }); # 72 hours
+  }
+  $res{status} = 1;
+  return $json_xs->encode(\%res); 
+};
+
+post '/moderate/process' => sub {
+  my $_current_lang=_load_lang();
+  my $auth = &taracot::_auth();
+  my %res;
+  my $json_xs = JSON::XS->new();  
+  my $pid = int(params->{pid});
+  if (!$auth || $pid <= 0) {
+    $res{status} = 0;
+    return $json_xs->encode(\%res); 
+  }  
+  my ($modreq,$editpost,$ban72,$banperm,$delpost);
+  $modreq = 1 if (params->{modreq} eq 'true');
+  $editpost = 1 if (params->{editpost} eq 'true');
+  $ban72 = 1 if (params->{ban72} eq 'true');
+  $banperm = 1 if (params->{banperm} eq 'true');
+  $delpost = 1 if (params->{delpost} eq 'true');
+  my $post  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { id => $pid });
+  if (!$post->{id}) {
+  	$res{status} = 0;
+    return $json_xs->encode(\%res); 
+  }
+  if ($auth->{status} < 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$post->{phub}}) {
+    $res{status} = 0;
+    return $json_xs->encode(\%res); 
+  }
+  if ($delpost && $auth->{status} < 2) {
+  	$delpost = undef;
+  }
+  database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { mod_require => $modreq });
+  if ($ban72) {
+    database->quick_update(config->{db_table_prefix}.'_users', { username => $post->{pusername} }, { banned => time + 259200 }); # 72 hours
+  }
+  if ($banperm) {
+    database->quick_update(config->{db_table_prefix}.'_users', { username => $post->{pusername} }, { status => 0 }); # ban
+  }
+  if ($delpost) {
+  	database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { deleted => 1 });
+  }
+  if ($editpost) {
+  	$res{redirect}='/blog/post/edit/'.$pid
+  } else {
+  	$res{redirect}='/blog/post/'.$pid.'?'.md5_hex(rand*time);
   }
   $res{status} = 1;
   return $json_xs->encode(\%res); 

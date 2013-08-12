@@ -695,6 +695,26 @@ post '/account/password/process' => sub {
   return $json_xs->encode(\%res);
 };
 
+get '/profile/:username' => sub {
+  if (!&taracot::_auth()) { redirect '/user/authorize' } 
+  my $username = params->{username};
+  if ($username !~ /^[a-z0-9_\-\.]{1,100}$/) { 
+    pass();
+  }
+  my $_current_lang=_load_lang();
+  my $user = database->quick_select(config->{db_table_prefix}.'_users', { username => $username });
+  if (!$user || !$user->{id}) {
+    pass();
+  }
+  $user->{password} = '';
+  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);   
+  my $render_template = &taracot::_process_template( template 'user_profile', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_account_tab_profie}, user => $user }, { layout => config->{layout}.'_'.$_current_lang } );
+  if ($render_template) {
+    return $render_template;
+  }
+  pass();
+};
+
 get '/logout' => sub {
   if (!&taracot::_auth()) { redirect '/user/authorize' } 
   session user => ''; 

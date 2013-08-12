@@ -71,4 +71,7 @@ comment_delete_error: Error while deleting comment, please try again later
 moderator_dialog: Post moderation panel
 moderator_dialog_info: As a moderator you can perform some tasks with the current post.
 mod_required: Moderation required
+deleted: Post deleted
 delete_post: Delete post (administrators only)
+mod_panel: Moderation panel
+user_restricted: Your account is currently restricted, you can't create new posts or write comments

@@ -1,7 +1,5 @@
-
- #!/usr/bin/perl
+#!/usr/bin/perl
 use strict;
-use Path::Class qw(file);
 print "Taracot installation script\nModule installation\n\nNote: some CPAN modules do require C compiler (Example - debian: apt-get install build-essential)\n\n";
 print "Check (and install) missing CPAN modules? [y/n] ";
 my $res =  <STDIN>;
@@ -10,7 +8,7 @@ if (!$res) {
 print "Yes\n";
 }
 if ($res ne 'n') {
-my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Template::Tenjin','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout');
+my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout');
 foreach my $rm (@required_modules) {
 print "Checking $rm...\n";
 if ($rm eq 'Log::Log4perl::Layout::PatternLayout') {
