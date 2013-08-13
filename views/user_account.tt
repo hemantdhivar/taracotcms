@@ -33,7 +33,7 @@
                     </tr>
                     <tr>
                         <td>[== $lang->{user_register_phone} =]</td>
-                        <td><?pl if ($auth_data->{phone}) { ?>+<?pl } else { ?>&mdash;<?pl } ?><span id="overview_phone">[== $auth_data->{phone} =]</span></td>
+                        <td><span id="overview_phone"><?pl if ($auth_data->{phone}) { ?>+<?pl } else { ?>&mdash;<?pl } ?>[== $auth_data->{phone} =]</span></td>
                     </tr>
                     <tr>
                         <td>[== $lang->{user_account_status} =]</td>

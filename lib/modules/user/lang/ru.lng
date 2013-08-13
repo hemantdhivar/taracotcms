@@ -69,6 +69,9 @@ user_account_tab_email: E-Mail
 user_account_tab_password: Пароль
 user_account_welcome: Добро пожаловать
 user_account_status_list: Неактивный пользователь,Пользователь,Администратор
+account_status_0: неактивный
+account_status_1: активный
+account_status_2: администратор
 user_account_status: Статус аккаунта
 user_account_date_template: \%d/\%m/\%Y
 user_account_regdate: Дата регистрации

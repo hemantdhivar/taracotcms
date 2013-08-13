@@ -77,14 +77,18 @@ sub _auth() {
    $authdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id });
    my %grpdata;
    if ($authdata->{groups}) {
-      my @groups=split(/,/, $authdata->{groups});     
+      my @groups=split(/,/, $authdata->{groups});   
+      my @groups_arr;  
       foreach my $item(@groups) {
         $item =~ s/^\s+//;
         $item =~ s/\s+$//;
         $item =~ tr/ //s;
+        $item = lc($item);
         $grpdata{$item} = 1;
+        push @groups_arr, $item;
       }
       $authdata->{groups_hash} = \%grpdata;
+      $authdata->{groups_arr} = \@groups_arr;
    }
   } else {
    $authdata->{id} = 0;

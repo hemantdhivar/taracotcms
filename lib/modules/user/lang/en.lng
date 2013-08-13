@@ -69,6 +69,9 @@ user_account_tab_email: E-Mail
 user_account_tab_password: Password
 user_account_welcome: Welcome
 user_account_status_list: Inactive user,Active user,Website Administrator
+account_status_0: inactive
+account_status_1: active
+account_status_2: administrator
 user_account_status: Account status
 user_account_date_template: \%Y/\%m/\%d
 user_account_regdate: Registration date
@@ -91,3 +94,6 @@ social_facebook: Facebook
 social_google: Google
 social_yandex: Yandex
 social_vk: VKontakte
+user_groups: Groups
+user_groups_blog_post: Blog Poster
+user_groups_blog_moderator: Blog Moderator

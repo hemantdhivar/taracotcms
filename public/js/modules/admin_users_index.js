@@ -356,7 +356,7 @@ $('#btn_edit_save').click(function () {
         $('#cg_realname').addClass('error');
         errors = true;
     }
-    if (!$('#groups').val().match(/^[A-Za-z0-9_\-\.]{0,254}$/)) {
+    if (!$('#groups').val().match(/^[A-Za-z0-9_\-\.\, ]{0,254}$/)) {
         $('#cg_groups').addClass('error');
         errors = true;
     }

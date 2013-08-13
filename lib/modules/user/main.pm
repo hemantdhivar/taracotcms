@@ -696,7 +696,8 @@ post '/account/password/process' => sub {
 };
 
 get '/profile/:username' => sub {
-  if (!&taracot::_auth()) { redirect '/user/authorize' } 
+  my $auth = &taracot::_auth();
+  if (!$auth) { redirect '/user/authorize' } 
   my $username = params->{username};
   if ($username !~ /^[a-z0-9_\-\.]{1,100}$/) { 
     pass();
@@ -707,8 +708,54 @@ get '/profile/:username' => sub {
     pass();
   }
   $user->{password} = '';
-  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);   
-  my $render_template = &taracot::_process_template( template 'user_profile', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_account_tab_profie}, user => $user }, { layout => config->{layout}.'_'.$_current_lang } );
+  my ($emp1, $emp2);
+  if ($user->{email}) {
+    ($emp1, $emp2) = split(/\@/, $user->{email});
+  }
+  $emp1 = scalar reverse $emp1;
+  $emp2 = scalar reverse $emp2;
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs', $_current_lang);   
+  my @hubs_arr;
+  my %hub_data;  
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+      push @hubs_arr, $par;
+    }
+  }
+  my $groups = $auth->{groups_arr};
+  my @groups = @$groups;
+  my $groups_txt = '';
+  foreach my $group (@groups) {
+    if ($group =~ /^blog_moderator_/i) {
+      $group=~s/^blog_moderator_//i;
+      $groups_txt.=', '.$lang->{'user_groups_blog_moderator'};
+      if ($hub_data{$group}) {
+        $groups_txt.=' ('.$hub_data{$group}.')';
+      } else {
+        $groups_txt.=' ('.$group.')';
+      }
+    } else {
+      if ($lang->{'user_groups_'.$group}) {      
+          $groups_txt.=', '.$lang->{'user_groups_'.$group};
+        } else {
+          $groups_txt.=', '.$group;
+      }
+    }  
+  }
+  $groups_txt=~s/, // if ($groups_txt);  
+  $user->{regdate} = time2str($lang->{user_account_date_template}, $user->{regdate});
+  $user->{regdate} =~ s/\\//gm;
+  my $avatar = '/images/default_avatar.png';
+  if (-e config->{files_dir}.'/avatars/'.$user->{username}.'.jpg') {
+    $avatar = config->{files_url}.'/avatars/'.$user->{username}.'.jpg';
+  }
+  my $render_template = &taracot::_process_template( template 'user_profile', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_account_tab_profie}.': '.$user->{username}, user => $user, auth_data => $auth, emp1 => $emp1, emp2 => $emp2, groups_txt => $groups_txt, avatar => $avatar }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }

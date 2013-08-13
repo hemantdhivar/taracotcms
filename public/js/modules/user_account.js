@@ -113,7 +113,7 @@ $(document).ready(function () {
                         $('#tab_profile_ajax').hide();
                         $('#pro_password').val('');
                         $('#pro_realname').focus();
-                        $('#overview_phone').html($('#pro_phone').val());
+                        $('#overview_phone').html('+' + $('#pro_phone').val());
                         if ($('#pro_realname').val()) {
                             $('#overview_realname').html($('#pro_realname').val());
                         } else {

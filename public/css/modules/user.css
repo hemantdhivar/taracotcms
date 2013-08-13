@@ -175,3 +175,7 @@ select:focus, input[type="file"]:focus, input[type="radio"]:focus, input[type="c
     .social-i-google {background-position:-16px 0px;} 
     .social-i-vkontakte {background-position:-32px 0px;} 
     .social-i-yandex {background-position:-48px 0px;}
+.username-header {
+  font-size: 150%;
+  font-style: bold;
+}

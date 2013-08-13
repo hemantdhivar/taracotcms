@@ -69,6 +69,9 @@ user_account_tab_email: E-Mail
 user_account_tab_password: Passwort
 user_account_welcome: Herzlich Willkommen
 user_account_status_list: Inaktiver Benutzer,Aktiver Benutzer,Website-Administrator
+account_status_0: inactiver
+account_status_1: activer
+account_status_2: Administrator
 user_account_status: Kontostatus
 user_account_date_template: \%Y/\%m/\%d
 user_account_regdate: Registrirungsdatum

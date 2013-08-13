@@ -164,8 +164,8 @@ post '/data/save' => sub {
    return qq~{"result":"0","field":"username","error":"~.$lang->{form_error_invalid_username}.qq~"}~;
   }
   $username=lc $username;
-  if ($groups && $groups !~ /^[A-Za-z0-9_\-\. ]{1,255}$/) {
-   return qq~{"result":"0","field":"username","error":"~.$lang->{form_error_invalid_groups}.qq~"}~;
+  if ($groups && $groups !~ /^[A-Za-z0-9_\-\.\, ]{1,255}$/) {
+   return qq~{"result":"0","groups":"username","error":"~.$lang->{form_error_invalid_groups}.qq~"}~;
   }  
   if (($id > 0 && length($password) > 0) || $id eq 0) {
     if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/) {
