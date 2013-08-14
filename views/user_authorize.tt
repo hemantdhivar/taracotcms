@@ -14,11 +14,10 @@
 <?pl if ($config->{auth_vk_client_id}) { ?>
 <button type="button" class="btn btn-mini" onclick="location.href='http://oauth.vk.com/authorize?client_id=[== $config->{auth_vk_client_id} =]&redirect_uri=[== $config->{auth_vk_redirect_uri} =]&response_type=code';"><i class="social-i-vkontakte"></i>&nbsp;[== $lang->{social_vk} =]</button>&nbsp;
 <?pl } ?>
-<br/>
 <?pl if ($config->{auth_facebook_app_id} || $config->{auth_google_client_id} || $config->{auth_yandex_client_id} || $config->{auth_vk_client_id}) { ?>
 <br/><br/>
 <?pl } ?>
-<span id="auth_form_hint">[== $lang->{user_authorize_hint} =]<br/><br/><br/></span>
+<span id="auth_form_hint">[== $lang->{user_authorize_hint} =]<div style="height:20px"></div></span>
 <div class="alert alert-block alert-error" id="form_error_msg" style="display:none">
     <span id="form_error_msg_text"></span>
 </div> 
@@ -40,6 +39,14 @@
             <a href="/user/password" target="_blank">[== $lang->{user_auth_forgot_password} =]</a>
         </div>
     </div>
+    <div class="control-group hide" id="cg_auth_captcha">
+        <label class="control-label" for="auth_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+        <div class="controls">
+            <input type="text" class="input-mini" id="auth_captcha">
+            <span id="captcha_img"></span>
+            &nbsp;<img src="/images/refresh.png" alt="[== $lang->{user_register_captcha_refresh} =]" title="[== $lang->{user_register_captcha_refresh} =]" width="16" height="16" style="cursor:pointer" onClick="reloadCaptcha()" />
+        </div>
+    </div>
     <div class="form-actions">
         <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_auth_submit} =]</button>
         <button type="button" class="btn btn-success" id="btn_register" onclick="location.href='/user/register'">[== $lang->{user_auth_register} =]</button>
@@ -59,6 +66,7 @@
     var js_lang_user_register_processing = "[== $lang->{user_register_processing} =]";
     var js_lang_user_register_error_login = "[== $lang->{user_register_error_login} =]";
     var js_lang_user_register_error_password_single = "[== $lang->{user_register_error_password_single} =]";
+    var js_lang_user_register_error_captcha = "[== $lang->{user_register_error_captcha} =]";
     var js_lang_user_auth_success = "[== $lang->{user_auth_success} =]";
     var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
     var js_lang_user_auth_redirect = "[== $lang->{user_auth_redirect} =]";

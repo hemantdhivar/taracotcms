@@ -32,6 +32,7 @@ user_register_error_password_single: Ungültige Passwortsyntax
 user_register_error_password_bad: Ungültiges Passwort
 user_register_error_password_multi: Ungültige Passwortsyntax oder Passworte stimmen nicht überein
 user_register_error_captcha: Code, den Sie eingetragen haben, ist ungültig
+user_register_error_captcha_req: Bitte Code eintragen
 user_register_error_agreement: Sie müssen die Vereinbarung der Webseite akzeptieren, um fortzusetzen
 user_register_error_username_taken: Benutzer mit diesem Benutzernamen ist schon angemeldet
 user_register_error_email_taken: Benutzer mit dieser E-Mailadresse ist schon angemeldet
@@ -73,7 +74,8 @@ account_status_0: inactiver
 account_status_1: activer
 account_status_2: Administrator
 user_account_status: Kontostatus
-user_account_date_template: \%Y/\%m/\%d
+user_account_date_template: \%d/\%m/\%Y
+user_account_datetime_template: \%d/\%m/\%Y %H&#58;%M
 user_account_regdate: Registrirungsdatum
 user_account_regdate_unknown: Unbekannt
 user_account_save: Speichern
@@ -94,3 +96,4 @@ social_facebook: Facebook
 social_google: Google
 social_yandex: Yandex
 social_vk: VKontakte
+user_activiy_restricted_till: Benutzerkonto ist beschränkt bis

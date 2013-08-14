@@ -32,6 +32,7 @@ user_register_error_password_single: Неверный синтаксис пар�
 user_register_error_password_bad: Неверный пароль
 user_register_error_password_multi: Неверный синтаксис пароля, либо пароли не совпадают
 user_register_error_captcha: Введен неверный код с картинки
+user_register_error_captcha_req: Введите код, который вы видите на картинке
 user_register_error_agreement: Вы должны принять пользовательское соглашение для регистрации на сайте
 user_register_error_username_taken: Указанное имя пользователя уже зарегистрировано в системе
 user_register_error_email_taken: Пользователь с указанным адресом e-mail уже зарегистрирован в системе
@@ -74,6 +75,7 @@ account_status_1: активный
 account_status_2: администратор
 user_account_status: Статус аккаунта
 user_account_date_template: \%d/\%m/\%Y
+user_account_datetime_template: \%d/\%m/\%Y %H&#58;%M
 user_account_regdate: Дата регистрации
 user_account_regdate_unknown: неизвестна
 user_account_save: Сохранить
@@ -94,3 +96,4 @@ social_facebook: Facebook
 social_google: Google
 social_yandex: Яндекс
 social_vk: ВКонтакте
+user_activiy_restricted_till: Аккаунт пользователя частично заблокирован по

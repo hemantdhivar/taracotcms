@@ -225,6 +225,23 @@ post '/authorize/process' => sub {
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
   }
+  my $captcha=int(param('auth_captcha')) || 0;
+  my $session_captcha=session('captcha');
+  session captcha => rand; 
+  my $ec;
+  if ($username) {
+    $ec = database->quick_select(config->{db_table_prefix}.'_users', { username => $username });
+  } else {
+    $ec = database->quick_select(config->{db_table_prefix}.'_users', { email => $email });
+  }
+  if ($ec->{captcha} eq 1 && $session_captcha ne $captcha) {
+    $res{status}=0; 
+    push @fields, 'captcha'; 
+    push @errors, $lang->{user_register_error_captcha_req};
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);   
+  }
   # second wave validations
   my $db_data;
   $password = md5_hex(config->{salt}.$password);
@@ -235,10 +252,19 @@ post '/authorize/process' => sub {
     $db_data  = database->quick_select(config->{db_table_prefix}.'_users', { email => $email, password => $password });
   }
   if (!$db_data->{id}) {
+    if (!$ec->{captcha}) {
+      if ($username) {
+        database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { captcha => 1, lastchanged => time }); 
+      } else {
+        database->quick_update(config->{db_table_prefix}.'_users', { email => $email }, { captcha => 1, lastchanged => time }); 
+      }
+      push @fields, 'captcha';
+      push @errors, $lang->{user_register_error_captcha_req};
+    }
     $res{status}=0; 
     push @errors, $lang->{user_auth_invalid}; 
     push @fields, 'login';
-    push @fields, 'password';
+    push @fields, 'password';    
     $res{errors}=\@errors;
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
@@ -250,7 +276,8 @@ post '/authorize/process' => sub {
     $res{errors}=\@errors;
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
-  } 
+  }
+  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { captcha => 0, lastchanged => time }); 
   session user => $db_data->{id}; 
   return $json_xs->encode(\%res);
 };
@@ -729,7 +756,10 @@ get '/profile/:username' => sub {
     }
   }
   my $groups = $auth->{groups_arr};
-  my @groups = @$groups;
+  my @groups;
+  if ($groups) {
+    @groups = @$groups;
+  }
   my $groups_txt = '';
   foreach my $group (@groups) {
     if ($group =~ /^blog_moderator_/i) {
@@ -751,6 +781,12 @@ get '/profile/:username' => sub {
   $groups_txt=~s/, // if ($groups_txt);  
   $user->{regdate} = time2str($lang->{user_account_date_template}, $user->{regdate});
   $user->{regdate} =~ s/\\//gm;
+  if ($user->{banned} && time < $user->{banned}) {
+    $user->{banned} = time2str($lang->{user_account_datetime_template}, $user->{banned});
+    $user->{banned} =~ s/\\//gm;
+  } else {
+    $user->{banned} = undef;
+  }
   my $avatar = '/images/default_avatar.png';
   if (-e config->{files_dir}.'/avatars/'.$user->{username}.'.jpg') {
     $avatar = config->{files_url}.'/avatars/'.$user->{username}.'.jpg';

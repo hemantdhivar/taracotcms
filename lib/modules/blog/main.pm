@@ -507,8 +507,24 @@ post '/post/process' => sub {
     push @errors, $lang->{error_unauth}; 
     $res{errors}=\@errors; 
     return $json_xs->encode(\%res);   
-  }   
+  }
   # End if not authorized
+  # Check if user has posted something less that 10 seconds ago 
+  my $last_post = 0;
+  my $sth = database->prepare(
+   'SELECT pdate FROM '.config->{db_table_prefix}.'_blog_posts WHERE pusername='.database->quote($auth->{username}).' ORDER BY pdate DESC'
+  );
+  if ($sth->execute()) {
+   ($last_post) = $sth -> fetchrow_array;
+  }
+  $sth->finish();
+  if ($last_post && time-$last_post < 20) {
+    $res{'status'} = 0;
+    push @errors, $lang->{post_error_time}; 
+    $res{errors}=\@errors; 
+    return $json_xs->encode(\%res);   
+  }
+  # End of a check if user has posted something less that 10 seconds ago  
   my $pid = int(params->{id}) || 0;
   # Post owner check
   if ($pid) {
@@ -578,7 +594,15 @@ post '/post/process' => sub {
     $res{status}=0; 
     push @errors, $lang->{error_state}; 
     push @fields, 'blog_state';    
-  }  
+  }
+  my $blog_data = params->{blog_data} || '';  
+  # Find duplicates
+  my $phash = md5_hex($blog_data);
+  my $hash_dupe  = database->quick_select(config->{db_table_prefix}.'_blog_posts', { phash => $phash, pusername => $auth->{username} });
+  if ($hash_dupe->{id}) {
+    $res{'status'} = 0;
+    push @errors, $lang->{post_error_dupe};
+  }
   # Errors? return
   if (!$res{status}) {
     $res{errors}=\@errors;
@@ -595,8 +619,7 @@ post '/post/process' => sub {
   my $comments_allowed = 0;
   if (params->{comments_allowed} eq 'true') {
     $comments_allowed = 1;
-  }
-  my $blog_data = params->{blog_data} || '';    
+  }  
   my $blog_data_html_cut = $blog_data;
   my $cut = 0;
   if ($blog_data_html_cut=~/\[cut\]/i) {
@@ -619,11 +642,12 @@ post '/post/process' => sub {
   if (!$remote_ip) {
     $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
   }
+  my $phash = md5_hex($blog_data);
   if ($pid) {
-    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require }); 
+    database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require, phash => $phash }); 
   } else {
-    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require }); 
-      $pid = database->{q{mysql_insertid}};
+    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require, phash => $phash }); 
+    $pid = database->{q{mysql_insertid}};
   }
   if ($pid) {    
     $res{pid}=$pid; 
@@ -860,6 +884,7 @@ post '/moderate/process' => sub {
   if ($delpost && $auth->{status} < 2) {
   	$delpost = undef;
   }
+  $modreq = 0 if (!$modreq);
   database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { mod_require => $modreq });
   if ($ban72) {
     database->quick_update(config->{db_table_prefix}.'_users', { username => $post->{pusername} }, { banned => time + 259200 }); # 72 hours

@@ -32,6 +32,7 @@ user_register_error_password_single: Invalid password syntax
 user_register_error_password_bad: Invalid password
 user_register_error_password_multi: Invalid password syntax or passwords do not match
 user_register_error_captcha: Code you've entered is not valid
+user_register_error_captcha_req: Please enter the code you see on the picture
 user_register_error_agreement: You have to accept the website agreement to continue
 user_register_error_username_taken: User with username provided is already registered
 user_register_error_email_taken: User with e-mail address provided is already registered
@@ -74,6 +75,7 @@ account_status_1: active
 account_status_2: administrator
 user_account_status: Account status
 user_account_date_template: \%Y/\%m/\%d
+user_account_datetime_template: \%Y/\%m/\%d %l&#58;%M %p
 user_account_regdate: Registration date
 user_account_regdate_unknown: Unknown
 user_account_save: Save
@@ -97,3 +99,4 @@ social_vk: VKontakte
 user_groups: Groups
 user_groups_blog_post: Blog Poster
 user_groups_blog_moderator: Blog Moderator
+user_activiy_restricted_till: User account restricted till
