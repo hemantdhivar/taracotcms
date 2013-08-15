@@ -8,7 +8,7 @@ if (!$res) {
 print "Yes\n";
 }
 if ($res ne 'n') {
-my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout');
+my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout','Lingua::Identify');
 foreach my $rm (@required_modules) {
 print "Checking $rm...\n";
 if ($rm eq 'Log::Log4perl::Layout::PatternLayout') {
