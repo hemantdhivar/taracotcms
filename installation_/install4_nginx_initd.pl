@@ -81,11 +81,11 @@ if (!$workers) { $workers = '10'; print "- Using 10 workers\n"; }
 print "System user [taracot]: ";
 my $user =  <STDIN>;
 chomp($user);
-if (!$user) { $user = '10'; print "- Setting user: taracot\n"; }
+if (!$user) { $user = 'taracot'; print "- Setting user: taracot\n"; }
 print "System group [taracot]: ";
 my $group =  <STDIN>;
 chomp($group);
-if (!$group) { $group = '10'; print "- Setting group: taracot\n"; }
+if (!$group) { $group = 'taracot'; print "- Setting group: taracot\n"; }
 print "Writing script...\n";
 open(DATA, "init.d.dist");
 binmode(DATA);
@@ -103,4 +103,5 @@ open(DATA, ">./init.d/taracot-$server_name");
 binmode(DATA);
 print DATA $initd;
 close(DATA);
+system("cd .. && chmod $user:$user -R ./*");
 print "\nConfiguration is now complete. Take a look at ./init.d and ./nginx folders.\n";
