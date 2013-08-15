@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 12, 2013 at 06:27 PM
+-- Generation Time: Aug 15, 2013 at 12:52 PM
 -- Server version: 5.1.40
 -- PHP Version: 5.3.1
 
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `taracot_blog_comments` (
   `ipaddr` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `left_key` (`left_key`,`right_key`,`level`)
-) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `taracot_blog_comments`
@@ -47,7 +47,9 @@ CREATE TABLE IF NOT EXISTS `taracot_blog_comments` (
 
 INSERT INTO `taracot_blog_comments` (`id`, `post_id`, `deleted`, `cusername`, `ctext`, `cdate`, `chash`, `left_key`, `right_key`, `level`, `ipaddr`) VALUES
 (1, 3, 1, 'user', 'OK OK', 1376302539, 'd19a30d9ba083203e9514f06dbbe9667', 1, 4, 1, '127.0.0.1'),
-(2, 3, 1, 'user', 'Should NOT work', 1376302652, '50855fefc907db1452fd2d43a4f9b1c0', 5, 8, 1, '127.0.0.1');
+(2, 3, 1, 'user', 'Should NOT work', 1376302652, '50855fefc907db1452fd2d43a4f9b1c0', 5, 8, 1, '127.0.0.1'),
+(3, 3, 0, 'user', 'Let me comment please', 1376491996, '1ce607f27547d0fbacd854fe5520bc6d', 9, 12, 1, '127.0.0.1'),
+(4, 3, 0, 'user', 'This is my comment', 1376492187, '0e886c4da79bb479b61054641ec13950', 13, 16, 1, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -64,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `taracot_blog_posts` (
   `ptitle` varchar(255) NOT NULL,
   `ptags` varchar(255) DEFAULT NULL,
   `pdate` int(11) DEFAULT NULL,
+  `phash` varchar(255) DEFAULT NULL,
   `ptext` text,
   `ptext_html_cut` text,
   `pcut` tinyint(1) DEFAULT '0',
@@ -77,16 +80,23 @@ CREATE TABLE IF NOT EXISTS `taracot_blog_posts` (
   `lastchanged` int(11) DEFAULT NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`)
-) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `taracot_blog_posts`
 --
 
-INSERT INTO `taracot_blog_posts` (`id`, `plang`, `pusername`, `phub`, `pstate`, `ptitle`, `ptags`, `pdate`, `ptext`, `ptext_html_cut`, `pcut`, `ptext_html`, `pviews`, `pcomments`, `ipaddr`, `mod_require`, `deleted`, `comments_allowed`, `lastchanged`) VALUES
-(1, 'en', 'xtreme', 'test1', 1, 'Test topic', 'Hello world', 1376300975, 'OK Computer', 'OK Computer', 0, 'OK Computer', 8, 0, '127.0.0.1', 1, 0, 1, 1376300975),
-(2, 'en', 'user', 'test1', 1, 'Test pre-mod', 'hello, world', 1376301244, 'Yeah.', 'Yeah.', 0, 'Yeah.', 2, 0, '127.0.0.1', NULL, 0, 1, 1376301244),
-(3, 'en', 'user', 'test1', 1, 'This should be working', 'test, test', 1376301894, 'Must be pub for everyone', 'Must be pub for everyone', 0, 'Must be pub for everyone', 35, 2, '127.0.0.1', 1, 1, 1, 1376310507);
+INSERT INTO `taracot_blog_posts` (`id`, `plang`, `pusername`, `phub`, `pstate`, `ptitle`, `ptags`, `pdate`, `phash`, `ptext`, `ptext_html_cut`, `pcut`, `ptext_html`, `pviews`, `pcomments`, `ipaddr`, `mod_require`, `deleted`, `comments_allowed`, `lastchanged`) VALUES
+(1, 'en', 'xtreme', 'test1', 1, 'Test topic', 'Hello world', 1376300975, NULL, 'OK Computer', 'OK Computer', 0, 'OK Computer', 10, 0, '127.0.0.1', 0, 0, 1, 1376300975),
+(2, 'en', 'user', 'test1', 1, 'Test pre-mod', 'hello, world', 1376301244, NULL, 'Yeah.', 'Yeah.', 0, 'Yeah.', 5, 0, '127.0.0.1', 0, 0, 1, 1376301244),
+(3, 'en', 'user', 'test1', 1, 'This should be working', 'test, test', 1376301894, NULL, 'Must be pub for everyone', 'Must be pub for everyone', 0, 'Must be pub for everyone', 66, 4, '127.0.0.1', 0, 0, 1, 1376310507),
+(4, 'en', 'user', 'test1', 1, 'A', 'A', 1376496572, 'e1faffb3e614e6c2fba74296962386b7', 'AAA', 'AAA', 0, 'AAA', 0, 0, '127.0.0.1', 1, 0, 1, 1376496572),
+(5, 'en', 'user', 'test1', 1, 'A', 'A', 1376496590, 'e1faffb3e614e6c2fba74296962386b7', 'AAA', 'AAA', 0, 'AAA', 1, 0, '127.0.0.1', 1, 0, 1, 1376496590),
+(6, 'en', 'user', 'test1', 1, 'A', 'A', 1376496615, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 0, 0, '127.0.0.1', 1, 0, 1, 1376496615),
+(7, 'en', 'user', 'test1', 1, 'A', 'A', 1376496621, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 1, 0, '127.0.0.1', 1, 0, 1, 1376496621),
+(8, 'en', 'user', 'test1', 1, 'A', 'A', 1376496910, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 0, 0, '127.0.0.1', 1, 0, 1, 1376496910),
+(9, 'en', 'user', 'test1', 1, 'A', 'A', 1376496932, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 0, 0, '127.0.0.1', 1, 0, 1, 1376496932),
+(10, 'en', 'xtreme', 'test1', 1, 'A', 'B', 1376558154, '5d28b1ca4ed7ed365431dac89d9b3fea', 'У одного моего знакомого™, помнится, была такая «система для безлимитных звонков». Приходили на телефонную станцию — там стояли междугородние автоматы… то время подавляющее число таксофонов не имело номера телефона (не определялось АОНами) или имело номер телефона с категорией «3» (без права выхода на междугороднюю связь). С таксофона не было возможности позвонить на межгород. Я проверил международные таксофоны в городе, все они были на обычных телефонных номерах с категорией «1». Номер телефона международного таксофона был написан в будке на специальном шильдике. Мой домашний телефон принадлежал самой старой АТС из трех в нашем городе, в отличии от других АТС в городе, он не определялся АОНами, и чтоб позвонить по межгороду мне приходилась набирать 8 номер телефона куда я хочу позвонить, свой номер телефона. АТС меня отсоединяла, и перенабирала заново, потом соединяло с набранным номером.', 'У одного моего знакомого™, помнится, была такая &laquo;система для&nbsp;безлимитных звонков&raquo;. Приходили на&nbsp;телефонную станцию&nbsp;&mdash; там стояли междугородние автоматы&hellip; то время подавляющее число таксофонов не&nbsp;имело номера телефона &#40;не определялось АОНами&#41; или&nbsp;имело номер телефона с&nbsp;категорией &laquo;3&raquo; &#40;без права выхода на&nbsp;междугороднюю связь&#41;. С таксофона не&nbsp;было возможности позвонить на&nbsp;межгород. Я проверил международные таксофоны в&nbsp;городе, все они были на&nbsp;обычных телефонных номерах с&nbsp;категорией &laquo;1&raquo;. Номер телефона международного таксофона был написан в&nbsp;будке на&nbsp;специальном шильдике. Мой домашний телефон принадлежал самой старой АТС из&nbsp;трех в&nbsp;нашем городе, в&nbsp;отличии от&nbsp;других АТС в&nbsp;городе, он не&nbsp;определялся АОНами, и&nbsp;чтоб позвонить по&nbsp;межгороду мне приходилась набирать 8 номер телефона куда я хочу позвонить, свой номер телефона. АТС меня отсоединяла, и&nbsp;перенабирала заново, потом соединяло с&nbsp;набранным номером.', 0, 'У одного моего знакомого™, помнится, была такая &laquo;система для&nbsp;безлимитных звонков&raquo;. Приходили на&nbsp;телефонную станцию&nbsp;&mdash; там стояли междугородние автоматы&hellip; то время подавляющее число таксофонов не&nbsp;имело номера телефона &#40;не определялось АОНами&#41; или&nbsp;имело номер телефона с&nbsp;категорией &laquo;3&raquo; &#40;без права выхода на&nbsp;междугороднюю связь&#41;. С таксофона не&nbsp;было возможности позвонить на&nbsp;межгород. Я проверил международные таксофоны в&nbsp;городе, все они были на&nbsp;обычных телефонных номерах с&nbsp;категорией &laquo;1&raquo;. Номер телефона международного таксофона был написан в&nbsp;будке на&nbsp;специальном шильдике. Мой домашний телефон принадлежал самой старой АТС из&nbsp;трех в&nbsp;нашем городе, в&nbsp;отличии от&nbsp;других АТС в&nbsp;городе, он не&nbsp;определялся АОНами, и&nbsp;чтоб позвонить по&nbsp;межгороду мне приходилась набирать 8 номер телефона куда я хочу позвонить, свой номер телефона. АТС меня отсоединяла, и&nbsp;перенабирала заново, потом соединяло с&nbsp;набранным номером.', 10, 0, '127.0.0.1', 0, 0, 1, 1376563724);
 
 -- --------------------------------------------------------
 
@@ -184,6 +194,7 @@ CREATE TABLE IF NOT EXISTS `taracot_users` (
   `regdate` int(11) DEFAULT NULL,
   `last_lang` varchar(2) DEFAULT NULL,
   `banned` int(11) DEFAULT '0',
+  `captcha` tinyint(1) DEFAULT '0',
   `lastchanged` int(11) DEFAULT NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ftdata` (`username`,`realname`,`email`)
@@ -193,6 +204,6 @@ CREATE TABLE IF NOT EXISTS `taracot_users` (
 -- Dumping data for table `taracot_users`
 --
 
-INSERT INTO `taracot_users` (`id`, `username`, `password`, `password_unset`, `realname`, `email`, `phone`, `groups`, `status`, `verification`, `regdate`, `last_lang`, `banned`, `lastchanged`) VALUES
-(1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, '', '', NULL, NULL, 2, NULL, 1376300791, 'en', 0, 1376303028),
-(2, 'user', '702dc357740e3b83a19940d5ceba6bc7', 0, '', '', '', '', 1, NULL, NULL, 'en', 0, 1376301596);
+INSERT INTO `taracot_users` (`id`, `username`, `password`, `password_unset`, `realname`, `email`, `phone`, `groups`, `status`, `verification`, `regdate`, `last_lang`, `banned`, `captcha`, `lastchanged`) VALUES
+(1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1376560952),
+(2, 'user', '702dc357740e3b83a19940d5ceba6bc7', 0, '', 'xtreme@rh1.ru', '1234567', '', 1, NULL, NULL, 'en', 1376731887, 0, 1376558949);
