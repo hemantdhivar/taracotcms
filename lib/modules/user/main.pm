@@ -160,6 +160,9 @@ get '/authorize' => sub {
     $comeback =~ s/\</&lt;/gm;
     $comeback =~ s/\>/&gt;/gm;
   }
+  if ($comeback eq '/user/logout') {
+    $comeback = '/';
+  }
   if (length($comeback) > 512) {
     redirect '/user/authorize'; 
     return;  
