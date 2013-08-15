@@ -1,14 +1,23 @@
 #!/usr/bin/perl
 use strict;
-print "Taracot installation script\nModule installation\n\nNote: some CPAN modules do require C compiler (Example - debian: apt-get install build-essential)\n\n";
-print "Check (and install) missing CPAN modules? [y/n] ";
+print "Taracot installation script\nModule installation\n\nNote: some CPAN modules do require C compiler (Example - debian: apt-get install build-essential)\nNote: Imager requires the following libs: libgif-dev libjpeg8-dev libtiff4-dev libpng12-dev libfreetype6-dev\n\n";
+print "\nRun command to apt-get the required debian packages? [Y/n] ";
 my $res =  <STDIN>;
+chomp($res);
+if (!$res) {
+ print "Yes\n";
+}
+if ($res ne 'n') {
+	system ('apt-get install build-essential libgif-dev libjpeg8-dev libtiff4-dev libpng12-dev libfreetype6-dev')
+}
+print "\nCheck (and install) missing CPAN modules? [Y/n] ";
+$res =  <STDIN>;
 chomp($res);
 if (!$res) {
 print "Yes\n";
 }
 if ($res ne 'n') {
-my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout','Lingua::Identify');
+my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','Imager::File::GIF','Imager::File::JPEG','Imager::File::PNG','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout','Lingua::Identify','URL::Encode');
 foreach my $rm (@required_modules) {
 print "Checking $rm...\n";
 if ($rm eq 'Log::Log4perl::Layout::PatternLayout') {

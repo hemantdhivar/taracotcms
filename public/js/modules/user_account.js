@@ -16,7 +16,7 @@ $(document).ready(function () {
     if (!$('#emc_email').val()) {
         $('#change_password_tab').hide();
     }
-    if (password_unset == 1) {
+    if (password_unset == "1") {
         $('#cg_pwd_old_password').hide();
     }
     var uploader;

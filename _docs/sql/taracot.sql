@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 15, 2013 at 12:52 PM
+-- Generation Time: Aug 15, 2013 at 02:58 PM
 -- Server version: 5.1.40
 -- PHP Version: 5.3.1
 
@@ -39,17 +39,12 @@ CREATE TABLE IF NOT EXISTS `taracot_blog_comments` (
   `ipaddr` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `left_key` (`left_key`,`right_key`,`level`)
-) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `taracot_blog_comments`
 --
 
-INSERT INTO `taracot_blog_comments` (`id`, `post_id`, `deleted`, `cusername`, `ctext`, `cdate`, `chash`, `left_key`, `right_key`, `level`, `ipaddr`) VALUES
-(1, 3, 1, 'user', 'OK OK', 1376302539, 'd19a30d9ba083203e9514f06dbbe9667', 1, 4, 1, '127.0.0.1'),
-(2, 3, 1, 'user', 'Should NOT work', 1376302652, '50855fefc907db1452fd2d43a4f9b1c0', 5, 8, 1, '127.0.0.1'),
-(3, 3, 0, 'user', 'Let me comment please', 1376491996, '1ce607f27547d0fbacd854fe5520bc6d', 9, 12, 1, '127.0.0.1'),
-(4, 3, 0, 'user', 'This is my comment', 1376492187, '0e886c4da79bb479b61054641ec13950', 13, 16, 1, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -80,23 +75,12 @@ CREATE TABLE IF NOT EXISTS `taracot_blog_posts` (
   `lastchanged` int(11) DEFAULT NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`)
-) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=11 ;
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `taracot_blog_posts`
 --
 
-INSERT INTO `taracot_blog_posts` (`id`, `plang`, `pusername`, `phub`, `pstate`, `ptitle`, `ptags`, `pdate`, `phash`, `ptext`, `ptext_html_cut`, `pcut`, `ptext_html`, `pviews`, `pcomments`, `ipaddr`, `mod_require`, `deleted`, `comments_allowed`, `lastchanged`) VALUES
-(1, 'en', 'xtreme', 'test1', 1, 'Test topic', 'Hello world', 1376300975, NULL, 'OK Computer', 'OK Computer', 0, 'OK Computer', 10, 0, '127.0.0.1', 0, 0, 1, 1376300975),
-(2, 'en', 'user', 'test1', 1, 'Test pre-mod', 'hello, world', 1376301244, NULL, 'Yeah.', 'Yeah.', 0, 'Yeah.', 5, 0, '127.0.0.1', 0, 0, 1, 1376301244),
-(3, 'en', 'user', 'test1', 1, 'This should be working', 'test, test', 1376301894, NULL, 'Must be pub for everyone', 'Must be pub for everyone', 0, 'Must be pub for everyone', 66, 4, '127.0.0.1', 0, 0, 1, 1376310507),
-(4, 'en', 'user', 'test1', 1, 'A', 'A', 1376496572, 'e1faffb3e614e6c2fba74296962386b7', 'AAA', 'AAA', 0, 'AAA', 0, 0, '127.0.0.1', 1, 0, 1, 1376496572),
-(5, 'en', 'user', 'test1', 1, 'A', 'A', 1376496590, 'e1faffb3e614e6c2fba74296962386b7', 'AAA', 'AAA', 0, 'AAA', 1, 0, '127.0.0.1', 1, 0, 1, 1376496590),
-(6, 'en', 'user', 'test1', 1, 'A', 'A', 1376496615, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 0, 0, '127.0.0.1', 1, 0, 1, 1376496615),
-(7, 'en', 'user', 'test1', 1, 'A', 'A', 1376496621, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 1, 0, '127.0.0.1', 1, 0, 1, 1376496621),
-(8, 'en', 'user', 'test1', 1, 'A', 'A', 1376496910, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 0, 0, '127.0.0.1', 1, 0, 1, 1376496910),
-(9, 'en', 'user', 'test1', 1, 'A', 'A', 1376496932, '7fc56270e7a70fa81a5935b72eacbe29', 'A', 'A', 0, 'A', 0, 0, '127.0.0.1', 1, 0, 1, 1376496932),
-(10, 'en', 'xtreme', 'test1', 1, 'A', 'B', 1376558154, '5d28b1ca4ed7ed365431dac89d9b3fea', 'У одного моего знакомого™, помнится, была такая «система для безлимитных звонков». Приходили на телефонную станцию — там стояли междугородние автоматы… то время подавляющее число таксофонов не имело номера телефона (не определялось АОНами) или имело номер телефона с категорией «3» (без права выхода на междугороднюю связь). С таксофона не было возможности позвонить на межгород. Я проверил международные таксофоны в городе, все они были на обычных телефонных номерах с категорией «1». Номер телефона международного таксофона был написан в будке на специальном шильдике. Мой домашний телефон принадлежал самой старой АТС из трех в нашем городе, в отличии от других АТС в городе, он не определялся АОНами, и чтоб позвонить по межгороду мне приходилась набирать 8 номер телефона куда я хочу позвонить, свой номер телефона. АТС меня отсоединяла, и перенабирала заново, потом соединяло с набранным номером.', 'У одного моего знакомого™, помнится, была такая &laquo;система для&nbsp;безлимитных звонков&raquo;. Приходили на&nbsp;телефонную станцию&nbsp;&mdash; там стояли междугородние автоматы&hellip; то время подавляющее число таксофонов не&nbsp;имело номера телефона &#40;не определялось АОНами&#41; или&nbsp;имело номер телефона с&nbsp;категорией &laquo;3&raquo; &#40;без права выхода на&nbsp;междугороднюю связь&#41;. С таксофона не&nbsp;было возможности позвонить на&nbsp;межгород. Я проверил международные таксофоны в&nbsp;городе, все они были на&nbsp;обычных телефонных номерах с&nbsp;категорией &laquo;1&raquo;. Номер телефона международного таксофона был написан в&nbsp;будке на&nbsp;специальном шильдике. Мой домашний телефон принадлежал самой старой АТС из&nbsp;трех в&nbsp;нашем городе, в&nbsp;отличии от&nbsp;других АТС в&nbsp;городе, он не&nbsp;определялся АОНами, и&nbsp;чтоб позвонить по&nbsp;межгороду мне приходилась набирать 8 номер телефона куда я хочу позвонить, свой номер телефона. АТС меня отсоединяла, и&nbsp;перенабирала заново, потом соединяло с&nbsp;набранным номером.', 0, 'У одного моего знакомого™, помнится, была такая &laquo;система для&nbsp;безлимитных звонков&raquo;. Приходили на&nbsp;телефонную станцию&nbsp;&mdash; там стояли междугородние автоматы&hellip; то время подавляющее число таксофонов не&nbsp;имело номера телефона &#40;не определялось АОНами&#41; или&nbsp;имело номер телефона с&nbsp;категорией &laquo;3&raquo; &#40;без права выхода на&nbsp;междугороднюю связь&#41;. С таксофона не&nbsp;было возможности позвонить на&nbsp;межгород. Я проверил международные таксофоны в&nbsp;городе, все они были на&nbsp;обычных телефонных номерах с&nbsp;категорией &laquo;1&raquo;. Номер телефона международного таксофона был написан в&nbsp;будке на&nbsp;специальном шильдике. Мой домашний телефон принадлежал самой старой АТС из&nbsp;трех в&nbsp;нашем городе, в&nbsp;отличии от&nbsp;других АТС в&nbsp;городе, он не&nbsp;определялся АОНами, и&nbsp;чтоб позвонить по&nbsp;межгороду мне приходилась набирать 8 номер телефона куда я хочу позвонить, свой номер телефона. АТС меня отсоединяла, и&nbsp;перенабирала заново, потом соединяло с&nbsp;набранным номером.', 10, 0, '127.0.0.1', 0, 0, 1, 1376563724);
 
 -- --------------------------------------------------------
 
@@ -144,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `taracot_pages` (
 --
 
 INSERT INTO `taracot_pages` (`id`, `pagetitle`, `keywords`, `description`, `content`, `status`, `filename`, `lang`, `layout`, `lastchanged`) VALUES
-(1, 'Home', 'Page keywords', 'Page description', '<p>\nHello! As you can read this, everything seems to be working fine.</p>\n', 1, '/', 'en', 'taracot', 1358176801);
+(1, 'Home', 'taracot, sample, homepage', 'Taracot sample homepage', '<p>If you can read this, everything seems to work fine.</p>\n\n<p>Please log in to <a href="/admin">administration panel</a> to perform website configuration and administration.</p>\n', 1, '/', 'en', 'taracot', 1376571456);
 
 -- --------------------------------------------------------
 
@@ -161,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `taracot_settings` (
   `lastchanged` int(11) DEFAULT '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=cp1251 AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `taracot_settings`
@@ -169,10 +153,11 @@ CREATE TABLE IF NOT EXISTS `taracot_settings` (
 
 INSERT INTO `taracot_settings` (`id`, `s_name`, `s_value`, `s_value_html`, `lang`, `lastchanged`) VALUES
 (1, 'site_title', 'Taracot CMS', '', 'en', 1358181002),
-(2, 'site_description', 'This is the global site description', '', 'en', 1350564084),
-(3, 'site_keywords', 'these, are, global, site, keywords', '', 'en', 1350564057),
-(4, 'blog_hubs', 'test1,Test hub 1;test2,Test hub 2', '', 'en', 1375872043),
-(5, 'blog_mode', 'moderate', '<p>Blog mode can be set as:</p>\n\n<ul style="list-style-type:square">\n	<li>public (everyone can create new posts, no moderation)</li>\n	<li>moderate (new posts are created with &quot;mod_require&quot; flag)</li>\n	<li>private (only the users with special permissions are allowed to make new posts)</li>\n</ul>\n', '', 1376033601);
+(2, 'site_description', 'Taracot CMS installation is running', '', 'en', 1376571472),
+(3, 'site_keywords', 'taracot cms, perl, dancer', '', 'en', 1376571477),
+(4, 'blog_hubs', 'test1,Test hub one;test2,Test hub two', '', 'en', 1376571488),
+(5, 'blog_mode', 'moderate', '<p>Blog mode can be set as:</p>\n\n<ul style="list-style-type:square">\n	<li>public (everyone can create new posts, no moderation)</li>\n	<li>moderate (new posts are created with &quot;mod_require&quot; flag)</li>\n	<li>private (only the users with special permissions are allowed to make new posts)</li>\n</ul>\n', '', 1376033601),
+(6, 'blog_items_per_page', '10', '', '', 1376571169);
 
 -- --------------------------------------------------------
 

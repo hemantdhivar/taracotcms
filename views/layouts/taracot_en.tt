@@ -24,7 +24,7 @@
       <?pl if ($auth_data->{id}) { ?>
       <div class="taracot-logged-in-as"><span class="label label-inverse">Logged in as: [== $auth_data->{username} || '' =]</span></div><div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
       <?pl } else { ?>
-      <div class="taracot-logged-in-as"><span class="label label-inverse">Not logged in</span></div><div class="btn btn-mini" onclick="location.href='/user/authorize?comeback='+document.URL">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
+      <div class="taracot-logged-in-as"><span class="label label-inverse">Not logged in</span></div><div class="btn btn-mini" onclick="location.href='/user/authorize?comeback='+window.location.pathname">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
       <?pl } ?>
       <div class="btn-group">
         <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
