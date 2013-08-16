@@ -103,5 +103,5 @@ open(DATA, ">./init.d/taracot-$server_name");
 binmode(DATA);
 print DATA $initd;
 close(DATA);
-system("cd .. && chmod $user:$user -R ./*");
+system("cd .. && chown $user:$user -R ./*");
 print "\nConfiguration is now complete. Take a look at ./init.d and ./nginx folders.\n";

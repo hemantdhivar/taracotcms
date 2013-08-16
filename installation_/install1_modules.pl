@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-print "Taracot installation script\nModule installation\n\nNote: some CPAN modules do require C compiler (Example - debian: apt-get install build-essential)\nNote: Imager requires the following libs: libgif-dev libjpeg8-dev libtiff4-dev libpng12-dev libfreetype6-dev\n\n";
+print "Taracot installation script\nModule installation\n\nNote: some CPAN modules do require C compiler (Example - debian: apt-get install build-essential)\nNote: Imager requires the following libs: libgif-dev libjpeg8-dev libtiff4-dev libpng12-dev libfreetype6-dev\n";
 print "\nRun command to apt-get the required debian packages? [Y/n] ";
 my $res =  <STDIN>;
 chomp($res);
@@ -8,7 +8,7 @@ if (!$res) {
  print "Yes\n";
 }
 if ($res ne 'n') {
-	system ('apt-get install build-essential libgif-dev libjpeg8-dev libtiff4-dev libpng12-dev libfreetype6-dev')
+	system ('apt-get install build-essential libgif-dev libjpeg8-dev libtiff4-dev libpng12-dev libfreetype6-dev mysql-client mysql-server')
 }
 print "\nCheck (and install) missing CPAN modules? [Y/n] ";
 $res =  <STDIN>;

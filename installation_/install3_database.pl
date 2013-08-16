@@ -15,6 +15,38 @@ print "Loading Dancer config...\n";
 Dancer::Config::setting('appdir', $root);
 Dancer::Config::setting('confdir', $root);
 Dancer::Config::load(); 
+print "Do you wish to add MySQL user and create the database? [Y/n] ";
+my $ans = <STDIN>;
+chomp($ans);
+if ($ans ne 'n') {
+ my $database = config->{plugins}->{Database}->{database} || '';
+ my $username = config->{plugins}->{Database}->{username} || '';
+ my $password = config->{plugins}->{Database}->{password} || '';
+ my $server = config->{plugins}->{Database}->{host} || '';
+ print "Please enter the maximum number of connections per user [100]: ";
+ my $wk = <STDIN>;
+ chomp($wk);
+ if (!$wk) {
+ 	print "- Setting 100 connections per user...\n";
+ 	$wk=100;
+ }
+ open(DATA, "taracot_db.sql");
+ binmode(DATA);
+ my $sqldb = join('', <DATA>);
+ close(DATA);
+ $sqldb=~s/\[database\]/$database/igm;
+ $sqldb=~s/\[user\]/$username/igm;
+ $sqldb=~s/\[password\]/$password/igm;
+ $sqldb=~s/\[server\]/$server/igm;
+ $sqldb=~s/\[workers\]/$wk/igm;
+ open(DATA, ">taracot_db_import.sql");
+ binmode(DATA);
+ print DATA $sqldb;
+ close(DATA);
+ print "Importing SQL commands... Use your root MySQL password below\n";
+ system('mysql -u root -p < taracot_db_import.sql');
+ unlink 'taracot_db_import.sql';
+}
 print "Connecting to the database...\n";
 my $dbh;
 my $DSN = 'DBI:mysql:'.config->{plugins}->{Database}->{database}.':'.config->{plugins}->{Database}->{host};

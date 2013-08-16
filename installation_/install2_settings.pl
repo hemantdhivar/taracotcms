@@ -1,9 +1,8 @@
-
- #!/usr/bin/perl
+#!/usr/bin/perl
 use strict;
 use Cwd qw(abs_path);
 use File::Basename qw(dirname);
-print "Taracot installation script\nSystem configuration\n\n";
+print "Taracot installation script\nSystem configuration\n";
 my $root = dirname(abs_path($0));
 $root =~s/\\/\//gm;
 $root =~s/\/installation$//;
