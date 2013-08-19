@@ -28,7 +28,7 @@
       <?pl } ?>
       <div class="btn-group">
         <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
-        <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left">              
+        <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left">
         </ul>
       </div>
     </div>

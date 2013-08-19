@@ -1,66 +1,68 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8" />
-  <title>[== $pagetitle || '' =] | [== $page_data->{site_title} || '' =]</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="[== $page_data->{site_keywords} =]">
-  <meta name="description" content="[== $page_data->{site_description} =]"> 
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/taracot/main.css">
-  <link rel="shortcut icon" href="/favicon.ico">
-  <script src="/js/taracot.min.js"></script>
-  <!--[if lt IE 9]><script src="/js/html5.js"></script><![endif]-->  
-  <!-- module css --> [== $head_html || '' =]  
-</head>
-<body>
-  <div class="container navbar-wrapper">
-    <a href="/"><img id="taracot-logo" src="/taracot/logo_white_235.png" width="235" height="51" alt="Taracot CMS" class="visible-desktop visible-tablet" /></a>
-    <a href="/"><img id="taracot-logo-small" src="/taracot/logo_white_51.png" width="51" height="51" alt="Taracot CMS" class="visible-phone" /></a>
-    <div class="taracot-header container">
-      <?pl if ($auth_data->{id}) { ?>
-      <div class="taracot-logged-in-as"><span class="label label-inverse">Logged in as: [== $auth_data->{username} || '' =]</span></div><div class="btn btn-mini" onclick="location.href='/user/account'">My Account</div>&nbsp;<div class="btn btn-mini btn-warning" onclick="location.href='/user/logout'">Log out</div>
-      <?pl } else { ?>
-      <div class="taracot-logged-in-as"><span class="label label-inverse">Not logged in</span></div><div class="btn btn-mini" onclick="location.href='/user/authorize?comeback='+window.location.pathname">Log in</div>&nbsp;<div class="btn btn-mini btn-success" onclick="location.href='/user/register'">Sign up</div>
-      <?pl } ?>
-      <div class="btn-group">
-        <a class="btn btn-mini btn-inverse dropdown-toggle" data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a>
-        <ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left">              
-        </ul>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <title>[== $pagetitle =] | [== $page_data->{site_title} =]</title>
+    <link href="/css/bootstrap3.min.css" rel="stylesheet">
+    <link href="/taracot/main.css" rel="stylesheet">
+    <script src="/js/taracot3.min.js"></script> 
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top" style="background:#444;height:80px">
+      <div class="container">
+        <a href="/"><img src="/taracot/logo_white_235.png" width="235" height="51" alt="Taracot CMS" style="margin-top:7px" /></a>
       </div>
     </div>
-    <div class="navbar">      
-      <div class="navbar-inner">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-         </a>
-         <a class="brand" href="#">&nbsp;</a>
-         <div class="nav-collapse collapse">
-          <ul class="nav">
-            [% menu %]       
-          </ul>
+    <div class="navbar navbar-default navbar-fixed-top" style="margin-top:70px">      
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
         </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            [% menu %]
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <?pl if ($auth_data->{id}) { ?>
+            <li class="visible-xs"><a href="/user/account">Profile: [== $auth_data->{username} =]</a></li>
+            <li class="visible-xs"><a href="/user/logout">Log out</a></li>
+            <li class="hidden-xs">
+              <div style="margin-top:15px"><a href="/user/account" class="taracot_top_badge_link"><span class="label label-default">Profile: [== $auth_data->{username} =]</span></a>&nbsp;<a href="/user/logout" class="taracot_top_badge_link" style="margin-right:5px"><span class="label label-warning">Log out</span></a></div>
+            </li>
+            <?pl } else { ?>
+            <li class="visible-xs"><a href="/user/authorize">Log in</a></li>
+            <li class="visible-xs"><a href="/user/register">Sign up</a></li>
+            <li class="hidden-xs">
+              <div style="margin-top:15px"><a href="/user/authorize" class="taracot_top_badge_link"><span class="label label-success">Log in</span></a>&nbsp;<a href="/user/register" class="taracot_top_badge_link" style="margin-right:5px"><span class="label label-primary">Sign up</span></a></div>
+            </li>            
+            <?pl } ?>
+            <li><a data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a><ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left"></ul></li>
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
-    </div>    
-  </div>
-  <div id="taracot-top-img"></div>  
-  <div class="container taracot-after-header" id="taracot-content">
-    [== $content || '' =]     
-  </div>  
-  <footer id="taracot-footer">
-    <div class="container">
-      <p>Taracot CMS designed by <a href="http://taracot.org" rel="author">Michael Matveev</a></p>
     </div>
-  </footer>
-  <script type="text/javascript">
-   var taracot_langs_available = jQuery.parseJSON('[== $detect_lang->{list} =]');
-   var taracot_lang_current = "[== $detect_lang->{lng} =]";
-  </script>
-  <script src="/js/taracot.frontend.min.js"></script>
-</body>
+    <div class="wrapper">
+      <div class="container">
+        [== $content =]
+      </div> <!-- /container -->
+    </div> <!-- /wrapper -->
+    <div class="footer">
+      <div class="container">
+        <p class="text-muted credit">Taracot CMS designed by <a href="http://martinbean.co.uk">Michael A. Matveev</a>.</p>
+      </div>
+    </div>       
+    <script type="text/javascript">
+     var taracot_langs_available = jQuery.parseJSON('[== $detect_lang->{list} =]');
+     var taracot_lang_current = "[== $detect_lang->{lng} =]";
+    </script>    
+    <script src="/js/taracot.frontend.min.js"></script>
+  </body>
 </html>
