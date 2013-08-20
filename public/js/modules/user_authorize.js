@@ -34,24 +34,24 @@ $('#auth_login,#auth_password,#auth_captcha').bind('keypress', function (e) {
 });
 
 $('#btn_submit').bind('click', function () {
-    $('#cg_auth_login').removeClass('error');
-    $('#cg_auth_password').removeClass('error');
-    $('#cg_auth_captcha').removeClass('error');
+    $('#cg_auth_login').removeClass('has-error');
+    $('#cg_auth_password').removeClass('has-error');
+    $('#cg_auth_captcha').removeClass('has-error');
     $('#form_error_msg').hide();
     $('#form_error_msg_text').html('');
     var form_errors = false;
     if (!$('#auth_login').val().match(/^[A-Za-z0-9_\-]{3,100}$/) && !$('#auth_login').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
-        $('#cg_auth_login').addClass('error');
+        $('#cg_auth_login').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_login + "<br/>");
         form_errors = true;
     }
     if (!$('#auth_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{1,100}$/)) {
-        $('#cg_auth_password').addClass('error');
+        $('#cg_auth_password').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_password_single + "<br/>");
         form_errors = true;
     }
     if (!$('#cg_auth_captcha').hasClass('hide') && !$('#auth_captcha').val().match(/^[0-9]{4}$/)) {
-        $('#cg_auth_captcha').addClass('error');
+        $('#cg_auth_captcha').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_captcha + "<br/>");
         form_errors = true;
     }
@@ -93,15 +93,15 @@ $('#btn_submit').bind('click', function () {
                     $('#auth_form_hint').show();
                     $('#auth_form_ajax').hide();
                     $('#auth_captcha').val('');
+                    reloadCaptcha();
                     if (data.fields) {
                         for (var i = 0; i < data.fields.length; i++) {
-                            if (data.fields[i] == "captcha") {
-                                $('#cg_auth_' + data.fields[i]).fadeIn();   
-                                reloadCaptcha();
+                            if (data.fields[i] == "captcha") {                                
+                                $('#cg_auth_captcha').removeClass('hide');                                
                                 $('#auth_captcha').focus();
                             }
-                            $('#cg_auth_' + data.fields[i]).addClass('error');
-                            if (i == 1) {
+                            $('#cg_auth_' + data.fields[i]).addClass('has-error');
+                            if (i == 0) {
                                 $('#auth_' + data.fields[i]).focus();
                             }
                         }

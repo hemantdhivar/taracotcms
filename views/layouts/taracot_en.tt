@@ -9,7 +9,9 @@
     <title>[== $pagetitle =] | [== $page_data->{site_title} =]</title>
     <link href="/css/bootstrap3.min.css" rel="stylesheet">
     <link href="/taracot/main.css" rel="stylesheet">
-    <script src="/js/taracot3.min.js"></script> 
+    <script src="/js/taracot3.min.js"></script>
+    <!--[if lt IE 9]><script src="/js/html5.js"></script><![endif]-->  
+    <!-- module css --> [== $head_html =]  
   </head>
   <body>
     <div class="navbar navbar-fixed-top" style="background:#444;height:80px">

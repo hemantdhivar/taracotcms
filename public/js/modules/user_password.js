@@ -73,6 +73,7 @@ $('#btn_submit').bind('click', function () {
                 if (data.status == 1) {
                     $('#pwd_form_ajax').html(js_lang_user_pwd_success_sent);
                 } else {
+                    reloadCaptcha();
                     if (data.errors) {
                         for (var i = 0; i < data.errors.length; i++) {
                             $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + data.errors[i] + "<br/>");

@@ -578,9 +578,11 @@ post '/account/profile/process' => sub {
     return $json_xs->encode(\%res);
   }
   # success
+  $res{avatar_changed} = 0;
   if (-e config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg') {
     removeFile(config->{files_dir}."/avatars/".$auth->{username}.'.jpg');
     moveFile(config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg', config->{files_dir}."/avatars/".$auth->{username}.'.jpg');
+    $res{avatar_changed} = 1;
   }
   database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { realname => $realname, phone => $phone, lastchanged => time }); 
   return $json_xs->encode(\%res);

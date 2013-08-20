@@ -1,61 +1,63 @@
 <h1 id="editpost_title">[== $lang->{add_post} =]</h1>
-<span id="editpost_hint">[== $lang->{add_post_hint} =]</span><br/><?pl if ($page_data->{blog_mode} eq 'moderate') { ?><br/>[== $lang->{post_hint_premod} =]<?pl } ?><hr/>
+<span id="editpost_hint">[== $lang->{add_post_hint} =]</span><br/><?pl if ($page_data->{blog_mode} eq 'moderate') { ?><br/>[== $lang->{post_hint_premod} =]<?pl } ?><div style="height:25px"></div>
 <?pl
  my $hub_html='';
  foreach my $key (keys %$hub_data) { 
   $hub_html.=qq~<option value="$key">$$hub_data{$key}</option>~;
  }?>
-<div class="alert alert-block alert-error hide" id="form_error_msg">
+<div class="alert alert-danger" style="display:none" id="form_error_msg">
 <span id="form_error_msg_text"></span>
 </div>
 <div class="hide" id="form_success_msg">
 </div>
 <form class="form-horizontal hide" id="blog_form">
-	<div class="control-group" id="cg_blog_title">
-    	<label class="control-label" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-    	<div class="controls">
-    		<input type="text" class="input-xxlarge" id="blog_title">
+	<div class="form-group" id="cg_blog_title">
+    	<label class="control-label col-lg-2" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="col-lg-4">
+    		<input type="text" class="form-control" id="blog_title">
             <span class="help-block">[== $lang->{edit_form_post_title_hint} =]</span>
     	</div>
     </div>
-    <div class="control-group" id="cg_blog_hub">
-    	<label class="control-label" for="blog_hub">[== $lang->{edit_form_post_hub} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-    	<div class="controls">
-    		<select class="input-large" id="blog_hub">[== $hub_html =]</select>
+    <div class="form-group" id="cg_blog_hub">
+    	<label class="control-label col-lg-2" for="blog_hub">[== $lang->{edit_form_post_hub} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="col-lg-4">
+    		<select class="form-control" id="blog_hub">[== $hub_html =]</select>
             <span class="help-block">[== $lang->{edit_form_post_hub_hint} =]</span>
     	</div>
     </div>    
-    <div class="control-group" id="cg_blog_tags">
-    	<label class="control-label" for="blog_tags">[== $lang->{edit_form_post_tags} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-    	<div class="controls">
-    		<input type="text" class="input-xlarge" id="blog_tags">
+    <div class="form-group" id="cg_blog_tags">
+    	<label class="control-label col-lg-2" for="blog_tags">[== $lang->{edit_form_post_tags} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="col-lg-4">
+    		<input type="text" class="form-control" id="blog_tags">
             <span class="help-block">[== $lang->{edit_form_post_tags_hint} =]</span>
     	</div>
     </div>    
-    <div class="control-group" id="cg_blog_state">
-    	<label class="control-label" for="blog_state">[== $lang->{edit_form_post_state} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-    	<div class="controls">
-    		<select class="input-xlarge" id="blog_state"><option value="0">[== $lang->{state_draft} =]</option><option value="1" selected="selected">[== $lang->{state_published} =]</option><option value="2">[== $lang->{state_published_auth} =]</option></select>
+    <div class="form-group" id="cg_blog_state">
+    	<label class="control-label col-lg-2" for="blog_state">[== $lang->{edit_form_post_state} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="col-lg-4">
+    		<select class="form-control" id="blog_state"><option value="0">[== $lang->{state_draft} =]</option><option value="1" selected="selected">[== $lang->{state_published} =]</option><option value="2">[== $lang->{state_published_auth} =]</option></select>
             <span class="help-block">[== $lang->{edit_form_post_state_hint} =]</span>
     	</div>
     </div>
-    <div class="control-group" id="cg_comments_allowed">
-        <label class="control-label" for="comments_allowed">[== $lang->{comments_allowed} =]</label>
-        <div class="controls">
-            <label class="checkbox">
-              <input type="checkbox" id="comments_allowed" checked="checked">
-            </label> 
+    <div class="form-group" id="cg_comments_allowed">
+        <label class="control-label col-lg-2" for="comments_allowed">[== $lang->{comments_allowed} =]</label>
+        <div class="col-lg-4">
+            <label class="checkbox-inline">
+                <input type="checkbox" id="comments_allowed" checked="checked" />
+            </label>
         </div>
     </div>
-    <div class="control-group" id="cg_blog_state">        
-        <div class="controls">
+    <div class="form-group" id="cg_blog_state">        
+        <div class="col-lg-offset-2 col-lg-9">
             <textarea id="wbbeditor"></textarea>
         </div>
     </div>
-    <div class="form-actions">
-        <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{edit_form_btn_save} =]</button>
-        <button type="button" class="btn" id="btn_preview">[== $lang->{edit_form_btn_preview} =]</button>
-        <button type="button" class="btn" id="btn_cancel" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-9">
+            <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{edit_form_btn_save} =]</button>
+            <button type="button" class="btn" id="btn_preview">[== $lang->{edit_form_btn_preview} =]</button>
+            <button type="button" class="btn" id="btn_cancel" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
+         </div>   
     </div>
 </form>
 <div id="blog_form_ajax" style="display:none">
@@ -94,7 +96,7 @@ $(document).ready(function() {
     $('#blog_form_ajax').show();
     loadData(wbbOpt);
   } else {
-    $('#blog_form').show();
+    $('#blog_form').removeClass('hide');
     $('#wbbeditor').wysibb(wbbOpt);
   }
 })

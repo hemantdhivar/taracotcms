@@ -18,42 +18,51 @@
 <br/><br/>
 <?pl } ?>
 <span id="auth_form_hint">[== $lang->{user_authorize_hint} =]<div style="height:20px"></div></span>
-<div class="alert alert-block alert-error" id="form_error_msg" style="display:none">
+<div class="alert alert-danger" id="form_error_msg" style="display:none">
     <span id="form_error_msg_text"></span>
-</div> 
-<form class="form-horizontal" id="auth_form">
-	<div class="control-group" id="cg_auth_login">
-    	<label class="control-label" for="auth_login">[== $lang->{user_register_username_or_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-    	<div class="controls">
-    		<input type="text" class="input-xlarge" id="auth_login">
-    	</div>
+</div>
+<div class="row">
+    <div class="col-sm-10 col-md-10">
+        <form class="form-horizontal" role="form" id="auth_form">
+        	<div class="form-group" id="cg_auth_login">
+            	<label class="control-label col-lg-2" for="auth_login">[== $lang->{user_register_username_or_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+            	<div class="col-lg-4">
+            		<input type="text" class="form-control" id="auth_login">
+            	</div>
+            </div>
+            <div class="form-group" id="cg_auth_password">
+                <label class="control-label col-lg-2" for="auth_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+                <div class="col-lg-4">
+                    <input type="password" class="form-control" id="auth_password">
+                    <div style="height:15px"></div>
+                    <a href="/user/password" target="_blank">[== $lang->{user_auth_forgot_password} =]</a>
+                </div>
+            </div>
+            <div class="form-group hide" id="cg_auth_captcha">
+                <label class="control-label col-lg-2" for="auth_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+                <div class="col-lg-2" style="margin-top:8px">
+                    <input type="text" class="form-control" id="auth_captcha">
+                </div>
+                <div class="col-lg-2">
+                    <span id="captcha_img" style="padding-top:5px"></span>
+                    &nbsp;<img src="/images/refresh.png" alt="[== $lang->{user_register_captcha_refresh} =]" title="[== $lang->{user_register_captcha_refresh} =]" width="16" height="16" style="cursor:pointer" onClick="reloadCaptcha()" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10" style="margin-top:20px">
+                    <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_auth_submit} =]</button>
+                    <button type="button" class="btn btn-success" id="btn_register" onclick="location.href='/user/register'">[== $lang->{user_auth_register} =]</button>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="control-group" id="cg_auth_password">
-        <label class="control-label" for="auth_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-        <div class="controls">
-            <input type="password" class="input-medium" id="auth_password">
+</div>
+<div class="row">
+    <div class="col-sm-10 col-md-10">
+        <div id="auth_form_ajax" style="display:none">
+            <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{user_register_processing} =]
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls" id="cg_auth_agreement">
-            <a href="/user/password" target="_blank">[== $lang->{user_auth_forgot_password} =]</a>
-        </div>
-    </div>
-    <div class="control-group hide" id="cg_auth_captcha">
-        <label class="control-label" for="auth_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-        <div class="controls">
-            <input type="text" class="input-mini" id="auth_captcha">
-            <span id="captcha_img"></span>
-            &nbsp;<img src="/images/refresh.png" alt="[== $lang->{user_register_captcha_refresh} =]" title="[== $lang->{user_register_captcha_refresh} =]" width="16" height="16" style="cursor:pointer" onClick="reloadCaptcha()" />
-        </div>
-    </div>
-    <div class="form-actions">
-        <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_auth_submit} =]</button>
-        <button type="button" class="btn btn-success" id="btn_register" onclick="location.href='/user/register'">[== $lang->{user_auth_register} =]</button>
-    </div>
-</form>
-<div id="auth_form_ajax" style="display:none">
-    <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{user_register_processing} =]
 </div>
 <script type="text/javascript">
     var js_lang_user_authorize = "[== $lang->{user_authorize} =]";

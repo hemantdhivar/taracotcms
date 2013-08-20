@@ -43,3 +43,6 @@
 	cursor: pointer;
 	font-size: 120%;
 }
+.label-inv {
+	background:#222;
+}

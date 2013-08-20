@@ -5,28 +5,28 @@ if (post_id) {
 $('#btn_submit').click(function() {
 	$('#form_error_msg').hide();
 	$('#form_error_msg_text').html('');
-	$('#cg_blog_title').removeClass('error');
-    $('#cg_blog_hub').removeClass('error');
-    $('#cg_blog_tags').removeClass('error');
-    $('#cg_blog_state').removeClass('error');
+	$('#cg_blog_title').removeClass('has-error');
+    $('#cg_blog_hub').removeClass('has-error');
+    $('#cg_blog_tags').removeClass('has-error');
+    $('#cg_blog_state').removeClass('has-error');
     var form_errors = false;
     if (!$('#blog_title').val().match(/.{1,250}$/)) {
-        $('#cg_blog_title').addClass('error');
+        $('#cg_blog_title').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_title + "<br/>");
         form_errors = true;      
     }
     if (!$('#blog_tags').val().match(/.{1,250}$/)) {
-        $('#cg_blog_tags').addClass('error');
+        $('#cg_blog_tags').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_tags + "<br/>");
         form_errors = true;      
     }
     if (!$('#blog_hub').val().match(/.{1,20}$/)) {
-        $('#cg_blog_hub').addClass('error');
+        $('#cg_blog_hub').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_hub + "<br/>");
         form_errors = true;      
     }
     if ($('#blog_state').val() < 0 || $('#blog_state').val() > 2) {
-        $('#cg_blog_state').addClass('error');
+        $('#cg_blog_state').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_state + "<br/>");
         form_errors = true;              
     } 
@@ -55,7 +55,7 @@ $('#btn_submit').click(function() {
                     if (data.status == 1) {
                         $('#form_success_msg').html(js_lang_success_save +"&nbsp;<a href=\"/blog/post/"+data.pid+"\">"+ js_lang_click_here +"</a>.<br/><br/>"+js_lang_success_new);
                         $('#blog_form_ajax').hide();
-                        $('#form_success_msg').show();
+                        $('#form_success_msg').removeClass('hide');
                     } else {
                         $('#blog_form_ajax').hide();
                         $('#blog_form').show();
@@ -71,7 +71,7 @@ $('#btn_submit').click(function() {
                         $(window).scrollTop($('#form_error_msg').position().top);                    
                         if (data.fields) {
                             for (var i = 0; i < data.fields.length; i++) {
-                                $('#cg_' + data.fields[i]).addClass('error');
+                                $('#cg_' + data.fields[i]).addClass('has-error');
                                 if (i == 0) {
                                     $('#' + data.fields[i]).focus();
                                 }

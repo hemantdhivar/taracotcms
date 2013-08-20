@@ -17,62 +17,66 @@
 <?pl if ($config->{auth_facebook_app_id} || $config->{auth_google_client_id} || $config->{auth_yandex_client_id} || $config->{auth_vk_client_id}) { ?>
 <br/><br/>
 <?pl } ?>
-<span id="reg_form_hint">[== $lang->{user_register_hint} =]<br/><br/><br/></span>
-<div class="alert alert-block alert-error" id="form_error_msg" style="display:none">
+<span id="reg_form_hint">[== $lang->{user_register_hint} =]</span>
+<div class="alert alert-danger" id="form_error_msg" style="display:none">
     <span id="form_error_msg_text"></span>
 </div> 
-<form class="form-horizontal" id="reg_form">
-	<div class="control-group" id="cg_reg_username">
-    	<label class="control-label" for="reg_username">[== $lang->{user_register_username} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-    	<div class="controls">
-    		<input type="text" class="input-xlarge" id="reg_username">
+<form class="form-horizontal" id="reg_form" role="form">
+	<div class="form-group" id="cg_reg_username" style="margin-top:30px">
+    	<label class="control-label col-lg-2" for="reg_username">[== $lang->{user_register_username} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="col-lg-3">
+    		<input type="text" class="form-control" id="reg_username">
             <span class="help-block">[== $lang->{user_register_username_hint} =]</span>
     	</div>
     </div>
-    <div class="control-group" id="cg_reg_realname">
-        <label class="control-label" for="reg_realname">[== $lang->{user_register_realname} =]</label>
-        <div class="controls">
-            <input type="text" class="input-xlarge" id="reg_realname">
+    <div class="form-group" id="cg_reg_realname">
+        <label class="control-label col-lg-2" for="reg_realname">[== $lang->{user_register_realname} =]</label>
+        <div class="col-lg-4">
+            <input type="text" class="form-control" id="reg_realname">
         </div>
     </div>
-    <div class="control-group" id="cg_reg_email">
-    	<label class="control-label" for="reg_email">[== $lang->{user_register_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-    	<div class="controls">
-    		<input type="text" id="reg_email">
+    <div class="form-group" id="cg_reg_email">
+    	<label class="control-label col-lg-2" for="reg_email">[== $lang->{user_register_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+    	<div class="col-lg-3">
+    		<input type="text" id="reg_email" class="form-control">
     	</div>
     </div>
-    <div class="control-group" id="cg_reg_phone">
-        <label class="control-label" for="reg_phone">[== $lang->{user_register_phone} =]</label>
-        <div class="controls">
-            <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium" id="reg_phone"></div>
+    <div class="form-group" id="cg_reg_phone">
+        <label class="control-label col-lg-2" for="reg_phone">[== $lang->{user_register_phone} =]</label>
+        <div class="col-lg-3">
+            <div class="input-prepend"><span class="add-on">+</span><input type="text" class="form-control" id="reg_phone"></div>
         </div>
     </div>
-    <div class="control-group" id="cg_reg_password">
-        <label class="control-label" for="reg_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-        <div class="controls">
-            <input type="password" class="input-small" id="reg_password">
-            <input type="password" class="input-small" id="reg_password_repeat">
+    <div class="form-group" id="cg_reg_password">
+        <label class="control-label col-lg-2" for="reg_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+        <div class="col-lg-2">
+            <input type="password" class="form-control" id="reg_password">
+            <input type="password" class="form-control" style="margin-top:5px" id="reg_password_repeat">
             <span class="help-block">[== $lang->{user_register_password_hint} =]</span>
         </div>
     </div>
-    <div class="control-group" id="cg_reg_captcha">
-        <label class="control-label" for="reg_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
-        <div class="controls">
-            <input type="text" class="input-mini" id="reg_captcha">
-            <span id="captcha_img"></span>
+    <div class="form-group" id="cg_reg_captcha">
+        <label class="control-label col-lg-2" for="reg_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+        <div class="col-lg-2 form-inline" style="margin-top:8px">
+            <input type="text" class="form-control" id="reg_captcha">
+        </div>
+        <div class="col-lg-2">
+            <span id="captcha_img" style="padding-top:5px"></span>
             &nbsp;<img src="/images/refresh.png" alt="[== $lang->{user_register_captcha_refresh} =]" title="[== $lang->{user_register_captcha_refresh} =]" width="16" height="16" style="cursor:pointer" onClick="reloadCaptcha()" />
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls" id="cg_reg_agreement">
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-8" id="cg_reg_agreement">
             <label class="checkbox" style="cursor:pointer">
-                <input type="checkbox" id="reg_accept" />&nbsp;[== $lang->{user_register_agreement_1} =] <a href="[== $agreement_url =]" target="_blank">[== $lang->{user_register_agreement_2} =]</a>
+<input type="checkbox" id="reg_accept" />&nbsp;[== $lang->{user_register_agreement_1} =] <a href="[== $agreement_url =]" target="_blank">[== $lang->{user_register_agreement_2} =]</a>
             </label>    
         </div>
     </div>
-    <div class="form-actions">
-        <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_register_submit} =]</button>
-    </div>
+    <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10" style="margin-top:20px">
+                    <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_register_submit} =]</button>
+                </div>
+            </div>
 </form>
 <div id="reg_form_ajax" style="display:none">
     <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{user_register_processing} =]

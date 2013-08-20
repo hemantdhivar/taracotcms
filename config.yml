@@ -32,8 +32,8 @@ site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
 # possible values are: blacklist, whitelist, off
 firewall_mode: 'blacklist'
-auth_facebook_app_id: ''
-auth_facebook_app_secret: ''
+auth_facebook_app_id: '1'
+auth_facebook_app_secret: '1'
 auth_facebook_redirect_uri: 'http://site.com/user/authorize/facebook/'
 auth_google_client_id: ''
 auth_google_client_secret: ''
@@ -63,4 +63,4 @@ plugins:
     X-Mailer: 'Taracot CMS'
   transport:
     Sendmail:
-      sendmail: '/usr/sbin/sendmail'
+      sendmail: 'w:/usr/bin/sendmail'
