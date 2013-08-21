@@ -536,3 +536,39 @@ th
     height: 16px;
     width: 16px;
 } 
+.editable_text>form>input {
+   border: 1px solid #cccccc;
+   border-radius: 3px;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+   -khtml-border-radius: 3px;
+   background: #ffffff !important;
+   outline: none;
+   height: 24px;
+   width: 120px;
+   color: #222;
+   -webkit-box-shadow:0 0 4px #999;
+   -moz-box-shadow:0 0 2px #999;
+   box-shadow:0 0 2px #999;
+   padding: 5px;
+}
+.dataTables_filter>label>input {  
+  border: 1px solid #cccccc;
+   border-radius: 3px;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+   -khtml-border-radius: 3px;
+   background: #ffffff !important;
+   outline: none;
+   width: 160px;
+   color: #222;
+   padding:5px;
+}
+.dataTables_filter>label>input:focus {  
+   -webkit-box-shadow:0 0 4px #999;
+   -moz-box-shadow:0 0 2px #999;
+   box-shadow:0 0 2px #999;   
+}
+.sorting {
+  cursor: pointer;
+}

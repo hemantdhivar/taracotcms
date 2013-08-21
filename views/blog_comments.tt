@@ -1,14 +1,32 @@
-<h2>[== $lang->{post_comments} =] (<span id="comment_count">0</span>)</h2>
+<div class="modal fade" id="comment_error">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="comment_error_header">[== $lang->{comment_error} =]</h4>
+      </div>
+      <div class="modal-body">
+        [== $lang->{comment_error_db} =]
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">[== $lang->{comment_error_close} =]</button>
+      </div>
+    </div>
+  </div>
+</div>
+<h3>[== $lang->{post_comments} =] (<span id="comment_count">0</span>)</h3>
 [== $comments =]<span id="blog_comment_dock_0"></span>
 <div style="height:24px"></div>
 <?pl if ($auth->{id}) { ?>
 <div id="comments_form_wrap">
 	<div id="comments_form">	
-		<textarea id="comment" class="input-xxlarge" rows="3"></textarea>
+		<div class="row">
+			<div class="col-lg-5"><textarea id="comment" class="form-control" rows="3"></textarea></div>
+		</div>
 		<div style="height:5px"></div>
-		<input type="button" class="btn" id="btn_comment" value="[== $lang->{comment_write} =]">
+		<input type="button" class="btn btn-default" id="btn_comment" value="[== $lang->{comment_write} =]">
 	</div>
-	<div id="comments_ajax_notify" class="hide">
+	<div id="comments_ajax_notify" style="display:none">
 		<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{blog_processing} =]
 	</div>
 </div>

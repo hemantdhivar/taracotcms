@@ -59,14 +59,14 @@ var comment_reply = function() {
     var cfw = $('#comments_form_wrap').detach();
     $('#comment_reply_attach_'+id).html(cfw);
     $('#comment_reply_'+id).hide();
-    $('#blog_comment_write').show();
+    $('#blog_comment_write').removeClass('hide');
     comment_id = id;   
     $('#comment').val('');
     $('#comment').focus();
 };
 $('.comment_reply').click(comment_reply);
 $('#blog_comment_write').click(function() {
-    $('#blog_comment_write').hide();
+    $('#blog_comment_write').addClass('hide');
     var cfw = $('#comments_form_wrap').detach();
     $('#blog_comment_dock').html(cfw);
     $('#comment_reply_'+comment_id).show();
@@ -103,7 +103,7 @@ $('#btn_delete_comment').click(function() {
                 $('#comment_delete_buttons').show();
                 $('#comment_delete_progress').hide();
                 $('#comment_delete_dialog').modal('hide');
-                $('#comment_'+delete_comment_id).html('<div class="muted">'+js_lang_comment_deleted+'</div>')
+                $('#comment_'+delete_comment_id+'_body').html('<span class="text-muted">'+js_lang_comment_deleted+'</span>')
             } else {         
                 $('#comment_delete_div').show();
                 $('#comment_delete_buttons').show();

@@ -2,35 +2,49 @@
 <script type="text/javascript" src="/js/admin/jquery.dataTables.bootstrap.js"></script>
 <script type="text/javascript" src="/js/admin/jquery.jeditable.min.js"></script>
 
-<h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
-<br />
+<div class="row">
+  <div class="col-md-11">
+    <h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
+  </div>
+  <div class="col-md-1">
+    <div class="visible-xs" id="mobile_mode"></div>  
+  </div>
+</div>
 
-<!-- 
- Data table 
--->
-<div class="visible-phone visible-tablet" id="mobile_mode"></div>  
 <div id="data_overview">
   <div class="btn-toolbar">
     <div class="btn-group">
-      <button type="button" id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_add} =]</span></button>
-      <button type="button" id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_del} =]</span></button>
+      <button type="button" id="btn_add" class="btn btn-success" href="#">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;[== $lang->{btn_add} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-plus-sign"></i></span>
+      </button>
+      <button type="button" id="btn_delete_all" class="btn btn-danger" href="#">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-trash"></i>&nbsp;[== $lang->{btn_del} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-trash"></i></span>
+      </button>
     </div>
     <div class="btn-group">
-      <button type="button" id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');$('#data_table_mobile').checkAll('table_cbx');"><i class="icon-ok-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_all} =]</span></button>
-      <button type="button" id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');$('#data_table_mobile').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_none} =]</span></button>
+      <button type="button" id="btn_select_all" class="btn btn-default" onclick="$('#data_table').find(':checkbox').prop('checked',true);$('#data_table_mobile').find(':checkbox').prop('checked',true);">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;[== $lang->{btn_select_all} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-ok-circle"></i></span>
+      </button>
+      <button type="button" id="btn_select_none" class="btn btn-default" onclick="$('#data_table').find(':checkbox').prop('checked',false);$('#data_table_mobile').find(':checkbox').prop('checked',false);">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;[== $lang->{btn_select_none} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-remove-circle"></i></span>
+      </button>
     </div>
   </div>  
-  <div><img src="/images/blank.gif" width="1" height="50" alt="" /></div>  
+  <div><img src="/images/blank.gif" width="1" height="10" alt="" /></div>  
   <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" style="display:none" id="data_table">
     <thead>
       <tr>
-        <th style="width:40px">[== $lang->{id} =]</th>
+        <th style="width:80px">[== $lang->{id} =]</th>
         <th style="width:100px">[== $lang->{username} =]</th>
         <th>[== $lang->{realname} =]</th>
         <th>[== $lang->{email} =]</th>
         <th>[== $lang->{phone} =]</th>
         <th style="width:60px;text-align:center">[== $lang->{status} =]</th>
-        <th style="width:92px;text-align:center">[== $lang->{actions} =]</th>
+        <th style="width:102px;text-align:center">[== $lang->{actions} =]</th>
       </tr>
       </thead>
       <tbody>
@@ -56,6 +70,8 @@
 -->
 
 <div class="modal" style="display:none" id="delete_confirmation">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{delete_confirmation_title} =]</h3>
@@ -64,8 +80,10 @@
   <p>[== $lang->{delete_confirmation_msg1} =]<br /><br /><span id="delete_row_list">none</span><br /><br />[== $lang->{delete_confirmation_msg2} =]</p>
  </div>
   <div class="modal-footer">
-     <button type="button" class="btn" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</button>
+     <button type="button" class="btn btn-default" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</button>
      <button type="button" class="btn btn-danger" id="btn_delete">[== $lang->{delete} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -74,6 +92,8 @@
 -->
 
 <div class="modal" style="display:none" id="none_selected">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{delete_none_selected_title} =]</h3>
@@ -82,7 +102,9 @@
   <p>[== $lang->{delete_none_selected_msg} =]</p>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_none_selected_close">[== $lang->{btn_close} =]</button>
+    <button type="button" class="btn btn-default" id="btn_none_selected_close">[== $lang->{btn_close} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -91,6 +113,8 @@
 -->
 
 <div class="modal" style="display:none" id="status_select">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{status_select_title} =]</h3>
@@ -100,9 +124,9 @@
     <div id="status_select_username"></div>
   </div>
   <span class="form-horizontal">
-    <div class="control-group">
-      <label class="control-label">[== $lang->{status} =]</label>
-      <div class="controls">
+    <div class="form-group">
+      <label class="control-label col-lg-2">[== $lang->{status} =]</label>
+      <div class="col-lg-4">
       <label class="radio">
       <input type="radio" name="status_select_status" id="status_select_radio_status_disabled" value="0">
       [== $lang->{status0} =] </label>
@@ -117,8 +141,10 @@
   </span>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_status_select_close">[== $lang->{edit_cancel} =]</button>
+    <button type="button" class="btn btn-default" id="btn_status_select_close">[== $lang->{edit_cancel} =]</button>
     <button type="button" class="btn btn-success" id="btn_status_select_save">[== $lang->{edit_save} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -127,6 +153,8 @@
 -->
 
 <div class="modal" style="display:none" id="error_dialog">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{error} =]</h3>
@@ -135,13 +163,13 @@
   <span id="error_dialog_msg"></span>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_error_dialog_close">[== $lang->{btn_close} =]</button>
+    <button type="button" class="btn btn-default" id="btn_error_dialog_close">[== $lang->{btn_close} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
-<!-- 
- Data edit form 
--->
+<!--  Data edit form -->
 <div id="data_edit" style="display:none">
   <h2 id="h_data_actions">[== $lang->{edit_user} =]</h2>
   <div id="data_edit_form">
@@ -154,80 +182,83 @@
     <br />
     <span class="form-horizontal">
       <span id="form_controls">
-        <div class="control-group" id="cg_username">
-          <label class="control-label" for="username">[== $lang->{username} =]&nbsp;<span class="required_field">*</span></label>
-          <div class="controls">
-            <input type="text" class="input-xlarge data-edit-field" id="username">
+        <div class="form-group" id="cg_username">
+          <label class="control-label col-lg-2" for="username">[== $lang->{username} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control data-edit-field" id="username">
             <p class="help-block">[== $lang->{username_hint} =]</p>
           </div>
         </div>
-        <div class="control-group" id="cg_password">
-          <label class="control-label" for="password" id="label_password">[== $lang->{password} =]&nbsp;<span class="required_field">*</span></label>
-          <div class="controls">
-            <input type="password" class="input-small data-edit-field" id="password">&nbsp;<input type="password" class="input-small data-edit-field" id="password_repeat">
+        <div class="form-group" id="cg_password">
+          <label class="control-label col-lg-2" for="password" id="label_password">[== $lang->{password} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="col-lg-4">
+            <input type="password" class="form-control data-edit-field" id="password">&nbsp;<input type="password" class="form-control data-edit-field" id="password_repeat">
             <p class="help-block" id="password_hint">[== $lang->{password_hint} =]</p>
           </div>
         </div>
-        <div class="control-group" id="cg_phone">
-          <label class="control-label" for="phone">[== $lang->{phone} =]</label>
-          <div class="controls">
-            <div class="input-prepend"><span class="add-on">+</span><input type="text" class="input-medium data-edit-field" id="phone"></div>
+        <div class="form-group" id="cg_phone">
+          <label class="control-label col-lg-2" for="phone">[== $lang->{phone} =]</label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control data-edit-field" id="phone">
           </div>
         </div>
-        <div class="control-group" id="cg_email">
-          <label class="control-label" for="email">[== $lang->{email} =]</label>
-          <div class="controls">
-            <input type="text" class="input-xlarge data-edit-field" id="email">
+        <div class="form-group" id="cg_email">
+          <label class="control-label col-lg-2" for="email">[== $lang->{email} =]</label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control data-edit-field" id="email">
           </div>
         </div>
-        <div class="control-group" id="cg_realname">
-          <label class="control-label" for="realname">[== $lang->{realname} =]</label>
-          <div class="controls">
-            <input type="text" class="input-xlarge data-edit-field" id="realname">
+        <div class="form-group" id="cg_realname">
+          <label class="control-label col-lg-2" for="realname">[== $lang->{realname} =]</label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control data-edit-field" id="realname">
           </div>
         </div>
-        <div class="control-group" id="cg_groups">
-          <label class="control-label" for="realname">[== $lang->{groups} =]</label>
-          <div class="controls">
-            <input type="text" class="input-xxlarge data-edit-field" id="groups">
+        <div class="form-group" id="cg_groups">
+          <label class="control-label col-lg-2" for="realname">[== $lang->{groups} =]</label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control data-edit-field" id="groups">
           </div>
         </div>
-        <div class="control-group">
-          <label class="control-label">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
-          <div class="controls">
-            <label class="radio">
+        <div class="form-group">
+          <label class="control-label col-lg-2">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="col-lg-4">
+            <label class="radio" style="font-weight:normal">
             <input type="radio" name="status" id="radio_status_disabled" class="data-edit-field" value="0">
             [== $lang->{status0} =] </label>
-            <label class="radio">
+            <label class="radio" style="font-weight:normal">
             <input type="radio" name="status" id="radio_status_normal" class="data-edit-field" value="1" checked>
             [== $lang->{status1} =] </label>
-            <label class="radio">
+            <label class="radio" style="font-weight:normal">
             <input type="radio" name="status" id="radio_status_admin" class="data-edit-field" value="2">
             [== $lang->{status2} =] </label>
           </div>
         </div>
-        <div class="control-group">
-          <label class="control-label">[== $lang->{banned} =]</label>
-          <div class="controls">
-            <label class="checkbox">
+        <div class="form-group">
+          <label class="control-label col-lg-2">[== $lang->{banned} =]</label>
+          <div class="col-lg-4">
+            <label class="checkbox" style="font-weight:normal">
               <input type="checkbox" id="banned">&nbsp;<span id="banned_till"></span>
             </label>
           </div>
         </div>
       </span> <!-- form_controls -->
-    </div>
+      <div class="form-group">
+        <div id="data_edit_form_buttons" class="col-lg-offset-2 col-lg-10" style="margin-top:15px">
+          <button type="button" class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</button>&nbsp;<button type="button" class="btn btn-default" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</button>
+        </div>
+      </div>      
     <!-- data_edit_form -->
-    <div class="form-actions">
-      <div id="ajax_loading" style="display:none">
-        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
+  </span> <!-- form_horizontal -->
+  </div>
+  <div class="form-group">      
+        <div class="col-lg-10" style="margin-top:15px">
+          <div id="ajax_loading">
+            <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
+          </div>
+          <button type="button" class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</button>
+        </div>        
       </div>
-      <div id="data_edit_form_buttons">
-        <button type="button" class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</button>&nbsp;<button type="button" class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</button>
-      </div>
-      <button type="button" class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</button>
-      <!-- data_edit_form_buttons -->
-    </div>
-  </span> <!-- form_horizontal -->                              
 </div>
 <!-- data_edit -->
 <script type="text/javascript">

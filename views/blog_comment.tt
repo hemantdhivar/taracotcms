@@ -1,7 +1,11 @@
-<?pl my $off = ($level-1)*20; ?><div id="comment_[== $id =]" class="comment" style="margin-left: [== $off =]px">
-<?pl if ($deleted) { ?><div class="muted">[== $lang->{comment_deleted} =]</div><?pl } else { ?><div style="height:6px;"></div>
-<img src="[== $avatar =]" width="27" height="27" style="width:27px;height:27px" alt="" />&nbsp;&nbsp;<span id="comment_[== $id =]_data"><b><a href="/user/profile/[== $username =]">[== $username =]</a></b>&nbsp;<span class="comment_timestamp">[[== $ts =]]<?pl if ($ipaddr) { ?>&nbsp;&mdash;&nbsp;[== $ipaddr =]<?pl } ?></span></span><?pl if ($mod_actions) { ?>&nbsp;&mdash;&nbsp;<span onclick="deleteComment('[== $id =]')" style="cursor:pointer;font-size:90%;color:red">[[== $lang->{delete_comment} =]]</span><?pl } ?><div style="height:10px;"></div>
-<span id="comment_[== $id =]_text">[== $text =]</span>
-<?pl if ($auth->{id}) { ?><div style="height:3px;"></div><span id="comment_reply_[== $id =]" class="comment_reply">[== $lang->{comment_reply} =]</span><span id="comment_reply_attach_[== $id =]"></span><?pl } ?>
-<?pl } ?>
+<?pl my $off = ($level-1)*20; ?><div class="media" id="comment_[== $id =]" style="margin-left: [== $off =]px">
+  <a class="pull-left" href="#">
+    <img src="[== $avatar =]" width="50" height="50" style="width:50px;height:50px" alt="" />
+  </a>
+  <div class="media-body" id="comment_[== $id =]_body">
+    <?pl if ($deleted) { ?><span class="text-muted">[== $lang->{comment_deleted} =]</span><?pl } else { ?><span id="comment_[== $id =]_data"><b><a href="/user/profile/[== $username =]">[== $username =]</a></b>&nbsp;<span class="comment_timestamp">[[== $ts =]]<?pl if ($ipaddr) { ?>&nbsp;&mdash;&nbsp;[== $ipaddr =]<?pl } ?></span></span><?pl if ($mod_actions) { ?>&nbsp;&mdash;&nbsp;<span onclick="deleteComment('[== $id =]')" style="cursor:pointer;font-size:90%;color:red">[[== $lang->{delete_comment} =]]</span><?pl } ?>
+    <div style="height:5px;"></div>
+    <span id="comment_[== $id =]_text">[== $text =]</span>
+    <?pl if ($auth->{id}) { ?><div style="height:3px;"></div><span id="comment_reply_[== $id =]" class="comment_reply">[== $lang->{comment_reply} =]</span><span id="comment_reply_attach_[== $id =]"></span><?pl } ?><?pl } ?>
+  </div>
 </div>

@@ -37,15 +37,7 @@ $('.data-edit-field').bind('keypress', function (e) {
         $('#btn_edit_cancel').click();
     }
 });
-// Check all, uncheck all functions
-jQuery.fn.checkAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).attr('checked', true);
-}
-jQuery.fn.uncheckAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).removeAttr('checked');
-}
+
 $(document).ready(function () {
     $().dropdown();
     mobile_mode = $('#mobile_mode').is(":visible");
@@ -61,7 +53,7 @@ $(document).ready(function () {
             "sPaginationType": "bootstrap",
             "iDisplayLength": 10,
             "bAutoWidth": false,
-            "sAjaxSource": "/admin/users/data/list?mobile=true",
+            "sAjaxSource": "/admin/users/data/list?mobile=true",            
             "fnServerData": function ( sSource, aoData, fnCallback ) {
                 $.ajax( {
                     "dataType": 'json',
@@ -90,7 +82,7 @@ $(document).ready(function () {
                 "aTargets": [3]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center;width:92px"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></button>';
+                    return '<div style="text-align:center;width:92px"><button type="button" class="btn btn-default btn-sm" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></span></button>';
                 },
                 "aTargets": [3]
             }, {
@@ -120,6 +112,7 @@ $(document).ready(function () {
             "fnDrawCallback": function () {
                 $('.editable_text').editable(submitEdit, {
                     placeholder: '—',
+                    cssclass : 'form-control',                    
                     tooltip: ''
                 });
             }
@@ -132,9 +125,14 @@ $(document).ready(function () {
             "bServerSide": true,
             "bProcessing": true,
             "sPaginationType": "bootstrap",
-            "iDisplayLength": 10,
+            "iDisplayLength": 30,
             "bAutoWidth": true,
             "sAjaxSource": "/admin/users/data/list",
+            "fnInitComplete": function() {
+                $('#results tbody tr').each(function(){
+                        $(this).find('td:eq(0)').attr('nowrap', 'nowrap');
+                });
+            },
             "fnServerData": function ( sSource, aoData, fnCallback ) {
                 $.ajax( {
                     "dataType": 'json',
@@ -163,7 +161,7 @@ $(document).ready(function () {
                 "aTargets": [5]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
+                    return '<div style="text-align:center"><button type="button" class="btn btn-default btn-xs" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-xs" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></button></div>';
                 },
                 "aTargets": [6]
             }, {
@@ -213,6 +211,7 @@ $(document).ready(function () {
             }
         }); // dtable desktop
     }
+    $.fn.dataTableExt.oJUIClasses["sFilter"] = "form-control";
 });
 
 function selectStatus(row_id) {
@@ -369,6 +368,7 @@ $('#btn_edit_save').click(function () {
         $('#data_edit_form_buttons').hide();
         $('#ajax_loading_msg').html(js_lang_ajax_saving);
         $('#ajax_loading').show();
+        return;
         $.ajax({
             type: 'POST',
             url: '/admin/users/data/save',
