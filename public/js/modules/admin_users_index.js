@@ -158,7 +158,7 @@ $(document).ready(function () {
             },
             "aoColumnDefs": [{
                 "bSortable": false,
-                "aTargets": [5]
+                "aTargets": [6]
             }, {
                 "fnRender": function (oObj, sVal) {
                     return '<div style="text-align:center"><button type="button" class="btn btn-default btn-xs" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-xs" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></button></div>';
@@ -368,7 +368,6 @@ $('#btn_edit_save').click(function () {
         $('#data_edit_form_buttons').hide();
         $('#ajax_loading_msg').html(js_lang_ajax_saving);
         $('#ajax_loading').show();
-        return;
         $.ajax({
             type: 'POST',
             url: '/admin/users/data/save',

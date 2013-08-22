@@ -37,15 +37,7 @@ $('.data-edit-field').bind('keypress', function (e) {
         $('#btn_edit_cancel').click();
     }
 });
-// Check all, uncheck all functions
-jQuery.fn.checkAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).attr('checked', true);
-}
-jQuery.fn.uncheckAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).removeAttr('checked');
-}
+
 $(document).ready(function () {
     $().dropdown();
     var row_id = 0;
@@ -90,7 +82,7 @@ $(document).ready(function () {
             }, 
             {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
+                    return '<div style="text-align:center"><button type="button" class="btn btn-default btn-xs" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-xs" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></button></div>';
                 },
                 "aTargets": [3]
             }, 

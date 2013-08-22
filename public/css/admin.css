@@ -87,9 +87,8 @@ table
 
 .bg-grey-pad
 {
-  background-color:#e5e5e5;
-  border-radius:5px;
-  padding:10px;
+  background-color: #f5f5f5;
+  border: 1px solid #bbb;
 }
 
 .medium-large-non-bold
@@ -229,6 +228,7 @@ th
   width:94px;
   overflow:hidden;
   padding:3px;
+  width:100%;
 }
 
 .node_selected

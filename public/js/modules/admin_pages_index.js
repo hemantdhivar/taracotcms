@@ -50,15 +50,7 @@ $('input:radio[name="status_select_status"]').bind('keypress', function (e) {
         $('#btn_status_select_save').click();
     }
 });
-// Check all, uncheck all functions
-jQuery.fn.checkAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).attr('checked', true);
-}
-jQuery.fn.uncheckAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).removeAttr('checked');
-}
+
 $(document).ready(function () {
     $('#plain_editor').css('width', ($('#data_table').width() - 50) + 'px');
     // Init CkEditor
@@ -108,7 +100,7 @@ $(document).ready(function () {
                 "aTargets": [3]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center;width:92px"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
+                    return '<div style="text-align:center;width:92px"><button type="button" class="btn btn-default btn-sm" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></button></div>';
                 },
                 "aTargets": [3]
             }, {
@@ -143,7 +135,7 @@ $(document).ready(function () {
             "bServerSide": true,
             "bProcessing": true,
             "sPaginationType": "bootstrap",
-            "iDisplayLength": 10,
+            "iDisplayLength": 30,
             "bAutoWidth": true,
             "sAjaxSource": "/admin/pages/data/list",
             "fnServerData": function ( sSource, aoData, fnCallback ) {
@@ -174,7 +166,7 @@ $(document).ready(function () {
                 "aTargets": [6]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
+                    return '<div style="text-align:center"><button type="button" class="btn btn-default btn-xs" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-xs" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></button></div>';
                 },
                 "aTargets": [6]
             }, {
@@ -617,20 +609,15 @@ function editData(id) {
     $('#filename').val('');
     $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
     $('#data_edit_form').hide();
-    $('#data_edit_form_buttons').hide();
+    $('#wysiwyg_editor_wrap').hide();
+    $('#plain_editor_wrap').hide();
+    $('#data_edit_form_buttons').hide();    
     $('#ajax_loading_msg').html(js_lang_ajax_loading);
     $('#ajax_loading').show();
-    if (mobile_mode) {
-        $('#wysiwyg_editor_wrap').hide();
-        $('#editor_buttons').show();
-        $('#plain_editor_wrap').show();
-        $('#data_edit_form').show();
-        $('#form_controls').show();
-        $('#data_edit_form_buttons').show();
-        edit_mode = 'mobile';
-        $('#eb_imgbrowser').show();
+    if (mobile_mode) {        
+        edit_mode = 'mobile';        
         $('#plain_editor').val('');
-    } else {
+    } else {        
         CKEDITOR.instances.wysiwyg_editor.setData('');
     }
     $.ajax({
@@ -668,11 +655,17 @@ function editData(id) {
                 if (data.description) {
                     $('#description').val(data.description);
                 }
+                if (mobile_mode) {
+                        $('#eb_imgbrowser').show();
+                        $('#plain_editor_wrap').show();
+                    } else {
+                        $('#wysiwyg_editor_wrap').show();
+                    }
                 if (data.content) {
                     if (mobile_mode) {
-                        $('#plain_editor').val(data.content);
+                        $('#plain_editor').val(data.content);                        
                     } else {
-                        CKEDITOR.instances.wysiwyg_editor.setData(data.content);
+                        CKEDITOR.instances.wysiwyg_editor.setData(data.content);                        
                     }
                 }
                 if (data.status) {

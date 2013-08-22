@@ -48,15 +48,6 @@ $('input:radio[name="status_select_status"]').bind('keypress', function (e) {
         $('#btn_status_select_save').click();
     }
 });
-// Check all, uncheck all functions
-jQuery.fn.checkAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).attr('checked', true);
-}
-jQuery.fn.uncheckAll = function (name) {
-    var selector = ':checkbox' + (name ? '[@name=' + name + ']' : '');
-    $(selector, this).removeAttr('checked');
-}
 $(document).ready(function () {
     $().dropdown();
     var row_id = 0;
@@ -108,7 +99,7 @@ $(document).ready(function () {
                 "aTargets": [3]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
+                    return '<div style="text-align:center"><button type="button" class="btn btn-default btn-sm" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></button></div>';
                 },
                 "aTargets": [3]
             }, {
@@ -179,7 +170,7 @@ $(document).ready(function () {
                 "aTargets": [4]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<div style="text-align:center"><button type="button" class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></button></div>';
+                    return '<div style="text-align:center"><button type="button" class="btn btn-default btn-xs" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></button>&nbsp;<button type="button" class="btn btn-danger btn-xs" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></button></div>';
                 },
                 "aTargets": [4]
             }, {
@@ -450,17 +441,11 @@ function editData(id) {
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html(js_lang_ajax_loading);
     $('#ajax_loading').show();
-    if (mobile_mode) {
-        $('#wysiwyg_editor_wrap').hide();
-        $('#editor_buttons').show();
-        $('#plain_editor_wrap').show();
-        $('#data_edit_form').show();
-        $('#form_controls').show();
-        $('#data_edit_form_buttons').show();
-        $('#eb_switch_cm').hide();
-        $('#eb_switch_ck').hide();
-        edit_mode = 'mobile';
-        $('#eb_imgbrowser').show();
+    $('#wysiwyg_editor_wrap').hide();
+    $('#plain_editor_wrap').hide();
+    $('#eb_imgbrowser').hide();
+    if (mobile_mode) {                
+        edit_mode = 'mobile';        
         $('#plain_editor').val('');
     } else {
         CKEDITOR.instances.wysiwyg_editor.setData('');
@@ -492,11 +477,17 @@ function editData(id) {
                 if (data.s_value) {
                     $('#s_value').val(data.s_value);
                 }
+                if (mobile_mode) {
+                        $('#eb_imgbrowser').show();
+                        $('#plain_editor_wrap').show();
+                    } else {
+                        $('#wysiwyg_editor_wrap').show();
+                    }
                 if (data.s_value_html) {
                     if (mobile_mode) {
-                        $('#plain_editor').val(data.s_value_html);
+                        $('#plain_editor').val(data.s_value_html);                        
                     } else {
-                        CKEDITOR.instances.wysiwyg_editor.setData(data.s_value_html);
+                        CKEDITOR.instances.wysiwyg_editor.setData(data.s_value_html);                        
                     }
                 }
                 if (data.lang) {

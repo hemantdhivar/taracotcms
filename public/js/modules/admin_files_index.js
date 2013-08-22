@@ -10,17 +10,17 @@
              if (data.length > 0) {
                  var output = '<table class="table table-striped">';
                  for (var t = 0; t < data.length; t++) {
-                     output += '<tr><td width="20"><i class="filetypes-i-' + data[t].type + '"></i></td><td><a href="/files/storage/' + data[t].name + '" target="_blank">/files/storage/' + data[t].name + '</a></td><td width="100" style="text-align:center">' + data[t].size + '</td><td width="30" style="text-align:right"><span class="btn btn-mini btn-danger" onclick="' + "deleteFile('" + data[t].name + "');" + '"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></td></tr>';
+                     output += '<tr><td width="20"><i class="filetypes-i-' + data[t].type + '"></i></td><td><a href="/files/storage/' + data[t].name + '" target="_blank">/files/storage/' + data[t].name + '</a></td><td width="100" style="text-align:center">' + data[t].size + '</td><td width="30" style="text-align:right"><span class="btn btn-xs btn-danger" onclick="' + "deleteFile('" + data[t].name + "');" + '"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></span></td></tr>';
                  }
                  output += '</table>'
                  $('#file_list').html(output);
              } else {
-                 $('#file_list').html('<span class="label label-important">' + js_lang_no_files + '</span>');
+                 $('#file_list').html('<span class="label label-danger">' + js_lang_no_files + '</span>');
              }
          },
          error: function () {
              $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');
-             $('#file_list').html('<span class="label label-important">' + js_lang_no_files + '</span>');
+             $('#file_list').html('<span class="label label-danger">' + js_lang_no_files + '</span>');
          }
      });
  }

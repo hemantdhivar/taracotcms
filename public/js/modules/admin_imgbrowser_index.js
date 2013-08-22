@@ -74,7 +74,7 @@ $(document).ready(function () {
                     idata.setItem('type_' + val.id, val.type);
                     var fn = val.file;
                     fn = fn.substr(0, 17) + (fn.length > 17 ? '...' : '');
-                    $('#files').append('<li class="thumbnail browser_thumbnail node" ondblclick="' + act + '" id="' + val.id + '"><div style="background-image: url(' + pic + ')" class="browser_thumbnail_pic"><img src="/images/' + fp + '" width="32" height="16" alt="" class="browser_thumbnail_pic_type" /></div><div class="thumbnail_font">' + fn + '</div></li>');
+                    $('#files').append('<div class="col-sm-2 col-sm-2" style="width:140px;text-align:center"><span class="thumbnail browser_thumbnail node" ondblclick="' + act + '" id="' + val.id + '"><div style="background-image: url(' + pic + ')" class="browser_thumbnail_pic"><img src="/images/' + fp + '" width="32" height="16" alt="" class="browser_thumbnail_pic_type" /></div><div class="thumbnail_font">' + fn + '</div></span></div>');
                 });
                 $('.node').shifty({
                     className: 'node_selected',

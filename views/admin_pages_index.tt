@@ -5,30 +5,45 @@
 <script type="text/javascript" src="/js/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript" src="/js/admin/hashtable.js"></script>
 
-<h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
-<br />
+<div class="row">
+  <div class="col-md-11">
+    <h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
+  </div>
+  <div class="col-md-1">
+    <div class="visible-xs" id="mobile_mode"></div>  
+  </div>
+</div>
 
-<!-- 
- Data table 
--->
+<!--  Data table -->
 
-<div class="visible-phone visible-tablet" id="mobile_mode"></div>  
 <div id="data_overview">
 	<div class="btn-toolbar">
     <div class="btn-group">
-      <button type="button" id="btn_add" class="btn btn-success" href="#"><i class="icon-plus-sign icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_add} =]</span></button>
-      <button type="button" id="btn_delete_all" class="btn btn-danger" href="#"><i class="icon-trash icon-white"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_del} =]</span></button>
+      <button type="button" id="btn_add" class="btn btn-success" href="#">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;[== $lang->{btn_add} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-plus-sign"></i></span>
+      </button>
+      <button type="button" id="btn_delete_all" class="btn btn-danger" href="#">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-trash"></i>&nbsp;[== $lang->{btn_del} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-trash"></i></span>
+      </button>
     </div>
     <div class="btn-group">
-      <button type="button" id="btn_select_all" class="btn" onclick="$('#data_table').checkAll('table_cbx');$('#data_table_mobile').checkAll('table_cbx');"><i class="icon-ok-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_all} =]</span></button>
-      <button type="button" id="btn_select_none" class="btn" onclick="$('#data_table').uncheckAll('table_cbx');$('#data_table_mobile').uncheckAll('table_cbx');"><i class="icon-remove-circle"></i><span class="visible-desktop">&nbsp;[== $lang->{btn_select_none} =]</span></button>
+      <button type="button" id="btn_select_all" class="btn btn-default" onclick="$('#data_table').find(':checkbox').prop('checked',true);$('#data_table_mobile').find(':checkbox').prop('checked',true);">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;[== $lang->{btn_select_all} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-ok-circle"></i></span>
+      </button>
+      <button type="button" id="btn_select_none" class="btn btn-default" onclick="$('#data_table').find(':checkbox').prop('checked',false);$('#data_table_mobile').find(':checkbox').prop('checked',false);">
+        <span class="visible-sm visible-md visible-lg"><i class="glyphicon glyphicon-remove-circle"></i>&nbsp;[== $lang->{btn_select_none} =]</span>
+        <span class="visible-xs"><i class="glyphicon glyphicon-remove-circle"></i></span>
+      </button>
     </div>
-  </div>  
-  <div><img src="/images/blank.gif" width="1" height="50" alt="" /></div>
+  </div>   
+  <div><img src="/images/blank.gif" width="1" height="10" alt="" /></div>
 	<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="data_table" style="display:none">
   	<thead>
     	<tr>
-    		<th style="width:40px">[== $lang->{id} =]</th>
+    		<th style="width:80px">[== $lang->{id} =]</th>
     		<th>[== $lang->{pagetitle} =]</th>
     		<th>[== $lang->{filename} =]</th>
     		<th style="width:80px;text-align:center">[== $lang->{language} =]</th>
@@ -59,7 +74,9 @@
  "Delete" modal dialog 
 -->
 
-<div class="modal" style="display:none" id="delete_confirmation">
+<div class="modal" id="delete_confirmation">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{delete_confirmation_title} =]</h3>
@@ -68,7 +85,9 @@
   <p>[== $lang->{delete_confirmation_msg1} =]<br /><br /><span id="delete_row_list">none</span><br /><br />[== $lang->{delete_confirmation_msg2} =]</p>
  </div>
   <div class="modal-footer">
-     <button type="button" class="btn" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</button>&nbsp;<button type="button" class="btn btn-danger" id="btn_delete">[== $lang->{delete} =]</button>
+     <button type="button" class="btn btn-default" id="btn_delete_cancel">[== $lang->{delete_cancel} =]</button>&nbsp;<button type="button" class="btn btn-danger" id="btn_delete">[== $lang->{delete} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -76,7 +95,9 @@
  "None selected" modal dialog 
 -->
 
-<div class="modal" style="display:none" id="none_selected">
+<div class="modal" id="none_selected">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{delete_none_selected_title} =]</h3>
@@ -85,7 +106,9 @@
   <p>[== $lang->{delete_none_selected_msg} =]</p>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_none_selected_close">[== $lang->{btn_close} =]</button>
+    <button type="button" class="btn btn-default" id="btn_none_selected_close">[== $lang->{btn_close} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -93,7 +116,9 @@
  Language select modal dialog 
 -->
 
-<div class="modal" style="display:none" id="language_select">
+<div class="modal" id="language_select">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{language_select_title} =]</h3>
@@ -103,10 +128,10 @@
     <div id="language_select_pagetitle"></div>
   </div>
   <span class="form-horizontal">
-    <div class="control-group" style="padding-top:6px">
-     <label class="control-label" for="language_select_lang">[== $lang->{language} =]</label>
-     <div class="controls">
-     <select class="input-xlarge" id="language_select_lang">
+    <div class="form-group" style="padding-top:6px">
+     <label class="control-label col-lg-2" for="language_select_lang">[== $lang->{language} =]</label>
+     <div class="col-lg-5">
+     <select class="form-control" id="language_select_lang">
       [== $list_langs =]
      </select>
      </div>
@@ -114,7 +139,9 @@
   </span>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_language_select_close">[== $lang->{edit_cancel} =]</button>&nbsp;<button type="button" class="btn btn-success" id="btn_language_select_save">[== $lang->{edit_save} =]</button>
+    <button type="button" class="btn btn-default" id="btn_language_select_close">[== $lang->{edit_cancel} =]</button>&nbsp;<button type="button" class="btn btn-success" id="btn_language_select_save">[== $lang->{edit_save} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -122,7 +149,9 @@
  Layout select modal dialog 
 -->
 
-<div class="modal" style="display:none" id="layout_select">
+<div class="modal" id="layout_select">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{layout_select_title} =]</h3>
@@ -132,10 +161,10 @@
     <div id="layout_select_pagetitle"></div>
   </div>
   <span class="form-horizontal">
-    <div class="control-group" style="padding-top:6px">
-     <label class="control-label" for="layout_select_lang">[== $lang->{layout} =]</label>
-     <div class="controls">
-     <select class="input-xlarge" id="layout_select_layout">
+    <div class="form-group" style="padding-top:6px">
+     <label class="control-label col-lg-2" for="layout_select_lang">[== $lang->{layout} =]</label>
+     <div class="col-lg-5">
+     <select class="form-control" id="layout_select_layout">
       [== $list_layouts =]
      </select>
      </div>
@@ -143,8 +172,10 @@
   </span>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_layout_select_close">[== $lang->{edit_cancel} =]</button>&nbsp;
+    <button type="button" class="btn btn-default" id="btn_layout_select_close">[== $lang->{edit_cancel} =]</button>&nbsp;
     <button type="button" class="btn btn-success" id="btn_layout_select_save">[== $lang->{edit_save} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -152,7 +183,9 @@
  Status select modal dialog 
 -->
 
-<div class="modal" style="display:none" id="status_select">
+<div class="modal" id="status_select">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{status_select_title} =]</h3>
@@ -162,16 +195,16 @@
     <div id="status_select_pagetitle"></div>
   </div>
   <span class="form-horizontal">
-    <div class="control-group">
-      <label class="control-label">[== $lang->{status} =]</label>
-      <div class="controls">
-      <label class="radio">
+    <div class="form-group">
+      <label class="control-label col-lg-2">[== $lang->{status} =]</label>
+      <div class="col-lg-8">
+      <label class="radio" style="font-weight:normal">
       <input type="radio" name="status_select_status" id="status_select_radio_status_disabled" value="0">
       [== $lang->{status0} =] </label>
-      <label class="radio">
+      <label class="radio" style="font-weight:normal">
       <input type="radio" name="status_select_status" id="status_select_radio_status_normal" value="1" checked>
       [== $lang->{status1} =] </label>
-      <label class="radio">
+      <label class="radio" style="font-weight:normal">
       <input type="radio" name="status_select_status" id="status_select_radio_status_admin" value="2">
       [== $lang->{status2} =] </label>
   		</div>
@@ -179,8 +212,10 @@
   </span>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_status_select_close">[== $lang->{edit_cancel} =]</button>
+    <button type="button" class="btn btn-default" id="btn_status_select_close">[== $lang->{edit_cancel} =]</button>
     <button type="button" class="btn btn-success" id="btn_status_select_save">[== $lang->{edit_save} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -188,7 +223,9 @@
  "Error" modal dialog 
 -->
 
-<div class="modal" style="display:none" id="error_dialog">
+<div class="modal" id="error_dialog">
+ <div class="modal-dialog">
+ <div class="modal-content">
  <div class="modal-header">
   <a class="close" data-dismiss="modal"></a>
   <h3>[== $lang->{error} =]</h3>
@@ -197,7 +234,9 @@
   <span id="error_dialog_msg"></span>
  </div>
   <div class="modal-footer">
-    <button type="button" class="btn" id="btn_error_dialog_close">[== $lang->{btn_close} =]</button>
+    <button type="button" class="btn btn-default" id="btn_error_dialog_close">[== $lang->{btn_close} =]</button>
+ </div>
+ </div>
  </div>
 </div>
 
@@ -219,98 +258,90 @@
 		<span class="form-horizontal">
 		  <span id="form_controls">
         
-        <div class="control-group" id="cg_pagetitle">
-    			<label class="control-label" for="pagetitle">[== $lang->{pagetitle} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<input type="text" class="input-xlarge data-edit-field" id="pagetitle">
+        <div class="form-group" id="cg_pagetitle">
+    			<label class="control-label col-lg-2" for="pagetitle">[== $lang->{pagetitle} =]&nbsp;<span class="required_field">*</span></label>
+    			<div class="col-lg-4">
+    				<input type="text" class="form-control data-edit-field" id="pagetitle">
     			</div>
     		</div>
         
-        <div class="control-group" id="cg_filename">
-    			<label class="control-label" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<input type="text" class="input-xlarge data-edit-field" id="filename"><span class="help-inline"><img src="/images/get.png" alt="[== $lang->{get_url} =]" width="20" height="20" style="cursor:pointer" onclick="generateURL()" id="get_url" /></span>
+        <div class="form-group" id="cg_filename">
+    			<label class="control-label col-lg-2" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
+    			<div class="col-lg-6">
+    				<input type="text" class="form-control data-edit-field" id="filename">
     				<div class="help-block" id="url_help" style="overflow:hidden"></div> 
     				<span id="unidecode_progress" style="display:none"><img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
     			</div>
+          <div class="col-lg-1">
+            <img src="/images/get.png" alt="[== $lang->{get_url} =]" width="20" height="20" style="cursor:pointer;margin-top:6px" onclick="generateURL()" id="get_url" />
+          </div>
     		</div>
+
+        <div class="form-group" id="cg_keywords">
+          <label class="control-label col-lg-2" for="keywords">[== $lang->{keywords} =]</label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control data-edit-field" id="keywords">
+            <p class="help-block">[== $lang->{keywords_hint} =]</p>
+          </div>
+        </div>
     		
-    		<div class="row">
-          <div class="span5">
-           <div class="control-group" id="cg_keywords">
-      			<label class="control-label" for="keywords">[== $lang->{keywords} =]</label>
-      			<div class="controls">
-      				<input type="text" class="input-xlarge data-edit-field" id="keywords">
-      				<p class="help-block">[== $lang->{keywords_hint} =]</p>                         
-      			</div>
-      		 </div>
+    		<div class="form-group" id="cg_description">
+          <label class="control-label col-lg-2" for="description">[== $lang->{description} =]</label>
+          <div class="col-lg-4">
+            <input type="text" class="form-control data-edit-field" id="description">
+            <p class="help-block">[== $lang->{description_hint} =]</p>
           </div>
-          <div class="span5">
-           <div class="control-group" id="cg_description">
-      			<label class="control-label" for="description">[== $lang->{description} =]</label>
-      			<div class="controls">
-      				<input type="text" class="input-xlarge data-edit-field" id="description">
-      				<p class="help-block">[== $lang->{description_hint} =]</p>
-      			</div>
-      		 </div>
-          </div>
-        </div>    		
+        </div>  		
   		
-    		<div class="control-group">
-    			<label class="control-label">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
-    			<div class="controls">
-    				<label class="radio">
+    		<div class="form-group">
+    			<label class="control-label col-lg-2">[== $lang->{status} =]&nbsp;<span class="required_field">*</span></label>
+    			<div class="col-lg-4">
+    				<label class="radio" style="font-weight:normal">
     				<input type="radio" name="status" class="data-edit-field" id="radio_status_disabled" value="0">
     				[== $lang->{status0} =] </label>
-    				<label class="radio">
+    				<label class="radio" style="font-weight:normal">
     				<input type="radio" name="status" class="data-edit-field" id="radio_status_normal" value="1" checked>
     				[== $lang->{status1} =] </label>
-    				<label class="radio">
+    				<label class="radio" style="font-weight:normal">
     				<input type="radio" name="status" class="data-edit-field" id="radio_status_admin" value="2">
     				[== $lang->{status2} =] </label>
     			</div>
     		</div>
     		
-    		<div class="row">
-          <div class="span5">
-        		<div class="control-group" id="cg_lang">
-        			<label class="control-label" for="lang">[== $lang->{language} =]&nbsp;<span class="required_field">*</span></label>
-        			<div class="controls">
-        				<select class="input-xlarge data-edit-field" id="lang">
+        		<div class="form-group" id="cg_lang">
+        			<label class="control-label col-lg-2" for="lang">[== $lang->{language} =]&nbsp;<span class="required_field">*</span></label>
+        			<div class="col-lg-3">
+        				<select class="form-control data-edit-field" id="lang">
         				 [== $list_langs =]
         				</select>
         			</div>
         		</div>
-      		</div>
-      		<div class="span5">
-      		  <div class="control-group" id="cg_layout">
-        			<label class="control-label" for="layout">[== $lang->{layout} =]&nbsp;<span class="required_field">*</span></label>
-        			<div class="controls">
-        				<select class="input-xlarge data-edit-field" id="layout">
+      		  <div class="form-group" id="cg_layout">
+        			<label class="control-label col-lg-2" for="layout">[== $lang->{layout} =]&nbsp;<span class="required_field">*</span></label>
+        			<div class="col-lg-3">
+        				<select class="form-control data-edit-field" id="layout">
         				 [== $list_layouts =]
         				</select>
         			</div>
         		</div>
-      		</div>
-    		</div>
     		
   		</span> <!-- form_controls -->
 
   	</div>
   	<!-- data_edit_form -->
 
-    <div id="editor_buttons" class="controls" style="padding-bottom:5px">
-         <span id="eb_imgbrowser" class="btn btn-mini btn-success">[== $lang->{imgbrowser} =]</span>
+    <div id="editor_buttons" style="padding-bottom:5px">
+         <span id="eb_imgbrowser" class="btn btn-default btn-xs">[== $lang->{imgbrowser} =]</span>
     </div>
     <div id="wysiwyg_editor_wrap"><div id="wysiwyg_editor"></div></div>
     <div id="plain_editor_wrap" style="display:none"><textarea id="plain_editor" style="width:300px;height:300px"></textarea></div>
 
-  	<div class="form-actions">
+  	<div class="form-group" style="margin-top:20px">
   		<div id="ajax_loading" style="display:none">
   			<img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
   		</div>
   		<div id="data_edit_form_buttons">
-  			<button type="button" class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</button>&nbsp;<button type="button" class="btn" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</button>
+  			<button type="button" class="btn btn-success" id="btn_edit_save">[== $lang->{edit_save} =]</button>&nbsp;<button type="button" class="btn btn-default" id="btn_edit_cancel">[== $lang->{edit_cancel} =]</button>
   		</div>
   		<button type="button" class="btn btn-danger" style="display:none" id="btn_abort">[== $lang->{abort} =]</button>
   		<!-- data_edit_form_buttons -->

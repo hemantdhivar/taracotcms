@@ -15,7 +15,7 @@
   </div>
  </span>
  <div class="form-actions">
-  <button type="button" class="btn" id="btn_id_cancel">[== $lang->{cancel} =]</button>
+  <button type="button" class="btn btn-default" id="btn_id_cancel">[== $lang->{cancel} =]</button>
   <button type="button" class="btn btn-success" id="btn_id_save">[== $lang->{save} =]</button>
  </div>
 </div>
@@ -23,26 +23,20 @@
 <div id="img_browser">
   <div class="btn-toolbar">
     <div class="btn-group">
-     <span class="btn btn-success disabled buttons-tooltip" id="btn_select" rel="tooltip" data-placement="bottom" title="[== $lang->{select} =]"><i class="browser-i-select"></i></span>
-     <span class="btn buttons-tooltip" id="btn_upload" rel="tooltip" data-placement="bottom" title="[== $lang->{upload} =]"><i class="browser-i-upload"></i></span>
+     <span class="btn btn-success disabled buttons-tooltip" id="btn_select" rel="tooltip" data-placement="bottom" title="[== $lang->{select} =]"><i class="browser-i-select"></i></span><span class="btn btn-default buttons-tooltip" id="btn_upload" rel="tooltip" data-placement="bottom" title="[== $lang->{upload} =]"><i class="browser-i-upload"></i></span>
     </div>
     <div class="btn-group" id="btn_group_dir">
-     <span class="btn btn-warning disabled buttons-tooltip" id="btn_up" rel="tooltip" data-placement="bottom" title="[== $lang->{up} =]"><i class="browser-i-updir"></i></span>
-     <span class="btn btn-warning disabled buttons-tooltip" id="btn_chdir" rel="tooltip" data-placement="bottom" title="[== $lang->{chdir} =]"><i class="browser-i-chdir"></i></span>
-     <span class="btn buttons-tooltip" id="btn_newdir" rel="tooltip" data-placement="bottom" title="[== $lang->{newdir} =]"><i class="browser-i-newdir"></i></span>
+     <span class="btn btn-warning disabled buttons-tooltip" id="btn_up" rel="tooltip" data-placement="bottom" title="[== $lang->{up} =]"><i class="browser-i-updir"></i></span><span class="btn btn-warning disabled buttons-tooltip" id="btn_chdir" rel="tooltip" data-placement="bottom" title="[== $lang->{chdir} =]"><i class="browser-i-chdir"></i></span><span class="btn btn-default buttons-tooltip" id="btn_newdir" rel="tooltip" data-placement="bottom" title="[== $lang->{newdir} =]"><i class="browser-i-newdir"></i></span>
     </div>
     <div class="btn-group">
-     <span class="btn disabled buttons-tooltip" id="btn_cut" rel="tooltip" data-placement="bottom" title="[== $lang->{cut} =]"><i class="browser-i-cut"></i></span>
-     <span class="btn disabled buttons-tooltip" id="btn_copy" rel="tooltip" data-placement="bottom" title="[== $lang->{copy} =]"><i class="browser-i-copy"></i></span>
-     <span class="btn disabled buttons-tooltip" id="btn_paste" rel="tooltip" data-placement="bottom" title="[== $lang->{paste} =]"><i class="browser-i-paste"></i></span>
+     <span class="btn btn-default disabled buttons-tooltip" id="btn_cut" rel="tooltip" data-placement="bottom" title="[== $lang->{cut} =]"><i class="browser-i-cut"></i></span><span class="btn btn-default disabled buttons-tooltip" id="btn_copy" rel="tooltip" data-placement="bottom" title="[== $lang->{copy} =]"><i class="browser-i-copy"></i></span><span class="btn btn-default disabled buttons-tooltip" id="btn_paste" rel="tooltip" data-placement="bottom" title="[== $lang->{paste} =]"><i class="browser-i-paste"></i></span>
     </div>
     <div class="btn-group">
-     <span class="btn disabled buttons-tooltip" id="btn_rename" rel="tooltip" data-placement="bottom" title="[== $lang->{rename} =]"><i class="browser-i-rename"></i></span>
-     <span class="btn btn-danger disabled buttons-tooltip" id="btn_delete" rel="tooltip" data-placement="bottom" title="[== $lang->{delete} =]"><i class="browser-i-delete"></i></span>
+     <span class="btn btn-default disabled buttons-tooltip" id="btn_rename" rel="tooltip" data-placement="bottom" title="[== $lang->{rename} =]"><i class="browser-i-rename"></i></span><span class="btn btn-default btn-danger disabled buttons-tooltip" id="btn_delete" rel="tooltip" data-placement="bottom" title="[== $lang->{delete} =]"><i class="browser-i-delete"></i></span>
     </div>
   </div>
   <div id="cd" style="padding-bottom:10px;padding-top:10px"></div>
-  <ul class="thumbnails" id="files"></ul>
+  <div class="row" id="files"></div>
 </div> <!-- img_browser -->
 
 <div id="upload_form" style="display:none">
@@ -53,12 +47,12 @@
   <div id="uploading" style="display:none"><img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;[== $lang->{file_uploading} =]</div>
   <div class="btn-toolbar">
     <div class="btn-group" id="btn_group_upload">
-    	<button type="button" class="btn" id="btn_upload_select">[== $lang->{upload_add} =]</button>
+    	<button type="button" class="btn btn-default" id="btn_upload_select">[== $lang->{upload_add} =]</button>
     	<button type="button" class="btn btn-success disabled" id="btn_upload_start">[== $lang->{upload_start} =]</button>
     	<button type="button" class="btn btn-danger disabled" id="btn_upload_clear">[== $lang->{upload_clear} =]</button>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn" id="btn_upload_back">[== $lang->{upload_back} =]</button>
+      <button type="button" class="btn btn-default" id="btn_upload_back">[== $lang->{upload_back} =]</button>
     </div>
   </div>
  </div>

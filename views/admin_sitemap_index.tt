@@ -5,57 +5,57 @@
  <h1 class="taracot-admin-h1">[== $lang->{module_name_long} =]</h1>
  <br />
  <div id="tree_lang">
-  <span class="form-vertical">
-    <div class="control-group">
-      <label class="control-label" for="select_lang">[== $lang->{select_lang} =]:</label>
-      <div class="controls">
-       <select class="input-xlarge" id="select_lang">
+  <span class="form-horizontal">
+    <div class="form-group">
+      <label class="control-label col-lg-2" for="select_lang">[== $lang->{select_lang} =]:</label>
+      <div class="col-lg-4" style="margin-bottom:5px">
+       <select class="form-control" id="select_lang">
        [== $list_langs =]
        </select>      
   		</div>
-  		<div class="controls">
-  		 <button type="button" class="btn" id="tree_btn_load">[== $lang->{load_tree} =]</button>
+      <div class="col-lg-2">
+  		 <button type="button" class="btn btn-default" id="tree_btn_load">[== $lang->{load_tree} =]</button>
   		</div>
 		</div>
   </span> 
  </div>
  <div id="tree_editor" style="display:none">
-   <div class="row" style="padding-bottom:5px">
-     <div class="span4" style="padding-top:10px;">
-       <button type="button" id="tree_btn_add" class="btn btn-success"><i class="icon-plus icon-white"></i></button>&nbsp;<button type="button" id="tree_btn_del" class="btn btn-danger"><i class="icon-trash icon-white"></i></button>
-     </div>
-     <div class="span8"></div>
-   </div>
    <div class="row">
-     <div class="span4 well" id="tree"></div>
-     <div class="span8 well" id="node_edit" style="display:none">
+     <div class="col-lg-12" style="margin-bottom:10px">
+       <button type="button" id="tree_btn_add" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>&nbsp;<button type="button" id="tree_btn_del" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+     </div>
+   </div>
+   <div class="container row">
+     <div class="col-lg-3 panel panel-default panel-body" id="tree"></div>
+     <div class="col-lg-5 panel panel-default panel-body" id="node_edit" style="display:none;margin-left:5px">
        <span class="form-horizontal">
-        <div class="control-group">
-         <label class="control-label" for="node_title">[== $lang->{node_title} =]:</label>
-         <div class="controls">
-          <input type="text" class="input-xlarge" id="node_title">
+        <div class="form-group">
+         <label class="control-label col-lg-3" for="node_title">[== $lang->{node_title} =]:</label>
+         <div class="col-lg-9">
+          <input type="text" class="form-control" id="node_title">
          </div>
         </div>
-        <div class="control-group">
-         <label class="control-label" for="node_url">[== $lang->{node_url} =]:</label>
-         <div class="controls">
-          <input type="text" class="input-xlarge" id="node_url">
+        <div class="form-group">
+         <label class="control-label col-lg-3" for="node_url">[== $lang->{node_url} =]:</label>
+         <div class="col-lg-9">
+          <input type="text" class="form-control" id="node_url">
          </div>
-        </div>
-        <div class="control-group" style="padding-top:6px text-align:right; border-top:1px solid #ccc">
-         <div class="controls" style="padding-top:15px">
-          <button type="button" class="btn" id="node_btn_save">[== $lang->{node_save} =]</button>&nbsp;<button type="button" class="btn" id="node_btn_cancel">[== $lang->{node_cancel} =]</button>
+        </div>        
+        <div class="form-group">
+         <div class=".col-lg-offset-2 col-lg-5" style="padding-top:15px">          
+          <button type="button" class="btn btn-default" id="node_btn_save">[== $lang->{node_save} =]</button>&nbsp;<button type="button" class="btn btn-default" id="node_btn_cancel">[== $lang->{node_cancel} =]</button>
          </div> 
         </div>
       </span>
     </div>
-   </div>
-   <div class="form-actions"> 
+   </div>   
+   <hr/>
+   <div class="form-actions" style="margin-bottom:20px;margin-top:20px"> 
     <div id="ajax_loading" style="display:none">
   	  <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
  		</div>
  		<div id="tree_btns">
-      <button type="button" id="tree_btn_serialize" class="btn">[== $lang->{tree_save} =]</button>&nbsp;<button type="button" id="tree_btn_cancel" class="btn">[== $lang->{tree_cancel} =]</button>&nbsp;<button type="button" id="tree_btn_reset" class="btn btn-danger">[== $lang->{tree_reset} =]</button>
+      <button type="button" id="tree_btn_serialize" class="btn btn-default">[== $lang->{tree_save} =]</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" id="tree_btn_cancel" class="btn btn-default">[== $lang->{tree_cancel} =]</button>&nbsp;<button type="button" id="tree_btn_reset" class="btn btn-danger">[== $lang->{tree_reset} =]</button>
     </div>  
    </div>
  </div>
