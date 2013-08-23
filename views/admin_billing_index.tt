@@ -63,45 +63,45 @@
  </div>
  <div class="modal-body" id="profile_modal_body">
   <span class="form-horizontal" id="profile_edit_form">
-    <div class="alert alert-block alert-error" id="profile_edit_form_error" style="display:none">
+    <div class="alert alert-danger" id="profile_edit_form_error" style="display:none">
       <span id="profile_edit_form_error_text"></span>
     </div>
     <blockquote id="profile_form_top">
       <p class="lead">[== $lang->{russian_lang_data} =]</p>
     </blockquote>
-    <span id="form_controls"> 
-      <div class="control-group prcg" id="cg_n1r"> 
-        <label class="control-label" for="n1r">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-medium" id="n1r" />
+    <span id="form_controls">
+      <div class="form-group prcg" id="cg_n1r">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n1r">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="n1r" />
           <p class="help-block"><small>[== $lang->{p_last_name_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_n2r"> 
-        <label class="control-label" for="n2r">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-medium" id="n2r" />
+      <div class="form-group prcg" id="cg_n2r">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n2r">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="n2r" />
           <p class="help-block"><small>[== $lang->{p_first_name_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_n3r"> 
-        <label class="control-label" for="n3r">[== $lang->{p_patronym} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-medium" id="n3r" />
+      <div class="form-group prcg" id="cg_n3r">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n3r">[== $lang->{p_patronym} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="n3r" />
           <p class="help-block"><small>[== $lang->{p_patronym_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_passport"> 
-        <label class="control-label" for="passport">[== $lang->{p_passport} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-xlarge" id="passport" />
+      <div class="form-group prcg" id="cg_passport">         
+        <div class="col-lg-12">
+          <label class="control-label" for="passport">[== $lang->{p_passport} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="passport" />
           <p class="help-block"><small>[== $lang->{p_passport_hint} =]</small></p>
         </div>
       </div>      
-      <div class="control-group prcg" id="cg_addr_ru"> 
-        <label class="control-label" for="addr_ru">[== $lang->{p_addr_ru} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-xlarge" id="addr_ru" />
+      <div class="form-group prcg" id="cg_addr_ru">         
+        <div class="col-lg-12">
+          <label class="control-label" for="addr_ru">[== $lang->{p_addr_ru} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="addr_ru" />
           <p class="help-block"><small>[== $lang->{p_addr_ru_hint} =]</small></p>
         </div>
       </div>      
@@ -110,31 +110,31 @@
       <p class="lead">[== $lang->{russian_org_lang_data} =]<br/><small>[== $lang->{russian_org_lang_data_filled_hint} =]</small></p>      
     </blockquote>
     <span id="form_controls"> 
-      <div class="control-group prcg" id="cg_org_r"> 
-        <label class="control-label" for="org_r">[== $lang->{p_org_r} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-large" id="org_r" />
+      <div class="form-group prcg" id="cg_org_r">         
+        <div class="col-lg-12">
+          <label class="control-label" for="org_r">[== $lang->{p_org_r} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="org_r" />
           <p class="help-block"><small>[== $lang->{p_org_r_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_org"> 
-        <label class="control-label" for="org">[== $lang->{p_org} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-large" id="org" />
+      <div class="form-group prcg" id="cg_org">         
+        <div class="col-lg-12">
+          <label class="control-label" for="org">[== $lang->{p_org} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="org" />
           <p class="help-block"><small>[== $lang->{p_org_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_code"> 
-        <label class="control-label" for="code">[== $lang->{p_code} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-small" id="code" />
+      <div class="form-group prcg" id="cg_code">         
+        <div class="col-lg-12">
+          <label class="control-label" for="code">[== $lang->{p_code} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="code" />
           <p class="help-block"><small>[== $lang->{p_code_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_kpp"> 
-        <label class="control-label" for="kpp">[== $lang->{p_kpp} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-small" id="kpp" />
+      <div class="form-group prcg" id="cg_kpp">         
+        <div class="col-lg-12">
+          <label class="control-label" for="kpp">[== $lang->{p_kpp} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="kpp" />
           <p class="help-block"><small>[== $lang->{p_kpp_hint} =]</small></p>
         </div>
       </div>
@@ -143,73 +143,72 @@
       <p class="lead">[== $lang->{int_lang_data} =]</p>
     </blockquote>
     <span id="form_controls"> 
-      <div class="control-group prcg" id="cg_n1e"> 
-        <label class="control-label" for="n1e">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-medium" id="n1e" />
+      <div class="form-group prcg" id="cg_n1e">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n1e">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="n1e" />
           <p class="help-block"><small>[== $lang->{p_last_name_en_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_n2e"> 
-        <label class="control-label" for="n2e">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-medium" id="n2e" />
+      <div class="form-group prcg" id="cg_n2e">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n2e">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="n2e" />
           <p class="help-block"><small>[== $lang->{p_first_name_en_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_n3e"> 
-        <label class="control-label" for="n3e">[== $lang->{p_patronym_first} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif span1" id="n3e" />
+      <div class="form-group prcg" id="cg_n3e">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n3e">[== $lang->{p_patronym_first} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="n3e" />
           <p class="help-block"><small>[== $lang->{p_patronym_first_en_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_birth_date"> 
-        <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-small" id="birth_date" data-date-format="dd.mm.yyyy" />
+      <div class="form-group prcg" id="cg_birth_date">         
+        <div class="col-lg-12">
+          <label class="control-label" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="birth_date" data-date-format="dd.mm.yyyy" />
           <p class="help-block"><small>[== $lang->{p_birth_date_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_country"> 
-        <label class="control-label" for="country">[== $lang->{p_country} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <select id="country" class="prif">
+      <div class="form-group prcg" id="cg_country">         
+        <div class="col-lg-12">
+          <label class="control-label" for="country">[== $lang->{p_country} =]&nbsp;<span class="required_field">*</span></label> 
+          <select id="country" class="prif form-control">
           </select>
         </div>
       </div>  
-      <div class="control-group prcg" id="cg_city"> 
-        <label class="control-label" for="n2e">[== $lang->{p_city} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-large" id="city" />
+      <div class="form-group prcg" id="cg_city">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n2e">[== $lang->{p_city} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="city" />
           <p class="help-block"><small>[== $lang->{p_city_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_state"> 
-        <label class="control-label" for="n2e">[== $lang->{p_state} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-large" id="state" />
+      <div class="form-group prcg" id="cg_state">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n2e">[== $lang->{p_state} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="state" />
           <p class="help-block"><small>[== $lang->{p_state_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_postcode"> 
-        <label class="control-label" for="n2e">[== $lang->{p_postcode} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif span1" id="postcode" />
+      <div class="form-group prcg" id="cg_postcode">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n2e">[== $lang->{p_postcode} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="postcode" />
           <p class="help-block"><small>[== $lang->{p_postcode_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_addr"> 
-        <label class="control-label" for="n2e">[== $lang->{p_addr} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-xlarge" id="addr" />
+      <div class="form-group prcg" id="cg_addr">         
+        <div class="col-lg-12">
+          <label class="control-label" for="n2e">[== $lang->{p_addr} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="addr" />
           <p class="help-block"><small>[== $lang->{p_addr_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_private"> 
-        <label class="control-label" for="private">[== $lang->{p_private} =]</label> 
-        <div class="controls">
-          <input type="checkbox" id="private" name="private" />
+      <div class="form-group prcg" id="cg_private" style="padding-bottom:10px">         
+        <div class="col-lg-12">
+          <span class="checkbox"><input type="checkbox" id="private" name="private" />&nbsp;<label class="control-label" for="private">[== $lang->{p_private} =]</label></span>
         </div>
       </div>
     </span>
@@ -217,24 +216,24 @@
       <p class="lead">[== $lang->{int_cont_data} =]</p>
     </blockquote>
     <span id="form_controls"> 
-      <div class="control-group prcg" id="cg_phone"> 
-        <label class="control-label" for="phone">[== $lang->{p_phone} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-medium" id="phone" />
+      <div class="form-group prcg" id="cg_phone">         
+        <div class="col-lg-12">
+          <label class="control-label" for="phone">[== $lang->{p_phone} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="phone" />
           <p class="help-block"><small>[== $lang->{p_phone_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_fax"> 
-        <label class="control-label" for="fax">[== $lang->{p_fax} =]</label> 
-        <div class="controls">
-          <input type="text" class="prif input-medium" id="fax" />
+      <div class="form-group prcg" id="cg_fax">         
+        <div class="col-lg-12">
+          <label class="control-label" for="fax">[== $lang->{p_fax} =]</label> 
+          <input type="text" class="prif form-control" id="fax" />
           <p class="help-block"><small>[== $lang->{p_fax_hint} =]</small></p>
         </div>
       </div>
-      <div class="control-group prcg" id="cg_email"> 
-        <label class="control-label" for="email">[== $lang->{p_email} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-large" id="email" />
+      <div class="form-group prcg" id="cg_email">         
+        <div class="col-lg-12">
+          <label class="control-label" for="email">[== $lang->{p_email} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="email" />
           <p class="help-block"><small>[== $lang->{p_email_hint} =]</small></p>
         </div>
       </div>
@@ -265,33 +264,32 @@
  </div>
  <div class="modal-body">
   <span class="form-horizontal" id="hosting_edit_form">
-    <div class="alert alert-block alert-error" id="hosting_edit_form_error" style="display:none">
+    <div class="alert alert-danger" id="hosting_edit_form_error" style="display:none">
       <span id="hosting_edit_form_error_text"></span>
     </div>
     <span id="form_controls"> 
-      <div class="control-group" id="cg_haccount"> 
-        <label class="control-label" for="haccount">[== $lang->{hosting_account} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-xlarge" id="haccount" />
+      <div class="form-group" id="cg_haccount">         
+        <div class="col-lg-12">
+          <label class="control-label" for="haccount">[== $lang->{hosting_account} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="haccount" />
         </div>
       </div>
-      <div class="control-group" id="cg_hplan"> 
-        <label class="control-label" for="hplan">[== $lang->{hac_plan} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <select id="hplan">
+      <div class="form-group" id="cg_hplan">         
+        <div class="col-lg-12">
+          <label class="control-label" for="hplan">[== $lang->{hac_plan} =]&nbsp;<span class="required_field">*</span></label> 
+          <select id="hplan" class="form-control">
           </select>
         </div>
       </div>
-      <div class="control-group" id="cg_hdays"> 
-        <label class="control-label" for="hdays">[== $lang->{hac_days} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="prif input-small" id="hdays" />
+      <div class="form-group" id="cg_hdays">         
+        <div class="col-lg-12">
+          <label class="control-label" for="hdays">[== $lang->{hac_days} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="prif form-control" id="hdays" />
         </div>
       </div>
-      <div class="control-group" id="cg_h_queue"> 
-        <label class="control-label" for="h_queue">[== $lang->{in_queue} =]</label> 
-        <div class="controls">
-          <input type="checkbox" id="h_queue" name="h_queue" />
+      <div class="form-group" id="cg_h_queue">         
+        <div class="col-lg-12">
+          <span class="checkbox"><input type="checkbox" id="h_queue" name="h_queue" />&nbsp;<label class="control-label" for="h_queue">[== $lang->{in_queue} =]</label></span>
         </div>
       </div>
     </span>
@@ -321,21 +319,21 @@
  </div>
  <div class="modal-body">
   <span class="form-horizontal" id="service_edit_form">
-    <div class="alert alert-block alert-error" id="service_edit_form_error" style="display:none">
+    <div class="alert alert-danger" id="service_edit_form_error" style="display:none">
       <span id="service_edit_form_error_text"></span>
     </div>
     <span id="form_controls"> 
-      <div class="control-group" id="cg_sid"> 
-        <label class="control-label" for="sid">[== $lang->{service_id} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <select id="sid">
+      <div class="form-group" id="cg_sid">         
+        <div class="col-lg-12">
+          <label class="control-label" for="sid">[== $lang->{service_id} =]&nbsp;<span class="required_field">*</span></label> 
+          <select id="sid" class="form-control">
           </select>
         </div>
       </div>
-      <div class="control-group" id="cg_sdays"> 
-        <label class="control-label" for="sdays">[== $lang->{service_days} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="input-small" id="sdays" />
+      <div class="form-group" id="cg_sdays">         
+        <div class="col-lg-12">
+          <label class="control-label" for="sdays">[== $lang->{service_days} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="form-control" id="sdays" />
         </div>
       </div>
     </span>
@@ -365,75 +363,74 @@
  </div>
  <div class="modal-body" id="domain_modal_body">
   <span class="form-horizontal" id="domain_edit_form">
-    <div class="alert alert-block alert-error" id="domain_edit_form_error" style="display:none">
+    <div class="alert alert-danger" id="domain_edit_form_error" style="display:none">
       <span id="domain_edit_form_error_text"></span>
     </div>
     <span id="form_controls"> 
-      <div class="control-group" id="cg_domain_name"> 
-        <label class="control-label" for="domain_name">[== $lang->{domain_name} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="input-xlarge" id="domain_name" />
+      <div class="form-group" id="cg_domain_name">         
+        <div class="col-lg-12">
+          <label class="control-label" for="domain_name">[== $lang->{domain_name} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="form-control" id="domain_name" />
         </div>
       </div>
-      <div class="control-group" id="cg_domain_exp"> 
-        <label class="control-label" for="domain_exp">[== $lang->{domain_exp} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="input" id="domain_exp" data-date-format="[== $lang->{domain_date_picker_template} =]" />
+      <div class="form-group" id="cg_domain_exp">         
+        <div class="col-lg-12">
+          <label class="control-label" for="domain_exp">[== $lang->{domain_exp} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="input form-control" id="domain_exp" data-date-format="[== $lang->{domain_date_picker_template} =]" />
           <p class="help-block">[== $lang->{domain_exp_hint} =]</p>
         </div>
       </div>
-      <div class="control-group" id="cg_ns1"> 
-        <label class="control-label" for="ns1">[== $lang->{ns1} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="input-medium" id="ns1" />
+      <div class="form-group" id="cg_ns1">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns1">[== $lang->{ns1} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="form-control" id="ns1" />
         </div>
       </div>
-      <div class="control-group" id="cg_ns1_ip"> 
-        <label class="control-label" for="ns1_ip">[== $lang->{ns1_ip} =]</label> 
-        <div class="controls">
-          <input type="text" class="input-small" id="ns1_ip" />
+      <div class="form-group" id="cg_ns1_ip">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns1_ip">[== $lang->{ns1_ip} =]</label> 
+          <input type="text" class="form-control" id="ns1_ip" />
         </div>
       </div>
-      <div class="control-group" id="cg_ns2"> 
-        <label class="control-label" for="ns2">[== $lang->{ns2} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="controls">
-          <input type="text" class="input-medium" id="ns2" />
+      <div class="form-group" id="cg_ns2">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns2">[== $lang->{ns2} =]&nbsp;<span class="required_field">*</span></label> 
+          <input type="text" class="form-control" id="ns2" />
         </div>
       </div>
-      <div class="control-group" id="cg_ns2_ip"> 
-        <label class="control-label" for="ns2_ip">[== $lang->{ns2_ip} =]</label> 
-        <div class="controls">
-          <input type="text" class="input-small" id="ns2_ip" />
+      <div class="form-group" id="cg_ns2_ip">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns2_ip">[== $lang->{ns2_ip} =]</label> 
+          <input type="text" class="form-control" id="ns2_ip" />
         </div>
       </div>
-      <div class="control-group" id="cg_ns3"> 
-        <label class="control-label" for="ns3">[== $lang->{ns3} =]</label> 
-        <div class="controls">
-          <input type="text" class="input-medium" id="ns3" />
+      <div class="form-group" id="cg_ns3">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns3">[== $lang->{ns3} =]</label> 
+          <input type="text" class="form-control" id="ns3" />
         </div>
       </div>
-      <div class="control-group" id="cg_ns3_ip"> 
-        <label class="control-label" for="ns3_ip">[== $lang->{ns3_ip} =]</label> 
-        <div class="controls">
-          <input type="text" class="input-small" id="ns3_ip" />
+      <div class="form-group" id="cg_ns3_ip">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns3_ip">[== $lang->{ns3_ip} =]</label> 
+          <input type="text" class="form-control" id="ns3_ip" />
         </div>
       </div>
-      <div class="control-group" id="cg_ns4"> 
-        <label class="control-label" for="ns4">[== $lang->{ns4} =]</label> 
-        <div class="controls">
-          <input type="text" class="input-medium" id="ns4" />
+      <div class="form-group" id="cg_ns4">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns4">[== $lang->{ns4} =]</label> 
+          <input type="text" class="form-control" id="ns4" />
         </div>
       </div>
-      <div class="control-group" id="cg_ns4_ip"> 
-        <label class="control-label" for="ns4_ip">[== $lang->{ns4_ip} =]</label> 
-        <div class="controls">
-          <input type="text" class="input-small" id="ns4_ip" />
+      <div class="form-group" id="cg_ns4_ip">         
+        <div class="col-lg-12">
+          <label class="control-label" for="ns4_ip">[== $lang->{ns4_ip} =]</label> 
+          <input type="text" class="form-control" id="ns4_ip" />
         </div>
       </div>
-      <div class="control-group" id="cg_d_queue"> 
-        <label class="control-label" for="d_queue">[== $lang->{in_queue} =]</label> 
-        <div class="controls">
-          <input type="checkbox" id="d_queue" name="d_queue" />
+      <div class="form-group" id="cg_d_queue">         
+        <div class="col-lg-12">
+          <span class="checkbox"><input type="checkbox" id="d_queue" name="d_queue" />&nbsp;<label class="control-label" for="d_queue">[== $lang->{in_queue} =]</label></span>
         </div>
       </div>
     </span>
@@ -456,52 +453,51 @@
     <img src="/images/blank.gif" width="20" height="10" alt="" /><br />
     <div id="container">
       <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-8">
           <div id="username" class="large-non-bold-font"></div><br />
         </div>  
-        <div class="col-lg-6">
-          <span class="btn btn-default btn-small" id="btn_profile"><img src="/images/profile.png" width="16" height="16" alt="[== $lang->{profile} =]" /></span><img src="/images/blank.gif" width="5" height="6" alt=" " /><span class="btn btn-default btn-small" id="btn_funds"><img src="/images/coins.png" width="16" height="16" alt="" /></span>&nbsp;&nbsp;<b>[== $lang->{funds} =]:</b>&nbsp;<span id="funds" style="cursor:pointer"></span>&nbsp;&nbsp;
-          <span class="visible-phone visible-tablet"><br /></span>
+        <div class="col-lg-4">
+          <span class="btn btn-default btn-sm" id="btn_profile"><img src="/images/profile.png" width="16" height="16" alt="[== $lang->{profile} =]" /></span><img src="/images/blank.gif" width="5" height="6" alt=" " /><span class="btn btn-default btn-sm" id="btn_funds"><img src="/images/coins.png" width="16" height="16" alt="" /></span><div style="padding: 10px 0px 10px 0px"><b>[== $lang->{funds} =]:</b>&nbsp;<span id="funds" style="cursor:pointer"></span></div>
         </div>
       </div>
+      <hr />
       <div class="row">      
         <div class="col-lg-4" style="margin-bottom:3px">
-          <div class="bg-grey-pad panel panel-body column">
-            <div class="medium-large-non-bold">
-              <span class="btn btn-success btn-small" style="float:right" id="btn_add_hosting"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_account} =]</span>
+          <div class="panel panel-default column">
+            <div class="panel-heading">
+              <span class="btn btn-success btn-xs" style="float:right" id="btn_add_hosting"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_account} =]</span>
               [== $lang->{hosting_accounts} =]
             </div>
-            <div id="data_accounts" style="font-size:90%">[== $lang->{no_hosting_accounts} =]</div>
+            <div id="data_accounts" class="panel-body" style="font-size:90%;padding:0px 15px 15px 15px">[== $lang->{no_hosting_accounts} =]</div>
           </div>
         </div>
         <div class="col-lg-4" style="margin-bottom:3px">
-          <div class="bg-grey-pad panel panel-body column">
-            <div class="medium-large-non-bold">
-              <span class="btn btn-success btn-small" style="float:right" id="btn_add_domain"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_domain} =]</span>
+          <div class="panel panel-default column">
+            <div class="panel-heading">
+              <span class="btn btn-success btn-xs" style="float:right" id="btn_add_domain"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_domain} =]</span>
               [== $lang->{domains} =]
             </div>
-            <div id="data_domains" style="font-size:90%"><br/>[== $lang->{no_domains} =]</div>
+            <div id="data_domains panel-body" style="font-size:90%;padding:0px 15px 15px 15px"><br/>[== $lang->{no_domains} =]</div>
           </div>
         </div>
         <div class="col-lg-4">
-          <div class="bg-grey-pad panel panel-body column">
-            <div class="medium-large-non-bold">
-              <span class="btn btn-success btn-small" style="float:right" id="btn_add_service"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_service} =]</span>
+          <div class="panel panel-default column">
+            <div class="panel-heading">
+              <span class="btn btn-success btn-xs" style="float:right" id="btn_add_service"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_service} =]</span>
               [== $lang->{services} =]
             </div>
-            <div id="data_services" style="font-size:90%"><br/>[== $lang->{no_services} =]</div>
+            <div id="data_services panel-body" style="font-size:90%;padding:0px 15px 15px 15px"><br/>[== $lang->{no_services} =]</div>
           </div>
         </div>
       </div>
-    </div>   
+    </div>       
   </div>
-  <hr/>
-  <div class="form-actions"> 
+  <div class="form-actions" style="margin-bottom:20px"> 
     <div id="ajax_loading" style="display:none">
       <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="ajax_loading_msg"></span>
     </div>
-    <div id="data_form_buttons">
-      <button type="button" class="btn btn-default" id="btn_return_to_list">[== $lang->{return_to_list} =]</button>
+    <div id="data_form_buttons">      
+      <button type="button" class="btn btn-primary" id="btn_return_to_list">[== $lang->{return_to_list} =]</button>
     </div>  
   </div>
 </div>

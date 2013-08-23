@@ -98,7 +98,7 @@ $(document).ready(function () {
             "bServerSide": true,
             "bProcessing": true,
             "sPaginationType": "bootstrap",
-            "iDisplayLength": 10,
+            "iDisplayLength": 30,
             "bAutoWidth": true,
             "sAjaxSource": "/admin/billing/data/list",
             "fnServerData": function ( sSource, aoData, fnCallback ) {
@@ -198,9 +198,9 @@ function editData(id) {
                 if (data.hosting && data.hosting.length > 0) {
                     hosting_count = data.hosting.length;
                     var tdata='';
-                    tdata = '<br/><table class="table" id="hosting_table"><tbody>';
+                    tdata = '<br/><table class="table table-hover taracot-billing-table" id="hosting_table"><tbody>';
                     for (var i = 0; i < data.hosting.length; i++) {
-                        tdata += "<tr id=\"hosting_row_" + data.hosting[i].id + "\"><td><span id=\"hosting_account_name_" + data.hosting[i].id + "\">" + data.hosting[i].account + "</span></td><td>" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + "/" + js_lang_hac_per_month + ")</small></td><td width=\"60\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.hosting[i].days + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editHosting('" + data.hosting[i].id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteHosting('" + data.hosting[i].id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
+                        tdata += "<tr id=\"hosting_row_" + data.hosting[i].id + "\"><td><span id=\"hosting_account_name_" + data.hosting[i].id + "\">" + data.hosting[i].account + "</span></td><td>" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + "/" + js_lang_hac_per_month + ")</small></td><td width=\"60\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.hosting[i].days + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\" onclick=\"editHosting('" + data.hosting[i].id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\" onclick=\"deleteHosting('" + data.hosting[i].id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
                     }
                     tdata += "</tbody></table>";
                     $('#data_accounts').html(tdata);                    
@@ -222,9 +222,9 @@ function editData(id) {
                 if (data.domains && data.domains.length > 0) {
                     domains_count = data.domains.length;
                     var ddata='';
-                    ddata = '<br/><table class="table" id="domain_table"><tbody>';
+                    ddata = '<br/><table class="table table-hover taracot-billing-table" id="domain_table"><tbody>';
                     for (var i = 0; i < data.domains.length; i++) {
-                        ddata += "<tr id=\"domain_row_" + data.domains[i].id + "\"><td><span id=\"domain_name_" + data.domains[i].id + "\">" + data.domains[i].domain_name + "</span></td><td width=\"100\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;" + data.domains[i].exp_date + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editDomain('" + data.domains[i].id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteDomain('" + data.domains[i].id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
+                        ddata += "<tr id=\"domain_row_" + data.domains[i].id + "\"><td><span id=\"domain_name_" + data.domains[i].id + "\">" + data.domains[i].domain_name + "</span></td><td width=\"100\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;" + data.domains[i].exp_date + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\" onclick=\"editDomain('" + data.domains[i].id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\" onclick=\"deleteDomain('" + data.domains[i].id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
                     }
                     ddata += "</tbody></table>";
                     $('#data_domains').html(ddata);
@@ -236,9 +236,9 @@ function editData(id) {
                 if (data.services && data.services.length > 0) {
                     services_count = data.services.length;
                     var sdata='';
-                    sdata = '<br/><table class="table" id="services_table"><tbody>';
+                    sdata = '<br/><table class="table table-hover taracot-billing-table" id="services_table"><tbody>';
                     for (var i = 0; i < data.services.length; i++) {
-                        sdata += "<tr id=\"service_row_" + data.services[i].id + "\"><td><span id=\"service_name_" + data.services[i].id + "\">" + data.services[i].service_name + " <small style=\"color:#666\">(" + data.services[i].service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.services[i].service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editService('" + data.services[i].id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteService('" + data.services[i].id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
+                        sdata += "<tr id=\"service_row_" + data.services[i].id + "\"><td><span id=\"service_name_" + data.services[i].id + "\">" + data.services[i].service_name + " <small style=\"color:#666\">(" + data.services[i].service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.services[i].service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\" onclick=\"editService('" + data.services[i].id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\" onclick=\"deleteService('" + data.services[i].id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
                     }
                     sdata += "</tbody></table>";
                     $('#data_services').html(sdata);
@@ -288,9 +288,9 @@ $('#btn_return_to_list').click(function () {
 });
 // Add hosting account button event handler
 $('#btn_add_hosting').click(function () {
-    $('#cg_haccount').removeClass('error');
-    $('#cg_hplan').removeClass('error');
-    $('#cg_hdays').removeClass('error');
+    $('#cg_haccount').removeClass('has-error');
+    $('#cg_hplan').removeClass('has-error');
+    $('#cg_hdays').removeClass('has-error');
     $('#hosting_edit_form_error').hide();
     $('#hosting_edit_ajax').hide();
     $('#hosting_edit_form').show();
@@ -308,16 +308,16 @@ $('#btn_add_hosting').click(function () {
 });
 // Add domain button event handler
 $('#btn_add_domain').click(function () {
-    $('#cg_domain_name').removeClass('error');
-    $('#cg_domain_exp').removeClass('error');
-    $('#cg_ns1').removeClass('error');
-    $('#cg_ns2').removeClass('error');
-    $('#cg_ns3').removeClass('error');
-    $('#cg_ns4').removeClass('error');
-    $('#cg_ns1_ip').removeClass('error');
-    $('#cg_ns2_ip').removeClass('error');
-    $('#cg_ns3_ip').removeClass('error');
-    $('#cg_ns4_ip').removeClass('error');
+    $('#cg_domain_name').removeClass('has-error');
+    $('#cg_domain_exp').removeClass('has-error');
+    $('#cg_ns1').removeClass('has-error');
+    $('#cg_ns2').removeClass('has-error');
+    $('#cg_ns3').removeClass('has-error');
+    $('#cg_ns4').removeClass('has-error');
+    $('#cg_ns1_ip').removeClass('has-error');
+    $('#cg_ns2_ip').removeClass('has-error');
+    $('#cg_ns3_ip').removeClass('has-error');
+    $('#cg_ns4_ip').removeClass('has-error');
     $('#domain_edit_form_error').hide();
     $('#domain_edit_ajax').hide();
     $('#domain_edit_form').show();
@@ -343,8 +343,8 @@ $('#btn_add_domain').click(function () {
 });
 // Add service button event handler
 $('#btn_add_service').click(function () {
-    $('#cg_sid').removeClass('error');
-    $('#cg_sdays').removeClass('error');
+    $('#cg_sid').removeClass('has-error');
+    $('#cg_sdays').removeClass('has-error');
     $('#service_edit_form_error').hide();
     $('#service_edit_ajax').hide();
     $('#service_edit_form').show();
@@ -360,17 +360,17 @@ $('#btn_add_service').click(function () {
 });
 // Add/edit hosting account save button click event
 $('#btn_hosting_dialog_save').click(function () {
-    $('#cg_haccount').removeClass('error');
-    $('#cg_hplan').removeClass('error');
-    $('#cg_hdays').removeClass('error');
+    $('#cg_haccount').removeClass('has-error');
+    $('#cg_hplan').removeClass('has-error');
+    $('#cg_hdays').removeClass('has-error');
     $('#hosting_edit_form_error').hide();
     var errors = false;
     if (!$('#haccount').val().match(/^[A-Za-z0-9_\-]{1,100}$/)) {
-        $('#cg_haccount').addClass('error');
+        $('#cg_haccount').addClass('has-error');
         errors = true;
     }
     if (!$('#hdays').val().match(/^[0-9]{1,4}$/)) {
-        $('#cg_hdays').addClass('error');
+        $('#cg_hdays').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -411,7 +411,7 @@ $('#btn_hosting_dialog_save').click(function () {
                     $('#hosting_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -419,15 +419,15 @@ $('#btn_hosting_dialog_save').click(function () {
                     if (!hosting_edit_id) {
                         hosting_count++;
                         var tdata='';
-                        tdata += "<tr id=\"hosting_row_" + data.id + "\"><td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" + js_lang_hac_per_month + ")</small></td><td width=\"60\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"glyphicon glyphicon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
+                        tdata += "<tr id=\"hosting_row_" + data.id + "\"><td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" + js_lang_hac_per_month + ")</small></td><td width=\"60\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\"><i class=\"glyphicon glyphicon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
                         if ($('#hosting_table tr:last').size() > 0) {
                             $('#hosting_table tr:last').after(tdata);
                         } else {
-                            var ndata = '<br/><table class="table" id="hosting_table"><tbody>'+tdata+"</tbody></table>";
+                            var ndata = '<br/><table class="table table-hover taracot-billing-table" id="hosting_table"><tbody>'+tdata+"</tbody></table>";
                             $('#data_accounts').html(ndata);
                         }
                     } else {
-                        $("#hosting_row_" + data.id).html("<td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" +js_lang_hac_per_month +")</small></td><td width=\"60\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\"><i class=\"glyphicon glyphicon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td>")
+                        $("#hosting_row_" + data.id).html("<td><span id=\"hosting_account_name_" + data.id + "\">" + data.haccount + "</span></td><td>" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + "/" +js_lang_hac_per_month +")</small></td><td width=\"60\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.hdays + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\"><i class=\"glyphicon glyphicon-pencil\" onclick=\"editHosting('" + data.id + "')\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\"  onclick=\"deleteHosting('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td>")
                     }
                     $('#hosting_edit_dialog').modal('hide');
                 }
@@ -443,56 +443,56 @@ $('#btn_hosting_dialog_save').click(function () {
 });
 // Add/edit domain save button click event
 $('#btn_domain_dialog_save').click(function () {
-    $('#cg_domain_name').removeClass('error');
-    $('#cg_domain_exp').removeClass('error');
-    $('#cg_ns1').removeClass('error');
-    $('#cg_ns2').removeClass('error');
-    $('#cg_ns3').removeClass('error');
-    $('#cg_ns4').removeClass('error');
-    $('#cg_ns1_ip').removeClass('error');
-    $('#cg_ns2_ip').removeClass('error');
-    $('#cg_ns3_ip').removeClass('error');
-    $('#cg_ns4_ip').removeClass('error');
+    $('#cg_domain_name').removeClass('has-error');
+    $('#cg_domain_exp').removeClass('has-error');
+    $('#cg_ns1').removeClass('has-error');
+    $('#cg_ns2').removeClass('has-error');
+    $('#cg_ns3').removeClass('has-error');
+    $('#cg_ns4').removeClass('has-error');
+    $('#cg_ns1_ip').removeClass('has-error');
+    $('#cg_ns2_ip').removeClass('has-error');
+    $('#cg_ns3_ip').removeClass('has-error');
+    $('#cg_ns4_ip').removeClass('has-error');
     $('#domain_edit_form_error').hide();
     var errors = false;
     if (!$('#domain_name').val().match(/^[A-Za-z0-9\-]{2,100}$/)) {
-        $('#cg_domain_name').addClass('error');
+        $('#cg_domain_name').addClass('has-error');
         errors = true;
     }
     if (!$('#domain_exp').val().match(/^[0-9\.\/\-]{1,12}$/)) {
-        $('#cg_domain_exp').addClass('error');
+        $('#cg_domain_exp').addClass('has-error');
         errors = true;
     }
     if (!$('#ns1').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-        $('#cg_ns1').addClass('error');
+        $('#cg_ns1').addClass('has-error');
         errors = true;
     }
     if (!$('#ns2').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-        $('#cg_ns2').addClass('error');
+        $('#cg_ns2').addClass('has-error');
         errors = true;
     }
     if ($('#ns3').val() && !$('#ns3').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-        $('#cg_ns3').addClass('error');
+        $('#cg_ns3').addClass('has-error');
         errors = true;
     }
     if ($('#ns4').val() && !$('#ns4').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-        $('#cg_ns4').addClass('error');
+        $('#cg_ns4').addClass('has-error');
         errors = true;
     }
     if ($('#ns1_ip').val() && !$('#ns1_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-        $('#cg_ns1_ip').addClass('error');
+        $('#cg_ns1_ip').addClass('has-error');
         errors = true;
     }
     if ($('#ns2_ip').val() && !$('#ns2_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-        $('#cg_ns2_ip').addClass('error');
+        $('#cg_ns2_ip').addClass('has-error');
         errors = true;
     }
     if ($('#ns3_ip').val() && !$('#ns3_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-        $('#cg_ns3_ip').addClass('error');
+        $('#cg_ns3_ip').addClass('has-error');
         errors = true;
     }
     if ($('#ns4_ip').val() && !$('#ns4_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-        $('#cg_ns4_ip').addClass('error');
+        $('#cg_ns4_ip').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -541,7 +541,7 @@ $('#btn_domain_dialog_save').click(function () {
                     $('#domain_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -549,15 +549,15 @@ $('#btn_domain_dialog_save').click(function () {
                     if (!domain_edit_id) {
                         domains_count++;
                         var ddata='';
-                        ddata += "<tr id=\"domain_row_" + data.id + "\"><td><span id=\"domain_name_" + data.id + "\">" + data.domain_name + "</span></td><td width=\"100\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;" + data.domain_exp + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
+                        ddata += "<tr id=\"domain_row_" + data.id + "\"><td><span id=\"domain_name_" + data.id + "\">" + data.domain_name + "</span></td><td width=\"100\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;" + data.domain_exp + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\" onclick=\"editDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\" onclick=\"deleteDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
                         if ($('#domain_table tr:last').size() > 0) {
                             $('#domain_table tr:last').after(ddata);
                         } else {
-                            var ndata = '<br/><table class="table" id="domain_table"><tbody>'+ddata+"</tbody></table>";
+                            var ndata = '<br/><table class="table table-hover taracot-billing-table" id="domain_table"><tbody>'+ddata+"</tbody></table>";
                             $('#data_domains').html(ndata);
                         }
                     } else {
-                        $("#domain_row_" + data.id).html("<td><span id=\"domain_name_" + data.id + "\">" + data.domain_name + "</span></td><td width=\"100\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;" + data.domain_exp + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td>");
+                        $("#domain_row_" + data.id).html("<td><span id=\"domain_name_" + data.id + "\">" + data.domain_name + "</span></td><td width=\"100\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;" + data.domain_exp + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\" onclick=\"editDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\" onclick=\"deleteDomain('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td>");
                     }
                     $('#domain_edit_dialog').modal('hide');
                 }
@@ -573,12 +573,12 @@ $('#btn_domain_dialog_save').click(function () {
 });
 // Add/edit service save button click event
 $('#btn_service_dialog_save').click(function () {
-    $('#cg_sid').removeClass('error');
-    $('#cg_sdays').removeClass('error');
+    $('#cg_sid').removeClass('has-error');
+    $('#cg_sdays').removeClass('has-error');
     $('#service_edit_form_error').hide();
     var errors = false;
     if (!$('#sdays').val().match(/^[0-9]{1,5}$/)) {
-        $('#cg_sdays').addClass('error');
+        $('#cg_sdays').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -613,7 +613,7 @@ $('#btn_service_dialog_save').click(function () {
                     $('#service_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -621,15 +621,15 @@ $('#btn_service_dialog_save').click(function () {
                     if (!service_edit_id) {
                         services_count++;
                         var ddata='';                        
-                        ddata += "<tr id=\"service_row_" + data.id + "\"><td><span id=\"service_name_" + data.id + "\">" + data.service_name + " <small style=\"color:#666\">(" + data.service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editService('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteService('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
+                        ddata += "<tr id=\"service_row_" + data.id + "\"><td><span id=\"service_name_" + data.id + "\">" + data.service_name + " <small style=\"color:#666\">(" + data.service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\" onclick=\"editService('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\" onclick=\"deleteService('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td></tr>";
                         if ($('#services_table tr:last').size() > 0) {
                             $('#services_table tr:last').after(ddata);
                         } else {
-                            var ndata = '<br/><table class="table" id="services_table"><tbody>'+ddata+"</tbody></table>";
+                            var ndata = '<br/><table class="table table-hover taracot-billing-table" id="services_table"><tbody>'+ddata+"</tbody></table>";
                             $('#data_services').html(ndata);
                         }
                     } else {
-                        $("#service_row_" + data.id).html("<td><span id=\"service_name_" + data.id + "\">" + data.service_name + " <small style=\"color:#666\">(" + data.service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-mini\" onclick=\"editService('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-mini btn-danger\" onclick=\"deleteService('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td>");
+                        $("#service_row_" + data.id).html("<td><span id=\"service_name_" + data.id + "\">" + data.service_name + " <small style=\"color:#666\">(" + data.service_cost + "/" + js_lang_hac_per_month + ")</small></span></td><td width=\"100\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;" + data.service_days_remaining + "</td><td style=\"width:30px\" nowrap=\"nowrap\"><span class=\"btn btn-default btn-xs\" onclick=\"editService('" + data.id + "')\"><i class=\"glyphicon glyphicon-pencil\"></i></span>&nbsp;<span class=\"btn btn-default btn-xs btn-danger\" onclick=\"deleteService('" + data.id + "')\"><i class=\"glyphicon glyphicon-trash\"></i></span></td>");
                     }
                     $('#service_edit_dialog').modal('hide');
                 }
@@ -646,92 +646,92 @@ $('#btn_service_dialog_save').click(function () {
 // Add/edit profile save button click event
 $('#btn_profile_dialog_save').click(function () {
     $(".prcg").each(function() {
-        $(this).removeClass('error');
+        $(this).removeClass('has-error');
     });
     $('#profile_edit_form_error').hide();
     var errors = false;
     if ($('#n1r').val() || $('#n2r').val() || $('#n3r').val() || $('#passport').val() || $('#addr_ru').val()) {
         if (!$('#n1r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
-            $('#cg_n1r').addClass('error');
+            $('#cg_n1r').addClass('has-error');
             errors = true;
         }
         if (!$('#n2r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
-            $('#cg_n2r').addClass('error');
+            $('#cg_n2r').addClass('has-error');
             errors = true;
         }
         if (!$('#n3r').val().match(/^[А-Яа-я\-]{1,24}$/)) {
-            $('#cg_n3r').addClass('error');
+            $('#cg_n3r').addClass('has-error');
             errors = true;
         }
         if (!$('#passport').val().match(/^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
-            $('#cg_passport').addClass('error');
+            $('#cg_passport').addClass('has-error');
             errors = true;
         }
         if (!$('#addr_ru').val().match(/^([0-9]{6}),(\s)(.*)$/)) {
-            $('#cg_addr_ru').addClass('error');
+            $('#cg_addr_ru').addClass('has-error');
             errors = true;
         }
     }
     if (!$('#n1e').val().match(/^[A-Za-z\-]{1,30}$/)) {
-        $('#cg_n1e').addClass('error');
+        $('#cg_n1e').addClass('has-error');
         errors = true;
     }
     if (!$('#n2e').val().match(/^[A-Za-z\-]{1,30}$/)) {
-        $('#cg_n2e').addClass('error');
+        $('#cg_n2e').addClass('has-error');
         errors = true;
     }
     if (!$('#n3e').val().match(/^[A-Z]{1}$/)) {
-        $('#cg_n3e').addClass('error');
+        $('#cg_n3e').addClass('has-error');
         errors = true;
     }
     if (!$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
-        $('#cg_email').addClass('error');
+        $('#cg_email').addClass('has-error');
         errors = true;
     }
     if (!$('#phone').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
-        $('#cg_phone').addClass('error');
+        $('#cg_phone').addClass('has-error');
         errors = true;
     }
     if ($('#fax').val() && !$('#fax').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
-        $('#cg_fax').addClass('error');
+        $('#cg_fax').addClass('has-error');
         errors = true;
     }    
     if (!$('#birth_date').val().match(/^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
-        $('#cg_birth_date').addClass('error');
+        $('#cg_birth_date').addClass('has-error');
         errors = true;
     }        
     if (!$('#postcode').val().match(/^([0-9]{5,6})$/)) {
-        $('#cg_postcode').addClass('error');
+        $('#cg_postcode').addClass('has-error');
         errors = true;
     }
     if ($('#org_r').val() || $('#org').val() || $('#code').val() || $('#kpp').val()) {
         if (!$('#org_r').val().match(/^(.{1,80})$/)) {
-            $('#cg_org_r').addClass('error');
+            $('#cg_org_r').addClass('has-error');
             errors = true;
         }
         if (!$('#org').val().match(/^(.{1,80})$/)) {
-            $('#cg_org').addClass('error');
+            $('#cg_org').addClass('has-error');
             errors = true;
         }
         if (!$('#code').val().match(/^([0-9]{10})$/)) {
-            $('#cg_code').addClass('error');
+            $('#cg_code').addClass('has-error');
             errors = true;
         }
         if (!$('#kpp').val().match(/^([0-9]{9})$/)) {
-            $('#cg_kpp').addClass('error');
+            $('#cg_kpp').addClass('has-error');
             errors = true;
         }
     }   
     if (!$('#city').val().match(/^([A-Za-z\-\. ]{2,64})$/)) {
-        $('#cg_city').addClass('error');
+        $('#cg_city').addClass('has-error');
         errors = true;
     }
     if (!$('#state').val().match(/^([A-Za-z\-\. ]{2,40})$/)) {
-        $('#cg_state').addClass('error');
+        $('#cg_state').addClass('has-error');
         errors = true;
     }
     if (!$('#addr').val().match(/^(.{2,80})$/)) {
-        $('#cg_addr').addClass('error');
+        $('#cg_addr').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -790,7 +790,7 @@ $('#btn_profile_dialog_save').click(function () {
                     $('#profile_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -810,9 +810,9 @@ $('#btn_profile_dialog_save').click(function () {
 
 function editHosting(id) {
     $('#hosting_edit_dialog_title').html(js_lang_edit_account);
-    $('#cg_haccount').removeClass('error');
-    $('#cg_hplan').removeClass('error');
-    $('#cg_hdays').removeClass('error');
+    $('#cg_haccount').removeClass('has-error');
+    $('#cg_hplan').removeClass('has-error');
+    $('#cg_hdays').removeClass('has-error');
     $('#hosting_edit_form_error').hide();
     hosting_edit_id = id;
     $('#hosting_edit_dialog').modal({
@@ -862,16 +862,16 @@ function editHosting(id) {
 
 function editDomain(id) {
     $('#domain_edit_dialog_title').html(js_lang_edit_domain);
-    $('#cg_domain_name').removeClass('error');
-    $('#cg_domain_exp').removeClass('error');
-    $('#cg_ns1').removeClass('error');
-    $('#cg_ns2').removeClass('error');
-    $('#cg_ns3').removeClass('error');
-    $('#cg_ns4').removeClass('error');
-    $('#cg_ns1_ip').removeClass('error');
-    $('#cg_ns2_ip').removeClass('error');
-    $('#cg_ns3_ip').removeClass('error');
-    $('#cg_ns4_ip').removeClass('error');
+    $('#cg_domain_name').removeClass('has-error');
+    $('#cg_domain_exp').removeClass('has-error');
+    $('#cg_ns1').removeClass('has-error');
+    $('#cg_ns2').removeClass('has-error');
+    $('#cg_ns3').removeClass('has-error');
+    $('#cg_ns4').removeClass('has-error');
+    $('#cg_ns1_ip').removeClass('has-error');
+    $('#cg_ns2_ip').removeClass('has-error');
+    $('#cg_ns3_ip').removeClass('has-error');
+    $('#cg_ns4_ip').removeClass('has-error');
     $('#domain_edit_form_error').hide();
     domain_edit_id = id;
     $('#domain_edit_dialog').modal({
@@ -935,8 +935,8 @@ function editDomain(id) {
 
 function editService(id) {
     $('#service_edit_dialog_title').html(js_lang_edit_service);
-    $('#cg_sid').removeClass('error');
-    $('#cg_sdays').removeClass('error');
+    $('#cg_sid').removeClass('has-error');
+    $('#cg_sdays').removeClass('has-error');
     $('#service_edit_form_error').hide();
     service_edit_id = id;
     $('#service_edit_dialog').modal({
@@ -1096,7 +1096,7 @@ $('#btn_profile').click(function() {
         $(this).val('');
     });
     $(".prcg").each(function() {
-        $(this).removeClass('error');
+        $(this).removeClass('has-error');
     });
     $('#profile_edit_ajax_msg').html(js_lang_ajax_loading);
     $('#profile_edit_ajax').show();

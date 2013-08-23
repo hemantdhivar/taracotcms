@@ -24,7 +24,7 @@ $(document).ready(function () {
             [3, "desc"]
         ],
         "sPaginationType": "bootstrap",
-        "iDisplayLength": 10,
+        "iDisplayLength": 30,
         "bAutoWidth": false,
         "sAjaxSource": "/admin/billing/funds/data/list?id=" + js_user_id,
         "fnServerData": function ( sSource, aoData, fnCallback ) {
@@ -70,7 +70,7 @@ $(document).ready(function () {
             "aTargets": [0]
         }, {
             "fnRender": function (oObj, sVal) {
-                return '<div style="text-align:center"><span class="btn" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="icon-pencil"></i></span>&nbsp;<span class="btn btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="icon-trash icon-white"></i></span></div>';
+                return '<div style="text-align:center"><span class="btn btn-sm btn-default" onclick="editData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-pencil"></i></span>&nbsp;<span class="btn btn-sm btn-danger" onclick="deleteData(' + row_id + ')"><i style="cursor:pointer" class="glyphicon glyphicon-trash"></i></span></div>';
             },
             "aTargets": [4]
         }, {
@@ -108,11 +108,11 @@ $('#btn_history_dialog_close').click(function () {
 });
 // Add history account button event handler
 $('#btn_add').click(function () {
-    $('#cg_trans_id').removeClass('error');
-    $('#cg_trans_objects').removeClass('error');
-    $('#cg_trans_amount').removeClass('error');
-    $('#cg_trans_date').removeClass('error');
-    $('#cg_trans_time').removeClass('error');
+    $('#cg_trans_id').removeClass('has-error');
+    $('#cg_trans_objects').removeClass('has-error');
+    $('#cg_trans_amount').removeClass('has-error');
+    $('#cg_trans_date').removeClass('has-error');
+    $('#cg_trans_time').removeClass('has-error');
     $('#history_edit_form_error').hide();
     $('#history_edit_ajax').hide();
     $('#history_edit_form').show();
@@ -131,11 +131,11 @@ $('#btn_add').click(function () {
 });
 // Edit history
 function editData(id) {
-    $('#cg_trans_id').removeClass('error');
-    $('#cg_trans_objects').removeClass('error');
-    $('#cg_trans_amount').removeClass('error');
-    $('#cg_trans_date').removeClass('error');
-    $('#cg_trans_time').removeClass('error');
+    $('#cg_trans_id').removeClass('has-error');
+    $('#cg_trans_objects').removeClass('has-error');
+    $('#cg_trans_amount').removeClass('has-error');
+    $('#cg_trans_date').removeClass('has-error');
+    $('#cg_trans_time').removeClass('has-error');
     $('#history_edit_form_error').hide();
     $('#history_edit_form').hide();
     $('#history_edit_buttons').hide();
@@ -193,27 +193,27 @@ function editData(id) {
 };
 // Add/edit history record save button click event
 $('#btn_history_dialog_save').click(function () {
-    $('#cg_trans_id').removeClass('error');
-    $('#cg_trans_objects').removeClass('error');
-    $('#cg_trans_amount').removeClass('error');
-    $('#cg_trans_date').removeClass('error');
-    $('#cg_trans_time').removeClass('error');
+    $('#cg_trans_id').removeClass('has-error');
+    $('#cg_trans_objects').removeClass('has-error');
+    $('#cg_trans_amount').removeClass('has-error');
+    $('#cg_trans_date').removeClass('has-error');
+    $('#cg_trans_time').removeClass('has-error');
     $('#history_edit_form_error').hide();
     var errors = false;
     if (!$('#trans_objects').val().match(/^.{0,250}$/)) {
-        $('#cg_trans_objects').addClass('error');
+        $('#cg_trans_objects').addClass('has-error');
         errors = true;
     }
     if (!$('#trans_amount').val().match(/^[0-9\.\-]{1,7}$/)) {
-        $('#cg_trans_amount').addClass('error');
+        $('#cg_trans_amount').addClass('has-error');
         errors = true;
     }
     if (!$('#trans_date').val().match(/^[0-9\.\/\-]{1,20}$/)) {
-        $('#cg_trans_date').addClass('error');
+        $('#cg_trans_date').addClass('has-error');
         errors = true;
     }
     if (!$('#trans_time').val().match(/^[0-9APM\.\: ]{1,11}$/)) {
-        $('#cg_trans_time').addClass('error');
+        $('#cg_trans_time').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -250,7 +250,7 @@ $('#btn_history_dialog_save').click(function () {
                     $('#history_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
