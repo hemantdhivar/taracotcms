@@ -211,8 +211,8 @@ queue_task_active: Task has been queued, please wait till it finished
 hpwd: Password
 hpwd_hint: 8 characters and more (latin characters, numbers, special chars etc), repeat twice to verify
 invalid_password: Invalid password
-progress_popup_text: This taks is currently in queue. It should be ready in several minutes.
-error_popup_text: This taks couldn't be completed. See history for more information.
+progress_popup_text: This task is currently in queue. It should be ready in several minutes.
+error_popup_text: This task couldn't be completed. See history for more information.
 important: Important
 ns_note: IP addresses are only required in case of NS is a part of domain name. Leave these fields blank otherwise!
 save_config: Save configuration

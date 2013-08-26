@@ -68,7 +68,7 @@ $(document).ready(function () {
             "bServerSide": true,
             "bProcessing": true,
             "sPaginationType": "bootstrap",
-            "iDisplayLength": 10,
+            "iDisplayLength": 30,
             "bAutoWidth": false,
             "sAjaxSource": "/admin/settings/data/list?mobile=true",
             "fnServerData": function ( sSource, aoData, fnCallback ) {
@@ -139,7 +139,7 @@ $(document).ready(function () {
             "bServerSide": true,
             "bProcessing": true,
             "sPaginationType": "bootstrap",
-            "iDisplayLength": 10,
+            "iDisplayLength": 30,
             "bAutoWidth": true,
             "sAjaxSource": "/admin/settings/data/list",
             "fnServerData": function ( sSource, aoData, fnCallback ) {

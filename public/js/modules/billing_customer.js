@@ -34,7 +34,7 @@ $(document).ready(function () {
         var cntr = cntrs[i].split(',');
         $('#country').append('<option value="'+cntr[0]+'">'+cntr[1]+'</option>');
     } 
-    $('.nav-tabs a').on('shown', function (e) {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var target = e.target.toString();
         if (target.search('tab_profile') != -1) {
             $('#n1e').focus();
@@ -70,7 +70,7 @@ $(document).ready(function () {
                     }
 
                     if (data.hosting && data.hosting.length > 0) {                    
-                        var tdata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:70px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
+                        var tdata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:120px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
                         for (var i = 0; i < data.hosting.length; i++) {
                             hosting_plans_id[data.hosting[i].account] = data.hosting[i].plan_id;
                             hosting_plans_cost[data.hosting[i].account] = data.hosting[i].plan_cost;
@@ -87,11 +87,11 @@ $(document).ready(function () {
                             var error_msg='';
                             var error_act='';
                             if (data.hosting[i].error_msg && data.hosting[i].error_msg != '') {
-                                error_act=js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>';
+                                error_act=js_lang_error+'&nbsp;<i class="glyphicon glyphicon-question-sign"></i>';
                                 error_msg=data.hosting[i].error_msg;
                             }
-                            var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+data.hosting[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
-                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><span class=\"label label-inverse\">" + data.hosting[i].account + "</span>&nbsp;<span class=\"badge badge-success\" rel=\"progress_img\" id=\"progress_"+data.hosting[i].account+"\">"+prp+"</span><span id=\"qerror_"+data.hosting[i].account+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:70px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                            var error_label='<span class="badge badge-danger" style="cursor:pointer" id="error_label_'+data.hosting[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
+                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><span class=\"label label-default\">" + data.hosting[i].account + "</span>&nbsp;<span class=\"badge badge-success\" rel=\"progress_img\" id=\"progress_"+data.hosting[i].account+"\">"+prp+"</span><span id=\"qerror_"+data.hosting[i].account+"\" rel=\"qerror\" class=\"badge badge-danger qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:120px;text-align:center\"><span class=\"btn btn-default btn-sm\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"glyphicon glyphicon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";                        
                         $('#data_hosting').html(tdata);                        
@@ -107,7 +107,7 @@ $(document).ready(function () {
                             var update_icon='';
                             var update_class='';
                             if (data.domains[i].update && data.domains[i].update == 1) {
-                                update_icon = '<span class="btn btn-mini"  onclick="updateDomain(\''+data.domains[i].domain_name+'\');"><i class="icon-refresh"></i></span>';
+                                update_icon = '<span class="btn btn-default btn-sm"  onclick="updateDomain(\''+data.domains[i].domain_name+'\');"><i class="glyphicon glyphicon-refresh"></i></span>';
                             }
                             if (data.domains[i].expired && data.domains[i].expired == 1) {
                                 update_class = ' class="error"';
@@ -123,11 +123,11 @@ $(document).ready(function () {
                             var error_msg='';
                             var error_act='';
                             if (data.domains[i].error_msg && data.domains[i].error_msg != '') {
-                                error_act=js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>';
+                                error_act=js_lang_error+'&nbsp;<i class="glyphicon glyphicon-question-sign"></i>';
                                 error_msg=data.domains[i].error_msg;
                             }
-                            var error_label='<span class="badge badge-important" style="cursor:pointer" id="error_label_'+dnid+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
-                            tdata += "<tr"+update_class+" id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domains[i].domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:70px;text-align:center\">"+update_icon+"</td></tr>";
+                            var error_label='<span class="badge badge-danger" style="cursor:pointer" id="error_label_'+dnid+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
+                            tdata += "<tr"+update_class+" id=\"domain_row_"+dnid+"\"><td><span class=\"label label-default\">" + data.domains[i].domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-danger qerror\"></span>"+error_label+"</td><td style=\"width:120px;text-align:center\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.domains[i].exp_date + "</span></td><td style=\"width:50px;text-align:center\">"+update_icon+"</td></tr>";
                             if (data.domains[i].zone) {
                                 domains_zones[data.domains[i].domain_name] = data.domains[i].zone;
                             }
@@ -142,14 +142,14 @@ $(document).ready(function () {
 
                     if (data.services && data.services.length > 0) {
                         var tdata='';
-                        tdata = '<table class="table table-striped table-bordered" id="services_table"><thead><tr><th>'+js_lang_service+'</th><th style="width:70px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
+                        tdata = '<table class="table table-striped table-bordered" id="services_table"><thead><tr><th>'+js_lang_service+'</th><th style="width:120px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>';
                         for (var i = 0; i < data.services.length; i++) {
                             var tr_class='';
                             if (data.services[i].days <= 0) {
                                 tr_class=' class="error"';
                             }
                             service_plans_cost[data.services[i].service_id] = data.services[i].cost;
-                            tdata += "<tr"+tr_class+"><td><span class=\"label label-inverse\"><span id=\"service_name_"+data.services[i].service_id+"\">" + data.services[i].name + "</span></span></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"service_days_"+data.services[i].service_id+"\">" + data.services[i].days + "</span></td><td style=\"width:70px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateService('"+data.services[i].service_id+"');\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                            tdata += "<tr"+tr_class+"><td><span class=\"label label-default\"><span id=\"service_name_"+data.services[i].service_id+"\">" + data.services[i].name + "</span></span></td><td style=\"width:90px;text-align:center\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;<span id=\"service_days_"+data.services[i].service_id+"\">" + data.services[i].days + "</span></td><td style=\"width:50px;text-align:center\"><span class=\"btn btn-default btn-sm\" onclick=\"updateService('"+data.services[i].service_id+"');\"><i class=\"glyphicon glyphicon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";
                         $('#data_services').html(tdata);                    
@@ -253,7 +253,7 @@ $(document).ready(function () {
                         } 
                     }
                     if (data.payment_methods && data.payment_methods.length > 0) {
-                        var pdata='<table class="table">';
+                        var pdata='<div class="row"><div class="col-lg-offset-2 col-lg-5"><table class="table">';
                         for (var i = 0; i < data.payment_methods.length; i++) {
                             var chk='';
                             if (i == 0) {
@@ -261,7 +261,7 @@ $(document).ready(function () {
                             }
                             pdata += '<tr style="cursor:pointer" onclick="$(\'#payment_method_\'+'+i+').attr(\'checked\', \'checked\');"><td style="width:20px;text-align:center;vertical-align:middle"><input type="radio" name="payment_method_id" id="payment_method_'+i+'" value="'+data.payment_methods[i].id+'"'+chk+'></td><td><h4>'+data.payment_methods[i].name+'</h4>'+data.payment_methods[i].desc+'</td></tr>';
                         }
-                        pdata += '</table>';
+                        pdata += '</table></div></div>';
                         $('#payment_methods').html(pdata);
                     }
                     var hplans = ''; 
@@ -300,10 +300,10 @@ $(document).ready(function () {
     $('#btn_save_funds').click(function() {
         $('#form_error_msg').hide();
         $('#form_error_msg_text').html('');        
-        $('#cg_amnt').removeClass('error');
+        $('#cg_amnt').removeClass('has-error');
         var form_errors = false;
         if (!$('#amnt').val().match(/^[0-9]*\.?[0-9]+$/) || $('#amnt').val() <= 0) {
-            $('#cg_amnt').addClass('error');
+            $('#cg_amnt').addClass('has-error');
             $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_form_error_invalid_amount + "<br/>");
             form_errors = true;
         }
@@ -334,7 +334,7 @@ $(document).ready(function () {
                                 $('#form_error_msg').alert();
                             }
                             if (data.field) {
-                                $('#cg_' + data.field).addClass('error');
+                                $('#cg_' + data.field).addClass('has-error');
                                 $('#' + data.field).focus();
                             }  
                         } else { // ok
@@ -384,86 +384,86 @@ $(document).ready(function () {
         var errors = false;
         if ($('#n1r').val() || $('#n2r').val() || $('#n3r').val() || $('#passport').val() || $('#addr_ru').val()) {
             if (!$('#n1r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
-                $('#cg_n1r').addClass('error');
+                $('#cg_n1r').addClass('has-error');
                 errors = true;
             }
             if (!$('#n2r').val().match(/^[А-Яа-я\-]{1,19}$/)) {
-                $('#cg_n2r').addClass('error');
+                $('#cg_n2r').addClass('has-error');
                 errors = true;
             }
             if (!$('#n3r').val().match(/^[А-Яа-я\-]{1,24}$/)) {
-                $('#cg_n3r').addClass('error');
+                $('#cg_n3r').addClass('has-error');
                 errors = true;
             }
             if (!$('#passport').val().match(/^([0-9]{2})(\s)([0-9]{2})(\s)([0-9]{6})(\s)(.*)([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
-                $('#cg_passport').addClass('error');
+                $('#cg_passport').addClass('has-error');
                 errors = true;
             }
             if (!$('#addr_ru').val().match(/^([0-9]{6}),(\s)(.*)$/)) {
-                $('#cg_addr_ru').addClass('error');
+                $('#cg_addr_ru').addClass('has-error');
                 errors = true;
             }
         }
         if (!$('#n1e').val().match(/^[A-Za-z\-]{1,30}$/)) {
-            $('#cg_n1e').addClass('error');
+            $('#cg_n1e').addClass('has-error');
             errors = true;
         }
         if (!$('#n2e').val().match(/^[A-Za-z\-]{1,30}$/)) {
-            $('#cg_n2e').addClass('error');
+            $('#cg_n2e').addClass('has-error');
             errors = true;
         }
         if (!$('#n3e').val().match(/^[A-Z]{1}$/)) {
-            $('#cg_n3e').addClass('error');
+            $('#cg_n3e').addClass('has-error');
             errors = true;
         }
         if (!$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
-            $('#cg_email').addClass('error');
+            $('#cg_email').addClass('has-error');
             errors = true;
         }
         if (!$('#phone').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
-            $('#cg_phone').addClass('error');
+            $('#cg_phone').addClass('has-error');
             errors = true;
         }
         if ($('#fax').val() && !$('#fax').val().match(/^(\+)([0-9]{1,5})(\s)([0-9]{1,6})(\s)([0-9]{1,10})$/)) {
-            $('#cg_fax').addClass('error');
+            $('#cg_fax').addClass('has-error');
             errors = true;
         }    
         if (!$('#birth_date').val().match(/^([0-9]{2})(\.)([0-9]{2})(\.)([0-9]{4})$/)) {
-            $('#cg_birth_date').addClass('error');
+            $('#cg_birth_date').addClass('has-error');
             errors = true;
         }        
         if (!$('#postcode').val().match(/^([0-9]{5,6})$/)) {
-            $('#cg_postcode').addClass('error');
+            $('#cg_postcode').addClass('has-error');
             errors = true;
         }
         if ($('#org_r').val() || $('#org').val() || $('#code').val() || $('#kpp').val()) {
             if (!$('#org_r').val().match(/^(.{1,80})$/)) {
-                $('#cg_org_r').addClass('error');
+                $('#cg_org_r').addClass('has-error');
                 errors = true;
             }
             if (!$('#org').val().match(/^(.{1,80})$/)) {
-                $('#cg_org').addClass('error');
+                $('#cg_org').addClass('has-error');
                 errors = true;
             }
             if (!$('#code').val().match(/^([0-9]{10})$/)) {
-                $('#cg_code').addClass('error');
+                $('#cg_code').addClass('has-error');
                 errors = true;
             }
             if (!$('#kpp').val().match(/^([0-9]{9})$/)) {
-                $('#cg_kpp').addClass('error');
+                $('#cg_kpp').addClass('has-error');
                 errors = true;
             }
         }   
         if (!$('#city').val().match(/^([A-Za-z\-\. ]{2,64})$/)) {
-            $('#cg_city').addClass('error');
+            $('#cg_city').addClass('has-error');
             errors = true;
         }
         if (!$('#state').val().match(/^([A-Za-z\-\. ]{2,40})$/)) {
-            $('#cg_state').addClass('error');
+            $('#cg_state').addClass('has-error');
             errors = true;
         }
         if (!$('#addr').val().match(/^(.{2,80})$/)) {
-            $('#cg_addr').addClass('error');
+            $('#cg_addr').addClass('has-error');
             errors = true;
         } 
         if (errors) {
@@ -525,7 +525,7 @@ $(document).ready(function () {
                             $(this).removeAttr('disabled');
                         });
                         if (data.field) {
-                            $('#cg_' + data.field).addClass('error');
+                            $('#cg_' + data.field).addClass('has-error');
                             $('#' + data.field).focus();
                         }
                     } else { // OK
@@ -569,10 +569,10 @@ $(document).ready(function () {
     $('#btn_add_hosting').click(function() {
         allowModalEsc = true;
         $('#hosting_dialog_head').html(js_lang_add_hosting);
-        $('#cg_haccount').removeClass('error');
-        $('#cg_hpwd').removeClass('error');
-        $('#cg_hplan').removeClass('error');
-        $('#cg_hdays').removeClass('error');
+        $('#cg_haccount').removeClass('has-error');
+        $('#cg_hpwd').removeClass('has-error');
+        $('#cg_hplan').removeClass('has-error');
+        $('#cg_hdays').removeClass('has-error');
         $('#hosting_edit_form_error').hide();
         $('#haccount').val('');
         $('#hpwd').val('');
@@ -596,7 +596,7 @@ $(document).ready(function () {
         });
         $('select option:first-child').attr("selected", "selected");
         $(".ctrl-grp-domain").each(function() {
-            $(this).removeClass('error');
+            $(this).removeClass('has-error');
         });
         $('#domain_dialog').modal({
             keyboard: false,
@@ -618,22 +618,22 @@ $(document).ready(function () {
     });
     $('#btn_hosting_save').click(function() {        
         allowModalEsc = true;
-        $('#cg_haccount').removeClass('error');
-        $('#cg_hplan').removeClass('error');
-        $('#cg_hpwd').removeClass('error');
-        $('#cg_hdays').removeClass('error');
+        $('#cg_haccount').removeClass('has-error');
+        $('#cg_hplan').removeClass('has-error');
+        $('#cg_hpwd').removeClass('has-error');
+        $('#cg_hdays').removeClass('has-error');
         $('#hosting_edit_form_error').hide();
         var errors = false;
         if (!$('#haccount').val().match(/^[A-Za-z0-9]{4,8}$/)) {
-            $('#cg_haccount').addClass('error');
+            $('#cg_haccount').addClass('has-error');
             errors = true;
         }
         if ($('#hosting_row_' + $('#haccount').val()) && $('#hosting_row_' + $('#haccount').val()).length > 0) {
-            $('#cg_haccount').addClass('error');
+            $('#cg_haccount').addClass('has-error');
             errors = true;
         }
         if (!$('#hpwd').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) || $('#hpwd').val() != $('#hpwd_repeat').val()) {
-            $('#cg_hpwd').addClass('error');
+            $('#cg_hpwd').addClass('has-error');
             errors = true;
         }
         if (errors) {
@@ -674,18 +674,18 @@ $(document).ready(function () {
                         $('#hosting_edit_buttons').show();
                         $('#ajax_loading').hide();
                         if (data.field) {
-                            $('#cg_' + data.field).addClass('error');
+                            $('#cg_' + data.field).addClass('has-error');
                             $('#' + data.field).focus();
                         }                        
                     } else { // OK
                         hosting_plans_cost[data.haccount] = data.hplan_cost;
                         var prp='<img src="/images/update.png" width="16" height="16" alt="" />';
-                        var error_label='<span class="badge badge-important" id="error_label_'+data.haccount+'"></span>&nbsp;';
-                        var tdata = "<tr id=\"hosting_row_"+data.haccount+"\"><td><span class=\"label label-inverse\">" + data.haccount + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+data.haccount+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+data.haccount+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" icon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:70px;text-align:center\"><span class=\"btn btn-mini\" onclick=\"updateHosting('"+data.haccount+"')\"><i class=\"icon-plus-sign\"></i></span></td></tr>";
+                        var error_label='<span class="badge badge-danger" id="error_label_'+data.haccount+'"></span>&nbsp;';
+                        var tdata = "<tr id=\"hosting_row_"+data.haccount+"\"><td><span class=\"label label-default\">" + data.haccount + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+data.haccount+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+data.haccount+"\" rel=\"qerror\" class=\"badge badge-danger qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hplan_name + " <small style=\"color:#666\">(" + data.hplan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.haccount+"\">" + data.hdays + "</span></td><td style=\"width:120px;text-align:center\"><span class=\"btn btn-default btn-sm\" onclick=\"updateHosting('"+data.haccount+"')\"><i class=\"glyphicon glyphicon-plus-sign\"></i></span></td></tr>";
                         if ($('#hosting_table tr:last').size() > 0) {
                             $('#hosting_table tr:last').after(tdata);
                         } else {
-                            var ndata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:70px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>'+tdata+"</tbody></table>";
+                            var ndata = '<table class="table table-striped table-bordered" id="hosting_table"><thead><tr><th>'+js_lang_hosting_account+'</th><th style="width:120px;text-align:center">'+js_lang_hac_days+'</th><th style="width:50px"></th></tr></thead><tbody>'+tdata+"</tbody></table>";
                             $('#data_hosting').html(ndata);
                         }
                         $('#hosting_dialog').modal('hide');
@@ -714,44 +714,44 @@ $(document).ready(function () {
     $('#btn_domain_save').click(function() {
         allowModalEsc = true;
         $(".ctrl-grp-domain").each(function() {
-            $(this).removeClass('error');
+            $(this).removeClass('has-error');
         });
         $('#domain_edit_form_error').hide();
         var errors = false;
         if (!$('#domain_name').val().match(/^[A-Za-z0-9\-]{2,100}$/)) {
-            $('#cg_domain_name').addClass('error');
+            $('#cg_domain_name').addClass('has-error');
             errors = true;
         }
         if (!$('#ns1').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-            $('#cg_ns1').addClass('error');
+            $('#cg_ns1').addClass('has-error');
             errors = true;
         }
         if (!$('#ns2').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-            $('#cg_ns2').addClass('error');
+            $('#cg_ns2').addClass('has-error');
             errors = true;
         }
         if ($('#ns3').val() && !$('#ns3').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-            $('#cg_ns3').addClass('error');
+            $('#cg_ns3').addClass('has-error');
             errors = true;
         }
         if ($('#ns4').val() && !$('#ns4').val().match(/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)) {
-            $('#cg_ns4').addClass('error');
+            $('#cg_ns4').addClass('has-error');
             errors = true;
         }
         if ($('#ns1_ip').val() && !$('#ns1_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-            $('#cg_ns1_ip').addClass('error');
+            $('#cg_ns1_ip').addClass('has-error');
             errors = true;
         }
         if ($('#ns2_ip').val() && !$('#ns2_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-            $('#cg_ns2_ip').addClass('error');
+            $('#cg_ns2_ip').addClass('has-error');
             errors = true;
         }
         if ($('#ns3_ip').val() && !$('#ns3_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-            $('#cg_ns3_ip').addClass('error');
+            $('#cg_ns3_ip').addClass('has-error');
             errors = true;
         }
         if ($('#ns4_ip').val() && !$('#ns4_ip').val().match(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)) {
-            $('#cg_ns4_ip').addClass('error');
+            $('#cg_ns4_ip').addClass('has-error');
             errors = true;
         }
         if (errors) {
@@ -798,18 +798,18 @@ $(document).ready(function () {
                         $('#domain_edit_buttons').show();
                         $('#ajax_loading').hide();
                         if (data.field) {
-                            $('#cg_' + data.field).addClass('error');
+                            $('#cg_' + data.field).addClass('has-error');
                             $('#' + data.field).focus();
                         }
                     } else { // OK
                         var update_icon='';
                         if (data.zone != "ru" && data.zone != "su") {
-                            update_icon = '<span class="btn btn-mini"><i class="icon-refresh" onclick="updateDomain(\''+data.domain_name+'\');"></i></span>';
+                            update_icon = '<span class="btn btn-default btn-sm"><i class="glyphicon glyphicon-refresh" onclick="updateDomain(\''+data.domain_name+'\');"></i></span>';
                         }
                         var dnid=data.domain_name.replace(/\./g, "_");
-                        var error_label='<span class="badge badge-important" id="error_label_'+dnid+'"></span>&nbsp;';
+                        var error_label='<span class="badge badge-danger" id="error_label_'+dnid+'"></span>&nbsp;';
                         var prp='<img src="/images/update.png" width="16" height="16" alt="" />';
-                        var tdata = "<tr id=\"domain_row_"+dnid+"\"><td><span class=\"label label-inverse\">" + data.domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-important qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" icon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:70px;text-align:center\">"+update_icon+"</td></tr>";
+                        var tdata = "<tr id=\"domain_row_"+dnid+"\"><td><span class=\"label label-default\">" + data.domain_name + "</span>&nbsp;<span class=\"badge badge-success\" id=\"progress_"+dnid+"\" rel=\"progress_img\">"+prp+"</span><span id=\"qerror_"+dnid+"\" rel=\"qerror\" class=\"badge badge-danger qerror\"></span>"+error_label+"</td><td style=\"width:100px;text-align:center\"><i class=\" glyphicon glyphicon-calendar\"></i>&nbsp;<span id=\"exp_"+dnid+"\">" + data.exp_date + "</span></td><td style=\"width:120px;text-align:center\">"+update_icon+"</td></tr>";
                         if ($('#domains_table tr:last').size() > 0) {
                             $('#domains_table tr:last').after(tdata);
                         } else {
@@ -846,7 +846,7 @@ $(document).ready(function () {
             allowModalEsc = true;
             return;
         }
-        $('#cg_hdays').removeClass('error');
+        $('#cg_hdays').removeClass('has-error');
         $('#hosting_update_edit_form_error').hide();
         $('#hosting_update_edit_ajax_msg').html(js_lang_ajax_saving);
         $('#hosting_update_edit_ajax').show();
@@ -873,7 +873,7 @@ $(document).ready(function () {
                     $('#hosting_update_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -908,7 +908,7 @@ $(document).ready(function () {
             allowModalEsc = true;
             return;
         }
-        $('#cg_sdays').removeClass('error');
+        $('#cg_sdays').removeClass('has-error');
         $('#service_update_edit_form_error').hide();
         $('#service_update_edit_ajax_msg').html(js_lang_ajax_saving);
         $('#service_update_edit_ajax').show();
@@ -935,7 +935,7 @@ $(document).ready(function () {
                     $('#service_update_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -988,7 +988,7 @@ $(document).ready(function () {
                     $('#domain_update_edit_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -1105,7 +1105,7 @@ $(document).ready(function () {
                 for (var s=0; s< data.hosting.length; s++) {
                     if (data.hosting[s].error_msg && data.hosting[s].error_msg != '') {
                         var emsg = data.hosting[s].error_msg;
-                        $("#error_label_"+data.hosting[s].host_acc).html(js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>');
+                        $("#error_label_"+data.hosting[s].host_acc).html(js_lang_error+'&nbsp;<i class="glyphicon glyphicon-question-sign"></i>');
                         $("#error_label_"+data.hosting[s].host_acc).bind('click', {msg: emsg}, function(event) { errorMessage(event.data.msg) });
                     } else {
                         $("#error_label_"+data.hosting[s].host_acc).html('');
@@ -1113,9 +1113,9 @@ $(document).ready(function () {
                     $('#qerror_'+data.hosting[s].host_acc).html('');
                     $('#hosting_days_'+data.hosting[s].host_acc).html(data.hosting[s].host_days_remain);
                     if (data.hosting[s].host_days_remain > 0) {
-                        $('#hosting_row_'+data.hosting[s].host_acc).removeClass('error');
+                        $('#hosting_row_'+data.hosting[s].host_acc).removeClass('has-error');
                     } else {
-                        $('#hosting_row_'+data.hosting[s].host_acc).addClass('error');
+                        $('#hosting_row_'+data.hosting[s].host_acc).addClass('has-error');
                     }
                 }
                 for (var s=0; s< data.domains.length; s++) {
@@ -1124,15 +1124,15 @@ $(document).ready(function () {
                     $('#exp_'+dnid).html(data.domains[s].exp_date);
                     if (data.domains[s].error_msg && data.domains[s].error_msg != '') {
                         var emsg = data.domains[s].error_msg;
-                        $("#error_label_"+dnid).html(js_lang_error+'&nbsp;<i class="icon-question-sign icon-white"></i>');
+                        $("#error_label_"+dnid).html(js_lang_error+'&nbsp;<i class="glyphicon glyphicon-question-sign"></i>');
                         $("#error_label_"+dnid).bind('click', {msg: emsg}, function(event) { errorMessage(event.data.msg) });
                     } else {
                         $("#error_label_"+dnid).html('');
                     }                    
                     if (data.domains[s].expired == 1) {
-                        $('#domain_row_'+dnid).addClass('error');
+                        $('#domain_row_'+dnid).addClass('has-error');
                     } else {
-                        $('#domain_row_'+dnid).removeClass('error');
+                        $('#domain_row_'+dnid).removeClass('has-error');
                     }
                 }
                 $(".qerror").each(function() {

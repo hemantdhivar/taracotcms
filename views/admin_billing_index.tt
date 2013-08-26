@@ -468,7 +468,7 @@
               <span class="btn btn-success btn-xs" style="float:right" id="btn_add_hosting"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_account} =]</span>
               [== $lang->{hosting_accounts} =]
             </div>
-            <div id="data_accounts" class="panel-body" style="font-size:90%;padding:0px 15px 15px 15px">[== $lang->{no_hosting_accounts} =]</div>
+            <div id="data_accounts" class="panel-body" style="font-size:90%;padding:0px 5px 15px 15px">[== $lang->{no_hosting_accounts} =]</div>
           </div>
         </div>
         <div class="col-lg-4" style="margin-bottom:3px">
@@ -477,7 +477,7 @@
               <span class="btn btn-success btn-xs" style="float:right" id="btn_add_domain"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_domain} =]</span>
               [== $lang->{domains} =]
             </div>
-            <div id="data_domains panel-body" style="font-size:90%;padding:0px 15px 15px 15px"><br/>[== $lang->{no_domains} =]</div>
+            <div id="data_domains" class="panel-body" style="font-size:90%;padding:0px 5px 15px 15px"><br/>[== $lang->{no_domains} =]</div>
           </div>
         </div>
         <div class="col-lg-4">
@@ -486,7 +486,7 @@
               <span class="btn btn-success btn-xs" style="float:right" id="btn_add_service"><i class="icon-plus icon-white"></i>&nbsp;[== $lang->{add_service} =]</span>
               [== $lang->{services} =]
             </div>
-            <div id="data_services panel-body" style="font-size:90%;padding:0px 15px 15px 15px"><br/>[== $lang->{no_services} =]</div>
+            <div id="data_services" class="panel-body" style="font-size:90%;padding:0px 5px 15px 15px"><br/>[== $lang->{no_services} =]</div>
           </div>
         </div>
       </div>
