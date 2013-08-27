@@ -91,7 +91,7 @@ $(document).ready(function () {
                                 error_msg=data.hosting[i].error_msg;
                             }
                             var error_label='<span class="badge badge-danger" style="cursor:pointer" id="error_label_'+data.hosting[i].account+'" onclick="errorMessage(\''+error_msg+'\')">'+error_act+'</span>&nbsp;';
-                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><span class=\"label label-default\">" + data.hosting[i].account + "</span>&nbsp;<span class=\"badge badge-success\" rel=\"progress_img\" id=\"progress_"+data.hosting[i].account+"\">"+prp+"</span><span id=\"qerror_"+data.hosting[i].account+"\" rel=\"qerror\" class=\"badge badge-danger qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:120px;text-align:center\"><span class=\"btn btn-default btn-sm\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"glyphicon glyphicon-plus-sign\"></i></span></td></tr>";
+                            tdata += "<tr"+tr_class+" id=\"hosting_row_"+data.hosting[i].account+"\"><td><span class=\"label label-default\">" + data.hosting[i].account + "</span>&nbsp;<span class=\"badge badge-success\" rel=\"progress_img\" id=\"progress_"+data.hosting[i].account+"\">"+prp+"</span><span id=\"qerror_"+data.hosting[i].account+"\" rel=\"qerror\" class=\"badge badge-danger qerror\"></span></span>&nbsp;"+error_label+"&nbsp;" + data.hosting[i].plan_name + " <small style=\"color:#666\">(" + data.hosting[i].plan_cost + " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</small></td><td style=\"width:90px;text-align:center\"><i class=\" glyphicon glyphicon-time\"></i>&nbsp;<span id=\"hosting_days_"+data.hosting[i].account+"\">" + data.hosting[i].days + "</span></td><td style=\"width:50px;text-align:center\"><span class=\"btn btn-default btn-sm\" onclick=\"updateHosting('"+data.hosting[i].account+"')\"><i class=\"glyphicon glyphicon-plus-sign\"></i></span></td></tr>";
                         }
                         tdata += "</tbody></table>";                        
                         $('#data_hosting').html(tdata);                        
@@ -247,19 +247,19 @@ $(document).ready(function () {
                             $('#kpp').val(data.profile.kpp);
                         }
                         if (data.profile.private) {
-                            $('#private').attr('checked', 'checked');
+                            $('#private').prop('checked', true);
                         } else {
-                            $('#private').removeAttr('checked');
+                            $('#private').prop('checked', false);
                         } 
                     }
                     if (data.payment_methods && data.payment_methods.length > 0) {
-                        var pdata='<div class="row"><div class="col-lg-offset-2 col-lg-5"><table class="table">';
+                        var pdata='<div class="row"><div class="col-lg-offset-2 col-lg-5"><table class="table" id="payment_methods_table">';
                         for (var i = 0; i < data.payment_methods.length; i++) {
                             var chk='';
                             if (i == 0) {
                                 chk=" checked";
                             }
-                            pdata += '<tr style="cursor:pointer" onclick="$(\'#payment_method_\'+'+i+').attr(\'checked\', \'checked\');"><td style="width:20px;text-align:center;vertical-align:middle"><input type="radio" name="payment_method_id" id="payment_method_'+i+'" value="'+data.payment_methods[i].id+'"'+chk+'></td><td><h4>'+data.payment_methods[i].name+'</h4>'+data.payment_methods[i].desc+'</td></tr>';
+                            pdata += '<tr style="cursor:pointer" onclick="$(\'#payment_method_\'+'+i+').prop(\'checked\', true);"><td style="width:20px;text-align:center;vertical-align:middle"><input type="radio" name="payment_method_id" id="payment_method_'+i+'" value="'+data.payment_methods[i].id+'"'+chk+'></td><td><h4>'+data.payment_methods[i].name+'</h4>'+data.payment_methods[i].desc+'</td></tr>';
                         }
                         pdata += '</table></div></div>';
                         $('#payment_methods').html(pdata);
@@ -612,7 +612,7 @@ $(document).ready(function () {
                 $('#'+data_nss[i].ns).val(data_nss[i].host);
             }
         }
-        $('input[name=use_default_nss]').attr('checked', true);
+        $('#use_default_nss').prop('checked', true);
         $('#nss_controls').hide();
         updateDomainPreview();
     });
