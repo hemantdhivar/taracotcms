@@ -699,9 +699,9 @@ post '/post/process' => sub {
   }
   $blog_data =~ s/\</&lt;/gm;
   $blog_data =~ s/\>/&gt;/gm;
-  my $remote_ip = $ENV{'HTTP_X_REAL_IP'};
+  my $remote_ip = request->env->{'HTTP_X_REAL_IP'};
   if (!$remote_ip) {
-    $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
+    $remote_ip = request->env->{REMOTE_ADDR} || request->env->{REMOTE_HOST} || 'unknown';
   }
   if ($pid) {
     database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require, phash => $phash }); 
@@ -845,9 +845,9 @@ post '/comment/put' => sub {
   $sth->execute();
   $sth->finish();  
   # Get remote IP
-  my $remote_ip = $ENV{'HTTP_X_REAL_IP'};
+  my $remote_ip = request->env->{'HTTP_X_REAL_IP'};
   if (!$remote_ip) {
-    $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
+    $remote_ip = request->env->{REMOTE_ADDR} || request->env->{REMOTE_HOST} || 'unknown';
   }  
   # Insert  
   $sth = database->prepare(

@@ -37,10 +37,10 @@ foreach my $block (@blocks) {
 
 hook before => sub {
   # Firewall-related routines
-  if (config->{firewall_mode} eq 'blacklist' || config->{firewall_mode} eq 'whitelist') {
-    my $remote_ip = $ENV{'HTTP_X_REAL_IP'};
+  if (config->{firewall_mode} eq 'blacklist' || config->{firewall_mode} eq 'whitelist') {    
+    my $remote_ip = request->env->{'HTTP_X_REAL_IP'};
     if (!$remote_ip) {
-      $remote_ip = $ENV{REMOTE_ADDR} || $ENV{REMOTE_HOST} || 'unknown';
+      $remote_ip = request->env->{REMOTE_ADDR} || request->env->{REMOTE_HOST} || 'unknown';
     }
     my $remote_ip_p1 = $remote_ip;
     $remote_ip_p1 =~s/\.[\d]+$//;
@@ -162,7 +162,7 @@ sub _detect_lang() {
     }                 
  }
  my $json_xs = JSON::XS->new();
- $resp->{lng} = $lng || 'en';
+ $resp->{lng} = $lng || config->{lang_default};
  $resp->{list} = $json_xs->encode(\@lst); 
  return $resp;
 }
@@ -219,7 +219,7 @@ get '/captcha_img' => sub {
   my $color1 = Imager::Color->new( int(rand(100))+150, int(rand(100))+150, int(rand(100))+150 );
   my $color2 = Imager::Color->new( int(rand(50)), int(rand(50)), int(rand(50)) );
   my $fill = Imager::Fill->new(hatch=>@fills[int(rand(@fills))], fg=>$color1, bg=>$color2, dx=>int(rand(30)), dy=>int(rand(30)) );
-  my $font = Imager::Font->new(file => config->{root_dir}.'/fonts/'.config->{captcha_font} );
+  my $font = Imager::Font->new(file => config->{root_dir}.'/fonts/'.config->{captcha_font} ) || die($!);
   $image->box(fill=>$fill);  
   my $offset=10+int(rand(8));
   foreach my $char (split(//, $code)) {
@@ -244,7 +244,11 @@ get '/captcha_img' => sub {
 get '/403' => sub { 
  &_load_lang;
  status 'forbidden';
- my $render_403 = template 'error_403', { lang => $lang }, { layout => undef };
+ my $remote_ip = request->env->{'HTTP_X_REAL_IP'};
+ if (!$remote_ip) {
+  $remote_ip = request->env->{REMOTE_ADDR} || request->env->{REMOTE_HOST} || 'unknown';
+ }
+ my $render_403 = template 'error_403', { lang => $lang, remote_ip => $remote_ip }, { layout => undef };
  return $render_403;
 };
 
