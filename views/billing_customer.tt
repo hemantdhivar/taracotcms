@@ -6,11 +6,11 @@
   <h3 id="hosting_dialog_head"></h3>
  </div>
  <div class="modal-body">
-  <span class="form-horizontal" id="hosting_edit_form">
+  <div class="form-horizontal" id="hosting_edit_form">
     <div class="alert alert-danger" id="hosting_edit_form_error" style="display:none">
       <span id="hosting_edit_form_error_text"></span>
     </div>
-    <span id="form_controls_hosting"> 
+    <div id="form_controls_hosting"> 
       <div class="form-group" id="cg_haccount"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="haccount">[== $lang->{hosting_account} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="col-lg-8">
@@ -35,7 +35,7 @@
       <div class="form-group" id="cg_hdays"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="hdays">[== $lang->{months} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="col-lg-2">
-          <select name="hdays" id="hdays" class="form-control" /><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+          <select name="hdays" id="hdays" class="form-control"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
         </div>
       </div>
       <div class="form-group" id="cg_haddcost"> 
@@ -43,10 +43,10 @@
           [== $lang->{add_cost} =]:&nbsp;<span id="haddcost"></span>&nbsp;[== $page_data->{billing_currency} =]
         </div>
       </div>
-    </span>
-  </span>
+    </div>
+  </div>
   <div id="hosting_edit_ajax" style="display:none">
-    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="hosting_edit_ajax_msg"></span>
+    <img src="/images/well_loading.gif" width="16" height="11" alt="" />&nbsp;&nbsp;<span id="hosting_edit_ajax_msg"></span>
   </div>
  </div>
   <div class="modal-footer" id="hosting_edit_buttons">
@@ -63,11 +63,11 @@
   <h3>[== $lang->{hosting_update} =]</h3>
  </div>
  <div class="modal-body">
-  <span class="form-horizontal" id="hosting_update_edit_form">
+  <div class="form-horizontal" id="hosting_update_edit_form">
     <div class="alert alert-danger" id="hosting_update_edit_form_error" style="display:none">
       <span id="hosting_update_edit_form_error_text"></span>
     </div>
-    <span id="form_controls_hosting_update">       
+    <div id="form_controls_hosting_update">       
       <div class="form-group" id="cg_hacnt"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="hacnt">[== $lang->{acnt_up} =]</label> 
         <div class="col-lg-4">
@@ -77,18 +77,18 @@
       <div class="form-group" id="cg_hdaysup"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="hdaysup">[== $lang->{months} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="col-lg-2">
-          <select name="hdaysup" id="hdaysup" class="form-control" /><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+          <select name="hdaysup" id="hdaysup" class="form-control"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
         </div>
       </div>
-      <div class="form-group" id="cg_haddcost"> 
+      <div class="form-group" id="cg_hupcost"> 
         <div class="col-lg-offset-4 col-lg-8">
           [== $lang->{up_cost} =]:&nbsp;<span id="hupcost"></span>&nbsp;[== $page_data->{billing_currency} =]
         </div>
       </div>      
-    </span>
-  </span>
+    </div>
+  </div>
   <div id="hosting_update_edit_ajax" style="display:none">
-    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="hosting_update_edit_ajax_msg"></span>
+    <img src="/images/well_loading.gif" width="16" height="11" alt="" />&nbsp;&nbsp;<span id="hosting_update_edit_ajax_msg"></span>
   </div>
  </div>
   <div class="modal-footer" id="hosting_update_edit_buttons">
@@ -105,11 +105,11 @@
   <h3>[== $lang->{btn_add_domain} =]</h3>
  </div>
  <div class="modal-body">
-  <span class="form-horizontal" id="domain_edit_form">
+  <div class="form-horizontal" id="domain_edit_form">
     <div class="alert alert-danger" id="domain_edit_form_error" style="display:none">
       <span id="domain_edit_form_error_text"></span>
     </div>
-    <span id="form_controls_domain"> 
+    <div id="form_controls_domain"> 
       <div class="form-group ctrl-grp-domain" id="cg_domain_name"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="domain_name">[== $lang->{domain_name} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="col-lg-8">
@@ -134,7 +134,7 @@
         </div>
       </div>
       <div id="nss_controls" style="display:none">
-        <div class="form-group ctrl-grp-domain alert alert-danger" id="cg_domain_zone"> 
+        <div class="form-group ctrl-grp-domain alert alert-danger"> 
           <div class="col-lg-offset-2 col-lg-10">
             <span class="label label-danger">[== $lang->{important} =]:</span><br/><div style="height:10px"></div>[== $lang->{ns_note} =]
           </div>
@@ -164,10 +164,10 @@
           </div>
         </div>
       </div>
-    </span>
-  </span>
+    </div>
+  </div>
   <div id="domain_edit_ajax" style="display:none">
-    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="domain_edit_ajax_msg"></span>
+    <img src="/images/well_loading.gif" width="16" height="11" alt="" />&nbsp;&nbsp;<span id="domain_edit_ajax_msg"></span>
   </div>
  </div>
   <div class="modal-footer" id="domain_edit_buttons">
@@ -184,16 +184,16 @@
   <h3>[== $lang->{domain_update} =]</h3>
  </div>
  <div class="modal-body">
-  <span class="form-horizontal" id="domain_update_edit_form">
+  <div class="form-horizontal" id="domain_update_edit_form">
     <div class="alert alert-danger" id="domain_update_edit_form_error" style="display:none">
       <span id="domain_update_edit_form_error_text"></span>
     </div>
     <div id="up_domain_name" class="taracot-sub-header"></div>    
     [== $lang->{up_cost} =]:&nbsp;<span id="dupcost"></span>&nbsp;[== $page_data->{billing_currency} =] ([== $lang->{domain_one_year} =])
     <br/>
-  </span>
+  </div>
   <div id="domain_update_edit_ajax" style="display:none">
-    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="domain_update_edit_ajax_msg"></span>
+    <img src="/images/well_loading.gif" width="16" height="11" alt="" />&nbsp;&nbsp;<span id="domain_update_edit_ajax_msg"></span>
   </div>
  </div>
   <div class="modal-footer" id="domain_update_edit_buttons">
@@ -229,8 +229,8 @@
   <div class="alert alert-danger" id="service_update_edit_form_error" style="display:none">
     <span id="service_update_edit_form_error_text"></span>
   </div>
-  <span class="form-horizontal" id="service_update_edit_form">    
-    <span id="form_controls_service_update">       
+  <div class="form-horizontal" id="service_update_edit_form">    
+    <div id="form_controls_service_update">       
       <div class="form-group" id="cg_sn"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="sn">[== $lang->{service_name} =]</label> 
         <div class="col-lg-4">
@@ -240,7 +240,7 @@
       <div class="form-group" id="cg_sdaysup"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="sdaysup">[== $lang->{months} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="col-lg-2">
-          <select name="sdaysup" id="sdaysup" class="form-control" /><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
+          <select name="sdaysup" id="sdaysup" class="form-control"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select>
         </div>
       </div>
       <div class="form-group" id="cg_supcost"> 
@@ -248,10 +248,10 @@
           [== $lang->{up_cost} =]:&nbsp;<span id="supcost"></span>&nbsp;[== $page_data->{billing_currency} =]
         </div>
       </div>      
-    </span>
-  </span>
+    </div>
+  </div>
   <div id="service_update_edit_ajax" style="display:none">
-    <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;<span id="service_update_edit_ajax_msg"></span>
+    <img src="/images/well_loading.gif" width="16" height="11" alt="" />&nbsp;&nbsp;<span id="service_update_edit_ajax_msg"></span>
   </div>
  </div>
   <div class="modal-footer" id="service_update_edit_buttons">
@@ -266,7 +266,9 @@
           <h1 style="margin-top:0px;padding-top:0px">[== $lang->{billing_customer} =]</h1>
         </div>
         <div class="col-lg-4" style="margin-top:13px">
-          <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail"></span>&nbsp;[== $page_data->{billing_currency} =]</span>
+          <div class="pull-right">
+            <strong>[== $lang->{label_funds} =]:</strong>&nbsp;<span class="badge"><span id="funds_avail"></span>&nbsp;[== $page_data->{billing_currency} =]</span>
+          </div>
         </div>
       </div>
 
@@ -350,14 +352,14 @@
                   [== $lang->{tab_account_hint_2} =]<br/><br/>
                   <div id="account_ext_form"></div>
                 </div>
-                <div class="form-actions"> 
+                <div class="row" style="margin-bottom:30px;margin-top:10px"> 
                     <div id="ajax_funds_loading" style="display:none">
-                        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]
+                        <img src="/images/well_loading.gif" width="16" height="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]
                     </div>
                     <div id="funds_buttons" class="col-lg-offset-2 col-lg-8" style="margin-top:20px">
                         <button type="button" class="btn btn-primary" id="btn_save_funds">[== $lang->{continue} =]</button>
                     </div>
-                    <div id="funds_buttons_step2" style="display:none;margin-top:20px">
+                    <div id="funds_buttons_step2" class="col-lg-8" style="display:none;margin-top:20px">
                         <button type="button" class="btn btn-default" id="btn_funds_back">[== $lang->{go_back} =]</button>
                         <button type="button" class="btn btn-primary" id="btn_funds_submit">[== $lang->{confirm} =]</button>                        
                     </div>
@@ -614,9 +616,9 @@
                       </fieldset>
                   </div>
               </div>
-                <div class="form-actions"> 
+                <div class="row" style="margin-bottom:30px;margin-top:10px"> 
                     <div id="ajax_profile_loading" style="display:none">
-                        <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_saving} =]
+                        <img src="/images/well_loading.gif" width="16" height="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_saving} =]
                     </div>
                     <div id="profile_buttons" class="col-lg-offset-2 col-lg-4">
                         <button type="button" class="btn btn-primary" id="btn_save_profile">[== $lang->{edit_save} =]</button>

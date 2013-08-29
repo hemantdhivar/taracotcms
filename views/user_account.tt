@@ -46,7 +46,7 @@
         <div id="tab_profile_ajax" class="alert alert-info" style="display:none">
             <img src="/images/white_loading.gif" alt="" height="16" width="16">&nbsp;&nbsp;[== $lang->{user_register_processing} =]
         </div>
-        <div class="account_hint" id="profile_form_hint">[== $lang->{user_account_proifle_hint} =]</div>
+        <div class="account_hint" id="profile_form_hint_1">[== $lang->{user_account_proifle_hint} =]</div>
         <div class="alert alert-danger" id="form_profile_errors" style="display:none"></div>
         <div class="alert alert-success" id="form_profile_success" style="display:none">[== $lang->{user_account_profile_saved} =]</div>
         <div id="tab_profile_form">
@@ -157,7 +157,7 @@
         </div>
     </div> 
     <div class="tab-pane" id="tab_password">
-        <div class="account_hint" id="profile_form_hint"></div>
+        <div class="account_hint" id="profile_form_hint_2"></div>
         <div id="tab_password_ajax" class="alert alert-info" style="display:none">
             <img src="/images/white_loading.gif" alt="" height="16" width="16">&nbsp;&nbsp;[== $lang->{user_register_processing} =]
         </div>

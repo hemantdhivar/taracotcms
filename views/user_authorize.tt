@@ -17,7 +17,7 @@
 <?pl if ($config->{auth_facebook_app_id} || $config->{auth_google_client_id} || $config->{auth_yandex_client_id} || $config->{auth_vk_client_id}) { ?>
 <br/><br/>
 <?pl } ?>
-<span id="auth_form_hint">[== $lang->{user_authorize_hint} =]<div style="height:20px"></div></span>
+<span id="auth_form_hint">[== $lang->{user_authorize_hint} =]</span><div style="height:20px"></div>
 <div class="alert alert-danger" id="form_error_msg" style="display:none">
     <span id="form_error_msg_text"></span>
 </div>
@@ -25,13 +25,13 @@
     <div class="col-sm-10 col-md-10">
         <form class="form-horizontal" role="form" id="auth_form">
         	<div class="form-group" id="cg_auth_login">
-            	<label class="control-label col-lg-2" for="auth_login">[== $lang->{user_register_username_or_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+            	<label class="control-label col-lg-3" for="auth_login">[== $lang->{user_register_username_or_email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
             	<div class="col-lg-4">
             		<input type="text" class="form-control" id="auth_login">
             	</div>
             </div>
             <div class="form-group" id="cg_auth_password">
-                <label class="control-label col-lg-2" for="auth_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+                <label class="control-label col-lg-3" for="auth_password">[== $lang->{user_register_password} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
                 <div class="col-lg-4">
                     <input type="password" class="form-control" id="auth_password">
                     <div style="height:15px"></div>
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="form-group hide" id="cg_auth_captcha">
-                <label class="control-label col-lg-2" for="auth_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+                <label class="control-label col-lg-3" for="auth_captcha">[== $lang->{user_register_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
                 <div class="col-lg-2" style="margin-top:8px">
                     <input type="text" class="form-control" id="auth_captcha">
                 </div>
@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-lg-offset-2 col-lg-10" style="margin-top:20px">
+                <div class="col-lg-offset-3 col-lg-9" style="margin-top:20px">
                     <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{user_auth_submit} =]</button>
                     <button type="button" class="btn btn-success" id="btn_register" onclick="location.href='/user/register'">[== $lang->{user_auth_register} =]</button>
                 </div>
