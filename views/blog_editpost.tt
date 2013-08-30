@@ -55,8 +55,8 @@
     <div class="form-group">
         <div class="col-lg-offset-2 col-lg-9">
             <button type="button" class="btn btn-primary" id="btn_submit">[== $lang->{edit_form_btn_save} =]</button>
-            <button type="button" class="btn" id="btn_preview">[== $lang->{edit_form_btn_preview} =]</button>
-            <button type="button" class="btn" id="btn_cancel" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
+            <button type="button" class="btn btn-default" id="btn_preview">[== $lang->{edit_form_btn_preview} =]</button>
+            <button type="button" class="btn btn-default" id="btn_cancel" onclick="location.href='/blog/'">[== $lang->{edit_form_btn_cancel} =]</button>
          </div>   
     </div>
 </form>

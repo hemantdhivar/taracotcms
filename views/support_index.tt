@@ -1,0 +1,66 @@
+<script type="text/javascript" src="/js/admin/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/js/admin/jquery.dataTables.bootstrap.js"></script>
+<script src="/js/wysibb/jquery.wysibb.min.js" charset="utf-8"></script>
+<h1>[== $lang->{module_name} =]</h1>
+<div id="support_table">
+	[== $lang->{support_hint} =]
+	<div style="height:15px"></div>
+	<button class="btn btn-success btn-sm">[== $lang->{new_ticket} =]</button>
+	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover" id="data_table">
+		<thead>
+			<tr>
+				<th style="width:80px">[== $lang->{id} =]</th>
+				<th style="width:120px">[== $lang->{topic_id} =]</th>
+				<th>[== $lang->{topic} =]</th>
+				<th style="width:170px">[== $lang->{sdate} =]</th>
+				<th style="width:100px">[== $lang->{last_reply} =]</th>
+				<th style="width:80px;text-align:center">[== $lang->{status} =]</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table> 
+</div>
+<div id="support_ticket" style="display:none">
+	<div id="support_ticket_ajax" style="display:none;margin-bottom:20px">
+		<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{processing} =]	
+	</div>
+	<div id="support_ticket_error" style="display:none">
+		[== $lang->{ticket_load_error} =]	
+	</div>
+	<div id="support_ticket_data" style="display:none">
+		<h3 id="support_ticket_topic"></h3>
+		<div class="label label-default" id="support_ticket_topic_id"></div>
+		<div style="height:20px"></div>
+		<div class="panel panel-default">
+			<div class="panel-heading" id="support_ticket_head"></div>
+			<div class="panel-body" id="support_ticket_msg"></div>
+		</div>
+		<div id="support_answers"></div>
+		<div id="support_reply_form">
+			[== $lang->{post_reply} =]
+			<div style="height:8px"></div>
+			<textarea id="wbbeditor" class="form-control" style="height:100px"></textarea>
+		</div>
+	</div>
+	<div id="support_buttons">
+		<div style="height:8px"></div>
+		<button class="btn btn-primary" id="btn_post_reply">[== $lang->{do_post} =]</button>
+		<button class="btn btn-default" id="btn_return_list">[== $lang->{return_list} =]</button>
+	</div>
+</div>
+<script type="text/javascript">
+	var js_lang_sPrevious = "[== $lang->{sPrevious} =]";
+	var js_lang_sNext = "[== $lang->{sNext} =]";
+	var js_lang_sLengthMenu = "[== $lang->{sLengthMenu} =]";
+	var js_lang_sZeroRecords = "[== $lang->{sZeroRecords} =]";
+	var js_lang_sInfo = "[== $lang->{sInfo} =]";
+	var js_lang_sInfoEmpty = "[== $lang->{sInfoEmpty} =]";
+	var js_lang_sInfoFiltered = "[== $lang->{sInfoFiltered} =]";
+	var js_lang_sSearch = "[== $lang->{sSearch} =]";
+	var js_lang_status_0 = "[== $lang->{status_0} =]";
+	var js_lang_status_1 = "[== $lang->{status_1} =]";
+	var js_lang_status_2 = "[== $lang->{status_2} =]";
+	var lng = '[== $detect_lang->{lng} =]';
+</script>
+<script type="text/javascript" src="/js/modules/support_index.js"></script>

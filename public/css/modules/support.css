@@ -1,0 +1,14 @@
+#data_table_processing {
+  margin-bottom:10px;
+  color:#444;
+  padding-left:20px;
+  background-image:url(/images/white_loading.gif);
+  background-repeat:no-repeat;
+  background-position:bottom left;
+  margin-top:5px;
+  position:relative;
+  padding-top:4px;
+} 
+tr.support-table-tr {
+	cursor: pointer;
+}

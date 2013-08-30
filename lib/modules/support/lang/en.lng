@@ -1,0 +1,26 @@
+module_name: Support
+error_unauth_long: You don't have permission to create new support tickets, please authorize first. 
+support_hint: To contact support specialist you may create a new ticket.
+new_ticket: Create new ticket
+id: ID
+topic_id: Topic ID
+topic: Topic
+sdate: Created on
+status: Status
+last_reply: Last reply
+sLengthMenu: Display _MENU_ records per page
+sZeroRecords: Nothing found - sorry
+sInfo: Showing _START_ to _END_ of _TOTAL_ records
+sInfoEmpty: Showing 0 to 0 of 0 records
+sInfoFiltered: (filtered from _MAX_ total records)
+sPrevious: Previous page
+sNext: Next page   
+date_time_template: \%Y/\%m/\%d %l&#58;%M %p
+status_0: New
+status_1: In progress
+status_2: Solved
+processing: Processing, please wait... 
+ticket_load_error: Error while loading ticket. Please try again in a few moments.
+return_list: Return to list
+post_reply: Post a reply&#58;
+do_post: Post reply
