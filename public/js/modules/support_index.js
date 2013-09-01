@@ -1,12 +1,14 @@
 var dtable;
 var row_status;
+var current_id = 0;
 $(document).ready(function () {
 	var wbbOpt={
     imgupload:false,buttons:"bold,italic,underline,strike,sup,sub,|,img,video,link,|,bullist,numlist,|,fontcolor,fontsize,fontfamily,|,justifyleft,justifycenter,justifyright,|,quote,code,offtop,table,removeFormat,cutpage",
   allButtons:{cutpage:{title:'[== $lang->{btn_cut} =]',buttonText:'CUT',transform: {'<div class="blog-post-cut"></div>':'[cut]'}}}
   	};
   	if (lng != 'ru'){wbbOpt['lang']=lng}  
-    $('#wbbeditor').wysibb(wbbOpt);	
+    $('#wbbeditor').wysibb(wbbOpt);
+    $('#wbbeditor2').wysibb(wbbOpt);
 	var row_id = 0;
 	dtable = $('#data_table').dataTable({
             "sDom": "rtip",
@@ -39,10 +41,13 @@ $(document).ready(function () {
                 "sInfoEmpty": js_lang_sInfoEmpty,
                 "sInfoFiltered": js_lang_sInfoFiltered,
             },
+            "aaSorting": [[ 3, "desc" ]],
             "aoColumnDefs": [{
                 "bSortable": true,
                 "aTargets": [0,1,2,3,4,5]
-            }, {
+            }, 
+
+            {
                 "fnRender": function (oObj, sVal) {
                 	var row_status = sVal;
                 	if (sVal == 0) {
@@ -97,7 +102,7 @@ $(document).ready(function () {
             	}
             	$(nRow).on('click', function() {
       				supportRowClicked(aData[0]);
-    			});
+    			});                
 				return nRow;
 			}
     }); // dtable init
@@ -112,8 +117,11 @@ function supportRowClicked(clicked_id) {
 	$('#support_answers').html('');
 	$('#support_buttons').hide();
 	$('#btn_post_reply').hide();
-	$('#wbbeditor').bbcode(' ');
-	$('#wbbeditor').htmlcode(' ');	
+	$('#wbbeditor').bbcode('');
+	$('#wbbeditor').htmlcode('');
+    $('#support_answer_error').hide();
+    $('#ans_error_exists').hide();
+    $('#ans_error_db').hide();
 	$.ajax({
         type: 'POST',
         url: '/support/ticket/load',
@@ -123,7 +131,8 @@ function supportRowClicked(clicked_id) {
         dataType: "json",
         success: function (data) {              	
         	$('#support_buttons').show();
-            if (data.status == 1) {                 	   
+            if (data.status == 1) {
+                current_id = clicked_id;
             	$('#support_ticket_ajax').hide();
 				$('#support_ticket_data').show(); 
 				$('#btn_post_reply').show();
@@ -165,6 +174,73 @@ $('#btn_return_list').click(function() {
 	$('#support_ticket').hide();
 	$('#support_table').show();
 	dtable.fnReloadAjax();	
+});
+
+$('#btn_return_list2').click(function() {
+    $('#support_ticket_create').hide();
+    $('#support_table').show();
+    dtable.fnReloadAjax();  
+});
+
+$('#btn_post_reply').click(function() {
+    if (!$("#wbbeditor").bbcode()) {
+        return;
+    }
+    $('#support_reply_form').hide();
+    $('#support_reply_ajax').show();
+    $('#support_buttons').hide();
+    $('#support_answer_error').hide();
+    $('#ans_error_exists').hide();
+    $('#ans_error_db').hide();
+    $.ajax({
+        type: 'POST',
+        url: '/support/answer/save',
+        data: {
+            tid: current_id,
+            ans: $("#wbbeditor").bbcode()
+        },
+        dataType: "json",
+        success: function (data) {                  
+            $('#support_buttons').show();
+            $('#support_reply_form').show();
+            $('#support_reply_ajax').hide();
+            if (data.status == 1) {
+                if (data.username && data.sdate && data.ans) {
+                    $('#support_answers').append('<div class="panel panel-default"><div class="panel-heading"><b>'+data.username+'</b>&nbsp;<small>['+data.sdate+']</small></div><div class="panel-body">'+data.ans+'</div></div>');
+                }
+                $('#wbbeditor').bbcode('');
+                $('#wbbeditor').htmlcode('');
+            } else {            
+                if (data.status == -1) {
+                    $('#support_answer_error').show();
+                    $('#ans_error_exists').show();
+                } else {
+                    $('#support_answer_error').show();
+                    $('#ans_error_db').show();
+                }
+            }
+        },
+        error: function () {
+            $('#support_buttons').show();
+            $('#support_reply_form').show();
+            $('#support_reply_ajax').hide();
+            $('#support_answer_error').show();
+            $('#ans_error_db').show();
+        }
+    });
+});
+
+$('#btn_create_ticket').click(function() {
+    $('#support_table').hide();
+    $('#support_ticket_create').show();
+    $("#ticket_topic_id").val($("#ticket_topic_id option:first").val());
+    $('#ticket_topic').val('');
+    $('#wbbeditor2').bbcode('');
+    $('#wbbeditor2').htmlcode('');
+    $("#ticket_topic_id").focus();
+    $('#cg_ticket_topic_id').removeClass('has-error');
+    $('#cg_ticket_topic').removeClass('has-error');
+    $('#cg_ticket_msg').removeClass('has-error');
 });
 
 // dataTable ajax fix
