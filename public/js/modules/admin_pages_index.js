@@ -298,8 +298,19 @@ function selectStatus(row_id) {
         keyboard: true
     });
     edit_id = row_id;
-    $('input:radio[name="status_select_status"]').filter('[value="' + $('#rowstatus_' + row_id).html() + '"]').attr('checked', true);
-    $("input[name='status_select_status']:checked").focus();
+    if ($('#rowstatus_' + row_id).html() == 0) {
+        $('#status_select_radio_status_disabled').prop('checked', true);
+        $('#status_select_radio_status_disabled').focus();
+    }
+    if ($('#rowstatus_' + row_id).html() == 1) {
+        $('#status_select_radio_status_normal').prop('checked', true);
+        $('#status_select_radio_status_normal').focus();
+    }
+    if ($('#rowstatus_' + row_id).html() == 2) {
+        $('#status_select_radio_status_admin').prop('checked', true);
+        $('#status_select_radio_status_admin').focus();
+    }
+    
 }
 
 function submitEdit(value, settings) {
@@ -371,7 +382,7 @@ $('#btn_add').click(function () {
     } else {
         CKEDITOR.instances.wysiwyg_editor.setData('');
     }
-    $('#radio_status_normal').attr('checked', true);
+    $('#radio_status_normal').prop('checked', true);
     $("#lang").val($("#lang option:first").val());
     $("#layout").val($("#layout option:first").val());
     $('#pagetitle').focus();
@@ -607,7 +618,6 @@ function editData(id) {
     $('#password').val('');
     $('#password_repeat').val('');
     $('#filename').val('');
-    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
     $('#data_edit_form').hide();
     $('#wysiwyg_editor_wrap').hide();
     $('#plain_editor_wrap').hide();
@@ -669,7 +679,15 @@ function editData(id) {
                     }
                 }
                 if (data.status) {
-                    $('input:radio[name="status"]').filter('[value="' + data.status + '"]').attr('checked', true);
+                    if (data.status == 0) {
+                        $('#radio_status_disabled').prop('checked', true);
+                    }
+                    if (data.status == 1) {
+                        $('#radio_status_normal').prop('checked', true);   
+                    }
+                    if (data.status == 2) {
+                        $('#radio_status_admin').prop('checked', true);      
+                    }
                 }
                 if (data.lang) {
                     $('#lang').val(data.lang);

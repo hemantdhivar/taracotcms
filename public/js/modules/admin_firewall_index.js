@@ -127,7 +127,14 @@ function selectStatus(row_id) {
         keyboard: true
     });
     edit_id = row_id;
-    $('input:radio[name="status_select_status"]').filter('[value="' + $('#statusval_' + row_id).html() + '"]').attr('checked', true);
+    if ($('#statusval_' + row_id).html() == 0) {
+        $('#status_select_radio_status_disabled').prop('checked', true);
+        $('#status_select_radio_status_disabled').focus();
+    }
+    if ($('#statusval_' + row_id).html() == 1) {
+        $('#status_select_radio_status_normal').prop('checked', true);
+        $('#status_select_radio_status_normal').focus();
+    }
     $("input[name='status_select_status']:checked").focus();
 }
 
@@ -177,7 +184,8 @@ $('#btn_add').click(function () {
     $('#h_data_actions').html(js_lang_add_record);
     $('#form_notice').html(js_lang_form_notice_add);
     $('#ipaddr').val('');
-    $('input:radio[name="status"]').filter('[value="0"]').attr('checked', true);
+    $('#status_select_radio_status_disabled').prop('checked', true);    
+    $('input:radio[name="status"]').filter('[value="0"]').prop('checked', true);
     $('#ipaddr').focus();
 });
 // "Cancel" button handler (form mode)
@@ -305,7 +313,6 @@ function editData(id) {
     $('#h_data_actions').html(js_lang_edit_record);
     $('#form_notice').html(js_lang_form_notice_edit);
     $('#ipaddr').val('');
-    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
     $('#data_edit_form').hide();
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html(js_lang_ajax_loading);
@@ -335,7 +342,13 @@ function editData(id) {
                     $('#ipaddr').val(data.ipaddr);
                 }
                 if (data.status) {
-                    $('input:radio[name="status"]').filter('[value="' + data.status + '"]').attr('checked', true);
+                    if (data.status == 0) {
+                        $('#status_select_radio_status_disabled').prop('checked', true);
+                    }
+                    if (data.status == 1) {
+                        $('#status_select_radio_status_normal').prop('checked', true);
+                    }
+                    $('input:radio[name="status"]').filter('[value="' + data.status + '"]').prop('checked', true);
                 }
                 $('#ipaddr').focus();
             }

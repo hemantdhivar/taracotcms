@@ -1,9 +1,9 @@
 $('#moderator_wrench').click(function() {
     $('#moderator_dialog').modal();
-    //$('#editpost').attr('checked', false);
-    //$('#ban72').attr('checked', false);
-    //$('#banperm').attr('checked', false);
-    //$('#delpost').attr('checked', false);
+    //$('#editpost').prop('checked', false);
+    //$('#ban72').prop('checked', false);
+    //$('#banperm').prop('checked', false);
+    //$('#delpost').prop('checked', false);
 });
 $('#btn_moderate').click(function() {
 	$('#moderator_dialog_progress').show();

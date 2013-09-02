@@ -102,10 +102,16 @@ $(document).ready(function () {
             	}
                 if (row_status.indexOf(js_lang_status_1) > 0) {
                     nRow.className += ' active';
+                }                
+                if ($('#taracot-support-table-th1').is(":hidden")) {                    
+                    dtable.fnSetColumnVis(0, false);
+                    dtable.fnSetColumnVis(2, false);
+                    dtable.fnSetColumnVis(4, false);
+                    dtable.fnSetColumnVis(5, false);
                 }
             	$(nRow).on('click', function() {
       				supportRowClicked(aData[0]);
-    			});                
+    			});                                
 				return nRow;
 			}
     }); // dtable init

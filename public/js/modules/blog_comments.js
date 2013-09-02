@@ -80,8 +80,8 @@ function deleteComment(id) {
     $('#comment_delete_dialog').modal();
     $('#comment_delete_error').hide();
     $('#delete_comment_info').html(':<div style="height:16px"></div><div class="well">'+$('#comment_'+id+'_data').html()+'<div style="height:4px"></div>'+$('#comment_'+id+'_text').html()+'</div>');
-    $('#delete_comment_ban_72').attr('checked', false);
-    $('#delete_comment_ban_perm').attr('checked', false);
+    $('#delete_comment_ban_72').prop('checked', false);
+    $('#delete_comment_ban_perm').prop('checked', false);
 }
 $('#btn_delete_comment').click(function() {
     $('#comment_delete_div').hide();

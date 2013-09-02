@@ -6,21 +6,21 @@
 	[== $lang->{support_hint} =]
 	<div style="height:15px"></div>
 	<button class="btn btn-success btn-sm" id="btn_create_ticket">[== $lang->{new_ticket} =]</button>
-	<table cellpadding="0" cellspacing="0" border="0" class="table table-hover" id="data_table">
+	<table class="table table-hover" id="data_table">
 		<thead>
 			<tr>
-				<th style="width:80px">[== $lang->{id} =]</th>
+				<th class="hidden-xs" style="width:80px" id="taracot-support-table-th1">[== $lang->{id} =]</th>
 				<th style="width:120px">[== $lang->{topic_id} =]</th>
-				<th>[== $lang->{topic} =]</th>
+				<th class="hidden-xs">[== $lang->{topic} =]</th>
 				<th style="width:170px">[== $lang->{sdate} =]</th>
-				<th style="width:100px">[== $lang->{last_reply} =]</th>
-				<th style="width:90px;text-align:center">[== $lang->{status} =]</th>
+				<th class="hidden-xs" style="width:100px">[== $lang->{last_reply} =]</th>
+				<th class="hidden-xs" style="width:90px;text-align:center">[== $lang->{status} =]</th>
 			</tr>
 		</thead>
 		<tbody>
 		</tbody>
 	</table> 
-</div><?pl my @_tcs = @$topics; my $topics_list=''; foreach my $item (@_tcs) { $topics_list.='<option value="'.$item->{id}.'">'.$item->{title}.'</option>'; } ?>
+</div><?pl my @_tcs = @$topics; my $topics_list=''; foreach my $item (@_tcs) { $topics_list.='<option value="'.$item->{id}.'">'.$item->{title}.'</option>'; } ?><div class="visible-xs" id="taracot-mobile-mode"></div>
 <div id="support_ticket" style="display:none">
 	<div id="support_ticket_ajax" style="display:none;margin-bottom:20px">
 		<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{processing} =]	

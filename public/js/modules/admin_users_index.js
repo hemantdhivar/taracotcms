@@ -220,8 +220,18 @@ function selectStatus(row_id) {
         keyboard: true
     });
     edit_id = row_id;
-    $('input:radio[name="status_select_status"]').filter('[value="' + $('#statusval_' + row_id).html() + '"]').attr('checked', true);
-    $("input[name='status_select_status']:checked").focus();
+    if ($('#statusval_' + row_id).html() == 0) {
+        $('#status_select_radio_status_disabled').prop('checked', true);
+        $('#status_select_radio_status_disabled').focus();
+    }
+    if ($('#statusval_' + row_id).html() == 1) {
+        $('#status_select_radio_status_normal').prop('checked', true);
+        $('#status_select_radio_status_normal').focus();
+    }
+    if ($('#statusval_' + row_id).html() == 2) {
+        $('#status_select_radio_status_admin').prop('checked', true);
+        $('#status_select_radio_status_admin').focus();
+    } 
 }
 
 function submitEdit(value, settings) {
@@ -277,7 +287,7 @@ $('#btn_add').click(function () {
     $('#groups').val('');
     $('#email').val('');
     $('#phone').val('');
-    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
+    $('#radio_status_normal').prop('checked', true);
     $('#username').focus();
 });
 // "Cancel" button handler (form mode)
@@ -449,7 +459,6 @@ function editData(id) {
     $('#groups').val('');
     $('#email').val('');
     $('#phone').val('');
-    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
     $('#data_edit_form').hide();
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html(js_lang_ajax_loading);
@@ -492,14 +501,22 @@ function editData(id) {
                     $('#groups').val(data.groups);
                 }
                 if (data.status) {
-                    $('input:radio[name="status"]').filter('[value="' + data.status + '"]').attr('checked', true);
+                    if (data.status == 0) {
+                        $('#radio_status_disabled').prop('checked', true);
+                    }
+                    if (data.status == 1) {
+                        $('#radio_status_normal').prop('checked', true);
+                    }
+                    if (data.status == 2) {
+                        $('#radio_status_admin').prop('checked', true);
+                    } 
                 }
                 if (data.banned && data.banned != 0) {
                     $('#banned_till').html(data.banned);
-                    $('#banned').attr('checked', true);
+                    $('#banned').prop('checked', true);
                 } else {
                     $('#banned_till').html('');
-                    $('#banned').attr('checked', false);
+                    $('#banned').prop('checked', false);
                 }
                 $('#username').focus();
             }

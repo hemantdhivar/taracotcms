@@ -121,9 +121,9 @@ function loadData(wbbOpt) {
                   $('#wbbeditor').val(data.ptext);
                 }
                 if (data.comments_allowed == 1) {     
-                  $('#comments_allowed').attr('checked', true);
+                  $('#comments_allowed').prop('checked', true);
                 } else {
-                  $('#comments_allowed').attr('checked', false); 
+                  $('#comments_allowed').prop('checked', false); 
                 }
                 $('#wbbeditor').wysibb(wbbOpt);
                 $('#blog_form').show();

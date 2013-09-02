@@ -436,7 +436,7 @@ function editData(id) {
     $('#form_notice').html(js_lang_form_notice_edit);
     $('#s_name').val('');
     $('#s_value').val('');
-    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
+    $('input:radio[name="status"]').filter('[value="1"]').prop('checked', true);
     $('#data_edit_form').hide();
     $('#data_edit_form_buttons').hide();
     $('#ajax_loading_msg').html(js_lang_ajax_loading);
