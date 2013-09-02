@@ -371,7 +371,7 @@ $('#btn_add').click(function () {
     } else {
         CKEDITOR.instances.wysiwyg_editor.setData('');
     }
-    $('input:radio[name="status"]').filter('[value="1"]').attr('checked', true);
+    $('#radio_status_normal').attr('checked', true);
     $("#lang").val($("#lang option:first").val());
     $("#layout").val($("#layout option:first").val());
     $('#pagetitle').focus();

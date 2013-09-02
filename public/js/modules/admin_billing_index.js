@@ -297,7 +297,7 @@ $('#btn_add_hosting').click(function () {
     $('#hosting_edit_buttons').show();
     $('#haccount').val('');
     $('#hdays').val('');
-    $('#h_queue').removeAttr('checked');
+    $('#h_queue').attr('checked', false);
     $('#hosting_edit_dialog_title').html(js_lang_add_account);
     $('select option:first-child').attr("selected", "selected");
     $('#hosting_edit_dialog').modal({
@@ -324,7 +324,7 @@ $('#btn_add_domain').click(function () {
     $('#domain_edit_buttons').show();
     $('#domain_name').val('');
     $('#domain_exp').val('');
-    $('#d_queue').removeAttr('checked');
+    $('#d_queue').attr('checked', false);
     $('#ns1').val('');
     $('#ns2').val('');
     $('#ns3').val('');
@@ -844,9 +844,9 @@ function editHosting(id) {
                 $('#hosting_edit_form').show();
                 $('#hosting_edit_buttons').show();
                 if (data.h_queue && data.h_queue == 1) {
-                    $('#h_queue').attr('checked', 'checked');
+                    $('#h_queue').attr('checked', true);
                 } else {
-                    $('#h_queue').removeAttr('checked');
+                    $('#h_queue').attr('checked', false);
                 }
             }
         },
@@ -917,9 +917,9 @@ function editDomain(id) {
                 $('#domain_edit_form').show();
                 $('#domain_edit_buttons').show();
                 if (data.d_queue && data.d_queue == 1) {
-                    $('#d_queue').attr('checked', 'checked');
+                    $('#d_queue').attr('checked', true);
                 } else {
-                    $('#d_queue').removeAttr('checked');
+                    $('#d_queue').attr('checked', false);
                 }
             }
         },
@@ -1088,7 +1088,7 @@ $('#btn_funds').click(function() {
 });
 
 $('#btn_profile').click(function() {    
-    $('#private').removeAttr('checked');
+    $('#private').attr('checked', false);
     $('#profile_edit_dialog').modal({
         keyboard: true
     });  
@@ -1178,9 +1178,9 @@ $('#btn_profile').click(function() {
                     $('#kpp').val(data.db.kpp);
                 }
                 if (data.db.private && data.db.private == 1) {
-                    $('#private').attr('checked', 'checked');
+                    $('#private').attr('checked', true);
                 } else {
-                    $('#private').removeAttr('checked');
+                    $('#private').attr('checked', false);
                 }
             }
             $('#profile_edit_form_error').hide();            

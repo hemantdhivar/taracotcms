@@ -63,4 +63,4 @@ plugins:
     X-Mailer: 'Taracot CMS'
   transport:
     Sendmail:
-      sendmail: 'w:/usr/bin/sendmail'
+      sendmail: 'z:/usr/bin/sendmail'

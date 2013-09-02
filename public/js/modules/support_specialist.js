@@ -18,7 +18,7 @@ $(document).ready(function () {
             "sPaginationType": "bootstrap",
             "iDisplayLength": 10,
             "bAutoWidth": false,
-            "sAjaxSource": "/support/data/list",            
+            "sAjaxSource": "/support/data/list_specialist",            
             "fnServerData": function ( sSource, aoData, fnCallback ) {
                 $.ajax( {
                     "dataType": 'json',
@@ -120,6 +120,7 @@ function supportRowClicked(clicked_id) {
 	$('#support_answers').html('');
 	$('#support_buttons').hide();
 	$('#btn_post_reply').hide();
+    $('#btn_solved').hide();
 	$('#wbbeditor').bbcode('');
 	$('#wbbeditor').htmlcode('');
     $('#support_answer_error').hide();
@@ -127,7 +128,7 @@ function supportRowClicked(clicked_id) {
     $('#ans_error_db').hide();
 	$.ajax({
         type: 'POST',
-        url: '/support/ticket/load',
+        url: '/support/ticket/specialist/load',
         data: {
         	tid: clicked_id
         },
@@ -139,6 +140,7 @@ function supportRowClicked(clicked_id) {
             	$('#support_ticket_ajax').hide();
 				$('#support_ticket_data').show(); 
 				$('#btn_post_reply').show();
+                $('#btn_solved').show();
 				if (data.stopic) {
 					$('#support_ticket_topic').html(data.stopic);
 				}
@@ -196,7 +198,7 @@ $('#btn_post_reply').click(function() {
     $('#ans_error_db').hide();
     $.ajax({
         type: 'POST',
-        url: '/support/answer/save',
+        url: '/support/answer/specialist/save',
         data: {
             tid: current_id,
             ans: $("#wbbeditor").bbcode()
@@ -232,84 +234,41 @@ $('#btn_post_reply').click(function() {
     });
 });
 
-$('#btn_create_ticket').click(function() {
-    $('#support_table').hide();
-    $('#support_ticket_create').show();
-    $("#ticket_topic_id").val($("#ticket_topic_id option:first").val());
-    $('#ticket_topic').val('');
-    $('#wbbeditor2').bbcode('');
-    $('#wbbeditor2').htmlcode('');
-    $("#ticket_topic_id").focus();
-    $('#cg_ticket_topic_id').removeClass('has-error');
-    $('#cg_ticket_topic').removeClass('has-error');
-    $('#cg_ticket_msg').removeClass('has-error');
-    $('#form_error_msg').hide();
-    $('#support_ticket_create_form').show();
-    $('#support_create_ticket_success').hide();    
-});
-
-$('#btn_support_ticket_create').click(function() {
-    $('#form_error_msg_text').html('');
-    $('#cg_ticket_topic_id').removeClass('has-error');
-    $('#cg_ticket_topic').removeClass('has-error');
-    $('#cg_ticket_msg').removeClass('has-error');
-    var form_errors = false;    
-    if (!$('#ticket_topic').val().match(/.{1,250}$/)) {
-        $('#cg_ticket_topic').addClass('has-error');
-        $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_ticket_topic + "<br/>");
-        $('#ticket_topic').focus();
-        form_errors = true;      
-    }
-    if (!$('#wbbeditor2').bbcode().match(/.{1,102400}$/)) {
-        $('#cg_ticket_msg').addClass('has-error');
-        $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_ticket_msg + "<br/>");
-        form_errors = true;      
-    }
-    if (form_errors) {
-        $('#form_error_msg').fadeIn(400);
-        $('#form_error_msg').alert();
-        $(window).scrollTop($('#form_error_msg').position().top);
-    } else {
-        $('#form_error_msg').hide();
-        $('#support_ticket_create_form').hide();
-        $('#support_create_ticket_ajax').show();
-        $.ajax({
-            type: 'POST',
-            url: '/support/ticket/save',
-            data: {
-                msg: $("#wbbeditor2").bbcode(),
-                ticket_topic_id: $('#ticket_topic_id').val(),
-                ticket_topic: $('#ticket_topic').val()
-            },
-            dataType: "json",
-            success: function (data) {                  
-                if (data.status == 1) {
-                    $('#support_create_ticket_ajax').hide();
-                    $('#support_create_ticket_success').show();
-                } else {            
-                    $('#support_create_ticket_ajax').hide();
-                    $('#support_ticket_create_form').show();
-                    if (data.errmsg) {
-                        $('#form_error_msg_text').html(data.errmsg);
-                        $('#form_error_msg').fadeIn(400);
-                        $('#form_error_msg').alert();
-                    }
-                    if (data.field) {
-                        $('#cg_ticket_'+data.field).addClass('has-error');
-                        $('#'+data.field).focus();
-                    }
-                    $('#support_ticket_create_form').show();
-                }
-            },
-            error: function () {
-                $('#form_error_msg_text').html(js_lang_ans_error_db);
-                $('#form_error_msg').fadeIn(400);
-                $('#form_error_msg').alert();
-                $('#support_ticket_create_form').show();
-                $('#support_create_ticket_ajax').hide();
+$('#btn_solved').click(function() {
+    if (!confirm(js_lang_confirm_solved)) {
+         return;
+     }
+    $('#support_reply_form').hide();
+    $('#support_reply_ajax').show();
+    $('#support_buttons').hide();
+    $('#support_answer_error').hide();
+    $('#ans_error_exists').hide();
+    $('#ans_error_db').hide();
+    $.ajax({
+        type: 'POST',
+        url: '/support/answer/specialist/solved',
+        data: {
+            tid: current_id
+        },
+        dataType: "json",
+        success: function (data) {          
+            $('#support_reply_form').show();
+            $('#support_reply_ajax').hide();
+            if (data.status == 1) {
+                $('#btn_return_list').click();                
+            } else {
+                $('#support_answer_error').show();
+                $('#ans_error_db').show();   
             }
-        });
-    }
+        },
+        error: function () {
+            $('#support_buttons').show();
+            $('#support_reply_form').show();
+            $('#support_reply_ajax').hide();
+            $('#support_answer_error').show();
+            $('#ans_error_db').show();
+        }
+    });
 });
 
 // dataTable ajax fix

@@ -1,5 +1,7 @@
 module_name: Support
-error_unauth_long: You don't have permission to create new support tickets, please authorize first. 
+specialist: Support specialist
+error_unauth_long: Please authorize on website to view you tickets or create a new one.
+error_perm_long: You currently don't have any support specialist permission. 
 support_hint: To contact support specialist you may create a new ticket.
 new_ticket: Create new ticket
 id: ID
@@ -24,9 +26,18 @@ ticket_load_error: Error while loading ticket. Please try again in a few moments
 return_list: Return to list
 post_reply: Post a reply&#58;
 do_post: Post reply
+do_solved: Solved
 ans_error_exists: You have already posted such reply
 ans_error_db: Error while connecting to the database, please try again in a few moments
 create_ticket: Create a new ticket
 new_ticket_hint: Please fill in the following form to create a new support system ticket. All fields marked with a red asterisk are required.
 ticket_msg: Message
 btn_new_ticket: Create ticket
+invalid_ticket_topic: Inavlid ticket topic
+invalid_ticket_topic_id: Inavlid ticket topic ID
+invalid_ticket_msg: Invalid ticket text
+dupe_ticket_msg: A ticket with such text already exists
+ticket_create_success: Your ticket has been created. Our support engineer will reply you as soon as possible.
+ticked_solved: All necessary actions on a problem were accepted. The ticked is closed.
+confirm_solved: Are you sure you wish to set ticket status to solved?
+email_subj_user_notify: New message in support area at
