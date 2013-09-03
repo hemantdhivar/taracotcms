@@ -873,12 +873,12 @@ post '/data/domain/save' => sub {
   $user_id=int($user_id);
   $id=int($id);
   $domain_name=lc($domain_name);
-  if ($domain_name !~ /^[A-Za-z0-9\-]{2,100}$/) {
+  if ($domain_name !~ /^[A-Za-z0-9\-\.]{2,100}$/) {
    return qq~{"result":"0","field":"domain_name","error":"~.$lang->{form_error_invalid_domain_name}.qq~"}~;
   }
   if ($domain_exp !~ /^[0-9\.\/\-]{1,12}$/) {
    return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~;
-  }
+  }  
   $domain_exp = str2time($domain_exp);
   if (!$domain_exp) {
    return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~; 

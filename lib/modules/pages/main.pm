@@ -347,7 +347,7 @@ if (langof($content) eq 'ru') {
       tagsAllow => '|A:href:title,br,B:STYLE', # Allowed tags list (exception to "deny all" mode)
       tagCloseSingle => 1, # Close single tags when they are not
       tagCloseOpen => 0, # Close all open tags at the end of the document
-      tagNamesToLower => 0, # Bring tag names to lower case
+      tagNamesToLower => 1, # Bring tag names to lower case
       tagNamesToUpper => 0, # Bring tag names to upper case
       tagAttributesToLower => 1, # Bring tag attributes names to lower case
       tagAttributesToUpper => 0, # Bring tag attributes names to upper case

@@ -455,7 +455,7 @@ $('#btn_domain_dialog_save').click(function () {
     $('#cg_ns4_ip').removeClass('has-error');
     $('#domain_edit_form_error').hide();
     var errors = false;
-    if (!$('#domain_name').val().match(/^[A-Za-z0-9\-]{2,100}$/)) {
+    if (!$('#domain_name').val().match(/^[A-Za-z0-9\-\.]{2,100}$/)) {
         $('#cg_domain_name').addClass('has-error');
         errors = true;
     }

@@ -32,6 +32,7 @@ site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
 # possible values are: blacklist, whitelist, off
 firewall_mode: 'blacklist'
+root_user: 'xtreme'
 auth_facebook_app_id: ''
 auth_facebook_app_secret: ''
 auth_facebook_redirect_uri: 'http://site.com/user/authorize/facebook/'

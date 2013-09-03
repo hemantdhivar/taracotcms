@@ -30,7 +30,7 @@ sSearch: Поиск
 error_ajax: Ошибка в процессе загрузки данных с сервера. Повторите попытку позже.
 funds: Доступный баланс
 hosting_accounts: Аккаунты хостинга
-hosting_account: Хостинговый аккаунт
+hosting_account: Аккаунт
 domains: Домены
 services: Сервисы
 no_hosting_accounts: В настоящий момент нет аккаунтов хостинга.
@@ -48,7 +48,7 @@ return_to_list: Вернуться к списку пользователей
 hac_account: Аккаунт
 hac_per_month: мес.
 domain_one_year: 1 год
-hac_plan: Тарифный план
+hac_plan: Тариф
 hac_days: Дни
 btn_close: Закрыть
 btn_save: Сохранить
@@ -63,21 +63,21 @@ data_loading_error: Ошибка во время загрузки данных �
 data_delete_error: Ошибка во время удаления данных с сервера
 data_delete_ok: Запись успешно удалена
 data_delete_confirm: Вы уверены, что хотите удалить следующую запись
-domain_name: Доменное имя
+domain_name: Домен
 domain_name_hint: Без указания зоны, например&#058; domain (без .com)
 domain_zone: Зона
 domain_exp: Зарегистрирован по
 domain_exp_short: Окончание
-domain_exp_hint: Формат&#058;&nbsp;ДД/ММ/ГГГГ
+domain_exp_hint: Формат&#058;&nbsp;ГГГГ/ММ/ДД
 domain_date_template: \%d/\%m/\%Y 
-domain_date_picker_template: dd/mm/yyyy 
+domain_date_picker_template: yyyy/mm/dd 
 domain_date_picker_week_start: 1
-trans_datetime_picker_template: dd/mm/yyyy
+trans_datetime_picker_template: yyyy/mm/dd
 trans_datetime_picker_week_start: 1
 trans_date_template: \%d/\%m/\%Y 
-trans_time_template: \%I\:\%M %p
+trans_time_template: \%H\:\%M
 trans_time_picker_show_meridian: false
-history_datetime_template: \%Y/\%m/\%d \%l:%M %p
+history_datetime_template: \%d/\%m/\%Y \%H:%M
 form_error_invalid_domain_name: Неверное доменное имя
 form_error_invalid_domain_zone: Неверная доменная зона
 form_error_invalid_domain_exp: Неверная дата окончания действия домена

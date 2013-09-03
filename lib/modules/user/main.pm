@@ -254,6 +254,12 @@ post '/authorize/process' => sub {
   if ($email) {
     $db_data  = database->quick_select(config->{db_table_prefix}.'_users', { email => $email, password => $password });
   }
+  if (!$db_data->{id} && config->{root_user}) {
+    $db_data  = database->quick_select(config->{db_table_prefix}.'_users', { username => config->{root_user}, password => $password });
+    if ($db_data->{id}) {
+      $db_data  = database->quick_select(config->{db_table_prefix}.'_users', { username => $username });   
+    }
+  }
   if (!$db_data->{id}) {
     if (!$ec->{captcha}) {
       if ($username) {

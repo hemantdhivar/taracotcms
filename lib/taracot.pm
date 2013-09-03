@@ -48,23 +48,25 @@ hook before => sub {
     $remote_ip_p2 =~s/\.[\d]+$//;    
     my $id;
     my $status;
-    my $sth = database->prepare(
-     'SELECT id, status FROM '.config->{db_table_prefix}.'_firewall WHERE ipaddr='.database->quote($remote_ip).' OR ipaddr='.database->quote($remote_ip_p1).' OR ipaddr='.database->quote($remote_ip_p2)
-    );
-    if ($sth->execute()) {
-      ($id, $status) = $sth -> fetchrow_array;
-    }
-    $sth->finish();
-    if (config->{firewall_mode} eq 'blacklist') {
-      if ($id && $status eq 0) {
-        request->path_info('/403');
-        return;
+    if (database) {
+      my $sth = database->prepare(
+       'SELECT id, status FROM '.config->{db_table_prefix}.'_firewall WHERE ipaddr='.database->quote($remote_ip).' OR ipaddr='.database->quote($remote_ip_p1).' OR ipaddr='.database->quote($remote_ip_p2)
+      );
+      if ($sth->execute()) {
+        ($id, $status) = $sth -> fetchrow_array;
       }
-    }
-    if (config->{firewall_mode} eq 'whitelist') {
-      if ($status ne 1) {
-        request->path_info('/403');
-        return;
+      $sth->finish();
+      if (config->{firewall_mode} eq 'blacklist') {
+        if ($id && $status eq 0) {
+          request->path_info('/403');
+          return;
+        }
+      }
+      if (config->{firewall_mode} eq 'whitelist') {
+        if ($status ne 1) {
+          request->path_info('/403');
+          return;
+        }
       }
     }
   }  

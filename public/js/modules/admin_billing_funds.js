@@ -1,13 +1,3 @@
-$("#trans_date").datepicker({
-    format: js_lang_trans_datetime_picker_template,
-    weekStart: js_lang_trans_datetime_picker_week_start    
-}).on('changeDate', function(ev){
-    $("#trans_date").datepicker('hide');
-});
-$("#trans_time").timepicker({
-    defaultTime: 'current',
-    showMeridian: js_lang_trans_time_picker_show_meridian
-});
 // Init variables
 var dtable;
 var history_edit_id = 0;
