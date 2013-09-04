@@ -33,7 +33,7 @@ get '/robokassa' => sub {
   if (!$sSignatureValue) {
     return "Invalid sSignatureValue";
   }
-  
+  $sSignatureValue =~ s/([a-z])/uc "$1"/eg; # force uppercase
   my $crc = md5_hex("$nOutSum:$nInvId:$mrh_pass2:Shp_item=".param('Shp_item')); 
   $crc =~ s/([a-z])/uc "$1"/eg; # force uppercase
   if ($crc ne $sSignatureValue) { 

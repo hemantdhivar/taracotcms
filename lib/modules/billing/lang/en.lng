@@ -224,3 +224,7 @@ incomplete_profile: Your profile data is incomplete for selected domain zone
 renew: Renew
 event: Event
 local_name_servers: Local name servers
+payment_success: Payment was sucessful
+payment_success_text: Thank you, the payment was successful. Please check the &quot;History&quot; page for details.
+payment_fail: Payment failed
+payment_fail_text: The payment has been declined by payment system. If you think that's incorrect, please contact website administrator.

@@ -175,7 +175,7 @@ sub register_hosting_account {
 		my $r1 = $sth->execute();
 		$sth->finish();
 		$log->write("[INFO] Logging error to ".$config->{db_table_prefix}."_billing_funds_history, INSERT = $r1") if $log_level<=INFO;
-		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$dbh->quote($qhr->{amount})." WHERE id=".$dbh->quote($hdb->{user_id}));
+		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$qhr->{amount}." WHERE user_id=".$dbh->quote($hdb->{user_id}));
 		my $r2 = $sth->execute();
 		$sth->finish();		
 		$log->write("[INFO] Money refund for user ID $hdb->{user_id}, amount = $qhr->{amount}, UPDATE = $r2") if $log_level<=INFO;
@@ -234,7 +234,7 @@ sub register_domain {
 		my $r1 = $sth->execute();
 		$sth->finish();
 		$log->write("[INFO] Logging error to ".$config->{db_table_prefix}."_billing_funds_history, INSERT = $r1") if $log_level<=INFO;
-		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$dbh->quote($qhr->{amount})." WHERE id=".$dbh->quote($hdb->{user_id}));
+		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$qhr->{amount}." WHERE user_id=".$dbh->quote($hdb->{user_id}));
 		my $r2 = $sth->execute();
 		$sth->finish();	
 		$log->write("[INFO] Money refund for user ID $hdb->{user_id}, amount = $qhr->{amount}, UPDATE = $r2") if $log_level<=INFO;
@@ -284,7 +284,7 @@ sub update_domain {
 		my $r1 = $sth->execute();
 		$sth->finish();
 		$log->write("[INFO] Logging error to ".$config->{db_table_prefix}."_billing_funds_history, INSERT = $r1") if $log_level<=INFO;
-		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$dbh->quote($qhr->{amount})." WHERE id=".$dbh->quote($hdb->{user_id}));
+		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$qhr->{amount}." WHERE user_id=".$dbh->quote($hdb->{user_id}));
 		my $r2 = $sth->execute();
 		$sth->finish();
 		$log->write("[INFO] Money refund for user ID $hdb->{user_id}, amount = $qhr->{amount}, UPDATE = $r2") if $log_level<=INFO;
@@ -334,7 +334,7 @@ sub update_hosting_account {
 		my $r1 = $sth->execute();
 		$sth->finish();
 		$log->write("[INFO] Logging error to ".$config->{db_table_prefix}."_billing_funds_history, INSERT = $r1") if $log_level<=INFO;
-		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$dbh->quote($qhr->{amount})." WHERE id=".$dbh->quote($hdb->{user_id}));
+		$sth = $dbh->prepare("UPDATE `".$config->{db_table_prefix}."_billing_funds` SET amount=amount+".$qhr->{amount}." WHERE user_id=".$dbh->quote($hdb->{user_id}));
 		my $r2 = $sth->execute();
 		$sth->finish();		
 		$log->write("[INFO] Money refund for user ID $hdb->{user_id}, amount = $qhr->{amount}, UPDATE = $r2") if $log_level<=INFO;

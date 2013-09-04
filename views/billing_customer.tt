@@ -1,3 +1,21 @@
+<div class="modal" style="display:none" id="payment_result_dialog">
+ <div class="modal-dialog">
+ <div class="modal-content">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3 id="payment_result_success" style="display:none">[== $lang->{payment_success} =]</h3>
+  <h3 id="payment_result_fail" style="display:none">[== $lang->{payment_fail} =]</h3>
+ </div>
+ <div class="modal-body">
+  <div id="payment_result_text_success" class="alert alert-success" style="display:none">[== $lang->{payment_success_text} =]</div>
+  <div id="payment_result_text_fail" class="alert alert-danger" style="display:none">[== $lang->{payment_fail_text} =]</div>
+ </div>
+  <div class="modal-footer" id="service_edit_buttons">            
+    <button type="button" class="btn btn-default" id="btn_payment_result_dialog">[== $lang->{btn_close} =]</button>
+ </div>
+ </div>
+ </div>
+</div>
 
 <div class="modal" id="hosting_dialog">
  <div class="modal-dialog">

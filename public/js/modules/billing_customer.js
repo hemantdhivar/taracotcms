@@ -11,6 +11,21 @@ var allowModalEsc = false;
 var data_nss = [];
 
 $(document).ready(function () {
+    var url_hash = window.location.hash.substr(1);
+    if (url_hash == "payment_success" || url_hash == "payment_failed") {
+        $('#payment_result_dialog').modal();
+        if (url_hash == "payment_success") {
+            $('#payment_result_success').show();
+            $('#payment_result_text_success').show();
+            $('#payment_result_fail').hide();
+            $('#payment_result_text_fail').hide();
+        } else {
+            $('#payment_result_fail').show();
+            $('#payment_result_text_fail').show();
+            $('#payment_result_success').hide();
+            $('#payment_result_text_success').hide();
+        }
+    }
     $('#use_default_nss').change(function() {
         if ($('input[name=use_default_nss]').is(':checked')) {
             $('#nss_controls').hide();
@@ -253,15 +268,15 @@ $(document).ready(function () {
                         } 
                     }
                     if (data.payment_methods && data.payment_methods.length > 0) {
-                        var pdata='<div class="row"><div class="col-lg-offset-2 col-lg-5"><table class="table" id="payment_methods_table">';
+                        var pdata='<div class="row"><div class="col-lg-offset-2 col-lg-10">';
                         for (var i = 0; i < data.payment_methods.length; i++) {
                             var chk='';
                             if (i == 0) {
                                 chk=" checked";
                             }
-                            pdata += '<tr style="cursor:pointer" onclick="$(\'#payment_method_\'+'+i+').prop(\'checked\', true);"><td style="width:20px;text-align:center;vertical-align:middle"><input type="radio" name="payment_method_id" id="payment_method_'+i+'" value="'+data.payment_methods[i].id+'"'+chk+'></td><td><h4>'+data.payment_methods[i].name+'</h4>'+data.payment_methods[i].desc+'</td></tr>';
+                            pdata += '<div class="media" style="cursor:pointer" onclick="$(\'#payment_method_\'+'+i+').prop(\'checked\', true);"><div class="pull-left" style="width:20px;text-align:center;vertical-align:middle"><input type="radio" name="payment_method_id" id="payment_method_'+i+'" value="'+data.payment_methods[i].id+'"'+chk+'></div><div class="media-body"><h4 class="media-heading">'+data.payment_methods[i].name+'</h4>'+data.payment_methods[i].desc+'</div></div>';
                         }
-                        pdata += '</table></div></div>';
+                        pdata += '</div></div>';
                         $('#payment_methods').html(pdata);
                     }
                     var hplans = ''; 
@@ -1313,4 +1328,7 @@ $('#hdays').change(function(){
 $('#hplan').change(function(){
     var haddcost = hosting_planid_cost[$('#hplan').val()] * $('#hdays').val();
     $('#haddcost').html(haddcost);
+});
+$("#btn_payment_result_dialog").click(function() {
+    $('#payment_result_dialog').modal('hide');
 });

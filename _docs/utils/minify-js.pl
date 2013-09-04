@@ -13,9 +13,9 @@ sub get_files {
  		&get_files($file);
  		chdir('..');
  	}
- 	if ($file=~m/\.css/i) {
- 		print "File found: $file\n";
- 		system ('uglifycss '.$file.' > '.$file.'.min');
+ 	if ($file=~m/\.js/i) {
+ 		print 'uglifyjs ' . $file . ' -c > ' . $file . '.min' ."\n";
+ 		system ('uglifyjs '.$file.' -c > '.$file.'.min');
  		system ('rm '.$file);
  		system ('mv '.$file.'.min '.$file);
  	}

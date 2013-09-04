@@ -2045,7 +2045,7 @@ post '/data/hosting/update/save' => sub {
   my $user_id=$auth_data->{id};
   $hdays=int($hdays);
   $haccount=lc($haccount);
-  if ($haccount !~ /^[A-Za-z0-9]{4,8}$/) {
+  if ($haccount !~ /^[A-Za-z0-9]{4,20}$/) {
    return qq~{"result":"0","field":"haccount","error":"~.$lang->{form_error_invalid_haccount}.qq~"}~;
   }
   my $hmonths = $hdays; 

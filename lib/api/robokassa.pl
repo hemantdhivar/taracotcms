@@ -28,7 +28,7 @@ sub getFieldsAPI {
   my $rnd=$hash->hexdigest; 
   my $crc = md5_hex("$mrh_login:$amount:$trans_id:$mrh_pass1:Shp_item=$shp_item");
   my %response;
-  $response{url} = 'http://merchant.roboxchange.com/Index.aspx';
+  $response{url} = 'https://auth.robokassa.ru/Merchant/Index.aspx';
   $response{method} = 'POST';
   my @fields;
   my %mrchlgn;
