@@ -4,6 +4,7 @@ use Dancer::Plugin::Database;
 use Digest::MD5 qw(md5_hex);
 use Date::Format;
 use Date::Parse;
+use DateTime::Format::Strptime;
 use Fcntl qw(:flock SEEK_END); # import LOCK_* and SEEK_END constants
 use taracot::fs;
 
@@ -817,9 +818,20 @@ post '/data/funds/history/save' => sub {
   if ($trans_date !~ /^[0-9AMP\.\/\-\: ]{1,20}$/) {
    return qq~{"result":"0","field":"trans_date","error":"~.$lang->{form_error_invalid_trans_date}.qq~"}~;
   }
+  $trans_date=~s/^\s+//g;
+  $trans_date=~s/\s+$//g;
+  my $td_tpl = $lang->{trans_date_template};
+  $td_tpl=~s/\\//gm;
+  my $tt_tpl = $lang->{trans_time_template};
+  $tt_tpl=~s/\\//gm;
+  my $parser = DateTime::Format::Strptime->new(
+    pattern => $td_tpl.' '.$tt_tpl,
+    on_error => 'undef',
+  );
+  $trans_date = $parser->parse_datetime($trans_date);
   $trans_date = str2time($trans_date);
   if (!$trans_date) {
-   return qq~{"result":"0","field":"trans_date","error":"~.$lang->{form_error_invalid_trans_date}.qq~"}~; 
+    return qq~{"result":"0","field":"trans_date","error":"~.$lang->{form_error_invalid_trans_date}.qq~"}~; 
   }
   my $sth;
   my $trans_id_name;
@@ -879,6 +891,15 @@ post '/data/domain/save' => sub {
   if ($domain_exp !~ /^[0-9\.\/\-]{1,12}$/) {
    return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~;
   }  
+  $domain_exp=~s/^\s+//g;
+  $domain_exp=~s/\s+$//g;
+  my $td_tpl = $lang->{domain_date_template};
+  $td_tpl=~s/\\//gm;
+  my $parser = DateTime::Format::Strptime->new(
+    pattern => $td_tpl,
+    on_error => 'undef',
+  );
+  $domain_exp = $parser->parse_datetime($domain_exp);
   $domain_exp = str2time($domain_exp);
   if (!$domain_exp) {
    return qq~{"result":"0","field":"domain_exp","error":"~.$lang->{form_error_invalid_domain_exp}.qq~"}~; 
@@ -1084,6 +1105,7 @@ post '/data/profile/save' => sub {
 post '/data/hosting/load' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $id=param('id') || 0;
   $id = int($id);
@@ -1115,6 +1137,7 @@ post '/data/hosting/load' => sub {
 post '/data/domain/load' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $id=param('id') || 0;
   $id = int($id);
@@ -1154,6 +1177,7 @@ post '/data/domain/load' => sub {
 post '/data/service/load' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $id=param('id') || 0;
   $id = int($id);
@@ -1208,6 +1232,7 @@ post '/data/profile/load' => sub {
 post '/data/funds/history/load' => sub {
   my $auth = &taracot::admin::_auth();
   if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
+  _load_lang();
   content_type 'application/json';
   my $id=param('id') || 0;
   $id = int($id);
@@ -1231,9 +1256,12 @@ post '/data/funds/history/load' => sub {
   $response{trans_id}=$trans_id;
   $response{trans_objects}=$trans_objects;
   $response{trans_amount}=$trans_amount;
-  $response{trans_date}=time2str($lang->{trans_date_template}, $trans_date);
-  $response{trans_date}=~s/\\//gm;
-  $response{trans_time}=time2str($lang->{trans_time_template}, $trans_date);
+  my $df = time2str($lang->{trans_date_template}, $trans_date);
+  $df =~ s/\\//gm;
+  my $tf = time2str($lang->{trans_time_template}, $trans_date);
+  $tf =~ s/\\//gm;
+  $response{trans_date} = $df;  
+  $response{trans_time} = $tf;
   $response{trans_time}=~s/\\//gm;
   my $json = $json_xs->encode(\%response);
   return $json;    

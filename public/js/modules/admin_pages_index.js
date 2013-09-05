@@ -55,7 +55,8 @@ $(document).ready(function () {
     $('#plain_editor').css('width', ($('#data_table').width() - 50) + 'px');
     // Init CkEditor
     $('#wysiwyg_editor').ckeditor({
-        filebrowserBrowseUrl: '/admin/imgbrowser'
+        filebrowserBrowseUrl: '/admin/imgbrowser',
+        allowedContent: true
     });
     // Init dropdown
     $().dropdown();

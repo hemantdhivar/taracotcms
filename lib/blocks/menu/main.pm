@@ -66,12 +66,12 @@ sub data() {
  foreach my $item (@level1) {
   if ($item->{children}) {
    $cnt++;
-   my $url='#menu'.$cnt;
+   my $url='#_taracot_bar_menu'.$cnt;
    if ($item->{url}) {
     $url=$item->{url};
    }
    if ($item->{title}) {
-    $res.=qq~<li class="dropdown" id="menu$cnt"><a class="dropdown-toggle" data-toggle="dropdown" href="$url">~.$item->{title}.qq~<b class="caret"></b></a><ul class="dropdown-menu">~;
+    $res.=qq~<li class="dropdown" id="_taracot_bar_menu$cnt"><a class="dropdown-toggle" data-toggle="dropdown" href="$url">~.$item->{title}.qq~<b class="caret"></b></a><ul class="dropdown-menu">~;
    } 
    my $level2_children=$item->{children};
    my @level2=@$level2_children;
@@ -84,7 +84,9 @@ sub data() {
       if ($child->{url}) {
        $url=$child->{url};
       }
-      $res.=qq~<li><a href="$url">~.encode_entities($child->{title}).qq~</a></li>~;
+      my $idbu = lc $url;
+      $idbu=~s/\//_/;
+      $res.=qq~<li id="_taracot_bar_$idbu"><a href="$url">~.encode_entities($child->{title}).qq~</a></li>~;
      }
     } 
    }
@@ -94,7 +96,9 @@ sub data() {
    if ($item->{url}) {
     $url=$item->{url};
    }
-   $res.=qq~<li><a href="$url">~.encode_entities($item->{title}).qq~</a></li>~;
+   my $idbu = lc $url;
+   $idbu=~s/\//_/;
+   $res.=qq~<li id="_taracot_bar_$idbu"><a href="$url">~.encode_entities($item->{title}).qq~</a></li>~;
   }
  }
  $reply{block_content}=$lang->{input_output_error};

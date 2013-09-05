@@ -68,11 +68,11 @@ domain_name_hint: Без указания зоны, например&#058; domai
 domain_zone: Зона
 domain_exp: Зарегистрирован по
 domain_exp_short: Окончание
-domain_exp_hint: Формат&#058;&nbsp;ГГГГ/ММ/ДД
+domain_exp_hint: Формат&#058;&nbsp;ДД/ММ/ГГГГ
 domain_date_template: \%d/\%m/\%Y 
-domain_date_picker_template: yyyy/mm/dd 
+domain_date_picker_template: dd/mm/yyyy 
 domain_date_picker_week_start: 1
-trans_datetime_picker_template: yyyy/mm/dd
+trans_datetime_picker_template: dd/mm/yyyy
 trans_datetime_picker_week_start: 1
 trans_date_template: \%d/\%m/\%Y 
 trans_time_template: \%H\:\%M
