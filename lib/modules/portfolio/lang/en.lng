@@ -1,0 +1,8 @@
+module_name: Portfolio
+config_error: Unable to load portfolio_*.json file. Please check portfolio_path variable in config.yml.
+id_error: Error while loading the portfolio item you've requested.
+creation_date: Release date
+task: Task
+responsive: Project manager
+price: Similiar project price
+url: Site URL

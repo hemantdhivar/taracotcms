@@ -1,0 +1,5 @@
+<h1>[== $lang->{module_name} =]</h1>
+[== $desc =]
+<div class="row">
+[== $index_items =]
+</div>

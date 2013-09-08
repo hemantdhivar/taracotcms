@@ -1,0 +1,6 @@
+<div class="col-lg-3 col-md-5 col-sm-5 thumbnail portfolio-item" style="margin:5px;text-align:center">
+  <a href="/portfolio/[== $id =]"><img src="[== $images_url =]/id_[== $id =].jpg" class="img-responsive img-rounded" /></a>
+  <div class="caption">  
+    <div class="label label-default label-inv">[== $title =]</div>
+  </div>
+</div>

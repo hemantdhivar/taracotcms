@@ -5,7 +5,7 @@ use Digest::MD5 qw(md5_hex);
 
 prefix '/payment/data'; 
 
-get '/webmoney' => sub { 
+any '/webmoney' => sub { 
 
   eval { require "api/webmoney.pl"; };
   if ($@) {   

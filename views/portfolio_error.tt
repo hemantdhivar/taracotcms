@@ -1,0 +1,2 @@
+<h1>[== $lang->{module_name} =]</h1>
+[== $err_msg =]

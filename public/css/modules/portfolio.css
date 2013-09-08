@@ -1,0 +1,6 @@
+.label-inv {
+	background: #222;
+}
+div.portfolio-item:hover {
+	background: #666;
+}
