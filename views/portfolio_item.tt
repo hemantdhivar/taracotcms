@@ -1,7 +1,11 @@
-<h1>[== $lang->{module_name} =]: [== $pf->{title} =]</h1>
+<h1>[== $pf->{title} =]</h1>
 <div class="row">
 <div class="col-lg-10">		
-	<div class="well" style="margin: 15px 0px 15px 0px"><i>[== $lang->{task} =]</i>: [== $pf->{task} =]</div>
+	<ol class="breadcrumb" style="background:#fff;padding-left:0px">
+	  <li><a href="/portfolio">[== $lang->{module_name} =]</a></li>
+	  <li class="active">[== $lang->{'type_'.$pf->{type}} =]</li>
+	</ol>
+	<div class="alert alert-success" style="margin: 15px 0px 15px 0px"><i>[== $lang->{task} =]</i>: [== $pf->{task} =]</div>
 	[== $pf->{comp} =]
 	<?pl if ($pf->{active} eq 'true' && $pf->{url}) { ?><div style="margin: 15px 0px 15px 0px"><b>[== $lang->{url} =]</b>: <a href="[== $pf->{url} =]" target="_blank">[== $pf->{url} =]</a></div><?pl } ?>
 	<?pl 
@@ -11,19 +15,20 @@
 			$items_html.=qq~<div class="col-lg-3 col-md-5 col-sm-5 thumbnail" style="margin:5px;text-align:center"><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive img-rounded" /><div class="caption"><small><i>~.$pf->{screenshots}->{$key}.qq~</i></small></div></div>~;
 		}
 		foreach my $key (keys %{ $pf->{screenshots_large} }) {
-			$items_large_html.=qq~<h4>~.$pf->{screenshots_large}->{$key}.qq~:</h4><div style="text-align:center"><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive" /></div>~;
+			$items_large_html.=qq~<div style="text-align:right"><i>~.$pf->{screenshots_large}->{$key}.qq~</i></div><center><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive" /></center>~;
 		}
 	?>
-	<div>				
-		<div>[== $items_large_html =]</div>
-		[== $items_html =]
+	<div class="container">					
+		<?pl if ($items_large_html) { ?><div class="row">[== $items_large_html =]</div><?pl } else { ?><div style="height:30px"></div><?pl } ?>
+		<div class="row panel panel-default"><div class="panel-body">[== $items_html =]</div></div>
 	</div>	
 </div>
 <div class="col-lg-2">
-	<b>[== $lang->{creation_date} =]</b>: [== $pf->{year} =]
 	<div style="height:10px"></div>
-	<b>[== $lang->{responsive} =]</b>: [== $pf->{responsive} =]
-	<div style="height:5px"></div>
-	<b>[== $lang->{price} =]</b>: [== $pf->{price} =]
+	<b>[== $lang->{creation_date} =]</b>:<br/>[== $pf->{year} =]
+	<div style="height:10px"></div>
+	<b>[== $lang->{responsive} =]</b>:<br/>[== $pf->{responsive} =]
+	<div style="height:10px"></div>
+	<b>[== $lang->{price} =]</b>:<br/>[== $pf->{price} =]
 </div>
 </div>

@@ -1,0 +1,14 @@
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse_[== $id =]">
+          [== $title =]
+        </a>
+      </h4>
+    </div>
+    <div id="collapse_[== $id =]" class="panel-collapse collapse<?pl if ($default) { ?> in<?pl } ?>">
+      <div class="panel-body">
+        [== $items =]
+      </div>
+    </div>
+  </div>

@@ -1,5 +1,9 @@
 <h1>[== $lang->{module_name} =]</h1>
 [== $desc =]
 <div class="row">
+<div class="col-lg-12">
+<div class="panel-group" id="accordion">	
 [== $index_items =]
+</div>
+</div>
 </div>

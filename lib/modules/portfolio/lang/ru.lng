@@ -1,0 +1,11 @@
+module_name: Портфолио
+config_error: Ошибка во время загрузки файла portfolio_*.json. Пожалуйста, проверьте правильность задания переменных &quot;portfolio_path&quot; и &quot;portfolio_images_url&quot; в файле config.yml.
+creation_date: Дата релиза
+task: Задача
+responsive: Участники проекта
+price: Стоимость аналогичного проекта
+url: Адрес сайта
+type_site: Интернет-проекты (веб-сайты, сервисы и т.д.)
+type_style: Фотография, идентика, иллюстрации
+type_software_desktop: Программное обеспечение для ПК с ОС Windows и GNU/Linux
+type_software_android: Программное обеспечение для ОС Android

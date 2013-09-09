@@ -1,8 +1,11 @@
 module_name: Portfolio
-config_error: Unable to load portfolio_*.json file. Please check portfolio_path variable in config.yml.
-id_error: Error while loading the portfolio item you've requested.
+config_error: Unable to load portfolio_*.json file. Please check &quot;portfolio_path&quot; and &quot;portfolio_images_url&quot; variable in config.yml.
 creation_date: Release date
 task: Task
-responsive: Project manager
+responsive: Attended
 price: Similiar project price
 url: Site URL
+type_site: Internet-related projects (websites, online services etc.)
+type_style: Photography, corporate identity, artwork
+type_software_desktop: Desktop software for Windows and GNU/Linux
+type_software_android: Mobile software for Android OS
