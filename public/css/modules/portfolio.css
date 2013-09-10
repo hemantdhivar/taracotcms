@@ -4,3 +4,8 @@
 div.portfolio-item:hover {
 	background: #666;
 }
+.taracot-alert-task {
+	background: #eee;
+	border: 1px solid #ddd;
+	color: #222;
+}

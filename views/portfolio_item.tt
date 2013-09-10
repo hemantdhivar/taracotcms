@@ -5,9 +5,9 @@
 	  <li><a href="/portfolio">[== $lang->{module_name} =]</a></li>
 	  <li class="active">[== $lang->{'type_'.$pf->{type}} =]</li>
 	</ol>
-	<div class="alert alert-success" style="margin: 15px 0px 15px 0px"><i>[== $lang->{task} =]</i>: [== $pf->{task} =]</div>
+	<div class="alert alert-success taracot-alert-task" style="margin: 15px 0px 15px 0px"><i>[== $lang->{task} =]</i>: [== $pf->{task} =]</div>
 	[== $pf->{comp} =]
-	<?pl if ($pf->{active} eq 'true' && $pf->{url}) { ?><div style="margin: 15px 0px 15px 0px"><b>[== $lang->{url} =]</b>: <a href="[== $pf->{url} =]" target="_blank">[== $pf->{url} =]</a></div><?pl } ?>
+	<?pl if ($pf->{active} eq 'true' && $pf->{url}) { ?><div style="margin: 15px 0px 15px 0px"><b>[== $lang->{url} =]</b>: <!--noindex--><a href="[== $pf->{url} =]" target="_blank">[== $pf->{url} =]</a><!--/noindex--></div><?pl } ?>
 	<?pl 
 		my $items_html = '';
 		my $items_large_html = '';
@@ -15,12 +15,12 @@
 			$items_html.=qq~<div class="col-lg-3 col-md-5 col-sm-5 thumbnail" style="margin:5px;text-align:center"><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive img-rounded" /><div class="caption"><small><i>~.$pf->{screenshots}->{$key}.qq~</i></small></div></div>~;
 		}
 		foreach my $key (keys %{ $pf->{screenshots_large} }) {
-			$items_large_html.=qq~<div style="text-align:right"><i>~.$pf->{screenshots_large}->{$key}.qq~</i></div><center><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive" /></center>~;
+			$items_large_html.=qq~<div style="text-align:right"><i>~.$pf->{screenshots_large}->{$key}.qq~</i></div><center><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive" /></center><div style="height:10px"></div>~;
 		}
 	?>
 	<div class="container">					
 		<?pl if ($items_large_html) { ?><div class="row">[== $items_large_html =]</div><?pl } else { ?><div style="height:30px"></div><?pl } ?>
-		<div class="row panel panel-default"><div class="panel-body">[== $items_html =]</div></div>
+		<?pl if ($items_html) { ?><div class="row panel panel-default"><div class="panel-body">[== $items_html =]</div></div><?pl } ?>
 	</div>	
 </div>
 <div class="col-lg-2">
