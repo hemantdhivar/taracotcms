@@ -1,0 +1,1 @@
+<li<?pl if ($active) { ?> class="active"<?pl } ?>><?pl if ($page_num) { ?><a href="#" onclick="setSearchPage('[== $page_num =]');"><?pl } ?> [== $page_text =]<?pl if ($page_url) { ?></a><?pl } ?></li>

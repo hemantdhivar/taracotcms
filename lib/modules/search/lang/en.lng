@@ -1,0 +1,7 @@
+module_name: Search
+search_query: Search query
+search_btn: Search
+search_placeholder: Enter a text to search
+search_in_progress: Search in progress, please wait...
+search_no_results: No results found matching your query
+search_error: Error while performing a search. Please try again in several moments or contact website administrator.

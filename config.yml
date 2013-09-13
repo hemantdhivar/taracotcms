@@ -18,7 +18,7 @@ session_name: 'taracot_session'
 session_expires: '1 week'
 session_domain: ''
 load_modules_admin: 'users, pages, sitemap, files, settings, firewall, billing'
-load_modules_frontend: 'pages, imgbrowser, user, blog, billing, robokassa, webmoney, support, portfolio'
+load_modules_frontend: 'pages, imgbrowser, user, blog, billing, robokassa, webmoney, support, portfolio, search'
 load_blocks_frontend: 'menu, blocks'
 lang_available: 'en, ru, de'
 lang_available_long: 'English, Russian, German'
@@ -32,6 +32,7 @@ site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
 # possible values are: blacklist, whitelist, off
 firewall_mode: 'blacklist'
+search_plugin: 'mysql'
 root_user: 'xtreme'
 portfolio_path: public/re-hash/portfolio/
 portfolio_images_url: /re-hash/portfolio/img

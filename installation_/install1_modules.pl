@@ -17,7 +17,7 @@ if (!$res) {
 print "Yes\n";
 }
 if ($res ne 'n') {
-my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','Imager::File::GIF','Imager::File::JPEG','Imager::File::PNG','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout','Lingua::Identify','URL::Encode','Tenjin',"Log::Log4perl::Appender::File","DateTime::Format::Strptime");
+my @required_modules = ('Dancer','Dancer::Plugin::Database','Dancer::Session::Storable','Time::Duration::Parse','YAML','YAML::XS','Module::Load','Digest::MD5','File::Slurp','JSON::XS','Text::Unidecode','Imager','Imager::File::GIF','Imager::File::JPEG','Imager::File::PNG','File::Basename','Dancer::Plugin::Email','Try::Tiny','Date::Format','Date::Parse','URI::Encode','Dancer::Logger::Log4perl','Log::Log4perl::Layout::PatternLayout','Lingua::Identify','URL::Encode','Tenjin',"Log::Log4perl::Appender::File","DateTime::Format::Strptime",'Lingua::Stem::Any','HTML::Strip');
 foreach my $rm (@required_modules) {
 print "Checking $rm...\n";
 if ($rm eq 'Log::Log4perl::Layout::PatternLayout') {

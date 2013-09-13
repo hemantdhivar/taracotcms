@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 02, 2013 at 07:27 PM
+-- Generation Time: Sep 13, 2013 at 05:41 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -342,13 +342,59 @@ CREATE TABLE `taracot_pages` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `filter` (`pagetitle`,`filename`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=3 ;
 
 -- 
 -- Dumping data for table `taracot_pages`
 -- 
 
-INSERT INTO `taracot_pages` VALUES (1, 'Home', 'taracot, sample, homepage', 'Taracot sample homepage', '<p>If you can read this, everything seems to work fine.</p>\n\n<p>Please log in to <a href="/admin">administration panel</a> to perform website configuration and administration.</p>\n', 1, '/', 'en', 'taracot', 1376571456);
+INSERT INTO `taracot_pages` VALUES (1, 'Home', 'taracot, sample, homepage', 'Taracot sample homepage', '<p>If you can read this, everything seems to work fine.</p>\n\n<p>Please log in to <a href="/admin">administration panel</a> to perform website configuration and administration.</p>\n', 1, '/', 'en', 'taracot', 1379063010);
+INSERT INTO `taracot_pages` VALUES (2, 'Такие дела', 'taracot, sample, homepage', 'Taracot sample homepage', '<p>Слухи об&nbsp;обновлённой линейке планшетов Kindle Fire от&nbsp;Amazon ходят ещё с&nbsp;середины лета, но&nbsp;компания, почему-то, пока не&nbsp;торопится проводить презентацию, ограничившись тихим анонсом нового ридера Kindle Paperwhite. Несмотря на&nbsp;это, об&nbsp;этих устройствах продолжают появляться новые сообщения из&nbsp;неофициальных источников, а, значит, они действительно могут быть в&nbsp;скором времени представлены. Сейчас же речь пойдёт о&nbsp;7-дюймовой &laquo;таблетке&raquo; Amazon Kindle Fire HD, фотографии которой были опубликованы в&nbsp;сети. And it&#39;s fine! Вот так вот, да.</p>', 1, '/tiestovaia_stranitsa', 'ru', 'taracot', 1379063065);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `taracot_search_db`
+-- 
+
+CREATE TABLE `taracot_search_db` (
+  `module_id` varchar(20) NOT NULL default '',
+  `ref_id` int(11) NOT NULL default '0',
+  `slang` varchar(2) default 'en',
+  `stitle` varchar(255) default NULL,
+  `stext` text,
+  `swords` text,
+  `surl` varchar(255) default NULL,
+  `lastchanged` int(11) default NULL,
+  PRIMARY KEY  (`ref_id`,`module_id`),
+  FULLTEXT KEY `swords` (`swords`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- Dumping data for table `taracot_search_db`
+-- 
+
+INSERT INTO `taracot_search_db` VALUES ('pages', 2, 'ru', 'Такие дела', 'Слухи об обновлённой линейке планшетов Kindle Fire от Amazon ходят ещё с середины лета, но компания, почему-то, пока не торопится проводить презентацию, ограничившись тихим анонсом нового ридера Ki...', 'сейчас да устройствах вот из пока fine от таблетке its об amazon ещё планшетов были hd kindle нового быть неофициальных же сети опубликованы and проводить о источников так но paperwhite на сообщения анонсом фотографии дела лета ходят слухи тихим почему-то скором 7-дюймовой презентацию речь обновлённой ридера действительно представлены пойдёт они продолжают в новые а торопится которой это несмотря ограничившись не с fire появляться этих значит компания линейке такие могут середины времени', '/tiestovaia_stranitsa', 1379063065);
+INSERT INTO `taracot_search_db` VALUES ('pages', 1, 'en', 'Home', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 3, 'en', 'Home3', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 5, 'en', 'Home5', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 4, 'en', 'Home4', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 6, 'en', 'Home6', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 7, 'en', 'Home7', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 8, 'en', 'Home8', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 9, 'en', 'Home9', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 31, 'en', 'Home31', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 32, 'en', 'Home32', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 33, 'en', 'Home33', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 34, 'en', 'Home34', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 41, 'en', 'Home41', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 42, 'en', 'Home42', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 43, 'en', 'Home43', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 44, 'en', 'Home44', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 443, 'en', 'Home443', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 3333, 'en', 'Home3333', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 312, 'en', 'Home123', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
+INSERT INTO `taracot_search_db` VALUES ('pages', 322, 'en', 'Home322', 'If you can read this, everything seems to work fine. Please log in to administration panel to perform website configuration and administration. ...', 'website you administration panel if to in fine read configuration log home this perform seems work can everything please and', '/', 1379063010);
 
 -- --------------------------------------------------------
 
@@ -508,5 +554,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1377856253);
+INSERT INTO `taracot_users` VALUES (1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1378999113);
 INSERT INTO `taracot_users` VALUES (2, 'user', '0f5559ee359fba749e7e6638fcfdbbfb', 0, '', 'xtreme@rh1.ru', '1234567', '', 1, NULL, NULL, 'en', 1376731887, 0, 1378119910);

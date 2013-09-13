@@ -16,6 +16,11 @@ my @columns = ('id','pagetitle','filename','lang','layout','status');
 my @columns_mobile = ('id','pagetitle','lang','status');
 my @columns_ft = ('pagetitle','filename');
 
+# Load search plugin
+
+require 'modules/search/'.config->{search_plugin}.'.pm';
+my $search_plugin = 'modules::search::mysql'->new();
+
 # Module core settings 
 
 my $lang;
@@ -363,13 +368,14 @@ if (langof($content) eq 'ru') {
     $jevix->setConf($conf);
     $content = $jevix->process(\encode_utf8($content))->{text};
   }
-
   if ($id > 0) {
-   database->quick_update(config->{db_table_prefix}.'_pages', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
+   database->quick_update(config->{db_table_prefix}.'_pages', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });   
+   $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
   } else {   
    database->quick_insert(config->{db_table_prefix}.'_pages', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
-  }
-      
+   my $id = database->{q{mysql_insertid}}; 
+   $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
+  }     
   return qq~{"result":"1"}~;
 };
 
@@ -421,7 +427,11 @@ post '/data/save/field' => sub {
    }
    $sth->finish();
     database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { lang => $field_value, lastchanged => time });
-    return '{"result":"1"}';
+    my $rec = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
+    if ($rec) {
+      updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, "/pages".$rec->{filename}, $rec->{id}, 'pages');
+    }
+    return '{"result":"1"}';    
    }
    
   # Check layout
@@ -445,6 +455,10 @@ post '/data/save/field' => sub {
     return qq~{"result":"0","error":"~.$lang->{form_error_invalid_pagetitle}.qq~"}~;
    }
    database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { pagetitle => $pagetitle, lastchanged => time });
+   my $rec = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
+   if ($rec) {
+    updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, "/pages".$rec->{filename}, $rec->{id}, 'pages');
+   }
    return '{"result":"1"}';
   }
   
@@ -491,6 +505,10 @@ post '/data/save/field' => sub {
    }
    $sth->finish();
    database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { filename => $filename, lastchanged => time });
+   my $rec = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
+   if ($rec) {
+    updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, "/pages".$rec->{filename}, $rec->{id}, 'pages');
+   }
    return '{"result":"1","value":"'.$filename.'"}';
   }
   
