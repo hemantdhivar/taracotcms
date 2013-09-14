@@ -1,11 +1,11 @@
 package modules::search::mysql;
 
-use utf8;
-use Encode;
-use HTML::Strip;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use Lingua::Stem::Any;
+use HTML::Restrict;
+use Encode;
+use HTML::Entities;
 
 sub new {
  my ($class)=shift;
@@ -16,7 +16,7 @@ sub new {
  return $self;
 }
 
-sub updateSearchIndex {
+sub updateSearchIndex {    
     my $self=shift;
 	my $preview_length = 200;
 	my $slang = $_[0];
@@ -25,22 +25,27 @@ sub updateSearchIndex {
 	my $surl = $_[3];
 	my $sid = $_[4];
 	my $mid = $_[5];
-	$stext=~s/&nbsp;/ /gm;
-	my $text_preview = substr($stext, 0, $preview_length);
-	my $data = $stitle.' '.$stext;		
-    my $hs = HTML::Strip->new();
-    $data = decode_utf8($hs->parse( $data ));
-    $hs->eof;
-    $text_preview = decode_utf8($hs->parse( $text_preview ));
-    $hs->eof;
+    $stext =~ s/<h1[^>]*>.*?<\/h1>//is;
+    $stext =~ s/<script[^>]*>.*?<\/script>//igs;
+	my $text_preview = substr($stext, 0, $preview_length);    
+    $text_preview = decode_entities($text_preview);
+    $stitle = decode_entities($stitle);
+    $stext = decode_entities($stext);
+    my $hs = HTML::Restrict->new();
+    $text_preview = $hs->process( $text_preview );
+	my $data = $stitle.' '.$stext;
+    $data = $hs->process( $data );    
     $data =~ s/[^\wА-Яа-яёЁ\s\-]//gm;
-    $data =~ s/[\n\r]/ /gm;
+    $data =~ s/[\n\r\t]/ /gm;
     $data =~ s/ +/ /gm;    
     $data = lc($data);
-    $text_preview =~ s/[^\wА-Яа-яёЁ\s\-,\.;:]//gm;
-    $text_preview =~ s/[\n\r]/ /gm;
-    $text_preview =~ s/ +/ /gm;        
-    if (length($text_preview) < $preview_length) {
+    $text_preview =~ s/[\n\r\t]/ /gm;
+    $text_preview =~ s/ +/ /gm;            
+    $stext = $hs->process( $stext );    
+    $stext =~ s/[^\wА-Яа-яёЁ\s\-]//gm;
+    $stext =~ s/[\n\r\t]/ /gm;
+    $stext =~ s/ +/ /gm;
+    if (length($text_preview) < length($stext)) {
     	$text_preview.='...';
     }
     database->quick_delete(config->{db_table_prefix}.'_search_db', { ref_id => $sid, module_id => $mid });
@@ -72,8 +77,7 @@ sub performSearch {
     $sql_query =~ s/ OR //;
     my $sth = database->prepare(
         'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_search_db WHERE ('.$sql_query.') AND slang='.database->quote($slang)
-    );
-    $res{sql} = 'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_search_db WHERE ('.$sql_query.') AND slang='.database->quote($slang);
+    );    
     my $total = 0;
     if ($sth->execute()) {
         ($total) = $sth -> fetchrow_array;
@@ -90,7 +94,7 @@ sub performSearch {
             while (my ($stitle,$stext,$surl) = $sth->fetchrow_array) {
                 my %item;
                 $item{'title'} = $stitle;
-                $item{'text'} = $stext;
+                $item{'text'} = $stext;                
                 $item{'url'} = $surl;
                 push @res_arr, \%item;
             }

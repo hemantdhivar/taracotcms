@@ -349,7 +349,7 @@ if (langof($content) eq 'ru') {
       codeMode => 2, # Special chars representation (0: ANSI <...>, 1: HTML <&#133;>, 2: HTML entities <&hellip;>)
       tagsDenyAll => 0, # Deny all tags by default
       tagsDeny => '', # Deny tags list
-      tagsAllow => '|A:href:title,br,B:STYLE', # Allowed tags list (exception to "deny all" mode)
+      tagsAllow => '', # Allowed tags list (exception to "deny all" mode)
       tagCloseSingle => 1, # Close single tags when they are not
       tagCloseOpen => 0, # Close all open tags at the end of the document
       tagNamesToLower => 1, # Bring tag names to lower case
