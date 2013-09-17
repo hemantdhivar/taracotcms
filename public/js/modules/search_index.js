@@ -1,5 +1,10 @@
 $(document).ready(function () {
-	$('#search_query').focus();    
+	$('#search_query').focus();
+    var url_hash = window.location.hash.substr(1);
+    if (url_hash && url_hash.length > 0) {
+        $('#search_query').val(url_hash);
+        performSearch(1);
+    }
 }); // document.ready
 
 var performSearch = function(page) {
@@ -30,7 +35,7 @@ var performSearch = function(page) {
                 if (data.paginator_html) {
                     $('#search_result').append(data.paginator_html);
                 }
-                if (data.count && data.count == 0) {
+                if (!data.count) {
                     $('#search_result').append(js_lang_search_no_results);
                 }
             } else {

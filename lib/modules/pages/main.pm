@@ -19,7 +19,8 @@ my @columns_ft = ('pagetitle','filename');
 # Load search plugin
 
 require 'modules/search/'.config->{search_plugin}.'.pm';
-my $search_plugin = 'modules::search::mysql'->new();
+my $sp = 'modules::search::'.config->{search_plugin};
+my $search_plugin = "$sp"->new();
 
 # Module core settings 
 
@@ -370,11 +371,15 @@ if (langof($content) eq 'ru') {
   }
   if ($id > 0) {
    database->quick_update(config->{db_table_prefix}.'_pages', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });   
-   $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
+   if ($status eq 1) {
+    $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
+   }
   } else {   
    database->quick_insert(config->{db_table_prefix}.'_pages', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
    my $id = database->{q{mysql_insertid}}; 
-   $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
+   if ($status eq 1) {
+    $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
+   }
   }     
   return qq~{"result":"1"}~;
 };
@@ -429,7 +434,9 @@ post '/data/save/field' => sub {
     database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { lang => $field_value, lastchanged => time });
     my $rec = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
     if ($rec) {
-      updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, "/pages".$rec->{filename}, $rec->{id}, 'pages');
+      if ($rec->{status} eq 1) {
+        $search_plugin->updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, $rec->{filename}, $rec->{id}, 'pages');
+      }
     }
     return '{"result":"1"}';    
    }
@@ -457,7 +464,9 @@ post '/data/save/field' => sub {
    database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { pagetitle => $pagetitle, lastchanged => time });
    my $rec = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
    if ($rec) {
-    updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, "/pages".$rec->{filename}, $rec->{id}, 'pages');
+    if ($rec->{status} eq 1) {
+      $search_plugin->updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, $rec->{filename}, $rec->{id}, 'pages');
+    }
    }
    return '{"result":"1"}';
   }
@@ -507,7 +516,9 @@ post '/data/save/field' => sub {
    database->quick_update(config->{db_table_prefix}.'_pages', { id => $field_id }, { filename => $filename, lastchanged => time });
    my $rec = database->quick_select(config->{db_table_prefix}.'_pages', { id => $field_id });
    if ($rec) {
-    updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, "/pages".$rec->{filename}, $rec->{id}, 'pages');
+    if ($rec->{status} eq 1) {
+      $search_plugin->updateSearchIndex($rec->{lang}, $rec->{pagetitle}, $rec->{content}, $rec->{filename}, $rec->{id}, 'pages');
+    }
    }
    return '{"result":"1","value":"'.$filename.'"}';
   }

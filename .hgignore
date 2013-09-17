@@ -7,4 +7,5 @@ public/files/images/*.png
 public/files/avatars/*.jpg
 public/files/images_catalog/*.png
 public/files/images_catalog/*.jpg
+public/re-hash/*
 data/.*\.html$

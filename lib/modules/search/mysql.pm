@@ -12,7 +12,7 @@ sub new {
  my $self = {
      @_,
  };
- bless $self, ref $class || $class || "modules::search::plugin_mysql";
+ bless $self, ref $class || $class || "modules::search::mysql";
  return $self;
 }
 
@@ -55,6 +55,15 @@ sub updateSearchIndex {
   	);
   	$sth->execute();
   	$sth->finish(); 
+}
+
+sub removeFromSearchIndex {    
+    my $self=shift;
+    my $preview_length = 200;
+    my $slang = $_[0];
+    my $surl = $_[1];
+    my $module_id = $_[1];
+    database->quick_delete(config->{db_table_prefix}.'_search_db', { slang => $slang, surl => $surl, module_id => $module_id });
 }
 
 sub performSearch {

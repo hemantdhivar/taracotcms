@@ -9,7 +9,8 @@ my $defroute = '/search';
 # Load search plugin
 
 require 'modules/search/'.config->{search_plugin}.'.pm';
-my $search_plugin = 'modules::search::mysql'->new();
+my $sp = 'modules::search::'.config->{search_plugin};
+my $search_plugin = "$sp"->new();
 
 # Module core settings 
 
@@ -71,7 +72,7 @@ any '/process' => sub {
   my $res = $search_plugin->performSearch($search_query, $_current_lang, $page, $ipp);
   $res->{status} = '1';
   my $total = $res->{count};
-  my $pc = int($total / $ipp);  
+  my $pc = int($total / $ipp) + 1;  
   # Paginator code : begin
   my $paginator='';
   if ($pc > 1) {

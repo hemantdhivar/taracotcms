@@ -18,4 +18,9 @@ if (taracot_langs_available && taracot_langs_available.length>0) {
     }
     $('#taracot_ui_lang_select').append('<li><a href="#" onclick="setTaracotLang(\''+taracot_langs_available[i].short+'\');"><img src="/images/flags/'+taracot_langs_available[i].short+'.png" width="16" height="11" alt="" />&nbsp;'+taracot_langs_available[i].long+'</a></li>');
   }
-}  
+}
+$('#taracot-header-search-query').bind('keypress', function (e) {
+  if (e.keyCode == 13) {
+    location.href='/search?'+Math.random()+'#'+$('#taracot-header-search-query').val();
+  }
+});
