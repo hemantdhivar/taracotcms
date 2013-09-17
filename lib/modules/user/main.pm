@@ -45,7 +45,7 @@ sub _load_lang {
 
 get '/register' => sub {
   my $auth_data = &taracot::_auth();
-  if ($auth_data) { redirect '/user/account' } 
+  if ($auth_data) { return redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
   my $render_template = &taracot::_process_template( template 'user_register', { detect_lang => $detect_lang, config => config, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
@@ -152,7 +152,7 @@ post '/register/process' => sub {
 
 get '/authorize' => sub {
   my $auth_data = &taracot::_auth();
-  if ($auth_data) { redirect '/user/account'; return; } 
+  if ($auth_data) { return redirect '/user/account'; return; } 
   my $_current_lang=_load_lang();
   my $comeback = param('comeback') || '';
   if ($comeback) {
@@ -210,7 +210,7 @@ post '/authorize/process' => sub {
       $email=$login;
     }
   } else {
-    if ($login !~ /^[a-z0-9_\-]{1,100}$/) { 
+    if ($login !~ /^[a-z0-9_\-\.]{1,100}$/) { 
       $res{status}=0; 
       push @errors, $lang->{user_register_error_username};
       push @fields, 'login';  
@@ -292,7 +292,7 @@ post '/authorize/process' => sub {
 };
 
 get '/activate/:username/:verification' => sub {
-  if (&taracot::_auth()) { redirect '/user/account' } 
+  if (&taracot::_auth()) { return redirect '/user/account' } 
   my $msg='';
   my $_current_lang=_load_lang();
   my $username = params->{username};
@@ -319,7 +319,7 @@ get '/activate/:username/:verification' => sub {
 };
 
 get '/password' => sub {
-  if (&taracot::_auth()) { redirect '/user/account' } 
+  if (&taracot::_auth()) { return redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
@@ -404,7 +404,7 @@ post '/password/process' => sub {
 };
 
 get '/password/reset/:username/:verification' => sub {
-  if (&taracot::_auth()) { redirect '/user/account' } 
+  if (&taracot::_auth()) { return redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $username = params->{username};
   my $verification = params->{verification};
@@ -473,7 +473,7 @@ post '/password/reset/process' => sub {
 
 get '/account' => sub {
   my $auth = &taracot::_auth();
-  if (!$auth) { redirect '/user/authorize' } 
+  if (!$auth) { return redirect '/user/authorize' } 
   my $_current_lang=_load_lang();
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
@@ -735,7 +735,7 @@ post '/account/password/process' => sub {
 
 get '/profile/:username' => sub {
   my $auth = &taracot::_auth();
-  if (!$auth) { redirect '/user/authorize' } 
+  if (!$auth) { return redirect '/user/authorize' } 
   my $username = params->{username};
   if ($username !~ /^[a-z0-9_\-\.]{1,100}$/) { 
     pass();
@@ -810,7 +810,7 @@ get '/profile/:username' => sub {
 };
 
 get '/logout' => sub {
-  if (!&taracot::_auth()) { redirect '/user/authorize' } 
+  if (!&taracot::_auth()) { return redirect '/user/authorize' } 
   session user => ''; 
   my $_current_lang=_load_lang();
   my %db_data;

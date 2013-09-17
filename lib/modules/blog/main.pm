@@ -397,7 +397,7 @@ get '/post/:post_id' => sub {
 };
 
 get '/post/' => sub {
-  redirect '/blog/post';
+  return redirect '/blog/post';
 };
 
 get '/post' => sub {

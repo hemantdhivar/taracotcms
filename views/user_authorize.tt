@@ -12,7 +12,7 @@
 <button type="button" class="btn btn-default btn-sm" onclick="location.href='https://oauth.yandex.ru/authorize?response_type=code&client_id=[== $config->{auth_yandex_client_id} =]';"><i class="social-i-yandex"></i>&nbsp;[== $lang->{social_yandex} =]</button>&nbsp;
 <?pl } ?>
 <?pl if ($config->{auth_vk_client_id}) { ?>
-<button type="button" class="btn btn-default btn-sm" onclick="location.href='http://oauth.vk.com/authorize?client_id=[== $config->{auth_vk_client_id} =]&redirect_uri=[== $config->{auth_vk_redirect_uri} =]&response_type=code';"><i class="social-i-vkontakte"></i>&nbsp;[== $lang->{social_vk} =]</button>&nbsp;
+<button type="button" class="btn btn-default btn-sm" onclick="location.href='https://oauth.vk.com/authorize?client_id=[== $config->{auth_vk_client_id} =]&redirect_uri=[== $config->{auth_vk_redirect_uri} =]&response_type=code';"><i class="social-i-vkontakte"></i>&nbsp;[== $lang->{social_vk} =]</button>&nbsp;
 <?pl } ?>
 <?pl if ($config->{auth_facebook_app_id} || $config->{auth_google_client_id} || $config->{auth_yandex_client_id} || $config->{auth_vk_client_id}) { ?>
 <br/><br/>

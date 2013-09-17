@@ -21,8 +21,7 @@ get '/user/authorize/google/' => sub {
 
   my $auth_data = &taracot::_auth();
   if ($auth_data) { 
-    redirect $auth_uri_base.'/user/account';
-    return;
+    return redirect $auth_uri_base.'/user/account';
   } 
 
   my $detect_lang = &taracot::_detect_lang($auth_uri_base);
