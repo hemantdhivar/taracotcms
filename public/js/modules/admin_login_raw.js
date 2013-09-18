@@ -1,39 +1,52 @@
 var browser = '';
 var browserVersion = 0;
+$('#captcha_img').html('<img id="captcha_shown" src="/captcha_img?' + Math.random() + '" onclick="reloadCaptcha()" width="100" height="50" alt="" style="cursor:pointer" />');
 $('#btn_login').click(function () {
-    if (!$('#auth_username').val() || !$('#auth_password').val()) {
+    if (!$('#auth_username').val() || !$('#auth_password').val() || !$('#auth_captcha').val()) {
         $('#auth_username').focus();
         $('#taracot_logo').fadeOut(50).delay(2700).fadeIn(500);
         $('#taracot_error').fadeIn(400).delay(2000).fadeOut(400);
         return;
     }
     $('#auth_form').hide();
-    $('#taracot_auth_img').show();
+    $('#taracot-auth-progress-bar').show();
+    $('.taracot-auth-modal-header').hide();
+    $('#taracot-auth-body').hide();
+    $('.taracot-auth-modal-footer').hide();
     $.ajax({
         type: 'POST',
         url: '/admin/authorize',
         data: {
             username: $('#auth_username').val(),
-            password: $('#auth_password').val()
+            password: $('#auth_password').val(),
+            reg_captcha: $('#auth_captcha').val()
         },
         dataType: "json",
         success: function (data) {
-            if (data.result == '1') {
+            if (data.result == '1') {                
                 location.href = '/admin?' + Math.random();
             } else {
-                $('#auth_form').show();
-                $('#taracot_auth_img').hide();
+                $('#taracot-auth-progress-bar').hide();
+                $('.taracot-auth-modal-header').show();
+                $('#taracot-auth-body').show();
+                $('.taracot-auth-modal-footer').show();
                 $('#auth_password').val('');
                 $('#auth_username').focus();
                 $('#taracot_logo').fadeOut(50).delay(2700).fadeIn(500);
                 $('#taracot_error').fadeIn(400).delay(2000).fadeOut(400);
+                $('#auth_captcha').val('');
+                reloadCaptcha();
             }
         },
         error: function () {
-            $('#auth_form').show();
-            $('#taracot_auth_img').hide();
+            $('#taracot-auth-progress-bar').hide();
+            $('.taracot-auth-modal-header').show();
+            $('#taracot-auth-body').show();
+            $('.taracot-auth-modal-footer').show();
             $('#auth_password').val('');
             $('#auth_username').focus();
+            $('#auth_captcha').val('');
+            reloadCaptcha();
             alert(js_lang_error_ajax);
         }
     });
@@ -70,15 +83,11 @@ function detectBrowser() {
     }
 }
 $('#btn_continue_anyway').click(function () {
-    $('.browser_choice').hide();
-    $('#btn_continue_anyway').hide();
-    $('#taracot_old_browser_warning').fadeOut(1000);
-    $('#taracot_auth').fadeIn(1000);
-    $('#auth_username').focus();
+    $('#taracot_old_browser_warning').modal('hide');
+    $('#taracot-auth-modal').modal({"keyboard":false,"backdrop":false});    
 })
-$(document).ready(
-
-function () {
+$(document).ready(function () {
+    $('#taracot-auth-modal').modal({"keyboard":false,"backdrop":false});
     $("#auth_password").keypress(function (e) {
         if (e.which == 13) {
             $("#btn_login").click();
@@ -86,14 +95,23 @@ function () {
     });
     $("#auth_username").keypress(function (e) {
         if (e.which == 13) {
-            $('#auth_error_modal').modal('hide');
+            $("#btn_login").click();
         }
     });
-    detectBrowser();
+    $("#auth_captcha").keypress(function (e) {
+        if (e.which == 13) {
+            $("#btn_login").click();
+        }
+    });
+    detectBrowser();    
     if (browser && browser == "MSIE" && browserVersion && browserVersion < 9) {
-        $('#taracot_old_browser_warning').show();
+        $('#taracot-auth-modal').modal('hide');
+        $('#taracot_old_browser_warning').modal();
     } else {
         $('#taracot_auth').show();
         $('#auth_username').focus();
     }
 });
+function reloadCaptcha() {
+    $('#captcha_shown').attr('src', '/captcha_img?' + Math.random());
+}

@@ -80,11 +80,14 @@ get '/' => sub {
 
 post '/authorize' => sub {
   content_type 'application/json';
+  my $captcha=int(param('reg_captcha')) || 0;
+  my $session_captcha=session('captcha');
+  session captcha => rand; 
+  if ($session_captcha ne $captcha) {    
+    return '{"result":"0"}'."\n";
+  } 
   my $username = param('username');
   my $password = md5_hex(config->{salt}.param('password'));
-  open(DATA,"C:/XTreme/log.txt");
-  print DATA $password;
-  close(DATA);
   my $ud  = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, password => $password });
   if ($ud) {
     if ($ud->{status} == 2) {

@@ -1,6 +1,7 @@
 auth_title: Авторизация
 auth_username: Имя пользователя
 auth_password: Пароль
+auth_captcha: Код
 auth_login: Вход
 auth_close: Закрыть
 auth_back: Вернуться на сайт

@@ -296,7 +296,7 @@ $(document).ready(function () {
                             var zone = data.domain_zones[i].zone || '';
                             var cost = data.domain_zones[i].cost || '';
                             var cost_up = data.domain_zones[i].cost_up || '';
-                            domain_zones += "<option value=\"" + zone + "\">" + zone + " (" + cost+ " " + js_lang_billing_currency + "/" + js_lang_hac_per_month + ")</option>";
+                            domain_zones += "<option value=\"" + zone + "\">" + zone + " (" + cost+ " " + js_lang_billing_currency + "/" + js_domain_one_year + ")</option>";
                             domain_update_cost[zone] = cost_up;
                         }
                     }

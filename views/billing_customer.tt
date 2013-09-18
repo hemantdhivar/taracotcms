@@ -128,6 +128,13 @@
       <span id="domain_edit_form_error_text"></span>
     </div>
     <div id="form_controls_domain"> 
+      <div class="form-group ctrl-grp-domain" id="cg_domain_zone"> 
+        <label class="control-label col-lg-offset-2 col-lg-2" for="domain_zone">[== $lang->{domain_zone} =]&nbsp;<span class="required_field">*</span></label> 
+        <div class="col-lg-5">
+          <select class="form-control" id="domain_zone">
+          </select>
+        </div>
+      </div>      
       <div class="form-group ctrl-grp-domain" id="cg_domain_name"> 
         <label class="control-label col-lg-offset-2 col-lg-2" for="domain_name">[== $lang->{domain_name} =]&nbsp;<span class="required_field">*</span></label> 
         <div class="col-lg-8">
@@ -137,14 +144,7 @@
           </div>
           <p class="help-block"><small>[== $lang->{domain_name_hint} =]</small></p> 
         </div>
-      </div>      
-      <div class="form-group ctrl-grp-domain" id="cg_domain_zone"> 
-        <label class="control-label col-lg-offset-2 col-lg-2" for="domain_zone">[== $lang->{domain_zone} =]&nbsp;<span class="required_field">*</span></label> 
-        <div class="col-lg-5">
-          <select class="form-control" id="domain_zone">
-          </select>
-        </div>
-      </div>      
+      </div>            
       <div class="form-group">         
         <div class="col-lg-offset-4 col-lg-8 checkbox">
           <label class="control-label" for="use_default_nss">[== $lang->{local_name_servers} =]</label>
@@ -666,6 +666,7 @@
     var js_lang_no_history_records = "[== $lang->{no_history_records} =]"; 
     var js_lang_no_add_by_click = "[== $lang->{no_add_by_click} =]";
     var js_lang_hac_per_month = "[== $lang->{hac_per_month} =]"; 
+    var js_domain_one_year = "[== $lang->{domain_one_year} =]"; 
     var js_lang_history_hint = "[== $lang->{history_hint} =]";
     var js_lang_countries = "[== $lang->{countries} =]";
     var js_lang_form_error_invalid_amount = "[== $lang->{form_error_invalid_amount} =]";
