@@ -114,7 +114,7 @@
         </div>
         <div id="tab_email_form">
             <div class="alert alert-warning account_hint">[== $lang->{user_account_profile_email_warning} =]</div>
-            <div class="alert alert-danger hide" id="form_email_errors" style="display:none"></div>
+            <div class="alert alert-danger" id="form_email_errors" style="display:none"></div>
             <div class="row">
                 <div class="col-sm-12 col-md-12">
                     <div class="form-horizontal" id="emc_form_email" role="form">
@@ -138,7 +138,7 @@
                                 <input class="input-medium form-control" id="emc_password" type="password">
                             </div>
                         </div>
-                        <div class="hide form-group" id="cg_emc_new_password">
+                        <div class="form-group" id="cg_emc_new_password" style="display:none">
                             <label class="col-lg-2 control-label" for="emc_new_password">[== $lang->{user_register_password} =]&nbsp;<span class="red_asterisk">*</span></label>
                             <div class="col-lg-2">
                                 <input class="input-small form-control" id="emc_new_password" type="password">

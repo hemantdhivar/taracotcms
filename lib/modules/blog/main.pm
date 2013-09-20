@@ -643,14 +643,7 @@ post '/post/process' => sub {
   if ($blog_data_html_cut=~/\[cut\]/i) {
     ($blog_data_html_cut) = split(/\[cut\]/i, $blog_data);
     $cut=1;
-  }
-  my $aubbc = taracot::AUBBC->new();
-  $aubbc->add_build_tag(
-        name     => 's',
-        pattern  => 'l',
-        type     => 3,
-        function => 'modules::blog::main::get_tag',
-  );
+  }  
   my $blog_data_html = $aubbc->do_all_ubbc($blog_data);
   $blog_data_html =~s/\[cut\]/ /igm;
   $blog_data_html_cut = $aubbc->do_all_ubbc($blog_data_html_cut);

@@ -165,13 +165,13 @@ $(document).ready(function () {
             });
         }
     }); // btn_submit_profile click
-    $('#btn_submit_email').bind('click', function () {
+    $('#btn_submit_email').click(function () {
         $('#cg_emc_new_email').removeClass('has-error');
         $('#cg_emc_password').removeClass('has-error');
         $('#form_email_errors').hide();
         $('#form_email_errors').html('');
         var form_errors = false;        
-        if ($('#emc_email').val() && (!$('#emc_new_password').val() || !$('#emc_new_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) || $('#emc_new_password').val() != $('#emc_new_password_repeat').val())) {
+        if (!$('#emc_email').val() && (!$('#emc_new_password').val() || !$('#emc_new_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) || $('#emc_new_password').val() != $('#emc_new_password_repeat').val())) {            
             $('#cg_emc_new_password').addClass('has-error');
             $('#form_email_errors').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_password_single + "<br/>");
             if (!form_errors) {
@@ -381,5 +381,8 @@ $(document).ready(function () {
             e.preventDefault();
             $('#btn_submit_password').click();
        }
+    });
+    $('#emc_new_email_verify').bind('copy paste', function (e) {
+       e.preventDefault();
     });
 }); // document.ready

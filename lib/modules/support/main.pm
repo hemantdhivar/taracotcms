@@ -450,8 +450,8 @@ post '/answer/save' => sub {
     };
     my $jevix = new taracot::jevix;
     $jevix->setConf($conf);
-    $ans_html = $jevix->process(\encode_utf8($ans))->{text};
-  }  
+    $ans_html = decode_utf8($jevix->process(\encode_utf8($ans))->{text});
+  } 
   if (length($ans_html) > 102400 || !$ans_html) {
     return '{"status":"0"}'; 
   }
@@ -592,7 +592,7 @@ post '/answer/specialist/save' => sub {
     };
     my $jevix = new taracot::jevix;
     $jevix->setConf($conf);
-    $ans_html = $jevix->process(\encode_utf8($ans))->{text};
+    $ans_html = decode_utf8($jevix->process(\encode_utf8($ans))->{text});
   }  
   if (length($ans_html) > 102400 || !$ans_html) {
     return '{"status":"0"}'; 
@@ -764,7 +764,7 @@ post '/ticket/save' => sub {
     };
     my $jevix = new taracot::jevix;
     $jevix->setConf($conf);
-    $msg_html = $jevix->process(\encode_utf8($msg))->{text};
+    $msg_html = decode_utf8($jevix->process(\encode_utf8($msg))->{text});
   }  
   if (length($msg_html) > 102400 || !$msg_html) {
     return '{"status":"0","errmsg":"'.$lang->{invalid_ticket_msg}.'","field":"msg"}'; 
