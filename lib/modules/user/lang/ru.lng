@@ -8,10 +8,11 @@ user_register_realname: Настоящее имя
 user_register_email: E-mail
 user_register_email_current: Текущий e-mail
 user_register_email_new: Новый e-mail
-user_register_email_new_hint: Пожалуйста, введите e-mail дважды для проверки, будьте внимательны!
+user_register_email_new_hint: Введите e-mail еще раз для проверки
 user_register_phone: Сотовый телефон
 user_register_password: Пароль
-user_register_password_hint: Не менее 8 символов, введите дважды для проверки
+user_register_password_hint1: Не менее 8 символов
+user_register_password_hint2: Введите еще раз для проверки
 user_register_captcha: Цифры с картинки
 user_register_submit: Подтвердить
 user_register_agreement_1: Я согласен с
@@ -97,3 +98,7 @@ social_google: Google
 social_yandex: Яндекс
 social_vk: ВКонтакте
 user_activiy_restricted_till: Аккаунт пользователя частично заблокирован по
+user_register_password_hint: Вы можете изменить пароль для входа на сайта, используя форму, расположенную ниже.
+user_new_password: Новый пароль
+user_realname_hint: Пример&#58;&nbsp;Василий Пупкин
+user_cellphone_hint: Код страны + телефон, например&#58;&nbsp;7 (921) 123-4567

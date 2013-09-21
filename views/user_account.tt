@@ -51,34 +51,41 @@
         <div class="alert alert-success" id="form_profile_success" style="display:none">[== $lang->{user_account_profile_saved} =]</div>
         <div id="tab_profile_form">
             <div class="row">
-                <div class="col-sm-10 col-md-10">
+                <div class="col-sm-10 col-md-10 col-sm-10">
                     <form class="form-horizontal" role="form">
                       <div class="form-group" id="cg_pro_realname">
                         <label for="pro_realname" class="col-lg-2 control-label">[== $lang->{user_register_realname} =]</label>
-                        <div class="col-lg-4">
+                        <div class="col-lg-4 col-md-4">
                           <input type="text" class="form-control" id="pro_realname" />
+                          <span class="help-block">[== $lang->{user_realname_hint} =]</span>
                         </div>
                       </div>
                       <div class="form-group" id="cg_pro_phone">
                         <label for="pro_phone" class="col-lg-2 control-label">[== $lang->{user_register_phone} =]</label>
-                        <div class="col-lg-3">
-                          <input type="text" class="form-control" id="pro_phone" />
+                        <div class="col-lg-3 col-md-3">
+                          <div class="input-group">  
+                              <span class="input-group-addon"><b>+</b></span>
+                              <input type="text" class="form-control" id="pro_phone" />
+                          </div>
+                          <span class="help-block">[== $lang->{user_cellphone_hint} =]</span>
                         </div>
                       </div>
                       <div class="form-group" id="cg_pro_password">
-                        <label for="pro_password" class="col-lg-2 control-label">[== $lang->{user_register_password} =]&nbsp;<span class="red_asterisk">*</span></label>
-                        <div class="col-lg-2">
+                        <div style="margin-top:10px">
+                        <label for="pro_password" class="col-lg-2 col-md-2 control-label">[== $lang->{user_register_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                        <div class="col-lg-2 col-md-2">
                           <input type="password" class="form-control" id="pro_password" />
+                        </div>
                         </div>
                       </div>
                       <div class="form-group">
-                       <div class="col-lg-offset-2 col-lg-10">
+                       <div class="col-lg-offset-2 col-lg-10" style="margin-top:20px">
                           <span class="btn btn-primary" id="btn_submit_profile">[== $lang->{user_account_save} =]</span>
                         </div>
                       </div>  
                     </form>
                 </div>
-                <div class="col-sm-2 col-md-2" style="text-align:center">
+                <div class="col-sm-2 col-md-2 col-sm-2 col-xs-2" style="text-align:center">
                     <div id="avatar_profile_wrap">
                         <div id="avatar_loading" style="display:none">
                             <div id="floatingCirclesG">
@@ -119,35 +126,41 @@
                 <div class="col-sm-12 col-md-12">
                     <div class="form-horizontal" id="emc_form_email" role="form">
                         <div class="form-group" id="cg_emc_email">
-                            <label class="col-lg-2 control-label" for="emc_email">[== $lang->{user_register_email_current} =]</label>
-                            <div class="col-lg-3">
+                            <label class="col-lg-2 col-md-2 control-label" for="emc_email">[== $lang->{user_register_email_current} =]</label>
+                            <div class="col-lg-3 col-md-3">
                                 <input id="emc_email" class="uneditable-input form-control" disabled="disabled" value="[== $auth_data->{email} =]" type="text">
                             </div>                            
                         </div>
                         <div class="form-group" id="cg_emc_new_email">
-                            <label class="col-lg-2 control-label" for="emc_new_email">[== $lang->{user_register_email_new} =]&nbsp;<span class="red_asterisk">*</span></label>
-                            <div class="col-lg-3">
-                                <input class="form-control" id="emc_new_email" type="text">
-                                <input class="form-control" style="margin-top:5px" id="emc_new_email_verify" type="text">
-                                <span class="help-block">[== $lang->{user_register_email_new_hint} =]</span>
-                            </div>                            
+                            <label class="col-lg-2 col-md-2 control-label" for="emc_new_email">[== $lang->{user_register_email_new} =]&nbsp;<span class="red_asterisk">*</span></label>
+                                <div class="col-lg-3 col-md-3">
+                                    <input class="form-control" id="emc_new_email" type="text">                                    
+                                    <span class="help-block"></span>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <input class="form-control" id="emc_new_email_verify" type="text">
+                                    <span class="help-block">[== $lang->{user_register_email_new_hint} =]</span>
+                                </div>                                
                         </div>
                         <div class="form-group" id="cg_emc_password">
-                            <label class="col-lg-2 control-label" for="emc_password">[== $lang->{user_account_current_password} =]&nbsp;<span class="red_asterisk">*</span></label>
-                            <div class="col-lg-2">
+                            <label class="col-lg-2 col-md-2 control-label" for="emc_password">[== $lang->{user_account_current_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                            <div class="col-lg-2 col-md-2">
                                 <input class="input-medium form-control" id="emc_password" type="password">
                             </div>
                         </div>
                         <div class="form-group" id="cg_emc_new_password" style="display:none">
-                            <label class="col-lg-2 control-label" for="emc_new_password">[== $lang->{user_register_password} =]&nbsp;<span class="red_asterisk">*</span></label>
-                            <div class="col-lg-2">
+                            <label class="col-lg-2 col-md-2 control-label" for="emc_new_password">[== $lang->{user_new_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                            <div class="col-lg-2 col-md-2">
                                 <input class="input-small form-control" id="emc_new_password" type="password">
+                                <span class="help-block"></span>
+                            </div>    
+                            <div class="col-lg-2 col-md-2">    
                                 <input class="input-small form-control" id="emc_new_password_repeat" type="password">
-                                <span class="help-block">[== $lang->{user_register_password_hint} =]</span>
+                                <span class="help-block">[== $lang->{user_register_password_hint2} =]</span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-lg-offset-2 col-lg-10">
+                            <div class="col-lg-offset-2 col-lg-10 col-md-offset-2 col-md-10" style="margin-top:20px">
                                 <button class="btn btn-primary" id="btn_submit_email">[== $lang->{user_account_save} =]</button>
                             </div>
                         </div>
@@ -157,32 +170,35 @@
         </div>
     </div> 
     <div class="tab-pane" id="tab_password">
-        <div class="account_hint" id="profile_form_hint_2"></div>
+        <div class="alert alert-warning" style="margin-top:10px">[== $lang->{user_register_password_hint} =]</div>
         <div id="tab_password_ajax" class="alert alert-info" style="display:none">
             <img src="/images/white_loading.gif" alt="" height="16" width="16">&nbsp;&nbsp;[== $lang->{user_register_processing} =]
         </div>
-        <div id="tab_password_form">
+        <div id="tab_password_form">            
             <div class="alert alert-danger account_hint" style="display:none" id="form_password_errors"></div>
             <div class="alert alert-success account_hint" style="display:none" id="form_password_success">[== $lang->{user_account_password_saved} =]</div>
             <div class="row">
-                <div class="col-sm-12 col-md-12">
+                <div class="col-lg-12 col-md-12">
                     <div class="form-horizontal" id="pwd_form_password">
                         <div class="form-group" id="cg_pwd_password">
-                            <label class="control-label col-lg-2 control-label" for="pwd_password">[== $lang->{user_register_password} =]&nbsp;<span class="red_asterisk">*</span></label>
-                            <div class="col-lg-2">
+                            <label class="control-label col-lg-2 col-md-2 control-label" for="pwd_password">[== $lang->{user_register_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                            <div class="col-lg-2 col-md-2">
                                 <input class="input-small form-control" id="pwd_password" type="password">
-                                <input class="input-small form-control" style="margin-top:5px" id="pwd_password_repeat" type="password">
-                                <span class="help-block">[== $lang->{user_register_password_hint} =]</span>                                
+                                <span class="help-block">[== $lang->{user_register_password_hint1} =]</span>
+                            </div>    
+                            <div class="col-lg-2 col-md-2">
+                                <input class="input-small form-control" id="pwd_password_repeat" type="password">
+                                <span class="help-block">[== $lang->{user_register_password_hint2} =]</span>
                             </div>
                         </div>
                         <div class="form-group" id="cg_pwd_old_password">
-                            <label class="control-label col-lg-2 control-label" for="pwd_old_password">[== $lang->{user_account_current_password} =]&nbsp;<span class="red_asterisk">*</span></label>
-                            <div class="col-lg-2">
+                            <label class="control-label col-lg-2 col-md-2 control-label" for="pwd_old_password">[== $lang->{user_account_current_password} =]&nbsp;<span class="red_asterisk">*</span></label>
+                            <div class="col-lg-2 col-md-2">
                                 <input class="input-medium form-control" id="pwd_old_password" type="password">
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-lg-offset-2 col-lg-10">
+                            <div class="col-lg-offset-2 col-md-offset-2 col-lg-10 col-md-10" style="margin-top:20px">
                                 <button class="btn btn-primary" id="btn_submit_password">[== $lang->{user_account_save} =]</button>
                             </div>
                         </div>

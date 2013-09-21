@@ -8,10 +8,11 @@ user_register_realname: Real name
 user_register_email: E-mail
 user_register_email_current: Current e-mail
 user_register_email_new: New e-mail
-user_register_email_new_hint: Please type it twice to verify, be careful!
+user_register_email_new_hint: Please type it again to verify!
 user_register_phone: Cell phone
 user_register_password: Password
-user_register_password_hint: At least 8 characters, please repeat it to verify
+user_register_password_hint1: At least 8 characters
+user_register_password_hint2: Please repeat to verify
 user_register_captcha: 4 digits<br />on the picture
 user_register_submit: Submit
 user_register_agreement_1: I accept the
@@ -100,3 +101,7 @@ user_groups: Groups
 user_groups_blog_post: Blog Poster
 user_groups_blog_moderator: Blog Moderator
 user_activiy_restricted_till: User account restricted till
+user_register_password_hint: You can change your password using the form below. Please be sure to use the password you can remember
+user_new_password: New password
+user_realname_hint: Example&#58;&nbsp;John Doe
+user_cellphone_hint: Country code + phone, example&#58;&nbsp;1 (921) 123-4567

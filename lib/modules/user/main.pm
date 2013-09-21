@@ -7,6 +7,7 @@ use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use Date::Format;
 use taracot::fs;
+use Encode; 
 
 # Configuration
 
@@ -359,13 +360,7 @@ post '/password/process' => sub {
     return $json_xs->encode(\%res); 
   }
   # first wave validations
-  my $username=lc param('pwd_username') || '';
   my $email=lc param('pwd_email') || '';
-  if ($username !~ /^[A-Za-z0-9_\-]{1,100}$/) { 
-    $res{status}=0; 
-    push @errors, $lang->{user_register_error_username};
-    push @fields, 'username';  
-  }
   if ($email !~ /^([a-z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-z0-9\-]+\.)+))([a-z]{2,4}|[0-9]{1,3})(\]?)$/ || length($email) > 80) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_email};
@@ -378,24 +373,23 @@ post '/password/process' => sub {
   }
   # second wave validations
   my $db_data;
-  $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, email => $email, status => 1 });
+  $db_data = database->quick_select(config->{db_table_prefix}.'_users', { email => $email, status => 1 });
   if (!$db_data->{id}) {
     $res{status}=0; 
     push @errors, $lang->{user_register_error_user_not_exists}; 
-    push @fields, 'username';
     push @fields, 'email';
     $res{errors}=\@errors;
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
   }
   my $verification=md5_hex(config->{salt}.time.rand);
-  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => 'pwd_'.$verification, lastchanged => time });
-  $db_data= &taracot::_load_settings('site_title', $_current_lang);  
-  my $activation_url = request->uri_base().'/user/password/reset/'.$username.'/'.$verification;
-  my $body = template 'user_mail_password_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
+  database->quick_update(config->{db_table_prefix}.'_users', { email => $email }, { verification => 'pwd_'.$verification, lastchanged => time });
+  my $pg_data= &taracot::_load_settings('site_title', $_current_lang);  
+  my $activation_url = request->uri_base().'/user/password/reset/'.$db_data->{username}.'/'.$verification;
+  my $body = template 'user_mail_password_'.$_current_lang, { site_title => encode_entities_numeric($pg_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
   email {
       to      => $email,
-      subject => $lang->{user_register_email_subj}.' '.$db_data->{site_title},
+      subject => $lang->{user_register_email_subj}.' '.$pg_data->{site_title},
       body    => $body,
       type    => 'html',
       headers => { "X-Accept-Language" => $_current_lang }
@@ -687,12 +681,12 @@ post '/account/password/process' => sub {
   # first wave validations
   my $password=param('pwd_password') || '';
   my $password_old=param('pwd_old_password') || '';
-  if ($auth->{password_unset} ne 1 && $password_old !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+  if ($auth->{password_unset} ne 1 && $password_old !~ /^.{5,100}$/) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_single};
     push @fields, 'old_password';  
   }  
-  if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
+  if ($password !~ /^.{5,100}$/) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_multi};
     push @fields, 'password';  
@@ -709,7 +703,7 @@ post '/account/password/process' => sub {
     return $json_xs->encode(\%res);
   }
   # second wave validations
-  $password_old = md5_hex(config->{salt}.$password_old);
+  $password_old = md5_hex(encode_utf8(config->{salt}.$password_old));
   my $db_data_1  = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id} });
   if (!$db_data_1->{id}) { 
     $res{status}=0; 
@@ -728,7 +722,7 @@ post '/account/password/process' => sub {
     return $json_xs->encode(\%res);
   }
   # success  
-  $password = md5_hex(config->{salt}.$password);
+  $password = md5_hex(encode_utf8(config->{salt}.$password));
   database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { password => $password, password_unset => 0, lastchanged => time });   
   return $json_xs->encode(\%res);
 };

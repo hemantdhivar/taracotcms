@@ -8,10 +8,11 @@ user_register_realname: Realname
 user_register_email: E-Mail
 user_register_email_current: Aktuelle E-Mailadresse
 user_register_email_new: Neue E-Mailadresse
-user_register_email_new_hint: Versuchen Sie es bitte zur Überprüfung zweimal, seien Sie sorgfältig!
+user_register_email_new_hint: Machen Sie es bitte zur Überprüfung nochmals
 user_register_phone: Handynummer
 user_register_password: Passwort
-user_register_password_hint: Mindestens 8 Zeichen, wiederholen Sie es bitte zur Überprüfung
+user_register_password_hint1: Mindestens 8 Zeichen
+user_register_password_hint2: Wiederholen Sie es bitte zur Überprüfung
 user_register_captcha: 4 Ziffern<br />im Bild
 user_register_submit: Senden
 user_register_agreement_1: Ich akzeptiere 
@@ -97,3 +98,7 @@ social_google: Google
 social_yandex: Yandex
 social_vk: VKontakte
 user_activiy_restricted_till: Benutzerkonto ist beschränkt bis
+user_register_password_hint: You can change your password using the form below. Please be sure to use the password you can remember
+user_new_password: Neues Passwort
+user_realname_hint: Beispiel&#58;&nbsp;Max Mustermann
+user_cellphone_hint: Länderkennzeichen + Telefonnummer, Beispiel&#58;&nbsp;49 (146) 123-4567

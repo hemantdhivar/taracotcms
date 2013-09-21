@@ -265,7 +265,7 @@ $(document).ready(function () {
         $('#form_password_errors').hide();
         $('#form_password_errors').html('');
         var form_errors = false;
-        if (!$('#pwd_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{8,100}$/) || $('#pwd_password').val() != $('#pwd_password_repeat').val()) {
+        if (!$('#pwd_password').val().match(/^.{8,100}$/) || $('#pwd_password').val() != $('#pwd_password_repeat').val()) {
             $('#cg_pwd_password').addClass('has-error');
             $('#form_password_errors').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_password_multi + "<br/>");
             if (!form_errors) {
@@ -273,7 +273,7 @@ $(document).ready(function () {
             }
             form_errors = true;
         }
-        if (password_unset != 1 && !$('#pwd_old_password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/)) {
+        if (password_unset != 1 && !$('#pwd_old_password').val().match(/^.{5,100}$/)) {
             $('#cg_pwd_old_password').addClass('has-error');
             $('#form_password_errors').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_password_single + "<br/>");
             if (!form_errors) {

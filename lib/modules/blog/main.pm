@@ -644,6 +644,7 @@ post '/post/process' => sub {
     ($blog_data_html_cut) = split(/\[cut\]/i, $blog_data);
     $cut=1;
   }  
+  my $aubbc = taracot::AUBBC->new();
   my $blog_data_html = $aubbc->do_all_ubbc($blog_data);
   $blog_data_html =~s/\[cut\]/ /igm;
   $blog_data_html_cut = $aubbc->do_all_ubbc($blog_data_html_cut);

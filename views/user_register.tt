@@ -52,7 +52,7 @@
         <div class="col-lg-2">
             <input type="password" class="form-control" id="reg_password">
             <input type="password" class="form-control" style="margin-top:5px" id="reg_password_repeat">
-            <span class="help-block">[== $lang->{user_register_password_hint} =]</span>
+            <span class="help-block">[== $lang->{user_register_password_hint2} =]</span>
         </div>
     </div>
     <div class="form-group" id="cg_reg_captcha">

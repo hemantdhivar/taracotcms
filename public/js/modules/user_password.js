@@ -20,7 +20,7 @@ function submitOnEnter(e) {
     }
 }
 // bind enter keys to form fields
-$('#pwd_username,#pwd_email,#pwd_captcha').bind('keypress', function (e) {
+$('#pwd_email,#pwd_captcha').bind('keypress', function (e) {
     if (submitOnEnter(e)) {
         $('#btn_submit').click();
     }
@@ -28,19 +28,13 @@ $('#pwd_username,#pwd_email,#pwd_captcha').bind('keypress', function (e) {
 function reloadCaptcha() {
     $('#captcha_shown').attr('src', '/captcha_img?' + Math.random());
 }
-$('#pwd_username').focus();
+$('#pwd_email').focus();
 $('#btn_submit').bind('click', function () {
-    $('#cg_pwd_username').removeClass('error');
     $('#cg_pwd_email').removeClass('error');
     $('#cg_pwd_captcha').removeClass('error');
     $('#form_error_msg').hide();
     $('#form_error_msg_text').html('');
-    var form_errors = false;
-    if (!$('#pwd_username').val().match(/^[A-Za-z0-9_\-]{3,100}$/)) {
-        $('#cg_pwd_username').addClass('error');
-        $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_username + "<br/>");
-        form_errors = true;
-    }
+    var form_errors = false;    
     if (!$('#pwd_email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
         $('#cg_pwd_email').addClass('error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_email + "<br/>");
@@ -64,7 +58,6 @@ $('#btn_submit').bind('click', function () {
             type: 'POST',
             url: '/user/password/process',
             data: {
-                pwd_username: $('#pwd_username').val(),
                 pwd_email: $('#pwd_email').val(),
                 pwd_captcha: $('#pwd_captcha').val()
             },
