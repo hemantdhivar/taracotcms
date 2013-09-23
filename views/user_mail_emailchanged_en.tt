@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>Registration on: [== $site_title =]</title>
+	<title>E-mail address change on: [== $site_title =]</title>
 	<style type="text/css">
 		#outlook a {padding:0;}
 		body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:14px;}
@@ -40,12 +40,10 @@
 			</td></tr>
 			</table>
 			<br />
-			Thank you for registering on <b>[== $site_title =]</b>!<br /><br />
-			Now you need to activate your account. Please browse to the following link to finish your registration process:
+			Your e-mail address has been changed (or will be changed as soon you use the activation link sent to your new e-mail address).<br /><br />
+			If you to <b>undo the e-mail change</b>, please use the following link:
 			<br /><br />
 			<a href="[== $activation_url =]">[== $activation_url =]</a>
-			<br /><br />
-			If you didn't register anything, please just ignore this mail.
 			<br /><br />
 			Thank you!
 		</td>

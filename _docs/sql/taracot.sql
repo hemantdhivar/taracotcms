@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 16, 2013 at 07:19 PM
+-- Generation Time: Sep 23, 2013 at 05:21 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -296,12 +296,13 @@ CREATE TABLE `taracot_blog_posts` (
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
 
 -- 
 -- Dumping data for table `taracot_blog_posts`
 -- 
 
+INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'user', 'test1', 1, 'Test', 'Test post', 1379678788, '4f043e973014aa5fbf7af9af50bcdb50', '[img width=484,height=426]http://habr.habrastorage.org/post_images/015/db5/df7/015db5df78926f182640cefa14e5de7a.jpg[/img]', '<img src="http://habr.habrastorage.org/post_images/015/db5/df7/015db5df78926f182640cefa14e5de7a.jpg" width="484" height="426" alt="" border="0" /> ', 0, '<img src="http://habr.habrastorage.org/post_images/015/db5/df7/015db5df78926f182640cefa14e5de7a.jpg" width="484" height="426" alt="" border="0" /> ', 1, 0, '127.0.0.1', 1, 0, 1, 1379678788);
 
 -- --------------------------------------------------------
 
@@ -465,7 +466,7 @@ INSERT INTO `taracot_settings` VALUES (13, 'billing_service_cost_srv1', '200', '
 INSERT INTO `taracot_settings` VALUES (14, 'billing_payment_webmoney', 'Webmoney', '<p>Help text for webmoney</p>\n', 'en', 1377512939);
 INSERT INTO `taracot_settings` VALUES (15, 'billing_payment_robokassa', 'Robokassa', '<p>Help text for Robokassa</p>\n', 'en', 1377513065);
 INSERT INTO `taracot_settings` VALUES (16, 'billing_currency', 'RUR', '', 'en', 1377513285);
-INSERT INTO `taracot_settings` VALUES (17, 'support_topics', 'hosting,Hosting problem;design,Web design question;billing,Billing questions', '', 'en', 1378066780);
+INSERT INTO `taracot_settings` VALUES (17, 'support_topics', 'hosting,Hosting problem;design,Web design question;billing,Billing questions;account,My Account', '', 'en', 1379674523);
 INSERT INTO `taracot_settings` VALUES (18, 'support_mail', 'billing=xtreme@re-hash.ru, billing@re-hash.ru;hosting=hosting@rh1.ru;all=all@rh1.ru', '', '', 1378123809);
 
 -- --------------------------------------------------------
@@ -502,15 +503,15 @@ INSERT INTO `taracot_support` VALUES (6, 'xtreme', 1378120855, 'hosting', 'Let''
 INSERT INTO `taracot_support` VALUES (7, 'xtreme', 1378111832, 'hosting', 'hey hey', 'hey hey', 0, 0, 'xtreme', '04f9c51a0070f3456eb7682d11449c3e', NULL);
 INSERT INTO `taracot_support` VALUES (8, 'xtreme', 1378120751, 'hosting', 'The last one', 'OK Computer', 0, 2, 'xtreme', 'cc33c5eaa06aeaf631e4c7dcf08eb533', 1378120751);
 INSERT INTO `taracot_support` VALUES (9, 'xtreme', 1378112590, 'hosting', 'Презентация Samsung и Sony', 'И Samsung, и&nbsp;Sony уже давно объявили о&nbsp;том, что намереваются провести презентации своих новинок в&nbsp;один день&nbsp;&mdash; 4 сентября в&nbsp;Берлине, но&nbsp;до сегодняшнего дня мы не&nbsp;могли и&nbsp;предположить, когда именно Galaxy Note III и&nbsp;Xperia Z1 (это название получило дополнительное подтверждение) можно будет купить в&nbsp;ритейле. Даты выхода в&nbsp;продажу смартпэда Samsung и&nbsp;коммуникатора Sony, к&nbsp;счастью, оказались разными. Первым жители Великобритании увидят Samsung Galaxy Note III, а&nbsp;за ним, через&nbsp;10 дней, последует и&nbsp;Sony Xperia Z1, релиз которого намечен на&nbsp;24 сентября. Зарубежный ресурс Engadget, который и&nbsp;получил фотографию, размещённую выше, отмечает, что нет никакой точно информации, что Three UK получит устройства первым, а, значит, каждый из&nbsp;аппаратов может выйти в&nbsp;продажу и&nbsp;раньше. Но если в&nbsp;случае с&nbsp;устройством японской компании это предположение не&nbsp;лишено смысла, то южнокорейский производитель, как&nbsp;и в&nbsp;случае с&nbsp;Galaxy S IV, скорее всего, начнёт продажи смартпэда одновременно во&nbsp;многих странах&hellip; Что ж, было бы интересно увидеть Galaxy Note III в&nbsp;нашей стране уже меньше, чем через&nbsp;месяц, но, всё же, &laquo;дождёмся для&nbsp;начала его анонса&raquo;.', 0, 0, 'xtreme', 'dfad0bcb6020236675fe957512c87bf7', 1378119271);
-INSERT INTO `taracot_support` VALUES (10, 'user', 1378122896, 'design', 'Ни хрена не работает', 'И какого, спрашивается, чорта?<br />\n<br />\n<img src="http://i.blog.fontanka.ru/photos/2013/09/220x220_dLR16SGX1B1HXZ7i9TV9.jpg" width="90" height="60" alt="" border="0" /> ', 1, 1, 'xtreme', '4d3dfa98e0243018e85ef48dc93ddeab', 1378122896);
+INSERT INTO `taracot_support` VALUES (10, 'user', 1379680129, 'design', 'Ни хрена не работает', 'И какого, спрашивается, чорта?<br />\n<br />\n<img src="http://i.blog.fontanka.ru/photos/2013/09/220x220_dLR16SGX1B1HXZ7i9TV9.jpg" width="90" height="60" alt="" border="0" /> ', 0, 1, 'user', '4d3dfa98e0243018e85ef48dc93ddeab', 1379680182);
 INSERT INTO `taracot_support` VALUES (11, 'xtreme', 1378123597, 'hosting', 'OK', 'Hellow', 0, 0, 'xtreme', '0547bca99c4c06f4f614514e3bd2b4e7', NULL);
 INSERT INTO `taracot_support` VALUES (12, 'xtreme', 1378123699, 'hosting', 'OK Computer', 'Helloooow', 0, 0, 'xtreme', '8ddbecace17618bc4942cb3a54c34e3e', NULL);
 INSERT INTO `taracot_support` VALUES (13, 'xtreme', 1378123720, 'billing', 'Yep', 'yep', 0, 0, 'xtreme', '9348ae7851cf3ba798d9564ef308ec25', NULL);
 INSERT INTO `taracot_support` VALUES (14, 'xtreme', 1378123877, 'hosting', 'OK All', 'yeeeep', 0, 0, 'xtreme', 'e7fbd5c08a4fbec53bff0ff5ba49fc07', NULL);
 INSERT INTO `taracot_support` VALUES (15, 'xtreme', 1378123908, 'hosting', 'Another one', 'Hey hey hey', 0, 0, 'xtreme', '7fc8d5ba5078256a5280aba339cbb0b0', NULL);
 INSERT INTO `taracot_support` VALUES (16, 'xtreme', 1378123936, 'hosting', 'd2', 'd2', 0, 0, 'xtreme', 'b25b0651e4b6e887e5194135d3692631', NULL);
-INSERT INTO `taracot_support` VALUES (17, 'xtreme', 1378123951, 'billing', 'BQ', 'BBQ', 0, 0, 'xtreme', '709cf76964bf6b2149e7a8040fa24cf5', NULL);
-INSERT INTO `taracot_support` VALUES (18, 'xtreme', 1378125358, 'design', 'WDQ', 'WDQ', 0, 0, 'xtreme', '58afb946581d678ab24c42be9a309cda', 1378125358);
+INSERT INTO `taracot_support` VALUES (17, 'xtreme', 1378123951, 'billing', 'BQ', 'BBQ', 0, 0, 'xtreme', '709cf76964bf6b2149e7a8040fa24cf5', 1379931647);
+INSERT INTO `taracot_support` VALUES (18, 'xtreme', 1378125358, 'design', 'WDQ', 'WDQ', 0, 0, 'xtreme', '58afb946581d678ab24c42be9a309cda', 1379931644);
 
 -- --------------------------------------------------------
 
@@ -526,7 +527,7 @@ CREATE TABLE `taracot_support_ans` (
   `smsg` text,
   `smsg_hash` varchar(32) default '',
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
+) ENGINE=MyISAM AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 AUTO_INCREMENT=43 ;
 
 -- 
 -- Dumping data for table `taracot_support_ans`
@@ -555,6 +556,15 @@ INSERT INTO `taracot_support_ans` VALUES (30, 10, 'xtreme', 1378122834, 'Ну ч
 INSERT INTO `taracot_support_ans` VALUES (31, 10, 'xtreme', 1378122865, 'Ну чуваааааааак, как это - не работает?!', '79ef0944c5ed8a824c45d333ab45ff86');
 INSERT INTO `taracot_support_ans` VALUES (32, 10, 'xtreme', 1378122896, 'Ну чуваааааааак, как это - не работает?!!', 'ec1b77d231a0824b064fc5e6ff602c3f');
 INSERT INTO `taracot_support_ans` VALUES (33, 18, 'xtreme', 1378125358, 'Пейшу ответ.', 'a2a97c35be4b3d5608170882b5cd53a9');
+INSERT INTO `taracot_support_ans` VALUES (34, 10, 'user', 1379677326, 'Тест.', '35c07b0445bba8d5035d56b98995de32');
+INSERT INTO `taracot_support_ans` VALUES (35, 10, 'user', 1379677334, 'Ну чуваааааааак, как это - не работает?!! Ну чуваааааааак, как это - не работает?!!<br />\n', '2ed10c9ccc915f823bb68ae06edc8fd2');
+INSERT INTO `taracot_support_ans` VALUES (36, 10, 'user', 1379677344, 'Как бы мне отловить этот факин юникод глюк', 'ec920dc26da3fc0ccb7ac98cda23465f');
+INSERT INTO `taracot_support_ans` VALUES (37, 10, 'user', 1379677899, 'Тут однозначно русский текст', 'f63ab1fe29b9ad09ede0f28af62e98a1');
+INSERT INTO `taracot_support_ans` VALUES (38, 10, 'user', 1379677905, 'А тут hren poymesh', '052fad875dde1e1eaba13bcaea6488fb');
+INSERT INTO `taracot_support_ans` VALUES (39, 10, 'user', 1379677922, 'Что за&nbsp;фигня&nbsp;&mdash; стоит мне только ввести короткий русский текст, как&nbsp;он не&nbsp;определяется, как&nbsp;русский', 'a6c6f41eec6e48d72b1b25109f29a06d');
+INSERT INTO `taracot_support_ans` VALUES (40, 10, 'user', 1379677967, 'Ð¢ÐµÐ¼ Ð½Ðµ&nbsp;Ð¼ÐµÐ½ÐµÐµ, ÑÐ¶Ðµ Ð½Ð°&nbsp;Ð½Ð°ÑÐ°Ð»ÑÐ½Ð¾Ð¼ ÑÑÐ°Ð¿Ðµ Ð¼Ð¾Ð¶Ð½Ð¾ Ð¿ÑÐ¸Ð¼ÐµÑÐ½Ð¾ ÑÐ¾ÑÑÐ°Ð²Ð¸ÑÑ ÑÐ¼ÐµÑÑ ÑÐ°Ð·ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð¿ÑÐ¾ÐµÐºÑÐ°. Ð­ÑÐ¾ ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑÑ Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½ÑÐ¼ Ð·Ð°&nbsp;ÑÑÐµÑ ÑÐ¾Ð³Ð¾, ÑÑÐ¾ \nÑÐ°Ð·ÑÐ°Ð±Ð°ÑÑÐ²Ð°ÐµÐ¼Ð¾Ðµ Ð½Ð°Ð¼Ð¸ Ð¿ÑÐ¾Ð³ÑÐ°Ð¼Ð¼Ð½Ð¾Ðµ Ð¾Ð±ÐµÑÐ¿ÐµÑÐµÐ½Ð¸Ðµ Ð¸Ð¼ÐµÐµÑ Ð¼Ð¾Ð´ÑÐ»ÑÐ½ÑÑ ÑÑÑÑÐºÑÑÑÑ, \nÑ.Ðµ. ÐÑ Ð¿Ð¾Ð´ÐºÐ»ÑÑÐ°ÐµÑÐµ Ðº&nbsp;ÐÐ°ÑÐµÐ¼Ñ ÑÐ°Ð¹ÑÑ ÑÐ¾Ð»ÑÐºÐ¾ ÑÐµ ÑÑÐ½ÐºÑÐ¸Ð¸, ÐºÐ¾ÑÐ¾ÑÑÐµ Ð²Ð°Ð¼ \nÐ½ÐµÐ¾Ð±ÑÐ¾Ð´Ð¸Ð¼Ñ.', '1443daccbbfe2c082d36f341d747eeb0');
+INSERT INTO `taracot_support_ans` VALUES (41, 10, 'user', 1379677987, 'Тем не&nbsp;менее, уже на&nbsp;начальном этапе можно примерно составить смету разработки проекта. Это становится возможным за&nbsp;счет того, что \nразрабатываемое нами программное обеспечение имеет модульную структуру, \nт.е. Вы подключаете к&nbsp;Вашему сайту только те функции, которые вам \nнеобходимы.', '25e82a578a054a384cf990bd2e6cae2b');
+INSERT INTO `taracot_support_ans` VALUES (42, 10, 'user', 1379680129, '<img src="http://habr.habrastorage.org/post_images/710/101/bca/710101bcaf13c69d4189dafb53165f01.gif" width="90" height="60" alt="" border="0" /> ', '9484cad0762d33a4feec2e39bad79423');
 
 -- --------------------------------------------------------
 
@@ -569,6 +579,8 @@ CREATE TABLE `taracot_users` (
   `password_unset` tinyint(1) NOT NULL default '0',
   `realname` varchar(100) NOT NULL,
   `email` varchar(80) NOT NULL,
+  `email_save` varchar(80) default NULL,
+  `email_save_verification` varchar(32) default NULL,
   `phone` varchar(40) default NULL,
   `groups` varchar(255) default NULL,
   `status` tinyint(4) NOT NULL default '0',
@@ -586,5 +598,5 @@ CREATE TABLE `taracot_users` (
 -- Dumping data for table `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1378999113);
-INSERT INTO `taracot_users` VALUES (2, 'user', '0f5559ee359fba749e7e6638fcfdbbfb', 0, '', 'xtreme@rh1.ru', '1234567', '', 1, NULL, NULL, 'en', 1376731887, 0, 1378119910);
+INSERT INTO `taracot_users` VALUES (1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1379675238);
+INSERT INTO `taracot_users` VALUES (2, 'user', '1d88c84caa93404ecf250399bc1be5a0', 1, 'John Doe', '', NULL, NULL, '79217998111', '', 1, NULL, NULL, 'en', 1376731887, 0, 1379770337);

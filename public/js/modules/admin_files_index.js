@@ -128,6 +128,12 @@
      $('#btn_upload').click(function (e) {
          $('#files_table').hide();
          $('#files_upload').show();
+         $.history.push("upload_files");
          uploader.splice(0);
      });
  });
+ $.history.on('change', function(event, url, type) {
+    if (url == '') {       
+       $('#btn_upload_back').click(); 
+    }
+}).listen('hash');

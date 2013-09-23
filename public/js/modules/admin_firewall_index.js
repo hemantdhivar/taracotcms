@@ -305,6 +305,7 @@ $('#btn_abort').click(function () {
 });
 // Edit record
 function editData(id) {
+    $.history.push("edit_"+id);
     edit_id = id;
     $('#form_error_msg').hide();
     $('#data_overview').hide();
@@ -460,3 +461,8 @@ function handleDTAjaxError( xhr, textStatus, error ) {
     $.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');   
     dtable.fnProcessingIndicator( false );
 }
+$.history.on('change', function(event, url, type) {
+    if (url == '') {       
+       $('#btn_edit_cancel').click(); 
+    }
+}).listen('hash');

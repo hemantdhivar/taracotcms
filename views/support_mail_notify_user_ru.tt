@@ -31,7 +31,7 @@
 	<![endif]-->
 </head>
 <body>
-	<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
+	<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable" width="100%">
 	<tr>
 		<td>
 			<table width="100%" bgcolor="#444444" cellpadding="10" cellspacing="0">
@@ -45,7 +45,7 @@
 			<br /><br />
 			<a href="[== $support_url =]">[== $support_url =]</a>
 			<br /><br />
-			Пожалуйста, свяжитесь со службой поддержки, если у вас есть вопросы.
+			Если у Вас есть какие-либо вопросы, вы всегда можете связаться со службой поддержки.
 			<br /><br />
 			Спасибо!
 		</td>

@@ -1,6 +1,6 @@
 <h1>[== $lang->{user_register} =]</h1>
 <?pl if ($config->{auth_facebook_app_id} || $config->{auth_google_client_id} || $config->{auth_yandex_client_id} || $config->{auth_vk_client_id}) { ?>
-[== $lang->{user_social} =]:<br/><br/>
+<div id="social_auth">[== $lang->{user_social} =]:<br/><br/>
 <?pl } ?>
 <?pl if ($config->{auth_facebook_app_id}) { ?>
 <button type="button" class="btn btn-default btn-sm" onclick="location.href='https://www.facebook.com/dialog/oauth?client_id=[== $config->{auth_facebook_app_id} =]&redirect_uri=[== $config-> {auth_facebook_redirect_uri} =]&response_type=code&scope=email';"><i class="social-i-facebook"></i>&nbsp;[== $lang->{social_facebook} =]</button>&nbsp;
@@ -15,10 +15,10 @@
 <button type="button" class="btn btn-default btn-sm" onclick="location.href='https://oauth.vk.com/authorize?client_id=[== $config->{auth_vk_client_id} =]&redirect_uri=[== $config->{auth_vk_redirect_uri} =]&response_type=code';"><i class="social-i-vkontakte"></i>&nbsp;[== $lang->{social_vk} =]</button>&nbsp;
 <?pl } ?>
 <?pl if ($config->{auth_facebook_app_id} || $config->{auth_google_client_id} || $config->{auth_yandex_client_id} || $config->{auth_vk_client_id}) { ?>
-<br/><br/>
+<br/><br/></div>
 <?pl } ?>
 <span id="reg_form_hint">[== $lang->{user_register_hint} =]</span>
-<div class="alert alert-danger" id="form_error_msg" style="display:none">
+<div class="alert alert-danger" id="form_error_msg" style="display:none;margin-top:20px">
     <span id="form_error_msg_text"></span>
 </div> 
 <form class="form-horizontal" id="reg_form" role="form">

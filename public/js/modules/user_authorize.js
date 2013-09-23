@@ -38,6 +38,7 @@ $('#btn_submit').bind('click', function () {
     $('#cg_auth_password').removeClass('has-error');
     $('#cg_auth_captcha').removeClass('has-error');
     $('#form_error_msg').hide();
+    $('#social_auth').hide();
     $('#form_error_msg_text').html('');
     var form_errors = false;
     if (!$('#auth_login').val().match(/^[A-Za-z0-9_\-\.]{3,100}$/) && !$('#auth_login').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
@@ -58,6 +59,7 @@ $('#btn_submit').bind('click', function () {
     if (form_errors) {
         $('#form_error_msg').fadeIn(400);
         $('#form_error_msg').alert();
+        $('#social_auth').show();
         $(window).scrollTop($('#form_error_msg').position().top);
     } else {
         $('#auth_form').hide();
@@ -81,6 +83,7 @@ $('#btn_submit').bind('click', function () {
                         location.href = redirect;
                     }
                 } else {
+                    $('#social_auth').show();
                     if (data.errors) {
                         for (var i = 0; i < data.errors.length; i++) {
                             $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + data.errors[i] + "<br/>");
@@ -116,6 +119,7 @@ $('#btn_submit').bind('click', function () {
                 $('#auth_form').show();
                 $('#auth_form_hint').show();
                 $('#auth_form_ajax').hide();
+                $('#social_auth').show();
             }
         });
     }

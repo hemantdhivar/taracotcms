@@ -393,13 +393,13 @@
                 <div class="alert alert-danger" style="display:none" id="form_profile_error_msg">
                   <span id="form_profile_error_msg_text"></span>
                 </div>
-                <div class="alert alert-danger" style="display:none" id="form_profile_success_msg">
+                <div class="alert alert-success" style="display:none" id="form_profile_success_msg">
                   [== $lang->{profile_saved} =]
                 </div>
                 <div class="container">
                   <div class="form-horizontal">
                       <fieldset>
-                      <div class="form-group" id="cg_n1e">
+                      <div class="form-group taracot_profile_cg" id="cg_n1e">
                         <label class="control-label col-lg-2" for="n1e">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-3">
                           <input type="text" class="pr_input form-control" id="n1e">
@@ -408,7 +408,7 @@
                       </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_n2e">
+                        <div class="form-group taracot_profile_cg" id="cg_n2e">
                           <label class="control-label col-lg-2" for="n2e">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-3">
                             <input type="text" class="pr_input form-control" id="n2e">
@@ -417,7 +417,7 @@
                         </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_n3e">
+                        <div class="form-group taracot_profile_cg" id="cg_n3e">
                           <label class="control-label col-lg-2" for="n3e">[== $lang->{p_patronym_first_br} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-1">
                             <input type="text" class="pr_input form-control" id="n3e" style="text-align:center">
@@ -428,7 +428,7 @@
                   </div>
                   <div class="form-horizontal">
                       <fieldset>
-                      <div class="form-group" id="cg_country">
+                      <div class="form-group taracot_profile_cg" id="cg_country">
                         <label class="control-label col-lg-2" for="country">[== $lang->{p_country} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-3">
                           <select class="pr_input form-control" id="country"></select>
@@ -437,7 +437,7 @@
                       </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_city">
+                        <div class="form-group taracot_profile_cg" id="cg_city">
                           <label class="control-label col-lg-2" for="city">[== $lang->{p_city} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-4">
                             <input type="text" class="pr_input form-control" id="city">
@@ -446,7 +446,7 @@
                         </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_state">
+                        <div class="form-group taracot_profile_cg" id="cg_state">
                           <label class="control-label col-lg-2" for="state">[== $lang->{p_state} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-4">
                             <input type="text" class="pr_input form-control" id="state">
@@ -457,7 +457,7 @@
                   </div>
                   <div class="form-horizontal">
                       <fieldset>
-                          <div class="form-group" id="cg_postcode">
+                          <div class="form-group taracot_profile_cg" id="cg_postcode">
                             <label class="control-label col-lg-2" for="postcode">[== $lang->{p_postcode} =]&nbsp;<span class="required_field">*</span></label>
                             <div class="col-lg-2">
                               <input type="text" class="pr_input form-control" id="postcode">
@@ -466,7 +466,7 @@
                           </div>
                       </fieldset>
                       <fieldset>
-                          <div class="form-group" id="cg_addr">
+                          <div class="form-group taracot_profile_cg" id="cg_addr">
                             <label class="control-label col-lg-2" for="addr">[== $lang->{p_addr} =]&nbsp;<span class="required_field">*</span></label>
                             <div class="col-lg-6">
                               <input type="text" class="pr_input form-control" id="addr">
@@ -475,7 +475,7 @@
                           </div>
                       </fieldset>
                       <fieldset>
-                          <div class="form-group" id="cg_birth_date">
+                          <div class="form-group taracot_profile_cg" id="cg_birth_date">
                             <label class="control-label col-lg-2" for="birth_date">[== $lang->{p_birth_date} =]&nbsp;<span class="required_field">*</span></label>
                             <div class="col-lg-2">
                               <input type="text" class="pr_input form-control" id="birth_date">
@@ -486,7 +486,7 @@
                   </div>
                   <div class="form-horizontal">
                       <fieldset>
-                          <div class="form-group" id="cg_private">
+                          <div class="form-group taracot_profile_cg" id="cg_private">
                             <label class="control-label col-lg-2" for="private">[== $lang->{p_private} =]</label>
                             <div class="col-lg-4">
                               <input type="checkbox" class="pr_input" id="private" name="private" /> 
@@ -499,7 +499,7 @@
                 <hr/>                
                   <div class="form-horizontal">
                       <fieldset>
-                      <div class="form-group" id="cg_n1r">
+                      <div class="form-group taracot_profile_cg" id="cg_n1r">
                         <label class="control-label col-lg-2" for="n1r">[== $lang->{p_last_name} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-3">
                           <input type="text" class="pr_input form-control" id="n1r">
@@ -508,7 +508,7 @@
                       </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_n2r">
+                        <div class="form-group taracot_profile_cg" id="cg_n2r">
                           <label class="control-label col-lg-2" for="n2r">[== $lang->{p_first_name} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-3">
                             <input type="text" class="pr_input form-control" id="n2r">
@@ -517,7 +517,7 @@
                         </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_n3r">
+                        <div class="form-group taracot_profile_cg" id="cg_n3r">
                           <label class="control-label col-lg-2" for="n3r">[== $lang->{p_patronym} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-3">
                             <input type="text" class="pr_input form-control" id="n3r">
@@ -529,7 +529,7 @@
                   <div class="form-horizontal">
                     <div class="span9">
                       <fieldset>
-                      <div class="form-group" id="cg_passport">
+                      <div class="form-group taracot_profile_cg" id="cg_passport">
                         <label class="control-label col-lg-2" for="passport">[== $lang->{p_passport} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-6">
                           <input type="text" class="pr_input form-control" id="passport">
@@ -542,7 +542,7 @@
                   <div class="form-horizontal">
                     <div class="span9">
                       <fieldset>
-                      <div class="form-group" id="cg_addr_ru">
+                      <div class="form-group taracot_profile_cg" id="cg_addr_ru">
                         <label class="control-label col-lg-2" for="addr_ru">[== $lang->{p_addr_ru} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-7">
                           <input type="text" class="pr_input form-control" id="addr_ru">
@@ -557,7 +557,7 @@
                 <hr/>
                   <div class="form-horizontal">
                       <fieldset>
-                      <div class="form-group" id="cg_phone">
+                      <div class="form-group taracot_profile_cg" id="cg_phone">
                         <label class="control-label col-lg-2" for="phone">[== $lang->{p_phone} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-3">
                           <input type="text" class="pr_input form-control" id="phone">
@@ -566,7 +566,7 @@
                       </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_fax">
+                        <div class="form-group taracot_profile_cg" id="cg_fax">
                           <label class="control-label col-lg-2" for="fax">[== $lang->{p_fax} =]</label>
                           <div class="col-lg-3">
                             <input type="text" class="pr_input form-control" id="fax">
@@ -575,7 +575,7 @@
                         </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_email">
+                        <div class="form-group taracot_profile_cg" id="cg_email">
                           <label class="control-label col-lg-2" for="email">[== $lang->{p_email} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-4">
                             <input type="text" class="pr_input form-control" id="email">
@@ -590,7 +590,7 @@
                   <div class="form-horizontal">
                     <div class="span9">
                       <fieldset>
-                      <div class="form-group" id="cg_org_r">
+                      <div class="form-group taracot_profile_cg" id="cg_org_r">
                         <label class="control-label col-lg-2" for="org_r">[== $lang->{p_org_r} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-4">
                           <input type="text" class="pr_input form-control" id="org_r">
@@ -603,7 +603,7 @@
                   <div class="form-horizontal">
                     <div class="span9">
                       <fieldset>
-                      <div class="form-group" id="cg_org">
+                      <div class="form-group taracot_profile_cg" id="cg_org">
                         <label class="control-label col-lg-2" for="org">[== $lang->{p_org} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-4">
                           <input type="text" class="pr_input form-control" id="org">
@@ -615,7 +615,7 @@
                   </div>
                   <div class="form-horizontal">
                       <fieldset>
-                      <div class="form-group" id="cg_code">
+                      <div class="form-group taracot_profile_cg" id="cg_code">
                         <label class="control-label col-lg-2" for="code">[== $lang->{p_code} =]&nbsp;<span class="required_field">*</span></label>
                         <div class="col-lg-2">
                           <input type="text" class="pr_input form-control" id="code">
@@ -624,7 +624,7 @@
                       </div>
                       </fieldset>
                       <fieldset>
-                        <div class="form-group" id="cg_kpp">
+                        <div class="form-group taracot_profile_cg" id="cg_kpp">
                           <label class="control-label col-lg-2" for="kpp">[== $lang->{p_kpp} =]&nbsp;<span class="required_field">*</span></label>
                           <div class="col-lg-2">
                             <input type="text" class="pr_input form-control" id="kpp">

@@ -75,9 +75,10 @@ $(document).ready(function () {
             }
         });
     }
-    $('#tree_btn_load').click(
+    $('#tree_btn_load').click(    
 
     function () {
+        $.history.push("edit_map");
         $("#tree_lang").hide();
         $("#tree_editor").show();
         initTree();
@@ -244,3 +245,9 @@ $(document).ready(function () {
         }
     });
 });
+
+$.history.on('change', function(event, url, type) {
+    if (url == '') {       
+       $('#tree_btn_cancel').click(); 
+    }
+}).listen('hash');

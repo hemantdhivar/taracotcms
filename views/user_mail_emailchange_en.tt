@@ -31,7 +31,7 @@
 	<![endif]-->
 </head>
 <body>
-	<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
+	<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable" width="100%">
 	<tr>
 		<td>
 			<table width="100%" bgcolor="#444444" cellpadding="10" cellspacing="0">
@@ -40,7 +40,7 @@
 			</td></tr>
 			</table>
 			<br />
-			You've sent a request to change your e-mail address on <b>[== $site_title =]</b>!<br /><br />
+			You've sent a request to change your e-mail address on <b>&quot;[== $site_title =]</b>&quot;.<br /><br />
 			Now you need to re-activate your account. Please browse to the following link to finish your e-mail change process:
 			<br /><br />
 			<a href="[== $activation_url =]">[== $activation_url =]</a>

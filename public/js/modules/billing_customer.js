@@ -391,8 +391,9 @@ $(document).ready(function () {
     });
     $('#btn_save_profile').click(function() {
         $(".pr_input").each(function() {
-            $(this).attr('disabled', 'disabled');
+            $(this).prop('disabled', true);            
         });
+        $(".taracot_profile_cg").removeClass('has-error');
         $('#ajax_profile_loading').show();
         $('#profile_buttons').hide();
         $('#profile_edit_form_error').hide();
@@ -487,7 +488,7 @@ $(document).ready(function () {
             $('#profile_edit_form_error').alert();
             $(window).scrollTop(0);
             $(".pr_input").each(function() {
-                $(this).removeAttr('disabled');
+                $(this).prop('disabled', false);
             });
             $('#n1e').focus();
             $('#ajax_profile_loading').hide();
@@ -537,7 +538,7 @@ $(document).ready(function () {
                         $('#ajax_loading').hide();
                         $(window).scrollTop(0);
                         $(".pr_input").each(function() {
-                            $(this).removeAttr('disabled');
+                            $(this).prop('disabled', false);
                         });
                         if (data.field) {
                             $('#cg_' + data.field).addClass('has-error');
@@ -549,7 +550,7 @@ $(document).ready(function () {
                         $('#ajax_loading').hide();
                         $(window).scrollTop(0);
                         $(".pr_input").each(function() {
-                            $(this).removeAttr('disabled');
+                            $(this).prop('disabled', false);
                         });
                         $('#form_profile_success_msg').fadeIn(300).delay(2000).fadeOut(300);
                     }
@@ -600,7 +601,7 @@ $(document).ready(function () {
         $('#hosting_edit_form').show();
         $('#hosting_edit_buttons').show();
         $('#haccount').focus();
-        $('select option:first-child').attr("selected", "selected");        
+        $('select option:first-child').prop("selected", true);        
         var haddcost = hosting_planid_cost[$('#hplan').val()] * $('#hdays').val();
         $('#haddcost').html(haddcost);
     });
@@ -609,7 +610,7 @@ $(document).ready(function () {
         $(".inpt-domain").each(function() {
             $(this).val('');
         });
-        $('select option:first-child').attr("selected", "selected");
+        $('select option:first-child').prop("selected", true);
         $(".ctrl-grp-domain").each(function() {
             $(this).removeClass('has-error');
         });
@@ -1270,7 +1271,7 @@ function updateHosting(acnt) {
     $('#hosting_update_edit_form').show();
     $('#hosting_update_edit_buttons').show();
     $('#hdaysup').focus();
-    $('select option:first-child').attr("selected", "selected"); 
+    $('select option:first-child').prop("selected", true); 
     var hupcost = hosting_plans_cost[acnt] * $('#hdaysup').val();
     $('#hupcost').html(hupcost);
 }
@@ -1302,7 +1303,7 @@ function updateService(acnt) {
     $('#service_update_edit_form').show();
     $('#service_update_edit_buttons').show();
     $('#sdaysup').focus();
-    $('select option:first-child').attr("selected", "selected"); 
+    $('select option:first-child').prop("selected", true); 
     var supcost = service_plans_cost[acnt] * $('#sdaysup').val();
     $('#supcost').html(supcost);
 }

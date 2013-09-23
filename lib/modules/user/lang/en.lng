@@ -49,8 +49,8 @@ user_auth_success: You are now logged in. <a href=/user/account>Click here</a> t
 user_auth_invalid: Invalid username (e-mail) or password
 user_auth_already_logged_in: This (or another) user is already logged in
 user_auth_user_disabled: User is currently disabled on this website
-user_register_email_subj: Registration on
-user_register_emailchange_subj: E-mail change on
+user_register_email_subj: Registration on website
+user_register_emailchange_subj: E-mail change on website
 user_activate: Activate user
 user_activate_error_url: Invalid activation data, please check your URL and try again.
 user_activate_error_wrong_code: Invalid activation data, please check your URL and try again.
@@ -105,3 +105,4 @@ user_register_password_hint: You can change your password using the form below. 
 user_new_password: New password
 user_realname_hint: Example&#58;&nbsp;John Doe
 user_cellphone_hint: Country code + phone, example&#58;&nbsp;1 (921) 123-4567
+email_revert_success: You e-mail address change procedure has been cancelled.

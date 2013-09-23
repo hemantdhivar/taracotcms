@@ -112,6 +112,7 @@ $(document).ready(function () {
 }); // document.ready
 
 function supportRowClicked(clicked_id) {
+    $.history.push("ticket_"+clicked_id);
 	$('#support_table').hide();
 	$('#support_ticket').show();
 	$('#support_ticket_ajax').show();
@@ -281,3 +282,8 @@ jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff 
 function handleDTAjaxError( xhr, textStatus, error ) {
     dtable.fnProcessingIndicator( false );
 }
+$.history.on('change', function(event, url, type) {
+    if (url == '') {       
+       $('#btn_return_list').click(); 
+    }
+}).listen('hash');

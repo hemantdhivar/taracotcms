@@ -167,6 +167,7 @@ $(document).ready(function () {
 });
 
 function editData(id) {
+    $.history.push("edit_"+id);
     edit_id = id;
     $('#data_edit').show();
     $('#data_overview').hide();
@@ -1268,3 +1269,8 @@ $('#funds').editable(submitEdit, {
     placeholder: '—',
     tooltip: ''
 });
+$.history.on('change', function(event, url, type) {
+    if (url == '') {       
+       $('#btn_return_to_list').click(); 
+    }
+}).listen('hash');

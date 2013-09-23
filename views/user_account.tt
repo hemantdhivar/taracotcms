@@ -43,10 +43,10 @@
         </div>
     </div>
     <div class="tab-pane" id="tab_profile">
-        <div id="tab_profile_ajax" class="alert alert-info" style="display:none">
+        <div id="tab_profile_ajax" class="panel panel-default panel-body" style="display:none;margin-top:20px">
             <img src="/images/white_loading.gif" alt="" height="16" width="16">&nbsp;&nbsp;[== $lang->{user_register_processing} =]
         </div>
-        <div class="account_hint" id="profile_form_hint_1">[== $lang->{user_account_proifle_hint} =]</div>
+        <div class="account_hint alert alert-warning" id="profile_form_hint_1">[== $lang->{user_account_proifle_hint} =]</div>
         <div class="alert alert-danger" id="form_profile_errors" style="display:none"></div>
         <div class="alert alert-success" id="form_profile_success" style="display:none">[== $lang->{user_account_profile_saved} =]</div>
         <div id="tab_profile_form">
@@ -56,7 +56,7 @@
                       <div class="form-group" id="cg_pro_realname">
                         <label for="pro_realname" class="col-lg-2 control-label">[== $lang->{user_register_realname} =]</label>
                         <div class="col-lg-4 col-md-4">
-                          <input type="text" class="form-control" id="pro_realname" />
+                          <input type="text" class="form-control" id="pro_realname" value="[== $auth_data->{realname} =]" />
                           <span class="help-block">[== $lang->{user_realname_hint} =]</span>
                         </div>
                       </div>
@@ -65,7 +65,7 @@
                         <div class="col-lg-3 col-md-3">
                           <div class="input-group">  
                               <span class="input-group-addon"><b>+</b></span>
-                              <input type="text" class="form-control" id="pro_phone" />
+                              <input type="text" class="form-control" id="pro_phone" value="[== $auth_data->{phone} =]" />
                           </div>
                           <span class="help-block">[== $lang->{user_cellphone_hint} =]</span>
                         </div>
@@ -116,7 +116,7 @@
         </div>
     </div>
     <div class="tab-pane" id="tab_email">
-        <div id="tab_email_ajax" class="alert alert-info" style="display:none">
+        <div id="tab_email_ajax" class="panel panel-default panel-body" style="display:none;margin-top:20px">
             <img src="/images/white_loading.gif" alt="" height="16" width="16">&nbsp;&nbsp;[== $lang->{user_register_processing} =]
         </div>
         <div id="tab_email_form">
@@ -171,7 +171,7 @@
     </div> 
     <div class="tab-pane" id="tab_password">
         <div class="alert alert-warning" style="margin-top:10px">[== $lang->{user_register_password_hint} =]</div>
-        <div id="tab_password_ajax" class="alert alert-info" style="display:none">
+        <div id="tab_password_ajax" class="panel panel-default panel-body" style="display:none;margin-top:20px">
             <img src="/images/white_loading.gif" alt="" height="16" width="16">&nbsp;&nbsp;[== $lang->{user_register_processing} =]
         </div>
         <div id="tab_password_form">            
