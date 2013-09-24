@@ -72,7 +72,7 @@ any '/process' => sub {
   my $res = $search_plugin->performSearch($search_query, $_current_lang, $page, $ipp);
   $res->{status} = '1';
   my $total = $res->{count};
-  my $pc = int($total / $ipp) + 1;  
+  my $pc = $total / $ipp;  
   # Paginator code : begin
   my $paginator='';
   if ($pc > 1) {

@@ -55,6 +55,7 @@ user_activate: Benutzer aktivieren
 user_activate_error_url: Ungültige Aktivierungsdaten, überprüfen Sie bitte die URL und versuchen Sie es erneut
 user_activate_error_wrong_code: Ungültige Aktivierungsdaten, überprüfen Sie bitte die URL und versuchen Sie es erneut
 user_activate_success: Benutzer ist erfolgreich aktiviert worden. Sie können sich jetzt in der Webseite einloggen.
+email_activate_success: E-mail Adresse ist erfolgreich aktiviert. Sie können sich jetzt in der Webseite einloggen.
 user_password: Benutzerpasswort zurücksetzen
 user_password_hint: Füllen Sie bitte die Form aus, um das vergessene Passwort zurückzusetzen. Pflichtfelder sind mit Sternchen markiert
 user_password_submit: Data senden

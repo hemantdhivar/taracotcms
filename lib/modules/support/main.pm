@@ -497,6 +497,9 @@ post '/answer/save' => sub {
     }
     if ($mail_list) {
       my $support_url = request->uri_base().'/support/specialist';
+      if (config->{https_connection}) {
+        $support_url =~ s/^http:/https:/i;
+      }
       my $body = template 'support_mail_notify_support_'.$_current_lang, { site_title => encode_entities_numeric($page_data->{site_title}), support_url => $support_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
       email {
           to      => $mail_list,
@@ -621,6 +624,9 @@ post '/answer/specialist/save' => sub {
   my $user = database->quick_select(config->{db_table_prefix}.'_users', { username => $ticket->{susername} });
   if ($user->{email}) {
     my $support_url = request->uri_base().'/support';
+    if (config->{https_connection}) {
+      $support_url =~ s/^http:/https:/i;
+    }
     my $body = template 'support_mail_notify_user_'.$_current_lang, { site_title => encode_entities_numeric($page_data->{site_title}), support_url => $support_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
     email {
         to      => $user->{email},
@@ -671,6 +677,9 @@ post '/answer/specialist/solved' => sub {
   my $user = database->quick_select(config->{db_table_prefix}.'_users', { username => $ticket->{susername} });
   if ($user->{email}) {
     my $support_url = request->uri_base().'/support';
+    if (config->{https_connection}) {
+      $support_url =~ s/^http:/https:/i;
+    }
     my $body = template 'support_mail_notify_user_'.$_current_lang, { site_title => encode_entities_numeric($page_data->{site_title}), support_url => $support_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
     email {
         to      => $user->{email},
@@ -795,6 +804,9 @@ post '/ticket/save' => sub {
     }
     if ($mail_list) {
       my $support_url = request->uri_base().'/support/specialist';
+      if (config->{https_connection}) {
+        $support_url =~ s/^http:/https:/i;
+      }
       my $body = template 'support_mail_notify_support_'.$_current_lang, { site_title => encode_entities_numeric($page_data->{site_title}), support_url => $support_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
       email {
           to      => $mail_list,

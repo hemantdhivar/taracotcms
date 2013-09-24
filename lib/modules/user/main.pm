@@ -139,7 +139,10 @@ post '/register/process' => sub {
   my $verification = md5_hex(config->{salt}.$password.time.rand);
   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, verification => 'act_'.$verification, regdate => time, lastchanged => time });
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
-  my $activation_url = request->uri_base().'/user/activate/'.$username.'/'.$verification;
+  my $activation_url = request->uri_base().'/user/activate/user/'.$username.'/'.$verification;
+  if (config->{https_connection}) {
+    $activation_url =~ s/^http:/https:/i;
+  }
   my $body = template 'user_mail_register_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
   email {
       to      => $email,
@@ -292,7 +295,7 @@ post '/authorize/process' => sub {
   return $json_xs->encode(\%res);
 };
 
-get '/activate/:username/:verification' => sub {
+get '/activate/user/:username/:verification' => sub {
   if (&taracot::_auth()) { return redirect '/user/account' } 
   my $msg='';
   my $_current_lang=_load_lang();
@@ -305,7 +308,7 @@ get '/activate/:username/:verification' => sub {
     return $render_template;
   }  
   my $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, status => 0 });
-  if (!$db_data->{id} || ($db_data->{verification} ne 'act_'.$verification && $db_data->{verification} ne $verification)) {
+  if ($db_data->{verification} ne 'act_'.$verification) {
     $msg = $lang->{user_activate_error_wrong_code};
     my $render_template = &taracot::_process_template( template 'user_activate', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );
     return $render_template;
@@ -319,7 +322,34 @@ get '/activate/:username/:verification' => sub {
   pass();
 };
 
-get '/revert_mail/:username/:verification' => sub {
+get '/activate/email/:username/:verification' => sub {
+  if (&taracot::_auth()) { return redirect '/user/account' } 
+  my $msg='';
+  my $_current_lang=_load_lang();
+  my $username = params->{username};
+  my $verification = params->{verification};
+  my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
+  if ($username !~ /^[a-z0-9_\-\.]{1,100}$/ || $verification !~ /^[a-f0-9]{32}$/) { 
+    $msg = $lang->{user_activate_error_url};
+    my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_activate', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );    
+    return $render_template;
+  }  
+  my $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, status => 0 });
+  if ($db_data->{verification} ne 'eml_'.$verification) {
+    $msg = $lang->{user_activate_error_wrong_code};
+    my $render_template = &taracot::_process_template( template 'user_activate', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );
+    return $render_template;
+  }
+  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => '', status => 1, lastchanged => time }); 
+  $msg = $lang->{email_activate_success};
+  my $render_template = &taracot::_process_template( template 'user_activate', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );
+  if ($render_template) {
+    return $render_template;
+  }
+  pass();
+};
+
+get '/revert/email/:username/:verification' => sub {
   if (&taracot::_auth()) { return redirect '/user/account' } 
   my $msg='';
   my $_current_lang=_load_lang();
@@ -413,6 +443,9 @@ post '/password/process' => sub {
   database->quick_update(config->{db_table_prefix}.'_users', { email => $email }, { verification => 'pwd_'.$verification, lastchanged => time });
   my $pg_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/password/reset/'.$db_data->{username}.'/'.$verification;
+  if (config->{https_connection}) {
+    $activation_url =~ s/^http:/https:/i;
+  }
   my $body = template 'user_mail_password_'.$_current_lang, { site_title => encode_entities_numeric($pg_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
   email {
       to      => $email,
@@ -677,9 +710,12 @@ post '/account/email/process' => sub {
     $password = md5_hex(config->{salt}.$new_password);  
   }
   my $verification = md5_hex(config->{salt}.$password.time.rand);  
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'act_'.$verification, password => $password, password_unset => 0, lastchanged => time });
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'eml_'.$verification, password => $password, password_unset => 0, lastchanged => time });
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
-  my $activation_url = request->uri_base().'/user/activate/'.$auth->{username}.'/'.$verification;  
+  my $activation_url = request->uri_base().'/user/activate/email/'.$auth->{username}.'/'.$verification;  
+  if (config->{https_connection}) {
+    $activation_url =~ s/^http:/https:/i;
+  }
   my $body = template 'user_mail_emailchange_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
   email {
       to      => $email,
@@ -688,9 +724,16 @@ post '/account/email/process' => sub {
       type    => 'html',
       headers => { "X-Accept-Language" => $_current_lang }
   };
+  open(DATA,">>/var/www/re-hash/data/site/logs/mail.log");
+  binmode(DATA);
+  print DATA "(1) Sending to: $email\n";
+  close(DATA);
   if ($db_data_1->{email}) {
     my $verification_undo = md5_hex(config->{salt}.$password.time.rand.$verification);
-    my $activation_url_undo = request->uri_base().'/user/revert_mail/'.$auth->{username}.'/'.$verification_undo;
+    my $activation_url_undo = request->uri_base().'/user/revert/email/'.$auth->{username}.'/'.$verification_undo;
+    if (config->{https_connection}) {
+      $activation_url_undo =~ s/^http:/https:/i;
+    }
     database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email_save => $db_data_1->{email}, email_save_verification => $verification_undo, lastchanged => time });
     my $body = template 'user_mail_emailchanged_'.$_current_lang, { site_title => encode_entities_numeric($db_data->{site_title}), activation_url => $activation_url_undo, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
     email {
@@ -700,6 +743,10 @@ post '/account/email/process' => sub {
         type    => 'html',
         headers => { "X-Accept-Language" => $_current_lang }
     };
+    open(DATA,">>/var/www/re-hash/data/site/logs/mail.log");
+    binmode(DATA);
+    print DATA "(2) Sending to: ".$db_data_1->{email}."\n";
+    close(DATA);
   }
   session user => '';
   return $json_xs->encode(\%res);

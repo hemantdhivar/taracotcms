@@ -105,9 +105,6 @@ sub performSearch {
    my %item;
    $item{'title'} = $hit->{title};
    my $text = $highlighter->create_excerpt($hit);
-   #if (length($text) < length($hit->{text})) {
-   # $text.='...';
-   #}
    $item{'text'} = $text;
    $item{'url'} = $hit->{url};
    push @res_arr, \%item; 

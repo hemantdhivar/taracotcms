@@ -32,6 +32,7 @@ site_logo_url: /taracot/logo_white_235.png
 upload_limit_bytes: '3145728'
 # possible values are: blacklist, whitelist, off
 firewall_mode: 'blacklist'
+https_connection: '0'
 search_plugin: 'mysql'
 root_user: 'xtreme'
 portfolio_path: public/re-hash/portfolio/

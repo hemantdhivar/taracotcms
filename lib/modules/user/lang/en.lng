@@ -55,6 +55,7 @@ user_activate: Activate user
 user_activate_error_url: Invalid activation data, please check your URL and try again.
 user_activate_error_wrong_code: Invalid activation data, please check your URL and try again.
 user_activate_success: User has been activated sucessfully. You can log into website now.
+email_activate_success: Your new e-mail address has been successfully activated. You can authorize on the website right now.
 user_password: Reset user password
 user_password_hint: Please fill the following form to reset your forgotten password. Fields marked with an asterisk are required.
 user_password_submit: Send data
