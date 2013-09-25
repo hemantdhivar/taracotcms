@@ -1,6 +1,5 @@
 package taracot::admin;
 use Dancer ':syntax';
-use YAML::XS;
 use Module::Load;
 use Dancer::Plugin::Database;
 use Digest::MD5 qw(md5_hex);

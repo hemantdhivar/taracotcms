@@ -2,7 +2,7 @@ package taracot;
 
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
-use taracot::admin;
+use YAML::XS();
 use Module::Load;
 use taracot::loadpm;
 use Imager;
@@ -15,9 +15,31 @@ prefix undef;
 our $taracot_current_version='0.20528';
 
 # Don't show any warnings to console in production mode
+
 if (config->{environment} eq 'production') {
   $SIG{__WARN__} = sub {};
 }
+
+# Load cache plugin
+
+require 'modules/cache/'.config->{cache_plugin}.'.pm';
+my $_cp = 'modules::cache::'.config->{cache_plugin};
+my $cache_plugin = "$_cp"->new();
+
+# Default route
+
+prefix "/";
+get '/*' => sub { 
+ pass();
+};
+
+my $lang;
+
+# Load modules
+
+use taracot::admin;
+
+prefix "/";
 
 my $load_modules = config->{load_modules_frontend};
 $load_modules=~s/ //gm;
@@ -26,6 +48,8 @@ foreach my $module (@modules) {
   my $taracot_module_load="modules::".lc($module)."::main";
   load $taracot_module_load;
 }
+
+prefix "/";
 
 my $load_blocks = config->{load_blocks_frontend};
 $load_blocks=~s/ //gm;
@@ -129,10 +153,6 @@ sub _load_settings() {
   $sth->finish();  
   return \%data;
 } 
-
-prefix "/";
-
-my $lang;
 
 sub _detect_lang() {
  my $resp = {}; 
@@ -253,6 +273,8 @@ get '/403' => sub {
  my $render_403 = template 'error_403', { lang => $lang, remote_ip => $remote_ip }, { layout => undef };
  return $render_403;
 };
+
+# Default page 
 
 any qr{.*} => sub { 
  &_load_lang;
