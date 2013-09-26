@@ -11,10 +11,14 @@ sub new {
  return $self;
 }
 
-sub add {
+sub set_data {
 }
 
-sub get {
+sub get_data {
+	return undef;
+}
+
+sub flush_data {  
 }
 
 # End

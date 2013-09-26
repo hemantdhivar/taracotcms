@@ -28,6 +28,9 @@ sub get_data {
   return $kt->get($par);
 }
 
+sub flush_data { 
+}
+
 # End
 
 1; 

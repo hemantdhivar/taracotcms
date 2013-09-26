@@ -31,6 +31,9 @@ sub get_data {
   return $value;  
 }
 
+sub flush_data {  
+}
+
 sub DESTROY {
   $db->close || die $db->error;
 }

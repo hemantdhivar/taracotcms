@@ -22,6 +22,12 @@ require 'modules/search/'.config->{search_plugin}.'.pm';
 my $sp = 'modules::search::'.config->{search_plugin};
 my $search_plugin = "$sp"->new();
 
+# Load cache plugin
+
+require 'modules/cache/'.config->{cache_plugin}.'.pm';
+my $_cp = 'modules::cache::'.config->{cache_plugin};
+my $cache_plugin = "$_cp"->new(); 
+
 # Module core settings 
 
 my $lang;
@@ -69,18 +75,15 @@ get qr{(.*)} => sub {
   }
   if ($url !~ /^[A-Za-z0-9_\-\/]{0,254}$/) {
    pass();
-  }  
-  my $_current_lang=_load_lang();
-  my $auth_data;
-  if (session('user')) { 
-   my $id = session('user');
-   $auth_data  = database->quick_select(config->{db_table_prefix}."_users", { id => $id });
-  } else {
-   $auth_data->{id} = 0;
-   $auth_data->{status} = 0;
-   $auth_data->{username} = '';
-   $auth_data->{password} = '';
-  }   
+  }
+  my $auth_data = &taracot::admin::_auth();
+  if (!$auth_data) {
+    my $cache_data = $cache_plugin->get_data(request->uri_base().$url);
+    if ($cache_data) {
+      return $cache_data;
+    }
+  }
+  my $_current_lang=_load_lang();    
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { filename => $url, lang => $_current_lang });
   my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);  
   $db_data->{keywords} = $db_data->{keywords} || '';
@@ -97,6 +100,9 @@ get qr{(.*)} => sub {
    my $render_template;
    if ($db_data->{status} eq 1) {
     $render_template = &taracot::_process_template( template 'pages_view', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    if (!$auth_data) {
+      $cache_plugin->set_data(request->uri_base().$url, $render_template);
+    }
    }
    if ($db_data->{status} eq 0) {
     $render_template = &taracot::_process_template( template 'pages_status', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );

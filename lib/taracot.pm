@@ -20,12 +20,6 @@ if (config->{environment} eq 'production') {
   $SIG{__WARN__} = sub {};
 }
 
-# Load cache plugin
-
-require 'modules/cache/'.config->{cache_plugin}.'.pm';
-my $_cp = 'modules::cache::'.config->{cache_plugin};
-my $cache_plugin = "$_cp"->new();
-
 # Default route
 
 prefix "/";
@@ -272,6 +266,19 @@ get '/403' => sub {
  }
  my $render_403 = template 'error_403', { lang => $lang, remote_ip => $remote_ip }, { layout => undef };
  return $render_403;
+};
+
+get '/cache/flush' => sub {
+  my $self = shift;
+  my $auth_data = &_auth();
+  if (!$auth_data->{status} || $auth_data->{status} < 2) {
+    return redirect '/403';
+  }
+  require 'modules/cache/'.config->{cache_plugin}.'.pm';
+  my $_cp = 'modules::cache::'.config->{cache_plugin};
+  my $cache_plugin = "$_cp"->new();  
+  $cache_plugin->flush_data();
+  return "Cache flushed OK";
 };
 
 # Default page 

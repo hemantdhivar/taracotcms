@@ -37,13 +37,17 @@ sub set_data {
   my $self = shift;
   my $par = $_[0];
   my $val = $_[1];
-  $memd->add($par, $val);
+  $memd->add($par, $val, config->{cache_timeout});
 }
 
 sub get_data {
   my $self = shift;
   my $par = $_[0];
   return $memd->get($par);
+}
+
+sub flush_data {
+  $memd->flush_all;
 }
 
 # End

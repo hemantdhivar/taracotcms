@@ -1,0 +1,18 @@
+module_name: Feedback
+realname: Your name
+email: Your e-mail address
+phone: Your contact phone
+msg: Message
+feedback_hint: Please leave your message if you wish to contact webmaster directly. All fields marked with a red asterisk are required.
+label_captcha: Captcha code
+btn_submit: Send feedback
+error_realname: Error in name syntax
+error_email: Error in e-mail syntax
+error_phone: Error in phone syntax
+error_msg: Error in message syntax
+error_captcha: Incorrect captcha value
+error_ajax: Error while processing data on server, please try again in a few moments
+ajax_processing: Processing data, please be patient...
+ajax_success: Your message has been successfully sent. When necessary, we will contact you shortly.
+feedback_email_subj: Feedback from
+feedback_email_missing: Missing <b>feedback_email</b> variable in settings for current language

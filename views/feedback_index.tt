@@ -1,0 +1,60 @@
+<h1>[== $lang->{module_name} =]</h1>
+<div id="feedback-ajax" style="display:none;margin:20px 0 20px 0"><img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]</div>
+<div id="feedback-form">
+	<div style="margin:20px 0 20px 0">[== $lang->{feedback_hint} =]</div>
+	<div class="alert alert-danger" id="form_error_msg" style="display:none;margin:20px 0 20px 0">
+		<span id="form_error_msg_text"></span>
+	</div> 
+	<div role="form">
+	  <div class="form-group row feedback-form-group" id="cg_f_realname">
+	  	<div class="col-lg-6 col-md-8 col-sm-8">
+		    <label for="f_realname">[== $lang->{realname} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>    
+		    <input type="text" class="form-control feedback-form-control" id="f_realname" placeholder="">
+		</div>
+	  </div>
+	  <div class="form-group row feedback-form-group" id="cg_f_email">
+	  	<div class="col-lg-5 col-md-6 col-sm-6">
+		    <label for="f_email">[== $lang->{email} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+		    <input type="email" class="form-control feedback-form-control" id="f_email" placeholder="">
+		</div>
+	  </div>
+	  <div class="form-group row feedback-form-group" id="cg_f_phone">
+	  	<div class="col-lg-5 col-md-6 col-sm-6">
+		    <label for="f_phone">[== $lang->{phone} =]</label>
+		    <input type="phone" class="form-control feedback-form-control" id="f_phone" placeholder="">
+		</div>
+	  </div>
+	  <div class="form-group row feedback-form-group" id="cg_f_msg">
+	  	<div class="col-lg-7 col-md-10 col-sm-10">
+		    <label for="f_msg">[== $lang->{msg} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+		    <textarea class="form-control feedback-form-control-textarea" id="f_msg" placeholder=""></textarea>
+		</div>
+	  </div>
+	  <div class="form-group row feedback-form-group" id="cg_f_captcha">	
+		<div class="col-lg-3 col-md-4 col-sm-4" style="margin-top:8px">
+			<label for="f_captcha">[== $lang->{label_captcha} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
+		    <input type="text" class="form-control feedback-form-control" id="f_captcha">
+		</div>
+		<div class="col-lg-3 col-md-4 col-sm-4" style="margin-top:18px">
+			<span id="captcha_img" style="padding-top:5px"></span>
+	    	&nbsp;<img src="/images/refresh.png" alt="[== $lang->{user_register_captcha_refresh} =]" title="[== $lang->{user_register_captcha_refresh} =]" width="16" height="16" style="cursor:pointer" onClick="reloadCaptcha()" />
+	    </div>    
+	  </div>
+	  <div class="row" style="margin-top:28px">
+	  	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	  		<button id="btn_submit" class="btn btn-success">[== $lang->{btn_submit} =]</button>
+	  	</div>
+	  </div>
+	</div>
+</div>
+<script type="text/javascript">
+    var js_lang_error_realname = "[== $lang->{error_realname} =]";
+    var js_lang_error_email = "[== $lang->{error_email} =]";
+    var js_lang_error_phone = "[== $lang->{error_phone} =]";
+    var js_lang_error_msg = "[== $lang->{error_msg} =]";
+    var js_lang_error_captcha = "[== $lang->{error_captcha} =]";
+    var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
+    var js_lang_ajax_success = "[== $lang->{ajax_success} =]"
+</script>
+
+<script src="/js/modules/feedback_index.js"></script>
