@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 23, 2013 at 05:21 PM
+-- Generation Time: Sep 27, 2013 at 05:10 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -307,6 +307,32 @@ INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'user', 'test1', 1, 'Test', 'T
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `taracot_catalog`
+-- 
+
+CREATE TABLE `taracot_catalog` (
+  `id` int(11) NOT NULL auto_increment,
+  `pagetitle` varchar(255) NOT NULL,
+  `keywords` varchar(255) default NULL,
+  `description` varchar(255) default NULL,
+  `content` text,
+  `status` int(11) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `lang` varchar(5) default 'en',
+  `layout` varchar(40) NOT NULL default 'taracot',
+  `lastchanged` int(11) default '0',
+  UNIQUE KEY `id` (`id`),
+  FULLTEXT KEY `filter` (`pagetitle`,`filename`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- 
+-- Dumping data for table `taracot_catalog`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `taracot_firewall`
 -- 
 
@@ -444,7 +470,7 @@ CREATE TABLE `taracot_settings` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=20 ;
 
 -- 
 -- Dumping data for table `taracot_settings`
@@ -468,6 +494,7 @@ INSERT INTO `taracot_settings` VALUES (15, 'billing_payment_robokassa', 'Robokas
 INSERT INTO `taracot_settings` VALUES (16, 'billing_currency', 'RUR', '', 'en', 1377513285);
 INSERT INTO `taracot_settings` VALUES (17, 'support_topics', 'hosting,Hosting problem;design,Web design question;billing,Billing questions;account,My Account', '', 'en', 1379674523);
 INSERT INTO `taracot_settings` VALUES (18, 'support_mail', 'billing=xtreme@re-hash.ru, billing@re-hash.ru;hosting=hosting@rh1.ru;all=all@rh1.ru', '', '', 1378123809);
+INSERT INTO `taracot_settings` VALUES (19, 'feedback_email', 'xtreme@rh1.ru', '', 'en', 1380205178);
 
 -- --------------------------------------------------------
 

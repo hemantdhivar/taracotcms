@@ -44,14 +44,14 @@ sub _load_lang {
 }
 # Routes
 
-get '/' => sub {
-  my $auth_data = &taracot::_auth();
-  if ($auth_data) {
+get '/' => sub {  
+  if (!session('user')) {
     my $cache_data = $cache_plugin->get_data(request->uri_base().'/portfolio');
     if ($cache_data) {
       return $cache_data;
     }  
   }
+  my $auth_data = &taracot::_auth();
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);
   my $lf = loadFile(config->{root_dir}.'/'.config->{portfolio_path}.'/portfolio_'.$_current_lang.'.json');
@@ -69,7 +69,7 @@ get '/' => sub {
     $data_items .= &taracot::_process_template( template 'portfolio_index_cat', { lang => $lang, id => $item->{id}, title => $item->{desc}, images_url => config->{portfolio_images_url}, items => $index_items, default => $item->{default} }, { layout => undef } );
   }  
   my $_out = &taracot::_process_template( template 'portfolio_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data, index_items => $data_items, desc => $pf->{desc} }, { layout => config->{layout}.'_'.$_current_lang } );
-  if ($auth_data) {
+  if (!session('user')) {
     $cache_plugin->set_data(request->uri_base().'/portfolio', $_out);
   }
   return $_out;
@@ -79,14 +79,14 @@ get '/:id' => sub {
   my $id = param('id');
   if ($id !~ /^[0-9a-z_\-]{1,20}$/) {
     pass;
-  }
-  my $auth_data = &taracot::_auth();
-  if ($auth_data) {
+  }  
+  if (!session('user')) {
     my $cache_data = $cache_plugin->get_data(request->uri_base().'/portfolio/'.$id);
     if ($cache_data) {
       return $cache_data;
     }
   }
+  my $auth_data = &taracot::_auth();
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
   my $lf = loadFile(config->{root_dir}.'/'.config->{portfolio_path}.'/'.$id.'_'.$_current_lang.'.json');
@@ -96,7 +96,7 @@ get '/:id' => sub {
   my $pf=from_json $$lf;
   my $works = $pf->{works};  
   my $_out = &taracot::_process_template( template 'portfolio_item', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $pf->{title}." | ".$lang->{module_name}, auth_data => $auth_data, pf => $pf, images_url => config->{portfolio_images_url} }, { layout => config->{layout}.'_'.$_current_lang } );
-  if ($auth_data) {
+  if (!session('user')) {
     $cache_plugin->set_data(request->uri_base().'/portfolio/'.$id, $_out);
   }
   return $_out;

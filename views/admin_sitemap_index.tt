@@ -42,7 +42,7 @@
          </div>
         </div>        
         <div class="form-group">
-         <div class=".col-lg-offset-2 col-lg-5" style="padding-top:15px">          
+         <div class=".col-lg-offset-2 col-lg-12" style="padding-top:15px">          
           <button type="button" class="btn btn-default" id="node_btn_save">[== $lang->{node_save} =]</button>&nbsp;<button type="button" class="btn btn-default" id="node_btn_cancel">[== $lang->{node_cancel} =]</button>
          </div> 
         </div>
