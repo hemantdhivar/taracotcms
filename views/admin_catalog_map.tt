@@ -1,0 +1,69 @@
+ <?pl 
+  my $lang_list='';
+  my $lang_short_list='';
+ foreach my $item(@$langs) {
+  $lang_short_list .= ",$item";
+  $lang_list.=qq~<div class="form-group"><label class="control-label col-lg-3" for="node_title_~.$item.qq~">~.$langs_hash->{$item}.qq~:</label><div class="col-lg-9"><input type="text" class="form-control" id="node_title_~.$item.qq~"></div></div>\n~;  
+ }
+ $lang_short_list=~s/^,//;
+ ?>
+ <script src='/js/admin/jquery-ui.min.js' type="text/javascript"></script>         
+ <script src='/js/admin/jquery.cookie.js' type="text/javascript"></script>
+ <script src='/js/admin/jquery.dynatree.min.js' type="text/javascript"></script>
+ <link rel='stylesheet' type='text/css' href='/js/dynatree/ui.dynatree.css'>
+ <div class="row" style="margin-top:20px">
+     <div class="col-lg-12" style="margin-bottom:10px">
+       <button type="button" id="tree_btn_add" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-plus"></i></button>&nbsp;<button type="button" id="tree_btn_del" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+     </div>
+ </div>
+ <div class="container row">
+     <div class="col-lg-3 panel panel-default panel-body" id="tree"></div>
+     <div class="col-lg-5 panel panel-default panel-body" id="node_edit" style="display:none;margin-left:5px">
+       <span class="form-horizontal">        
+        [== $lang_list =]
+        <div class="form-group">
+         <div class=".col-lg-offset-2 col-lg-12" style="padding-top:15px">          
+          <button type="button" class="btn btn-default" id="node_btn_save">[== $lang->{node_save} =]</button>&nbsp;<button type="button" class="btn btn-default" id="node_btn_cancel">[== $lang->{node_cancel} =]</button>
+         </div> 
+        </div>
+      </span>
+    </div>
+   </div>   
+   <hr/>
+   <div class="form-actions" style="margin-bottom:20px;margin-top:20px"> 
+    <div id="ajax_loading" style="display:none">
+  	  <img src="/images/well_loading.gif" width="16" heigth="11" alt="" />&nbsp;&nbsp;[== $lang->{ajax_loading} =]</span>
+ 		</div>
+ 		<div id="tree_btns">
+      <button type="button" id="tree_btn_serialize" class="btn btn-success">[== $lang->{tree_save} =]</button>
+    </div>  
+ </div>
+ <script type="text/javascript">
+  var js_lang_module_name_long = "[== $lang->{module_name_long} =]";
+  var js_lang_select_lang = "[== $lang->{select_lang} =]";
+  var js_list_langs = '[== $list_langs =]';
+  var js_lang_load_tree = "[== $lang->{load_tree} =]";
+  var js_lang_node_title = "[== $lang->{node_title} =]";
+  var js_lang_node_id = "[== $lang->{node_id} =]";
+  var js_lang_node_save = "[== $lang->{node_save} =]";
+  var js_lang_node_cancel = "[== $lang->{node_cancel} =]";
+  var js_lang_ajax_loading = "[== $lang->{ajax_loading} =]";
+  var js_lang_tree_save = "[== $lang->{tree_save} =]";
+  var js_lang_tree_cancel = "[== $lang->{tree_cancel} =]";
+  var js_lang_tree_reset = "[== $lang->{tree_reset} =]";
+  var js_lang_tree_loading = "[== $lang->{tree_loading} =]";
+  var js_lang_tree_load_error = "[== $lang->{tree_load_error} =]";
+  var js_lang_node_untitled = "[== $lang->{node_untitled} =]";
+  var js_lang_tree_node_del_confirm = "[== $lang->{tree_node_del_confirm} =]";
+  var js_lang_error = "[== $lang->{error} =]";
+  var js_lang_tree_save_error = "[== $lang->{tree_save_error} =]";
+  var js_lang_success = "[== $lang->{success} =]";
+  var js_lang_tree_save_success = "[== $lang->{tree_save_success} =]";
+  var js_lang_error_ajax = "[== $lang->{error_ajax} =]";
+  var js_lang_tree_cancel_confirm = "[== $lang->{tree_cancel_confirm} =]";
+  var js_lang_tree_reset_confirm = "[== $lang->{tree_reset_confirm} =]";
+  var js_langs = "[== $lang_short_list =]";
+  var js_current_lang = "[== $current_lang =]"
+ </script>
+ <script src='/js/modules/admin_catalog_map.js' type="text/javascript"></script>
+ <script type="text/javascript">$('#nav_sitemap').addClass('active')</script>

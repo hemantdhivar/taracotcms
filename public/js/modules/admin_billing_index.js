@@ -1084,7 +1084,7 @@ $('#btn_funds').click(function() {
     if (top < 0) top = 0;
     if (left < 0) left = 0;
     features = 'top=' + top + ',left=' + left;
-    features += ',height=' + h + ',width=' + w + ',resizable=no';
+    features += ',height=' + h + ',width=' + w + ',resizable=yes,scrollbars=yes';
     imgbrowser = open('/admin/billing/funds?id=' + edit_id, 'displayWindow', features);
 });
 

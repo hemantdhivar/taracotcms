@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Sep 27, 2013 at 05:10 PM
+-- Generation Time: Oct 02, 2013 at 06:30 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -323,12 +323,13 @@ CREATE TABLE `taracot_catalog` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `filter` (`pagetitle`,`filename`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 -- 
 -- Dumping data for table `taracot_catalog`
 -- 
 
+INSERT INTO `taracot_catalog` VALUES (1, 'Test item', '', '', '<p>OK Computer</p>\n', 1, '/', 'en', 'taracot', 1380722268);
 
 -- --------------------------------------------------------
 
@@ -454,6 +455,7 @@ INSERT INTO `taracot_search_db` VALUES ('portfolio', 48, 'ru', 'Color Lines', 'C
 INSERT INTO `taracot_search_db` VALUES ('portfolio', 49, 'ru', 'Кинг', 'Кинг – карточная игра, популярная в России. Иногда ее называют «дамским преферансом». Во Франции есть похожая карточная игра Barbu (фр. «Борода»).Особенности текущей верси...', 'россии многопользовательской до франции популярная по разрешения похожая есть игры в ренессанс текущей 1920x1080- hd full различные дамским игра wi-fi кинг преферансом во версии- иногда называют и скат- поддержка ее фр бородаособенности barbu карточная карт колоды атласные', '/portfolio/king', 1379321279);
 INSERT INTO `taracot_search_db` VALUES ('portfolio', 50, 'ru', 'Bubble Breaker', 'Bubble Breaker - увлекательная логическая игра для вашего Android-устройства. Она абсолютно бесплатна, и в ней отсутствует реклама!Особенности данной версии:- Поддержка графики Full HD (до 1...', 'рекламаособенности breaker windows до абсолютно переключение бесплатна как игры в для звук- hd комфортной 1920x1980- графики различных full же четыре вашего игра отсутствует увлекательная оригинальной android-устройства так версии- - и логическая ней данной поддержка она игровых режимов день-ночь оригинальная графика bubble mobile-версии- режима', '/portfolio/bubblebreaker', 1379321279);
 INSERT INTO `taracot_search_db` VALUES ('portfolio', 51, 'ru', 'Девятка', 'Девятка - захватывающая карточная игра.Особенности текущей версии:- Поддержка Full HD разрешения (до 1920x1080)- Различные колоды карт («атласные», «ренессанс» и...', 'многопользовательской захватывающая до версии- по разрешения и - скат- девятка поддержка игры играособенности ренессанс текущей 1920x1080- карточная hd full различные карт колоды wi-fi атласные', '/portfolio/nine', 1379321279);
+INSERT INTO `taracot_search_db` VALUES ('catalog', 1, 'en', 'Test item', 'OK Computer', 'ok test item computer', '/', 1380722268);
 
 -- --------------------------------------------------------
 
