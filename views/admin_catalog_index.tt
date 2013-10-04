@@ -49,6 +49,7 @@
     		<th style="width:80px">[== $lang->{id} =]</th>
     		<th>[== $lang->{pagetitle} =]</th>
     		<th>[== $lang->{filename} =]</th>
+        <th>[== $lang->{category} =]</th>
     		<th style="width:80px;text-align:center">[== $lang->{language} =]</th>
     		<th style="width:100px;text-align:center">[== $lang->{layout} =]</th>
     		<th style="width:80px;text-align:center">[== $lang->{status} =]</th>
@@ -143,6 +144,38 @@
  </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" id="btn_language_select_close">[== $lang->{edit_cancel} =]</button>&nbsp;<button type="button" class="btn btn-success" id="btn_language_select_save">[== $lang->{edit_save} =]</button>
+ </div>
+ </div>
+ </div>
+</div>
+
+<!-- 
+ Category select modal dialog 
+-->
+
+<div class="modal" id="category_select">
+ <div class="modal-dialog">
+ <div class="modal-content">
+ <div class="modal-header">
+  <a class="close" data-dismiss="modal"></a>
+  <h3>[== $lang->{category_select} =]</h3>
+ </div>
+ <div class="modal-body">
+  <div class="well">
+    <div id="category_select_pagetitle"></div>
+  </div>
+  <span class="form-horizontal">
+    <div class="form-group" style="padding-top:6px">
+     <label class="control-label col-lg-2" for="category_select_cat">[== $lang->{category} =]</label>
+     <div class="col-lg-5">
+     <select class="form-control" id="category_select_cat">      
+     </select>
+     </div>
+    </div>
+  </span>
+ </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" id="btn_category_select_close">[== $lang->{edit_cancel} =]</button>&nbsp;<button type="button" class="btn btn-success" id="btn_category_select_save">[== $lang->{edit_save} =]</button>
  </div>
  </div>
  </div>
@@ -267,6 +300,14 @@
     				<input type="text" class="form-control data-edit-field" id="pagetitle">
     			</div>
     		</div>
+
+        <div class="form-group" id="cg_lang">
+          <label class="control-label col-lg-2" for="cat">[== $lang->{category} =]</label>
+          <div class="col-lg-3">
+            <select class="form-control data-edit-field" id="cat">
+            </select>
+          </div>
+        </div>
         
         <div class="form-group" id="cg_filename">
     			<label class="control-label col-lg-2" for="filename">[== $lang->{filename} =]&nbsp;<span class="required_field">*</span></label>
@@ -310,7 +351,7 @@
     				[== $lang->{status2} =] </label>
     			</div>
     		</div>
-    		
+    		            
         		<div class="form-group" id="cg_lang">
         			<label class="control-label col-lg-2" for="lang">[== $lang->{language} =]&nbsp;<span class="required_field">*</span></label>
         			<div class="col-lg-3">
@@ -421,7 +462,9 @@ var js_lang_delete_error_notify = "[== $lang->{delete_error_notify} =]";
 var js_lang_delete_success_notify = "[== $lang->{delete_success_notify} =]";
 var js_lang_switch_mode_question = "[== $lang->{switch_mode_question} =]";
 var js_lang_password_hint = "[== $lang->{password_hint} =]";
+var js_lang_nocat = "[== $lang->{nocat} =]";
 var langs = new HashTable({[== $hash_langs =]});
+var cats = new HashTable({});
 </script>
 <script src="/js/modules/admin_catalog_index.js"></script>
 <script type="text/javascript">$('#nav_catalog').addClass('active')</script>

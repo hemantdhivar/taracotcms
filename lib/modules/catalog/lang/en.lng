@@ -7,7 +7,8 @@ keywords: Keywords
 keywords_hint: List of site keywords separated by comma
 description: Description
 description_hint: Website descriptions
-filename: URL
+filename: File name
+url: URL ID
 status: Status
 status0: Inactive item (disabled for several reasons)
 status1: Visible item
@@ -30,8 +31,8 @@ form_errors: Form contain errors, please check and try again
 ajax_saving: Saving data, please wait...
 ajax_loading: Loading data, please wait...
 form_error_invalid_pagetitle: Invalid item title syntax
-form_error_duplicate_filename: Duplicate item URL (such URL already exists)   
-form_error_invalid_filename: Invalid URL syntax
+form_error_duplicate_filename: Duplicate item file name (such file name already exists)   
+form_error_invalid_filename: Invalid file name syntax
 form_error_invalid_keywords: Invalid keywords syntax
 form_error_invalid_description: Invalid description syntax
 form_error_invalid_status: Invalid status
@@ -69,9 +70,9 @@ imgbrowser: Image browser
 html: HTML
 wysiwyg: WYSIWYG
 switch_mode_question: Switching the mode will reset the current changes in editor. Continue?
-get_url: Generate URL automatically
-get_url_error_blank: Cannot generate URL when item title is not set
-get_url_error_other: Error while generating URL
+get_url: Generate file name automatically
+get_url_error_blank: Cannot generate file name when item title is not set
+get_url_error_other: Error while generating file name
 disabled_header: Item disabled
 disabled_text: The item is currently not available. Please try again later.
 construction_header: Under construction
@@ -94,3 +95,6 @@ tree_reset_confirm: Are you sure to reset tree?\nAll nodes will be removed, all 
 tree_save_error: Error while saving tree
 tree_save_success: Save success
 map_tree: Elements Tree
+category: Category
+category_select: Select category
+nocat: No category

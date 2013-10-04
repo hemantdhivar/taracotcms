@@ -15,7 +15,7 @@ use Data::Walk;
 # Configuration
 
 my $defroute = '/admin/catalog';
-my @columns = ('id','pagetitle','filename','lang','layout','status');
+my @columns = ('id','pagetitle','filename','category','lang','layout','status');
 my @columns_mobile = ('id','pagetitle','lang','status');
 my @columns_ft = ('pagetitle','filename');
 
@@ -261,6 +261,7 @@ post '/data/save' => sub {
   content_type 'application/json';
   my $pagetitle=param('pagetitle') || '';
   my $filename=param('filename') || '';
+  my $category=param('category') || '0';
   my $keywords=param('keywords') || '';
   my $description=param('description') || '';
   my $content=param('content') || '';
@@ -268,6 +269,10 @@ post '/data/save' => sub {
   my $plang=param('lang') || '';
   my $layout=param('layout') || '';
   $status=int($status);
+  $category = int($category);
+  if ($category < 0) {
+    $category = '0';
+  }
   my $id=param('id') || 0;
   $id=int($id);
   
@@ -388,12 +393,12 @@ if (langof($content) eq 'ru') {
     $content = $jevix->process(\encode_utf8($content))->{text};
   }
   if ($id > 0) {
-   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });   
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, category => $category, layout => $layout, lastchanged => time });   
    if ($status eq 1) {
     $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'catalog');
    }
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, category => $category, lastchanged => time });
    my $id = database->{q{mysql_insertid}}; 
    if ($status eq 1) {
     $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'catalog');
@@ -413,7 +418,7 @@ post '/data/save/field' => sub {
 
   # Pre-check all fields
   
-  if ($field_name ne 'pagetitle' && $field_name ne 'filename' && $field_name ne 'lang' && $field_name ne 'layout' && $field_name ne 'status') {
+  if ($field_name ne 'pagetitle' && $field_name ne 'filename' && $field_name ne 'lang' && $field_name ne 'layout' && $field_name ne 'status' && $field_name ne 'category') {
    return '{"result":"0", "error":"'.$lang->{field_edit_error_unknown}.'"}'; 
   }
   
@@ -471,6 +476,17 @@ post '/data/save/field' => sub {
    database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { layout => $field_value, lastchanged => time });
    return '{"result":"1"}';
   } 
+
+  # Check category
+  
+  if ($field_name eq 'category') {
+   my $cat = int($field_value);
+   if (!$cat || $cat < 0) {
+    $cat = '0';
+   }   
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $field_id }, { category => $cat, lastchanged => time });
+   return '{"result":"1"}';
+  }
   
   # Check pagetitle
   

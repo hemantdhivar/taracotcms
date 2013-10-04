@@ -19,7 +19,13 @@
  <div class="container row">
      <div class="col-lg-3 panel panel-default panel-body" id="tree"></div>
      <div class="col-lg-5 panel panel-default panel-body" id="node_edit" style="display:none;margin-left:5px">
-       <span class="form-horizontal">        
+       <span class="form-horizontal">
+        <div class="form-group">
+         <label class="control-label col-lg-3" for="url">[== $lang->{url} =]:</label>
+         <div class="col-lg-9" style="margin-bottom:10px">
+          <input type="text" class="form-control" id="url">
+         </div>
+        </div>  
         [== $lang_list =]
         <div class="form-group">
          <div class=".col-lg-offset-2 col-lg-12" style="padding-top:15px">          

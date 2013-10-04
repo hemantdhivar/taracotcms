@@ -43,12 +43,16 @@ $(document).ready(function () {
                 if (node.getLevel() === 1) {
                     $('#node_edit').hide();
                 } else {
+                    $('#url').val('');
                     $('#node_edit').show();
-                    if (node.data.title) {                        
+                    if (node.data.title) {
                         var ls = js_langs.split(',');
                         for (var i=0; i<ls.length; i++) {
                             $('#node_title_'+ls[i]).val(node.data["lang_"+ls[i]]);
                         }
+                    }
+                    if (node.data.url) {
+                        $('#url').val(node.data.url);
                     }
                     $('#node_title').select();
                     $('#node_title').focus();
@@ -88,7 +92,8 @@ $(document).ready(function () {
                 _nc["lang_"+arr[i]] = '';
                 $('#node_title_'+arr[i]).val('');
             }
-            node.expand();            
+            _nc.url = '';
+            node.expand();
             _nc.activate();            
             _nc.setTitle(js_lang_node_untitled);
         } else {
@@ -107,6 +112,7 @@ $(document).ready(function () {
                 if (arr[i].length)
                     _nc["lang_"+arr[i]] = js_lang_node_untitled;
                 }            
+                _nc.url = '';
                 node.expand();                
                 _nc.activate();
                 _nc.setTitle(js_lang_node_untitled);
@@ -140,7 +146,7 @@ $(document).ready(function () {
         for (var i=0; i<arr.length; i++) {
             node.data["lang_"+arr[i]] = $('#node_title_'+arr[i]).val();
         }
-        node.data.lndata = data_title;
+        node.data['url'] = $('#url').val();
         node.setTitle($('#node_title_'+js_current_lang).val());
         $('#node_edit').hide();
     });
