@@ -236,7 +236,7 @@ get '/data/list' => sub {
   my $json_xs = JSON::XS->new();
   my $hwd;
 
-  my $jdata=loadFile(config->{root_dir}.'/'.config->{data_dir}.'/catalog_tree.json');    
+  my $jdata=loadFile(config->{root_dir}.'/'.config->{data_dir}.'/catalog_tree_clean.json');    
   if (defined $jdata) { 
    $Data::Walk::lang = $_current_lang;
    my $json = decode_json($$jdata);   
@@ -676,34 +676,52 @@ sub processLang {
   }
 }
 
+sub processFilter {
+  my $node = $Data::Walk::container;
+  my $data = $_ || '';
+  if (ref($node) && ref($node) eq 'HASH') {
+    if ($data ne "title" && $data ne "uid" && $data ne "url" && $data !~ m/^lang_/ && $data ne "children") {
+      delete ($node->{$data});
+    }      
+  }
+}
+
 sub hash_walk {
-    my ($data, $level, $items) = @_;
+    my ($data, $level, $items, $path) = @_;
     $level = 0 if !$level;
     $items = [] if !$items;
+    $path = {} if !$path;
     if (ref($data) eq 'HASH') {
       if ($data->{uid}) {
-        my $offset = '';
         my $_level = int($level/2);
         if ($_level < 0) {
           $_level = 0;
         }
         my %item;
         $item{uid} = $data->{uid};
-        $item{level} = $_level;
-        $item{title} = $data->{title};
-        push @$items, \%item;
+        $item{title} = $data->{title};   
+        $item{level} = $_level;   
+        $path->{$_level} = $data->{url};
+        my $url = '';
+        for (my $i=0; $i <= $_level; $i++) {
+          $url .= "/".$path->{$i};
+        }
+        $url =~ s/\/+/\//gm;
+        $url =~ s/\/$//;
+        $item{url} = $url;
+        push @$items, \%item;        
       }
     }
     if (ref($data) eq 'ARRAY') {
      foreach my $item (@$data) {
         if (ref($item) eq 'HASH') {
           $level++;
-          $items = &hash_walk(\%{$item}, $level, $items);
+          $items = &hash_walk(\%{$item}, $level, $items, $path);
           $level--;
         }
         if (ref($item) eq 'ARRAY') {
           $level++;
-          $items = &hash_walk(\@$item, $level, $items);
+          $items = &hash_walk(\@$item, $level, $items, $path);
           $level--;
         }
       }
@@ -712,7 +730,7 @@ sub hash_walk {
       while (my ($k, $v) = each %$data) {               
           if (ref($v) eq 'ARRAY') {
               $level++;
-              $items = &hash_walk(\@$v, $level, $items);
+              $items = &hash_walk(\@$v, $level, $items, $path);
               $level--;
           }
       }
@@ -748,13 +766,20 @@ post '/data/tree/save' => sub {
   my $jsoncnv=JSON::XS->new->ascii(1)->pretty(0)->encode($json);
   #$jsoncnv=~s/[\n\r\0]//gm;
   my $res_err=qq~{ "result": "0" }~;
-  removeFile(config->{root_dir}.'/'.config->{data_dir}.'/catalog_tree.html');
   open(DATA, '>'.config->{root_dir}.'/'.config->{data_dir}.'/catalog_tree.json') || return $res_err;
   flock(DATA, LOCK_EX) || return $res_err;
   binmode DATA;
   print DATA $jsoncnv || return $res_err;
   close(DATA) || return $res_err;
-  #&_delay(2);
+  $json=JSON::XS->new->utf8(0)->decode($data);
+  $json=$json->{children};
+  walk \&processFilter, $json;
+  my $jsoncnv_clean=JSON::XS->new->ascii(1)->pretty(0)->encode($json);
+  open(DATA, '>'.config->{root_dir}.'/'.config->{data_dir}.'/catalog_tree_clean.json') || return $res_err;
+  flock(DATA, LOCK_EX) || return $res_err;
+  binmode DATA;
+  print DATA $jsoncnv_clean || return $res_err;
+  close(DATA) || return $res_err;
   return qq~{ "result": "1" }~;
 };
 

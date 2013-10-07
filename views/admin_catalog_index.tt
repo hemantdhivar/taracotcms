@@ -465,6 +465,7 @@ var js_lang_password_hint = "[== $lang->{password_hint} =]";
 var js_lang_nocat = "[== $lang->{nocat} =]";
 var langs = new HashTable({[== $hash_langs =]});
 var cats = new HashTable({});
+var urls = new HashTable({});
 </script>
 <script src="/js/modules/admin_catalog_index.js"></script>
 <script type="text/javascript">$('#nav_catalog').addClass('active')</script>

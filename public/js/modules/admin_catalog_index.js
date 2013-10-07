@@ -228,11 +228,12 @@ $('#filename').change(function () {
     var host = window.location.hostname;
     var re = new RegExp(js_current_lang + "\\.", "");
     host = host.replace(re, '');
+    var caturl = urls.getItem($('#cat').val());
     var path = $('#filename').val().replace(/^\//, '');
     var lang = $('#lang').val();
     lang += '.';
     path = path.replace(/[^a-z0-9\-_\.\/]/g, '');
-    var url = 'http://' + lang + host + '/' + path;
+    var url = 'http://' + lang + host + caturl + '/' + path;
     url = url.replace(re, '');
     $('#url_help').html('<a href="' + url + '" target="blank">' + url + '</a>');
 });
@@ -240,6 +241,9 @@ $('#pagetitle').change(function () {
     if (!$('#filename').val() && $('#pagetitle').val().length > 0) {
         generateURL();
     }
+});
+$('#cat').change(function () {
+    $('#filename').change();
 });
 $('#lang').change(function () {
     $('#filename').change();
@@ -924,6 +928,7 @@ fnGenerateData = function(data) {
             }
             select_data += '<option value="' + data.hwd[i].uid + '">' + offset + data.hwd[i].title + '</option>';
             cats.setItem(data.hwd[i].uid, data.hwd[i].title);
+            urls.setItem(data.hwd[i].uid, data.hwd[i].url);
         }
     }
     $('#category_select_cat').html(select_data);
