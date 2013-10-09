@@ -66,6 +66,7 @@ sub _load_lang {
 prefix '/';
 
 get qr{(.*)} => sub {
+  my $_current_lang=_load_lang();    
   my ($url) = splat;
   # remove dupe chars
   $url=~s/(\/)\1+/$1/gi;
@@ -78,17 +79,146 @@ get qr{(.*)} => sub {
   }
   if ($url !~ /^[A-Za-z0-9_\-\/]{0,254}$/) {
    pass();
-  }  
+  }
+  my $page = int(param('page')) || 1;
+  my $ipp = 10;
+  my $limx = $page*$ipp-$ipp;
+  if ($page < 1) {
+    $page = 1;
+  }
+  my @urlarr = split(/\//, $url);
+  my $filename = pop(@urlarr);
+  my $path = join('/', @urlarr);
+
+  my $json_xs = JSON::XS->new();
+  my $hwd;
+  my $hcd;
+  my %uids;
+  my %urls;
+  my %ttls;
+
+  my $jdata=loadFile(config->{root_dir}.'/'.config->{data_dir}.'/catalog_tree_clean.json');    
+  if (defined $jdata) { 
+   $Data::Walk::lang = $_current_lang;
+   my $json = decode_json($$jdata);   
+   walk \&processLang, $json;
+   $hwd = &hash_walk($json);
+   foreach my $item(@$hwd) {
+    $uids{$item->{url}} = $item->{uid};
+    $urls{$item->{uid}} = $item->{url};
+    $ttls{$item->{uid}} = $item->{title};
+   }
+   $hcd = &hash_children($uids{$url}, $json);
+  }
+  
+  my $auth_data = &taracot::admin::_auth();  
+  my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);
+
+  my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { filename => '/'.$filename, category => $uids{$path}, lang => $_current_lang });
+
+  if (!$db_data && $uids{$url}) {
+    my $total=0;
+    my $sth = database->prepare('SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_catalog WHERE lang = '.database->quote($_current_lang).' AND status=1 AND category='.$uids{$url});
+    if ($sth->execute()) {
+     ($total) = $sth -> fetchrow_array;
+    }
+    $sth->finish();
+
+    my $pc = int($total / $ipp);
+    if ($total % $ipp) {
+      $pc++;
+    } 
+    my $html_paginator='';
+    # Paginator code : begin
+    if ($pc > 1) {
+      my $url = request->path().'?page=';      
+      my $pitems='';
+      if ($page ne 1) {
+        $pitems .= template 'catalog_paginator_item', { page_url => $url.'1', page_text => '&laquo;' }, { layout => undef };
+      }    
+      my $lof = 4-$page;
+      if ($lof > 3 || $lof < 0) {
+        $lof=0;
+      }
+      my $rof = -($page-$pc);
+      if ($rof > 3) {
+        $rof=0;
+      } else {
+        $rof=3-$rof;
+      }
+      for (my $it=1; $it<=$pc; $it++) {    
+        if ($pc>7) {
+          if ($it < $page-3-$rof || $it > $page+3+$lof) {
+            next;
+          }
+        }
+        my $active;
+        if ($it eq $page) {
+          $active = 1;
+        }
+        $pitems .= template 'catalog_paginator_item', { page_url => $url.$it, page_text => $it,active => $active }, { layout => undef };
+      }
+      if ($page ne $pc) {
+        $pitems .= template 'catalog_paginator_item', { page_url => $url.$pc, page_text => '&raquo;' }, { layout => undef };
+      }
+      $html_paginator = template 'catalog_paginator', { items => $pitems }, { layout => undef };
+    } 
+    # Paginator code : end
+
+    my $_in = 0;
+    foreach my $item (@$hwd) {       
+      if ($uids{$url} eq $item->{uid}) {
+        last;
+      }
+      $_in++; 
+    }
+    my @parent_ids;
+    my $_lv = @$hwd[$_in]->{level};
+    if ($_in >= 0) {
+      for (my $i = $_in; $i>=0; $i--) {
+        if (@$hwd[$i]->{level} < $_lv) {
+          push @parent_ids, @$hwd[$i]->{uid};
+          $_lv = @$hwd[$i]->{level};
+        }        
+      }
+    }
+    @parent_ids = reverse @parent_ids;
+   
+    my $html_children = '';
+    if ($hcd) {
+      $html_children .= &taracot::_process_template( template 'catalog_children', { children => $hcd, lang => $lang }, { layout => undef } );
+    }
+
+    my $html_parents = '';
+    if (@parent_ids) {
+      $html_parents .= &taracot::_process_template( template 'catalog_parents', { parents => \@parent_ids, urls => \%urls, ttls => \%ttls, lang => $lang }, { layout => undef } );
+    }
+
+    my $output_layout = '';
+    if ($total > 0) {
+      my $sth = database->prepare('SELECT id, pagetitle, status, filename, category, layout, cat_text FROM '.config->{db_table_prefix}.'_catalog WHERE (lang = '.database->quote($_current_lang).' AND status=1 AND category='.$uids{$url}.') LIMIT '.$limx.', '.$ipp);
+      my $output = '';      
+      if ($sth->execute()) {        
+        while (my ($id, $pagetitle, $status, $filename, $category, $layout, $cat_text) = $sth->fetchrow_array) {
+          $output_layout = $layout if (!$output_layout);
+          $output .= template 'catalog_item', { title => $pagetitle, cat_text => $cat_text, url => $urls{$category}.$filename, lang => $lang }, { layout => undef }; 
+        }
+      }
+      $sth->finish();
+      my $html_items = '';
+      $html_items .= &taracot::_process_template( template 'catalog_items', { items => $output, lang => $lang }, { layout => undef } );
+      return &taracot::_process_template( template 'catalog_list', { cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_children => $html_children, html_items => $html_items, html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => $output_layout.'_'.$_current_lang } );
+    } else {
+      return &taracot::_process_template( template 'catalog_list', { cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_children => $html_children, html_items => '', html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+    }
+  }
+
   if (!session('user')) {
     my $cache_data = $cache_plugin->get_data(request->uri_base().$url);
     if ($cache_data) {
       return $cache_data;
     }
-  }
-  my $auth_data = &taracot::admin::_auth();
-  my $_current_lang=_load_lang();    
-  my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { filename => $url, lang => $_current_lang });
-  my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);  
+  }  
   $db_data->{keywords} = $db_data->{keywords} || '';
   $db_data->{description} = $db_data->{description} || '';
   my $page_keywords = $db_data->{keywords}.', '.$page_data->{site_keywords};
@@ -267,6 +397,7 @@ post '/data/save' => sub {
   my $content=param('content') || '';
   my $status=param('status') || 0;
   my $plang=param('lang') || '';
+  my $cat_text=param('cat_text') || '';
   my $layout=param('layout') || '';
   $status=int($status);
   $category = int($category);
@@ -283,6 +414,9 @@ post '/data/save' => sub {
   $pagetitle=~s/\&/&amp;/gm;
   if ($pagetitle !~ /^.{0,254}$/) {
    return qq~{"result":"0","field":"pagetitle","error":"~.$lang->{form_error_invalid_pagetitle}.qq~"}~;
+  }
+  if (length($cat_text) > 102400) {
+   return qq~{"result":"0","field":"cat_text","error":"~.$lang->{form_error_invalid_cat_text}.qq~"}~;
   }
   if ($filename ne '/') {
    # remove dupe chars
@@ -393,12 +527,12 @@ if (langof($content) eq 'ru') {
     $content = $jevix->process(\encode_utf8($content))->{text};
   }
   if ($id > 0) {
-   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, category => $category, layout => $layout, lastchanged => time });   
+   database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, category => $category, layout => $layout, cat_text => $cat_text, lastchanged => time });   
    if ($status eq 1) {
     $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'catalog');
    }
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, category => $category, lastchanged => time });
+   database->quick_insert(config->{db_table_prefix}.'_catalog', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, cat_text => $cat_text, category => $category, lastchanged => time });
    my $id = database->{q{mysql_insertid}}; 
    if ($status eq 1) {
     $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'catalog');
@@ -735,6 +869,78 @@ sub hash_walk {
           }
       }
     }  
+    return $items;
+}
+
+sub hash_children {
+    my ($suid, $data, $level, $items, $path, $uf) = @_;
+    $level = 0 if !$level;
+    $items = [] if !$items;
+    $path = {} if !$path;
+    if (ref($data) eq 'HASH') {
+      if ($data->{uid} && $data->{uid} eq $suid) {
+        my $_level = int($level/2);
+        if ($_level < 0) {
+          $_level = 0;
+        }
+        $uf = $_level;
+        $path->{$_level} = $data->{url};
+      } else {
+        my $_level = 0;
+        if ($data->{uid}) {
+          $_level = int($level/2);
+          if ($_level < 0) {
+            $_level = 0;
+          }
+          $path->{$_level} = $data->{url};
+        }  
+        if ($uf) {          
+          if ($level <= $uf) {
+            die $items;
+            return $items;
+          }
+          if ($data->{uid}) {
+            if ($_level eq $uf+1) {
+              my %item;
+              $item{uid} = $data->{uid};
+              $item{title} = $data->{title};   
+              $item{level} = $_level;                 
+              my $url = '';
+              for (my $i=0; $i <= $_level; $i++) {
+                $url .= "/".$path->{$i};
+              }
+              $url =~ s/\/+/\//gm;
+              $url =~ s/\/$//;
+              $item{url} = $url;
+              push @$items, \%item;
+            }                  
+          }
+        }
+      }
+    }
+    if (ref($data) eq 'ARRAY') {
+     foreach my $item (@$data) {
+        if (ref($item) eq 'HASH') {
+          $level++;
+          $items = &hash_children($suid, \%{$item}, $level, $items, $path, $uf);
+          $level--;
+        }
+        if (ref($item) eq 'ARRAY') {
+          $level++;
+          $items = &hash_children($suid, \@$item, $level, $items, $path, $uf);
+          $level--;
+        }
+      }
+    }
+    if (ref($data) eq 'HASH') {
+      while (my ($k, $v) = each %$data) {               
+          if (ref($v) eq 'ARRAY') {
+              $level++;
+              $items = &hash_children($suid, \@$v, $level, $items, $path, $uf);
+              $level--;
+          }
+      }
+    }
     return $items;
 }
 

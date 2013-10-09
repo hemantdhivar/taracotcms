@@ -286,7 +286,7 @@
 		<div id="form_notice">
 		</div>
 		<br />
-		<div class="alert alert-block alert-error" id="form_error_msg">
+		<div class="alert alert-danger" id="form_error_msg">
 			<span id="form_error_msg_text"></span>
 		</div>
 		<br />
@@ -351,6 +351,13 @@
     				[== $lang->{status2} =] </label>
     			</div>
     		</div>
+
+        <div class="form-group" id="cg_cat_text">
+          <label class="control-label col-lg-2">[== $lang->{cat_text} =]&nbsp;<span class="required_field">*</span></label>
+          <div class="col-lg-10">
+            <textarea class="form-control" rows="5" id="cat_text"></textarea>
+          </div>
+        </div>
     		            
         		<div class="form-group" id="cg_lang">
         			<label class="control-label col-lg-2" for="lang">[== $lang->{language} =]&nbsp;<span class="required_field">*</span></label>

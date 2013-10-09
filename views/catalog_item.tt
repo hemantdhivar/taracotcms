@@ -1,0 +1,9 @@
+<div class="media">
+  <a class="pull-left" href="[== $url =]">    
+  	<img class="media-object" src="/images/placeholder_100x100.png" alt="" />
+  </a>
+  <div class="media-body">
+    <a href="[== $url =]"><h3 class="media-heading">[== $title =]</h3></a>
+    [== $cat_text =]
+  </div>
+</div>

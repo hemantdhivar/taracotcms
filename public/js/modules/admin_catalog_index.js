@@ -545,19 +545,23 @@ $('#btn_edit_save').click(function () {
     resetFormState();
     var errors = false;
     if (!$('#pagetitle').val().match(/^.{1,254}$/)) {
-        $('#cg_pagetitle').addClass('error');
+        $('#cg_pagetitle').addClass('has-error');
         errors = true;
     }
     if (!$('#filename').val().match(/^.{1,254}$/)) {
-        $('#cg_filename').addClass('error');
+        $('#cg_filename').addClass('has-error');
         errors = true;
     }
     if (!$('#keywords').val().match(/^.{0,254}$/)) {
-        $('#cg_keywords').addClass('error');
+        $('#cg_keywords').addClass('has-error');
         errors = true;
     }
     if (!$('#description').val().match(/^.{0,254}$/)) {
-        $('#cg_description').addClass('error');
+        $('#cg_description').addClass('has-error');
+        errors = true;
+    }
+    if (!$('#cat_text').val().length > 102400) {
+        $('#cg_cat_text').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -593,6 +597,7 @@ $('#btn_edit_save').click(function () {
                 status: $("input[name='status']:checked").val(),
                 content: tmp_content,
                 lang: $('#lang').val(),
+                cat_text: $('#cat_text').val(),
                 layout: $('#layout').val()
             },
             dataType: "json",
@@ -609,7 +614,7 @@ $('#btn_edit_save').click(function () {
                     $('#data_edit_form_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                     $("html, body").animate({
@@ -670,6 +675,7 @@ function editData(id) {
     $('#pagetitle').val('');
     $('#password').val('');
     $('#password_repeat').val('');
+    $('#cat_text').val('');
     $('#filename').val('');
     $('#data_edit_form').hide();
     $('#wysiwyg_editor_wrap').hide();
@@ -730,6 +736,9 @@ function editData(id) {
                     } else {
                         CKEDITOR.instances.wysiwyg_editor.setData(data.content);                        
                     }
+                }
+                if (data.cat_text) {
+                    $('#cat_text').val(data.cat_text);
                 }
                 if (data.status) {
                     if (data.status == 0) {
@@ -890,10 +899,11 @@ function deleteData(id) {
 }
 // Remove all "error" notification classes from form items
 function resetFormState() {
-    $('#cg_pagetitle').removeClass('error');
-    $('#cg_keywords').removeClass('error');
-    $('#cg_description').removeClass('error');
-    $('#cg_filename').removeClass('error');
+    $('#cg_pagetitle').removeClass('has-error');
+    $('#cg_keywords').removeClass('has-error');
+    $('#cg_description').removeClass('has-error');
+    $('#cg_filename').removeClass('has-error');
+    $('#cg_cat_text').removeClass('has-error');
     $('#password_hint').html(js_lang_password_hint);
     $('#eb_switch_cm').removeClass('disabled');
     $('#wysiwyg_editor_wrap').show();

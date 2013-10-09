@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Oct 04, 2013 at 05:14 PM
+-- Generation Time: Oct 09, 2013 at 06:26 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.4
 -- 
@@ -315,6 +315,7 @@ CREATE TABLE `taracot_catalog` (
   `pagetitle` varchar(255) NOT NULL,
   `keywords` varchar(255) default NULL,
   `description` varchar(255) default NULL,
+  `cat_text` text,
   `content` text,
   `status` int(11) NOT NULL,
   `filename` varchar(255) NOT NULL,
@@ -324,13 +325,14 @@ CREATE TABLE `taracot_catalog` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `filter` (`pagetitle`,`filename`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- 
 -- Dumping data for table `taracot_catalog`
 -- 
 
-INSERT INTO `taracot_catalog` VALUES (1, 'Test item', '', '', '<p>OK Computer</p>\n', 1, '/', 1380712146944, 'en', 'taracot', 1380886960);
+INSERT INTO `taracot_catalog` VALUES (1, 'Test item', '', 'Test item', 'This is a short text for catalog item 1. Шляпка идет скошенная под углом, что лишает возможности открутить ее плоскогубцами, сама отвертка идет в виде цветочка. В комплекте 4 болта + отвертка-секретка. Все это в красивом блистере - 100% фирмА, чегоуж :) Вместо "цветочка" если бы под золотые купола секретку сделать, вот была бы тема!', '<p>OK Computer</p>\n', 1, '/medved', 1381231852874, 'en', 'taracot', 1381316964);
+INSERT INTO `taracot_catalog` VALUES (2, 'Ours', '', 'Test item', 'Your media process is responsible for communicating with your media files (.mp3, .wav .jpg, .png etc.; music, photos etc.) stored on the storage space, and rendering them to you via easy access apps. For example, the media app will search your whole storage space for photos/images, and will make them viewable via the "Gallery" app. Disabling the media process will stop the Gallery app from functioning, and other apps too which have the same behaviour.', '<p>Hey hey</p>\n', 1, '/ours', 1381231852874, 'en', 'taracot', 1381316968);
 
 -- --------------------------------------------------------
 
@@ -456,7 +458,8 @@ INSERT INTO `taracot_search_db` VALUES ('portfolio', 48, 'ru', 'Color Lines', 'C
 INSERT INTO `taracot_search_db` VALUES ('portfolio', 49, 'ru', 'Кинг', 'Кинг – карточная игра, популярная в России. Иногда ее называют «дамским преферансом». Во Франции есть похожая карточная игра Barbu (фр. «Борода»).Особенности текущей верси...', 'россии многопользовательской до франции популярная по разрешения похожая есть игры в ренессанс текущей 1920x1080- hd full различные дамским игра wi-fi кинг преферансом во версии- иногда называют и скат- поддержка ее фр бородаособенности barbu карточная карт колоды атласные', '/portfolio/king', 1379321279);
 INSERT INTO `taracot_search_db` VALUES ('portfolio', 50, 'ru', 'Bubble Breaker', 'Bubble Breaker - увлекательная логическая игра для вашего Android-устройства. Она абсолютно бесплатна, и в ней отсутствует реклама!Особенности данной версии:- Поддержка графики Full HD (до 1...', 'рекламаособенности breaker windows до абсолютно переключение бесплатна как игры в для звук- hd комфортной 1920x1980- графики различных full же четыре вашего игра отсутствует увлекательная оригинальной android-устройства так версии- - и логическая ней данной поддержка она игровых режимов день-ночь оригинальная графика bubble mobile-версии- режима', '/portfolio/bubblebreaker', 1379321279);
 INSERT INTO `taracot_search_db` VALUES ('portfolio', 51, 'ru', 'Девятка', 'Девятка - захватывающая карточная игра.Особенности текущей версии:- Поддержка Full HD разрешения (до 1920x1080)- Различные колоды карт («атласные», «ренессанс» и...', 'многопользовательской захватывающая до версии- по разрешения и - скат- девятка поддержка игры играособенности ренессанс текущей 1920x1080- карточная hd full различные карт колоды wi-fi атласные', '/portfolio/nine', 1379321279);
-INSERT INTO `taracot_search_db` VALUES ('catalog', 1, 'en', 'Test item', 'OK Computer', 'ok test item computer', '/', 1380886960);
+INSERT INTO `taracot_search_db` VALUES ('catalog', 1, 'en', 'Test item', 'OK Computer', 'ok test item computer', '/medved', 1381316964);
+INSERT INTO `taracot_search_db` VALUES ('catalog', 2, 'en', 'Ours', 'Hey hey', 'ours hey', '/ours', 1381316968);
 
 -- --------------------------------------------------------
 

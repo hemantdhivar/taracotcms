@@ -1,0 +1,11 @@
+<?pl if (@$parents) { ?>
+<ol class="breadcrumb">
+<?pl 
+	my $prnts='';
+	foreach my $item(@$parents) {
+		$prnts.='<li><a href="'.$urls->{$item}.'">'.$ttls->{$item}.'</a></li>'
+	}
+?>
+[== $prnts =]
+</ol>
+<?pl } ?>

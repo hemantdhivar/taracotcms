@@ -38,6 +38,7 @@ form_error_invalid_description: Invalid description syntax
 form_error_invalid_status: Invalid status
 form_error_invalid_lang: Invalid language
 form_error_invalid_layout: Invalid layout
+form_error_invalid_cat_text: Invalid catalog short text
 add_success_notify: New item has been added
 edit_success_notify: Item data has been changed
 data_loading_error: Error while loading data from server. Please check your connection and try again.
@@ -98,3 +99,5 @@ map_tree: Elements Tree
 category: Category
 category_select: Select category
 nocat: No category
+subcategories: Subcategories
+cat_text: Catalog short text

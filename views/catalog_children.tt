@@ -1,0 +1,9 @@
+<?pl 
+my $items = '';
+foreach my $item (@$children) { 
+	$items .= ', <a href="'.$item->{url}.'">'.$item->{title}.'</a>';
+} 
+if ($items) {
+	$items =~ s/, //;
+?>[== $lang->{subcategories} =]: [== $items =]
+<?pl } ?>

@@ -1,0 +1,5 @@
+<h1>[== $cat =]</h1>
+<div>[== $html_parents =]</div>
+<div>[== $html_children =]</div>
+<div>[== $html_items =]</div>
+[== $html_paginator =]
