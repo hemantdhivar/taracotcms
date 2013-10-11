@@ -352,6 +352,36 @@
     			</div>
     		</div>
 
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-10 col-md-10 col-lg-10">
+          <div id="catalog_item_wrap">
+            <div id="catalog_loading" style="display:none">
+                <div id="floatingCirclesG">
+                    <div class="f_circleG" id="frotateG_01">
+                    </div>
+                    <div class="f_circleG" id="frotateG_02">
+                    </div>
+                    <div class="f_circleG" id="frotateG_03">
+                    </div>
+                    <div class="f_circleG" id="frotateG_04">
+                    </div>
+                    <div class="f_circleG" id="frotateG_05">
+                    </div>
+                    <div class="f_circleG" id="frotateG_06">
+                    </div>
+                    <div class="f_circleG" id="frotateG_07">
+                    </div>
+                    <div class="f_circleG" id="frotateG_08">
+                    </div>
+                </div>
+            </div>
+            <img src="[== $default_cat_pic =]" alt="" id="catalog_item_img" onclick="$('#btn_catimg_change').click()" height="100" width="100">
+          </div>
+          <div style="height:8px;width:100px"></div>        
+          <button class="btn btn-default btn-xs" id="btn_catimg_change">[== $lang->{change_catalog_image} =]</button>
+          </div>
+        </div>
+
         <div class="form-group" id="cg_cat_text">
           <label class="control-label col-lg-2">[== $lang->{cat_text} =]&nbsp;<span class="required_field">*</span></label>
           <div class="col-lg-10">
@@ -470,9 +500,13 @@ var js_lang_delete_success_notify = "[== $lang->{delete_success_notify} =]";
 var js_lang_switch_mode_question = "[== $lang->{switch_mode_question} =]";
 var js_lang_password_hint = "[== $lang->{password_hint} =]";
 var js_lang_nocat = "[== $lang->{nocat} =]";
+var js_lang_image_files = "[== $lang->{js_lang_image_files} =]";
+var js_lang_image_uploading_error = "[== $lang->{image_uploading_error} =]";
 var langs = new HashTable({[== $hash_langs =]});
 var cats = new HashTable({});
 var urls = new HashTable({});
+var default_cat_pic = '[== $default_cat_pic =]';
 </script>
+<script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
 <script src="/js/modules/admin_catalog_index.js"></script>
 <script type="text/javascript">$('#nav_catalog').addClass('active')</script>

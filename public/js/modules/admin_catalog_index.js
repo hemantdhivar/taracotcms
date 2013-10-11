@@ -52,7 +52,47 @@ $('input:radio[name="status_select_status"]').bind('keypress', function (e) {
     }
 });
 
-$(document).ready(function () {
+var uploader = null;
+
+function initUploader() {
+    uploader = new plupload.Uploader({
+        runtimes: 'html5,flash,silverlight,html4',
+        browse_button: 'btn_catimg_change',
+        max_file_size: '1mb',
+        multi_selection: 'false',
+        multipart_params: { 'id' : 0 },
+        url: '/admin/catalog/data/save_index_pic',
+        flash_swf_url: '/js/plupload/plupload.flash.swf',
+        silverlight_xap_url: '/js/plupload/plupload.silverlight.xap',
+        filters: [{
+            title: js_lang_image_files,
+            extensions: "jpg,jpeg,png"
+        }]
+    });
+    uploader.init();
+    uploader.bind('FilesAdded', function (up, files) {
+        $('#catalog_loading').show();
+        $('#catalog_item_img').hide();
+        uploader.start();
+    });
+    uploader.bind('FileUploaded', function (up, file, response) {
+        var res = jQuery.parseJSON(response.response);
+        if (res.error == '1') {
+            $('#catalog_loading').hide();
+            $('#catalog_item_img').show();
+            alert(js_lang_image_uploading_error);
+        } else {
+            $('#catalog_loading').hide();
+            $("#catalog_item_img").attr("src", "/files/catalog_index/id_"+ edit_id +".tmp.jpg?" + Math.random());
+            $('#catalog_item_img').show();
+        }
+    });
+    uploader.bind('Error', function (up, error) {
+        alert(js_lang_image_uploading_error);
+    });
+}
+
+$(document).ready(function () {   
     $('#plain_editor').css('width', ($('#data_table').width() - 50) + 'px');
     // Init CkEditor
     $('#wysiwyg_editor').ckeditor({
@@ -386,6 +426,7 @@ $('#btn_add').click(function () {
     $('#filename').change();
     $('#h_data_actions').html(js_lang_add_page);
     $('#form_notice').html(js_lang_form_notice_add);
+    $('#catalog_item_img').attr('src', default_cat_pic);
     $('#pagetitle').val('');
     $('#filename').val('');
     $('#cat').val(0);
@@ -677,6 +718,7 @@ function editData(id) {
     $('#password_repeat').val('');
     $('#cat_text').val('');
     $('#filename').val('');
+    $('#catalog_item_img').attr('src', default_cat_pic);
     $('#data_edit_form').hide();
     $('#wysiwyg_editor_wrap').hide();
     $('#plain_editor_wrap').hide();
@@ -708,6 +750,10 @@ function editData(id) {
                 $('#wysiwyg_editor_wrap').hide();
                 $('#editor_buttons').hide();
             } else { // OK
+                if (!uploader) {
+                    initUploader();
+                }
+                uploader.settings.multipart_params.id = edit_id;
                 $('#ajax_loading').hide();
                 $('#data_edit_form').show();
                 $('#form_controls').show();
@@ -761,6 +807,9 @@ function editData(id) {
                 }
                 if (data.layout) {
                     $('#layout').val(data.layout);
+                }
+                if (data.cat_pic) {
+                    $('#catalog_item_img').attr('src', data.cat_pic + '?' + Math.random());
                 }
                 $('#filename').change();
                 $('#pagetitle').focus();

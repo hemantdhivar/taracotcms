@@ -282,7 +282,7 @@ get '/' => sub {
    $_cnt++;
   }
   $hash_langs=~s/, //;
-  return template 'admin_catalog_index', { current_lang => $_current_lang, default_lang => config->{lang_default}, lang => $lang, navdata => $navdata, authdata => $auth, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
+  return template 'admin_catalog_index', { default_cat_pic => config->{files_url}.'/catalog_index/default.png', current_lang => $_current_lang, default_lang => config->{lang_default}, lang => $lang, navdata => $navdata, authdata => $auth, list_layouts => $list_layouts, list_langs => $list_langs, hash_langs => $hash_langs }, { layout => 'admin' };
   
 };
 
@@ -526,6 +526,10 @@ if (langof($content) eq 'ru') {
     $jevix->setConf($conf);
     $content = $jevix->process(\encode_utf8($content))->{text};
   }
+  if (-e config->{files_dir}."/catalog_index/id_".$id.'.tmp.jpg') {
+    removeFile(config->{files_dir}."/catalog_index/id_".$id.'.jpg');
+    moveFile(config->{files_dir}."/catalog_index/id_".$id.'.tmp.jpg', config->{files_dir}."/catalog_index/id_".$id.'.jpg');
+  }
   if ($id > 0) {
    database->quick_update(config->{db_table_prefix}.'_catalog', { id => $id }, { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, category => $category, layout => $layout, cat_text => $cat_text, lastchanged => time });   
    if ($status eq 1) {
@@ -704,11 +708,20 @@ post '/data/load' => sub {
   if ($id <= 0) {
    return qq~{"result":"0"}~;
   }
+
+  if (-e config->{files_dir}."/catalog_index/id_".$id.'.tmp.jpg') {
+    removeFile(config->{files_dir}."/catalog_index/id_".$id.'.tmp.jpg');
+  }
+  my $catpic = config->{files_url}.'/catalog_index/default.png';
+  if (-e config->{files_dir}.'/catalog_index/id_'.$id.'.jpg') {
+    $catpic = config->{files_url}.'/catalog_index/id_'.$id.'.jpg';
+  } 
   
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { id => $id });
   
   if ($db_data->{id}) {
    $db_data->{result} = 1;
+   $db_data->{cat_pic} = $catpic;
    $db_data->{password} = 0;
    my $json_xs = JSON::XS->new();
    my $json = $json_xs->encode($db_data);
@@ -756,6 +769,46 @@ post '/data/delete' => sub {
   } else {
     return qq~{"result":"0"}~;
   }
+};
+
+post '/data/save_index_pic' => sub {
+  content_type 'application/json';
+  my $auth = &taracot::_auth();
+  if (!$auth) { 
+    return '{"error":"1"}'; 
+  } 
+  my $id = param('id');
+  $id = int($id);
+  if (!$id || $id < 1) {
+   return '{"error":"1"}';
+  }
+  my $file = upload('file');
+  if (!defined $file) {
+   return '{"error":"1"}';
+  }
+  my $maxsize=config->{upload_limit_bytes} || 3145728; # 3 MB by default
+  if ($file->size > $maxsize) {
+    return '{"error":"1"}'; 
+  }  
+  my $img = Imager->new(file=>$file->tempname) || return '{"error":"1"}';
+  my $x = $img->getwidth();
+  my $y = $img->getheight();
+  if ($x ne $y) {
+    my $cb = undef;
+    if ($x > $y) {
+      $cb = $y;
+      $x =int(($x - $cb )/2);
+      $y =0;
+    } else {
+      $cb = $x ;
+      $y =int(($y - $cb )/2);
+      $x = 0;
+    }
+    $img = $img->crop( width=>$cb, height=>$cb );
+  }
+  $img = $img->scale(xpixels=>100, ypixels=>100);
+  $img->write(file => config->{files_dir}."/catalog_index/id_".$id.'.tmp.jpg');
+  return '{"error":"0"}'; 
 };
 
 post '/data/unidecode' => sub {

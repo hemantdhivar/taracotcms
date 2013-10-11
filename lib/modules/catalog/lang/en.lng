@@ -101,3 +101,6 @@ category_select: Select category
 nocat: No category
 subcategories: Subcategories
 cat_text: Catalog short text
+change_catalog_image: Change image
+image_uploading_error: Error while uploading your image
+image_files: Images

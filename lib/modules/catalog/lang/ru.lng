@@ -101,3 +101,6 @@ category_select: Выбор категории
 nocat: Без категории
 subcategories: Подкатегории
 cat_text: Краткое описание
+change_catalog_image: Сменить изображение
+image_uploading_error: Ошибка во время загрузки изображения
+image_files: Изображения
