@@ -2,10 +2,21 @@
 <ol class="breadcrumb">
 <?pl 
 	my $prnts='';
+	my $cldrn = '';
+	foreach my $item (@$children) { 
+		$cldrn .= '<li><a href="'.$item->{url}.'">'.$item->{title}.'</li>';
+	} 
+	my $cnt = 1;
 	foreach my $item(@$parents) {
-		$prnts.='<li><a href="'.$urls->{$item}.'">'.$ttls->{$item}.'</a></li>'
+		if ($cnt eq @$parents) {
+			$prnts.='<li class="active">'.$ttls->{$item}.'</li>';
+		} else {
+			$prnts.='<li><a href="'.$urls->{$item}.'">'.$ttls->{$item}.'</a></li>';
+		}		
+		$cnt++;
 	}
 ?>
 [== $prnts =]
+[== $cldrn =]
 </ol>
 <?pl } ?>

@@ -123,7 +123,6 @@ get qr{(.*)} => sub {
      ($total) = $sth -> fetchrow_array;
     }
     $sth->finish();
-
     my $pc = int($total / $ipp);
     if ($total % $ipp) {
       $pc++;
@@ -164,7 +163,6 @@ get qr{(.*)} => sub {
       $html_paginator = template 'catalog_paginator', { items => $pitems }, { layout => undef };
     } 
     # Paginator code : end
-
     my $_in = 0;
     foreach my $item (@$hwd) {       
       if ($uids{$url} eq $item->{uid}) {
@@ -173,6 +171,7 @@ get qr{(.*)} => sub {
       $_in++; 
     }
     my @parent_ids;
+    push @parent_ids, @$hwd[$_in]->{uid};
     my $_lv = @$hwd[$_in]->{level};
     if ($_in >= 0) {
       for (my $i = $_in; $i>=0; $i--) {
@@ -182,18 +181,11 @@ get qr{(.*)} => sub {
         }        
       }
     }
-    @parent_ids = reverse @parent_ids;
-   
-    my $html_children = '';
-    if ($hcd) {
-      $html_children .= &taracot::_process_template( template 'catalog_children', { children => $hcd, lang => $lang }, { layout => undef } );
-    }
-
+    @parent_ids = reverse @parent_ids;   
     my $html_parents = '';
     if (@parent_ids) {
-      $html_parents .= &taracot::_process_template( template 'catalog_parents', { parents => \@parent_ids, urls => \%urls, ttls => \%ttls, lang => $lang }, { layout => undef } );
+      $html_parents .= &taracot::_process_template( template 'catalog_parents', { parents => \@parent_ids, children => $hcd, urls => \%urls, ttls => \%ttls, lang => $lang }, { layout => undef } );
     }
-
     my $output_layout = '';
     if ($total > 0) {
       my $sth = database->prepare('SELECT id, pagetitle, status, filename, category, layout, cat_text FROM '.config->{db_table_prefix}.'_catalog WHERE (lang = '.database->quote($_current_lang).' AND status=1 AND category='.$uids{$url}.') LIMIT '.$limx.', '.$ipp);
@@ -201,18 +193,21 @@ get qr{(.*)} => sub {
       if ($sth->execute()) {        
         while (my ($id, $pagetitle, $status, $filename, $category, $layout, $cat_text) = $sth->fetchrow_array) {
           $output_layout = $layout if (!$output_layout);
-          $output .= template 'catalog_item', { title => $pagetitle, cat_text => $cat_text, url => $urls{$category}.$filename, lang => $lang }, { layout => undef }; 
+          my $cat_pic = config->{files_url}.'/catalog_index/default.png';
+          if (-e config->{files_dir}.'/catalog_index/id_'.$id.'.jpg') {
+            $cat_pic = config->{files_url}.'/catalog_index/id_'.$id.'.jpg';
+          } 
+          $output .= template 'catalog_item', { title => $pagetitle, cat_text => $cat_text, cat_pic => $cat_pic, url => $urls{$category}.$filename, lang => $lang }, { layout => undef }; 
         }
       }
       $sth->finish();
       my $html_items = '';
       $html_items .= &taracot::_process_template( template 'catalog_items', { items => $output, lang => $lang }, { layout => undef } );
-      return &taracot::_process_template( template 'catalog_list', { cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_children => $html_children, html_items => $html_items, html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => $output_layout.'_'.$_current_lang } );
+      return &taracot::_process_template( template 'catalog_list', { head_html => '<link href="'.config->{modules_css_url}.'catalog.css" rel="stylesheet" />', cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_items => $html_items, html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => $output_layout.'_'.$_current_lang } );
     } else {
-      return &taracot::_process_template( template 'catalog_list', { cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_children => $html_children, html_items => '', html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+      return &taracot::_process_template( template 'catalog_list', { head_html => '<link href="'.config->{modules_css_url}.'catalog.css" rel="stylesheet" />', cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_items => '', html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
     }
   }
-
   if (!session('user')) {
     my $cache_data = $cache_plugin->get_data(request->uri_base().$url);
     if ($cache_data) {

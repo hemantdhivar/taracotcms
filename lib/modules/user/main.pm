@@ -367,8 +367,24 @@ get '/revert/email/:username/:verification' => sub {
     my $render_template = &taracot::_process_template( template 'user_activate', { head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );
     return $render_template;
   }
-  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { email_save_verification => '', email_save => '', verification => '', email => $db_data->{email_save}, status => 1, lastchanged => time }); 
+  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { email_save_verification => '', email_save => '', verification => '', email => $db_data->{email_save}, status => 0, lastchanged => time }); 
+  $verification=md5_hex(config->{salt}.time.rand);
+  database->quick_update(config->{db_table_prefix}.'_users', { email => $db_data->{email_save} }, { verification => 'pwd_'.$verification, lastchanged => time });
+  my $pg_data= &taracot::_load_settings('site_title', $_current_lang);  
+  my $activation_url = request->uri_base().'/user/password/reset/'.$db_data->{username}.'/'.$verification;
+  if (config->{https_connection}) {
+    $activation_url =~ s/^http:/https:/i;
+  }
+  my $body = template 'user_mail_password_'.$_current_lang, { site_title => encode_entities_numeric($pg_data->{site_title}), activation_url => $activation_url, site_logo_url => request->uri_base().config->{site_logo_url} }, { layout => undef };
+  email {
+      to      => $db_data->{email_save},
+      subject => $lang->{user_register_email_subj}.': '.$pg_data->{site_title},
+      body    => $body,
+      type    => 'html',
+      headers => { "X-Accept-Language" => $_current_lang }
+  };
   $msg = $lang->{email_revert_success};
+
   my $render_template = &taracot::_process_template( template 'user_activate', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_activate}, msg => $msg }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
@@ -463,13 +479,13 @@ get '/password/reset/:username/:verification' => sub {
   my $username = params->{username};
   my $verification = params->{verification};
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  if ($username !~ /^[a-z0-9_\-]{1,100}$/ || $verification !~ /^[a-f0-9]{32}$/) { 
+  if ($username !~ /^[a-z0-9_\-\.]{1,100}$/ || $verification !~ /^[a-f0-9]{32}$/) { 
     my $render_template = &taracot::_process_template( template 'user_password_reset', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset} }, { layout => config->{layout}.'_'.$_current_lang } );
     return $render_template;
   }  
-  my $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, verification => 'pwd_'.$verification, status => 1 });
+  my $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, verification => 'pwd_'.$verification });
   if (!$db_data->{id}) {
-    my $render_template = &taracot::_process_template( template 'user_password_reset', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset} }, { layout => config->{layout}.'_'.$_current_lang } );
+    my $render_template = &taracot::_process_template( template 'user_password_reset', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset}.'!!!' }, { layout => config->{layout}.'_'.$_current_lang } );
     return $render_template;
   }
   my $render_template = &taracot::_process_template( template 'user_password_reset', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{user_password_reset}, username => $username, verification => $verification }, { layout => config->{layout}.'_'.$_current_lang } );
@@ -502,7 +518,7 @@ post '/password/reset/process' => sub {
     push @errors, $lang->{user_register_error_password};
     push @fields, 'password';  
   }
-  if ($verification !~ /^[a-f0-9]{32}$/ || $username !~ /^[A-Za-z0-9_\-]{1,100}$/) {
+  if ($verification !~ /^[a-f0-9]{32}$/ || $username !~ /^[A-Za-z0-9_\-\.]{1,100}$/) {
     $res{status}=0; 
     push @errors, $lang->{user_password_reset_inavlid_data};
   }
@@ -513,7 +529,7 @@ post '/password/reset/process' => sub {
   }
   # second wave validations
   my $db_data;
-  $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, verification => 'pwd_'.$verification, status => 1 });
+  $db_data = database->quick_select(config->{db_table_prefix}.'_users', { username => $username, verification => 'pwd_'.$verification });
   if (!$db_data->{id}) {
     $res{status}=0; 
     push @errors, $lang->{user_password_reset_fail}; 
@@ -521,7 +537,7 @@ post '/password/reset/process' => sub {
     return $json_xs->encode(\%res);
   }
   $password = md5_hex(config->{salt}.$password);
-  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => '', password => $password, lastchanged => time }); 
+  database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { verification => '', password => $password, status => 1, lastchanged => time }); 
   return $json_xs->encode(\%res);
 };
 

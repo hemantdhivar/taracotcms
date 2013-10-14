@@ -45,6 +45,13 @@
 			<br /><br />
 			<a href="[== $activation_url =]">[== $activation_url =]</a>
 			<br /><br />
+			What happens if you follow this URL:
+			<ul>
+				<li>- you account will be disabled;</li>
+				<li>- you old e-mail address will be restored;</li>
+				<li>- a password restore and account activation link will be sent to your old e-mail address.</li>
+			</ul>
+			<br /><br />
 			Thank you!
 		</td>
 	</tr>

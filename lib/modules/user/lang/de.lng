@@ -103,4 +103,4 @@ user_register_password_hint: You can change your password using the form below. 
 user_new_password: Neues Passwort
 user_realname_hint: Beispiel&#58;&nbsp;Max Mustermann
 user_cellphone_hint: Länderkennzeichen + Telefonnummer, Beispiel&#58;&nbsp;49 (146) 123-4567
-email_revert_success: You e-mail address change procedure has been cancelled.
+email_revert_success: You e-mail address change procedure has been cancelled. Your account has been locked, you need to change your password now. Please follow the instructions sent you by mail.
