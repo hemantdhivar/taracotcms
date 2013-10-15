@@ -7,6 +7,7 @@ use Digest::MD5 qw(md5_hex);
 use Encode;
 use Dancer::Plugin::Email;
 use HTML::Entities qw(encode_entities_numeric);
+use taracot::typo;
 
 # Configuration
 
@@ -17,7 +18,8 @@ my $defroute = '/support';
 my $lang;
 prefix $defroute;
 my $detect_lang;
-my @columns = ('id','stopic_id','stopic','sdate','susername_last','sstatus','unread'); 
+my @columns = ('id','stopic_id','stopic','sdate','susername_last','sstatus','unread');
+my $typo = taracot::typo->new();
 
 sub _name() {
  &_load_lang();
@@ -420,6 +422,7 @@ post '/answer/save' => sub {
   if ($status eq 2) {
     $status = 1;
   }
+  $ans_html = $typo->process($ans_html);
   database->quick_insert(config->{db_table_prefix}.'_support_ans', { susername => $auth->{username}, tid => $tid, sdate => time, smsg => $ans_html, smsg_hash => $ans_html_hash }); 
   database->quick_update(config->{db_table_prefix}.'_support', { id => $tid }, { susername_last => $auth->{username}, sdate => time, sstatus => $status, lastmodified => time });  
   my $aid = database->{q{mysql_insertid}};
@@ -523,6 +526,7 @@ post '/answer/specialist/save' => sub {
   if ($status eq 0) {
     $status = 1;
   }
+  $ans_html = $typo->process($ans_html);
   database->quick_insert(config->{db_table_prefix}.'_support_ans', { susername => $auth->{username}, tid => $tid, sdate => time, smsg => $ans_html, smsg_hash => $ans_html_hash }); 
   database->quick_update(config->{db_table_prefix}.'_support', { id => $tid }, { susername_last => $auth->{username}, sdate => time, sstatus => $status, unread => 1, lastmodified => time });  
   my $aid = database->{q{mysql_insertid}};
@@ -655,6 +659,7 @@ post '/ticket/save' => sub {
   if ($ahc) {
     return '{"status":"0","errmsg":"'.$lang->{dupe_ticket_msg}.'","field":"msg"}';
   }
+  $msg_html = $typo->process($msg_html);
   database->quick_insert(config->{db_table_prefix}.'_support', { susername => $auth->{username}, sdate => time, smsg => $msg_html, smsg_hash => $msg_html_hash, stopic_id => $topic_id, stopic => $topic, unread => 0,  sstatus => 0, susername_last => $auth->{username} }); 
   my $mail_list = '';
   if ($page_data->{support_mail}) {    

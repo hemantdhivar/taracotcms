@@ -8,8 +8,7 @@ use taracot::fs;
 use taracot::AUBBC;
 use URI::Encode qw(uri_encode uri_decode);
 use Encode;
-use Lingua::Identify qw(:language_identification);
-use taracot::jevix;
+use taracot::typo;
 
 # Configuration
 
@@ -20,6 +19,7 @@ my $defroute = '/blog';
 my $lang;
 prefix $defroute;
 my $detect_lang;
+my $typo = taracot::typo->new();
 
 sub _name() {
  &_load_lang();
@@ -649,48 +649,8 @@ post '/post/process' => sub {
   $blog_data_html =~s/\[cut\]/ /igm;
   $blog_data_html_cut = $aubbc->do_all_ubbc($blog_data_html_cut);
   # Process typography
-  if (langof($blog_data) eq 'ru') {
-    my $conf = {
-      isHTML => 1, # Hypertext mode (plain text mode is faster)
-      vanish => 0, # Convert source into plain text (ignores all other options)
-      lineBreaks => 0, # Add linebreaks <br />
-      paragraphs => 0, # Add paragraphs <p>
-      dashes => 1, # Long dashes
-      dots => 1, # Convert three dots into ellipsis
-      edgeSpaces => 1, # Clear white spaces around string
-      tagSpaces => 1, # Clear white spaces between tags (</td> <td>)
-      multiSpaces => 1, # Convert multiple white spaces into single
-      redundantSpaces => 1, # Clear white spaces where they should not be
-      compositeWords => 1, # Put composite words inside <nobr> tag
-      compositeWordsLength => 10, # The maximum length of composite word to put inside <nobr>
-      nbsp => 1, # Convert spaceses into non-breaking spaces where necessary
-      quotes => 1, # Quotes makeup
-      qaType => 0, # Outer quotes type (http://jevix.ru/)
-      qbType => 1, # Inner quotes type
-      misc => 1, # Little things (&copy, fractions and other)
-      codeMode => 2, # Special chars representation (0: ANSI <...>, 1: HTML <&#133;>, 2: HTML entities <&hellip;>)
-      tagsDenyAll => 0, # Deny all tags by default
-      tagsDeny => '', # Deny tags list
-      tagsAllow => '|A:href:title,br,B:STYLE', # Allowed tags list (exception to "deny all" mode)
-      tagCloseSingle => 1, # Close single tags when they are not
-      tagCloseOpen => 0, # Close all open tags at the end of the document
-      tagNamesToLower => 0, # Bring tag names to lower case
-      tagNamesToUpper => 0, # Bring tag names to upper case
-      tagAttributesToLower => 1, # Bring tag attributes names to lower case
-      tagAttributesToUpper => 0, # Bring tag attributes names to upper case
-      tagQuoteValues => 0, # Quote tag attribute values
-      tagUnQuoteValues => 0, # Unquote tag attributes values
-      links => 0, # Put urls into <a> tag
-      linksAttributes => {target=>'_blank'}, # Hash containing all new links attributes set
-      simpleXSS => 1, # Detect and prevent XSS
-      checkHTML => 0, # Check for HTML integrity
-      logErrors => 0 # Log errors
-    };
-    my $jevix = new taracot::jevix;
-    $jevix->setConf($conf);
-    $blog_data_html = $jevix->process(\encode_utf8($blog_data_html))->{text};
-    $blog_data_html_cut = $jevix->process(\encode_utf8($blog_data_html_cut))->{text};
-  }
+  $blog_data_html = $typo->process($blog_data_html);
+  $blog_data_html_cut = $typo->process($blog_data_html_cut);
   $blog_data =~ s/\</&lt;/gm;
   $blog_data =~ s/\>/&gt;/gm;
   my $remote_ip = request->env->{'HTTP_X_REAL_IP'};

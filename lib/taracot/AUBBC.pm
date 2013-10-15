@@ -24,8 +24,8 @@ my %AUBBC        = (
     aubbc_escape        => 1,
     no_img              => 0,
     icon_image          => 0,
-    image_height         => '60',
-    image_width         => '90',
+    image_height         => '',
+    image_width         => '',
     image_border        => '0',
     image_wrap          => ' ',
     href_target         => ' target="_blank"',
@@ -265,7 +265,7 @@ $2<\/blockquote>$AUBBC{quote_extra}/g;
  $msg =~ s/\[([bh]r)\]/<$1$AUBBC{html_type}>/g;
  $msg =~ s/\[list\](?s)(.+?)\[\/list\]/fix_list($1)/ge;
  $msg =~ s/\[list=(\d+)\](?s)(.+?)\[\/list\]/fix_list($2, $1)/ge;
- $msg =~ s/\[table\](?s)(.+?)\[\/table\]/<table class="table table-striped table-bordered">$1<\/table>/g;
+ $msg =~ s/\[table\](?s)(.+?)\[\/table\]/<div class="table-responsive"><table class="table table-striped table-bordered">$1<\/table><\/div>/g;
  $msg =~ s/\[tr\](?s)(.+?)\[\/tr\]/<tr>$1<\/tr>/g;
  $msg =~ s/\[td\](?s)(.+?)\[\/td\]/<td>$1<\/td>/g;
  $msg =~ s/\[th\](?s)(.+?)\[\/th\]/<th>$1<\/th>/g;
