@@ -17,8 +17,8 @@ session: 'Storable'
 session_name: 'taracot_session'
 session_expires: '1 week'
 session_domain: ''
-load_modules_admin: 'users, pages, sitemap, files, settings, firewall, billing, catalog'
-load_modules_frontend: 'pages, imgbrowser, user, blog, billing, robokassa, webmoney, support, portfolio, search, feedback, catalog'
+load_modules_admin: 'users, pages, sitemap, files, settings, firewall, catalog'
+load_modules_frontend: 'pages, imgbrowser, user, blog, support, portfolio, search, feedback, catalog'
 load_blocks_frontend: 'menu, blocks'
 lang_available: 'en, ru, de'
 lang_available_long: 'English, Russian, German'
@@ -38,8 +38,8 @@ cache_timeout: '86400'
 https_connection: '0'
 search_plugin: 'mysql'
 root_user: 'xtreme'
-portfolio_path: public/re-hash/portfolio/
-portfolio_images_url: /re-hash/portfolio/img
+portfolio_path: public/taracot/portfolio/
+portfolio_images_url: /taracot/portfolio/img
 auth_facebook_app_id: '1'
 auth_facebook_app_secret: '1'
 auth_facebook_redirect_uri: 'http://site.com/user/authorize/facebook/'

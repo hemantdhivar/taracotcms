@@ -94,9 +94,10 @@ sub _auth() {
   my $authdata;
   if (session('user')) { 
    my $id = session('user');
+   my $email = session('email');
    $authdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id });
    my %grpdata;
-   if ($authdata->{groups}) {
+   if ($authdata && $authdata->{groups}) {
       my @groups=split(/,/, $authdata->{groups});   
       my @groups_arr;  
       foreach my $item(@groups) {
@@ -109,6 +110,13 @@ sub _auth() {
       }
       $authdata->{groups_hash} = \%grpdata;
       $authdata->{groups_arr} = \@groups_arr;
+   }
+   if ($authdata && $authdata->{email} ne $email) {
+    session user => '';
+    $authdata->{id} = 0;
+    $authdata->{status} = 0;
+    $authdata->{username} = '';
+    $authdata->{password} = '';    
    }
   } else {
    $authdata->{id} = 0;

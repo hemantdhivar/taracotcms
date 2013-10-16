@@ -84,7 +84,7 @@ user_account_save: Сохранить
 user_account_proifle_hint: Вы можете изменить данные профиля в форме, расположенной ниже.
 user_account_profile_email_warning: Важно&#58; в случае смены адреса электронный почты, ваш аккаунт будет заблокирован и потребуется повторная активация с помощью ссылки, которая будет отправлена на новый адрес электронной почты. 
 user_account_logout: Выход
-user_account_logout_success: Процедура выхода успешно завершена.
+user_account_logout_success: Процедура выхода успешно завершена. Для повторной авторизации на сайте воспользуйтесь кнопкой &laquo;Авторизация&raquo;.
 user_account_change_avatar: Сменить
 user_account_current_password: Текущий пароль
 image_files: Изображения

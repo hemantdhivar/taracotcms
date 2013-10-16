@@ -1,7 +1,0 @@
-<script type="text/javascript" src="/js/slimbox/slimbox2.js"></script>
-<link rel="stylesheet" href="/js/slimbox/css/slimbox2.css" type="text/css" media="screen" />
-<h1>[==  $pagetitle =]</h1>
-<a href="/catalog">[== $lang->{module_name} =]</a> &raquo; <a href="/catalog/[== $groupid =]">[== $groupid_title =]</a>
-<br/><br/>
-[== $grid =]
-[== $db_data->{content} =]

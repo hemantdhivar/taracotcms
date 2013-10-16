@@ -177,7 +177,7 @@
 		<div id="form_notice">
 		</div>
 		<br />
-		<div class="alert alert-block alert-error" id="form_error_msg">
+		<div class="alert alert-danger" id="form_error_msg">
 			<span id="form_error_msg_text"></span>
 		</div>
 		<br />
@@ -200,7 +200,7 @@
     		</div>
     		
      		<div class="form-group" id="cg_lang">
-     			<label class="control-label col-lg-2" for="lang">[== $lang->{language} =]&nbsp;<span class="required_field">*</span></label>
+     			<label class="control-label col-lg-2" for="lang">[== $lang->{language} =]</label>
      			<div class="col-lg-2">
      				<select class="form-control data-edit-field" id="lang">
     				 [== $list_langs =]

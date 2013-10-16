@@ -45,7 +45,8 @@ sub _load_lang {
 # Routes
 
 get '/' => sub {  
-  if (!session('user')) {
+  my $_auth_su = int(session('user'));
+  if (!$_auth_su) {
     my $cache_data = $cache_plugin->get_data(request->uri_base().'/portfolio');
     if ($cache_data) {
       return $cache_data;
@@ -69,7 +70,7 @@ get '/' => sub {
     $data_items .= &taracot::_process_template( template 'portfolio_index_cat', { lang => $lang, id => $item->{id}, title => $item->{desc}, images_url => config->{portfolio_images_url}, items => $index_items, default => $item->{default} }, { layout => undef } );
   }  
   my $_out = &taracot::_process_template( template 'portfolio_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data, index_items => $data_items, desc => $pf->{desc} }, { layout => config->{layout}.'_'.$_current_lang } );
-  if (!session('user')) {
+  if (!$_auth_su) {
     $cache_plugin->set_data(request->uri_base().'/portfolio', $_out);
   }
   return $_out;
@@ -79,8 +80,9 @@ get '/:id' => sub {
   my $id = param('id');
   if ($id !~ /^[0-9a-z_\-]{1,20}$/) {
     pass;
-  }  
-  if (!session('user')) {
+  }
+  my $_auth_su = int(session('user'));
+  if (!$_auth_su) {
     my $cache_data = $cache_plugin->get_data(request->uri_base().'/portfolio/'.$id);
     if ($cache_data) {
       return $cache_data;
@@ -96,7 +98,7 @@ get '/:id' => sub {
   my $pf=from_json $$lf;
   my $works = $pf->{works};  
   my $_out = &taracot::_process_template( template 'portfolio_item', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $pf->{title}." | ".$lang->{module_name}, auth_data => $auth_data, pf => $pf, images_url => config->{portfolio_images_url} }, { layout => config->{layout}.'_'.$_current_lang } );
-  if (!session('user')) {
+  if (!$_auth_su) {
     $cache_plugin->set_data(request->uri_base().'/portfolio/'.$id, $_out);
   }
   return $_out;

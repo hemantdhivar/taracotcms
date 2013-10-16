@@ -287,6 +287,7 @@ $('#btn_add').click(function () {
     $('#groups').val('');
     $('#email').val('');
     $('#phone').val('');
+    $('#ajax_loading').hide();
     $('#radio_status_normal').prop('checked', true);
     $('#username').focus();
 });
@@ -338,35 +339,35 @@ $('#btn_edit_save').click(function () {
     resetFormState();
     var errors = false;
     if (!$('#username').val().match(/^[A-Za-z0-9_\-\.]{1,100}$/)) {
-        $('#cg_username').addClass('error');
+        $('#cg_username').addClass('has-error');
         errors = true;
     }
     if ($('#password').val() != $('#password_repeat').val()) {
-        $('#cg_password').addClass('error');
+        $('#cg_password').addClass('has-error');
         errors = true;
         $('#password_hint').html(js_lang_password_mismatch);
     } else {
         if ((edit_id != 0 && $('#password').val().length > 0) || edit_id == 0) {
             if (!$('#password').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/) || !$('#password_repeat').val().match(/^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{6,100}$/)) {
-                $('#cg_password').addClass('error');
+                $('#cg_password').addClass('has-error');
                 errors = true;
             }
         }
     }
     if ($('#email').val() && !$('#email').val().match(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/)) {
-        $('#cg_email').addClass('error');
+        $('#cg_email').addClass('has-error');
         errors = true;
     }
     if (!$('#phone').val().match(/^[0-9]{0,40}$/)) {
-        $('#cg_phone').addClass('error');
+        $('#cg_phone').addClass('has-error');
         errors = true;
     }
     if (!$('#realname').val().match(/^.{0,80}$/)) {
-        $('#cg_realname').addClass('error');
+        $('#cg_realname').addClass('has-error');
         errors = true;
     }
     if (!$('#groups').val().match(/^[A-Za-z0-9_\-\.\, ]{0,254}$/)) {
-        $('#cg_groups').addClass('error');
+        $('#cg_groups').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -404,7 +405,7 @@ $('#btn_edit_save').click(function () {
                     $('#data_edit_form_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -616,12 +617,12 @@ function deleteData(id) {
 }
 // Remove all "error" notification classes from form items
 function resetFormState() {
-    $('#cg_username').removeClass('error');
-    $('#cg_password').removeClass('error');
-    $('#cg_email').removeClass('error');
-    $('#cg_phone').removeClass('error');
-    $('#cg_realname').removeClass('error');
-    $('#cg_groups').removeClass('error');
+    $('#cg_username').removeClass('has-error');
+    $('#cg_password').removeClass('has-error');
+    $('#cg_email').removeClass('has-error');
+    $('#cg_phone').removeClass('has-error');
+    $('#cg_realname').removeClass('has-error');
+    $('#cg_groups').removeClass('has-error');
     $('#password_hint').html(js_lang_password_hint);
 }
 // dataTable ajax fix

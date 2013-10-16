@@ -176,7 +176,7 @@
     <div id="form_notice">
     </div>
     <br />
-    <div class="alert alert-block alert-error" id="form_error_msg">
+    <div class="alert alert-danger" id="form_error_msg">
       <span id="form_error_msg_text"></span>
     </div>
     <br />

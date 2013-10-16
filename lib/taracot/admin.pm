@@ -91,6 +91,7 @@ post '/authorize' => sub {
   if ($ud) {
     if ($ud->{status} == 2) {
      session user => $ud->{id};
+     session email => $ud->{email};
      return '{"result":"1"}'."\n";
     }
   }

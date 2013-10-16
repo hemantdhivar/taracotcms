@@ -292,6 +292,7 @@ post '/authorize/process' => sub {
   }
   database->quick_update(config->{db_table_prefix}.'_users', { username => $username }, { captcha => 0, lastchanged => time }); 
   session user => $db_data->{id}; 
+  session email => $db_data->{email};
   return $json_xs->encode(\%res);
 };
 

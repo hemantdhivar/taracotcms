@@ -233,7 +233,7 @@ $('#btn_edit_save').click(function () {
     resetFormState();
     var errors = false;
     if (!$('#ipaddr').val().match(/^[A-Fa-f0-9\.\:]{1,45}$/)) {
-        $('#cg_ipaddr').addClass('error');
+        $('#cg_ipaddr').addClass('has-error');
         errors = true;
     }    
     if (errors) {
@@ -265,7 +265,7 @@ $('#btn_edit_save').click(function () {
                     $('#data_edit_form_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                 } else { // OK
@@ -448,7 +448,7 @@ function deleteData(id) {
 }
 // Remove all "error" notification classes from form items
 function resetFormState() {
-    $('#cg_ipaddr').removeClass('error');
+    $('#cg_ipaddr').removeClass('has-error');
 }
 // dataTable ajax fix
 jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {

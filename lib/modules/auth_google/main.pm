@@ -67,20 +67,20 @@ get '/user/authorize/google/' => sub {
   }
   $username='google.'.$username;
 
-  my $id;
+  my ($id, $db_email);
   my $sth = database->prepare(
-    'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE username='.database->quote($username)
+    'SELECT id, email FROM `'.config->{db_table_prefix}.'_users` WHERE username='.database->quote($username)
   );
   if ($sth->execute()) {
-    ($id) = $sth->fetchrow_array();
+    ($id, $db_email) = $sth->fetchrow_array();
   }
   $sth->finish();
   if (!$id) {
     my $sth = database->prepare(
-      'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE email='.database->quote($email)
+      'SELECT id, email FROM `'.config->{db_table_prefix}.'_users` WHERE email='.database->quote($email)
     );
     if ($sth->execute()) {
-      ($id) = $sth->fetchrow_array();
+      ($id, $db_email) = $sth->fetchrow_array();
     }
     $sth->finish();
   }
@@ -89,6 +89,7 @@ get '/user/authorize/google/' => sub {
 
   if ($id) {
     session user => $id;
+    session email => $db_email;
     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
     redirect $auth_uri_base.$auth_comeback; 
     return;

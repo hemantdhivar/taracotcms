@@ -337,11 +337,11 @@ $('#btn_edit_save').click(function () {
     resetFormState();
     var errors = false;
     if (!$('#s_name').val().match(/^[A-Za-z0-9_\-]{1,254}$/)) {
-        $('#cg_s_name').addClass('error');
+        $('#cg_s_name').addClass('has-error');
         errors = true;
     }
     if (!$('#s_value').val().match(/^.{0,254}$/)) {
-        $('#cg_s_value').addClass('error');
+        $('#cg_s_value').addClass('has-error');
         errors = true;
     }
     if (errors) {
@@ -384,7 +384,7 @@ $('#btn_edit_save').click(function () {
                     $('#data_edit_form_buttons').show();
                     $('#ajax_loading').hide();
                     if (data.field) {
-                        $('#cg_' + data.field).addClass('error');
+                        $('#cg_' + data.field).addClass('has-error');
                         $('#' + data.field).focus();
                     }
                     $("html, body").animate({
@@ -591,8 +591,8 @@ function deleteData(id) {
 }
 // Remove all "error" notification classes from form items
 function resetFormState() {
-    $('#cg_s_name').removeClass('error');
-    $('#cg_s_value').removeClass('error');
+    $('#cg_s_name').removeClass('has-error');
+    $('#cg_s_value').removeClass('has-error');
 }
 
 // dataTable ajax fix

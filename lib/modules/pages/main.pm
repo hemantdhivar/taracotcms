@@ -76,7 +76,8 @@ get qr{(.*)} => sub {
   if ($url !~ /^[A-Za-z0-9_\-\/]{0,254}$/) {
    pass();
   }  
-  if (!session('user')) {
+  my $_auth_su = int(session('user'));
+  if (!$_auth_su) {
     my $cache_data = $cache_plugin->get_data(request->uri_base().$url);
     if ($cache_data) {
       return $cache_data;
@@ -100,7 +101,7 @@ get qr{(.*)} => sub {
    my $render_template;
    if ($db_data->{status} eq 1) {
     $render_template = &taracot::_process_template( template 'pages_view', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
-    if (!session('user')) {
+    if (!$_auth_su) {
       $cache_plugin->set_data(request->uri_base().$url, $render_template);
     }
    }
