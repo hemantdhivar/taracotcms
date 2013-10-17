@@ -83,7 +83,7 @@ get qr{(.*)} => sub {
       return $cache_data;
     }
   }
-  my $auth_data = &taracot::admin::_auth();
+  my $auth_data = &taracot::_auth();
   my $_current_lang=_load_lang();    
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_pages', { filename => $url, lang => $_current_lang });
   my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);  

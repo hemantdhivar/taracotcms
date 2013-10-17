@@ -746,7 +746,7 @@ post '/account/email/process' => sub {
   print DATA "(1) Sending to: $email\n";
   close(DATA);
   if ($db_data_1->{email}) {
-    my $verification_undo = md5_hex(config->{salt}.$password.time.rand.$verification);
+    my $verification_undo = md5_hex(config->{salt}.$password.time.rand().$verification);
     my $activation_url_undo = request->uri_base().'/user/revert/email/'.$auth->{username}.'/'.$verification_undo;
     if (config->{https_connection}) {
       $activation_url_undo =~ s/^http:/https:/i;

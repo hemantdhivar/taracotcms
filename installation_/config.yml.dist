@@ -36,6 +36,7 @@ cache_plugin: 'dummy'
 cache_prefix: 'taracot'
 cache_timeout: '86400'
 https_connection: '0'
+search_plugin: 'mysql'
 root_user: 'xtreme'
 portfolio_path: public/taracot/portfolio/
 portfolio_images_url: /taracot/portfolio/img

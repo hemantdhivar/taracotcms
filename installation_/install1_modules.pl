@@ -8,7 +8,7 @@ if (!$res) {
  print "Yes\n";
 }
 if ($res ne 'n') {
-	system ('apt-get install build-essential libgif-dev libjpeg8-dev libtiff4-dev libpng12-dev libfreetype6-dev mysql-client mysql-server')
+	system ('apt-get install build-essential libgif-dev libjpeg-dev libtiff4-dev libpng12-dev libfreetype6-dev mysql-client mysql-server')
 }
 print "\nCheck (and install) missing CPAN modules? [Y/n] ";
 $res =  <STDIN>;

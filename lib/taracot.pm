@@ -12,7 +12,7 @@ use JSON::XS();
 
 prefix undef;
 
-our $taracot_current_version='0.20528';
+our $taracot_current_version='beta1_04';
 
 # Don't show any warnings to console in production mode
 
