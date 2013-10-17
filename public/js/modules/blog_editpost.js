@@ -20,11 +20,6 @@ $('#btn_submit').click(function() {
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_tags + "<br/>");
         form_errors = true;      
     }
-    if (!$('#blog_hub').val().match(/.{1,20}$/)) {
-        $('#cg_blog_hub').addClass('has-error');
-        $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_hub + "<br/>");
-        form_errors = true;      
-    }
     if ($('#blog_state').val() < 0 || $('#blog_state').val() > 2) {
         $('#cg_blog_state').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_state + "<br/>");
