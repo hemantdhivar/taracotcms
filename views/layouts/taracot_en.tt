@@ -10,7 +10,7 @@
     <link href="/css/bootstrap3.min.css" rel="stylesheet">
     <link href="/css/bootstrap3-theme.css" rel="stylesheet">
     <link href="/taracot/main.css" rel="stylesheet">
-    <script src="/js/taracot3.min.js"></script>
+    <script src="/js/taracot.min.js"></script>
     <!--[if lt IE 9]><script src="/js/html5.js"></script><![endif]-->  
     <!-- module css --> [== $head_html =]  
   </head>
