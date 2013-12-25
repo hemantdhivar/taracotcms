@@ -2,18 +2,18 @@
 -- version 2.6.1
 -- http://www.phpmyadmin.net
 -- 
--- Host: localhost
--- Generation Time: Oct 16, 2013 at 05:18 PM
--- Server version: 5.0.45
--- PHP Version: 5.2.4
+-- Хост: localhost
+-- Время создания: Дек 25 2013 г., 18:58
+-- Версия сервера: 5.0.45
+-- Версия PHP: 5.2.4
 -- 
--- Database: `taracot`
+-- БД: `taracot`
 -- 
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_blog_comments`
+-- Структура таблицы `taracot_blog_comments`
 -- 
 
 CREATE TABLE `taracot_blog_comments` (
@@ -33,14 +33,14 @@ CREATE TABLE `taracot_blog_comments` (
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
--- Dumping data for table `taracot_blog_comments`
+-- Дамп данных таблицы `taracot_blog_comments`
 -- 
 
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_blog_posts`
+-- Структура таблицы `taracot_blog_posts`
 -- 
 
 CREATE TABLE `taracot_blog_posts` (
@@ -65,18 +65,20 @@ CREATE TABLE `taracot_blog_posts` (
   `comments_allowed` tinyint(1) default '1',
   `lastchanged` int(11) default NULL,
   UNIQUE KEY `id` (`id`),
-  FULLTEXT KEY `ptags` (`ptags`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
+  FULLTEXT KEY `ptags` (`ptags`),
+  FULLTEXT KEY `ptitle` (`ptitle`,`ptext`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
 
 -- 
--- Dumping data for table `taracot_blog_posts`
+-- Дамп данных таблицы `taracot_blog_posts`
 -- 
 
+INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'xtreme', 'test', 1, 'Test post', 'test, record', 1387972464, 'e8d8dfdfa31bfe3ec2b425d3c801f6dc', 'По его словам, решение возобновить производство по делу связано с постановлением Европейского суда по правам человека, который указал на многочисленные нарушения прав подсудимых, допущенных в ходе процесса. С юридической точки зрения решение ЕСПЧ считается вновь открывшимися обстоятельствами, на основании которых решение по делу может быть пересмотрено.\nКроме того, глава Верховного суда отменил решение судьи, отказавшего Ходорковскому и его деловому партнеру в рассмотрении надзорных жалоб на приговор по второму делу в их отношении. Теперь эти жалобы поступят на рассмотрение президиума Верховного суда. Адвокаты осужденных выразили удовлетворение решением Вячеслава Лебедева, но не стали оценивать перспективы дела.', 'По его словам, решение возобновить производство по&nbsp;делу связано с&nbsp;постановлением Европейского суда по&nbsp;правам человека, который указал на&nbsp;многочисленные нарушения прав подсудимых, допущенных в&nbsp;ходе процесса. С юридической точки зрения решение ЕСПЧ считается вновь открывшимися обстоятельствами, на&nbsp;основании которых решение по&nbsp;делу может быть пересмотрено.<br />\nКроме того, глава Верховного суда отменил решение судьи, отказавшего Ходорковскому и&nbsp;его деловому партнеру в&nbsp;рассмотрении надзорных жалоб на&nbsp;приговор по&nbsp;второму делу в&nbsp;их отношении. Теперь эти жалобы поступят на&nbsp;рассмотрение президиума Верховного суда. Адвокаты осужденных выразили удовлетворение решением Вячеслава Лебедева, но&nbsp;не стали оценивать перспективы дела.', 0, 'По его словам, решение возобновить производство по&nbsp;делу связано с&nbsp;постановлением Европейского суда по&nbsp;правам человека, который указал на&nbsp;многочисленные нарушения прав подсудимых, допущенных в&nbsp;ходе процесса. С юридической точки зрения решение ЕСПЧ считается вновь открывшимися обстоятельствами, на&nbsp;основании которых решение по&nbsp;делу может быть пересмотрено.<br />\nКроме того, глава Верховного суда отменил решение судьи, отказавшего Ходорковскому и&nbsp;его деловому партнеру в&nbsp;рассмотрении надзорных жалоб на&nbsp;приговор по&nbsp;второму делу в&nbsp;их отношении. Теперь эти жалобы поступят на&nbsp;рассмотрение президиума Верховного суда. Адвокаты осужденных выразили удовлетворение решением Вячеслава Лебедева, но&nbsp;не стали оценивать перспективы дела.', 3, 0, '127.0.0.1', 0, 0, 1, 1387972464);
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_catalog`
+-- Структура таблицы `taracot_catalog`
 -- 
 
 CREATE TABLE `taracot_catalog` (
@@ -97,14 +99,14 @@ CREATE TABLE `taracot_catalog` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- 
--- Dumping data for table `taracot_catalog`
+-- Дамп данных таблицы `taracot_catalog`
 -- 
 
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_firewall`
+-- Структура таблицы `taracot_firewall`
 -- 
 
 CREATE TABLE `taracot_firewall` (
@@ -117,14 +119,14 @@ CREATE TABLE `taracot_firewall` (
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
 
 -- 
--- Dumping data for table `taracot_firewall`
+-- Дамп данных таблицы `taracot_firewall`
 -- 
 
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_pages`
+-- Структура таблицы `taracot_pages`
 -- 
 
 CREATE TABLE `taracot_pages` (
@@ -143,15 +145,15 @@ CREATE TABLE `taracot_pages` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
 
 -- 
--- Dumping data for table `taracot_pages`
+-- Дамп данных таблицы `taracot_pages`
 -- 
 
-INSERT INTO `taracot_pages` VALUES (1, '/', 'home', 'Home page', '<h1>Installation successful</h1>\n\n<p>As you can read this text, the installation seems to be sucessful.</p>\n', 1, '/', 'en', 'taracot', 1381929026);
+INSERT INTO `taracot_pages` VALUES (1, 'Home page', 'home', 'Home page', '<h1>Installation successful</h1>\n\n<p>As you can read this text, the installation seems to be sucessful.</p>\n', 1, '/', 'en', 'taracot', 1381929585);
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_search_db`
+-- Структура таблицы `taracot_search_db`
 -- 
 
 CREATE TABLE `taracot_search_db` (
@@ -168,15 +170,15 @@ CREATE TABLE `taracot_search_db` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 
--- Dumping data for table `taracot_search_db`
+-- Дамп данных таблицы `taracot_search_db`
 -- 
 
-INSERT INTO `taracot_search_db` VALUES ('pages', 1, 'en', '/', 'As you can read this text, the installation seems to be sucessful.', 'sucessful the  you seems installation can to as be text read this', '/', 1381929026);
+INSERT INTO `taracot_search_db` VALUES ('pages', 1, 'en', 'Home page', 'As you can read this text, the installation seems to be sucessful.', 'sucessful the you page seems installation can to as be text read home this', '/', 1381929585);
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_settings`
+-- Структура таблицы `taracot_settings`
 -- 
 
 CREATE TABLE `taracot_settings` (
@@ -188,21 +190,22 @@ CREATE TABLE `taracot_settings` (
   `lastchanged` int(11) default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=6 ;
 
 -- 
--- Dumping data for table `taracot_settings`
+-- Дамп данных таблицы `taracot_settings`
 -- 
 
 INSERT INTO `taracot_settings` VALUES (1, 'site_title', 'Taracot CMS', '', 'en', 1358181002);
 INSERT INTO `taracot_settings` VALUES (2, 'site_description', 'Taracot CMS installation is running', '', 'en', 1376571472);
 INSERT INTO `taracot_settings` VALUES (3, 'site_keywords', 'taracot cms, perl, dancer', '', 'en', 1376571477);
 INSERT INTO `taracot_settings` VALUES (4, 'support_topics', 'sample,Sample topic;misc,Misc topic', '', 'en', 1381928970);
+INSERT INTO `taracot_settings` VALUES (5, 'blog_hubs', 'test,The Test Hub', '', 'en', 1387894140);
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_support`
+-- Структура таблицы `taracot_support`
 -- 
 
 CREATE TABLE `taracot_support` (
@@ -221,14 +224,14 @@ CREATE TABLE `taracot_support` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- 
--- Dumping data for table `taracot_support`
+-- Дамп данных таблицы `taracot_support`
 -- 
 
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_support_ans`
+-- Структура таблицы `taracot_support_ans`
 -- 
 
 CREATE TABLE `taracot_support_ans` (
@@ -242,14 +245,14 @@ CREATE TABLE `taracot_support_ans` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- 
--- Dumping data for table `taracot_support_ans`
+-- Дамп данных таблицы `taracot_support_ans`
 -- 
 
 
 -- --------------------------------------------------------
 
 -- 
--- Table structure for table `taracot_users`
+-- Структура таблицы `taracot_users`
 -- 
 
 CREATE TABLE `taracot_users` (
@@ -275,8 +278,8 @@ CREATE TABLE `taracot_users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=3 ;
 
 -- 
--- Dumping data for table `taracot_users`
+-- Дамп данных таблицы `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1381922651);
+INSERT INTO `taracot_users` VALUES (1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1387983460);
 INSERT INTO `taracot_users` VALUES (2, 'user', '1d88c84caa93404ecf250399bc1be5a0', 1, 'John Doe', '', NULL, NULL, '79217998111', '', 1, NULL, NULL, 'en', 1376731887, 0, 1379770337);

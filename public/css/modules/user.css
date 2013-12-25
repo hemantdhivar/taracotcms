@@ -185,3 +185,6 @@ select:focus, input[type="file"]:focus, input[type="radio"]:focus, input[type="c
   font-size: 150%;
   font-style: bold;
 }
+.blog-posts-table-tr {
+  cursor: pointer;
+}

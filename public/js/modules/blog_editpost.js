@@ -2,10 +2,11 @@ if (post_id) {
     $('#editpost_title').html(js_lang_edit_post);
     $('#editpost_hint').html(js_lang_edit_post_hint);
 }
-$('#btn_submit').click(function() {
-	$('#form_error_msg').hide();
-	$('#form_error_msg_text').html('');
-	$('#cg_blog_title').removeClass('has-error');
+
+var validate_form = function() {
+    $('#form_error_msg').hide();
+    $('#form_error_msg_text').html('');
+    $('#cg_blog_title').removeClass('has-error');
     $('#cg_blog_hub').removeClass('has-error');
     $('#cg_blog_tags').removeClass('has-error');
     $('#cg_blog_state').removeClass('has-error');
@@ -25,7 +26,56 @@ $('#btn_submit').click(function() {
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_invalid_post_state + "<br/>");
         form_errors = true;              
     } 
-    form_errors = false;   
+    return form_errors;
+}
+
+$('#btn_preview').click(function() {
+    var form_errors =  validate_form();
+    if (form_errors) {
+        $('#form_error_msg').fadeIn(400);
+        $('#form_error_msg').alert();
+        $(window).scrollTop($('#form_error_msg').position().top);
+    } else {
+        $('#blog_post_preview').modal();
+        $('#blog_post_preview_ajax').show();
+        $('#blog_post_preview_body').html('');
+        $.ajax({
+                type: 'POST',
+                url: '/blog/post/preview',
+                data: {
+                    blog_title: $('#blog_title').val(),
+                    blog_tags: $('#blog_tags').val(),
+                    blog_hub: $('#blog_hub').val(),
+                    blog_state: $('#blog_state').val(),
+                    blog_data: $("#wbbeditor").bbcode()
+                },
+                dataType: "json",
+                success: function (data) {
+                    $('#blog_post_preview_ajax').hide();
+                    if (data.status == 1) {
+                        if (data.content) {
+                           $('#blog_post_preview_body').html(data.content); 
+                        }
+                    } else {
+                        if (data.errors) {
+                            var err_txt;
+                            err_txt = '<div class="alert alert-danger">';
+                            for (var i = 0; i < data.errors.length; i++) {
+                                err_txt += "&nbsp;&#9632;&nbsp;&nbsp;" + data.errors[i] + "<br/>";
+                            }
+                            err_txt += '</div>';
+                            $('#blog_post_preview_body').html(err_txt);
+                        }
+                    }
+                },
+                error: function () {
+                    $('#blog_post_preview_ajax').hide();                    
+                }
+            });
+    }
+});
+$('#btn_submit').click(function() {
+	var form_errors =  validate_form();
     if (form_errors) {
             $('#form_error_msg').fadeIn(400);
             $('#form_error_msg').alert();

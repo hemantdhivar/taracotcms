@@ -675,6 +675,100 @@ post '/post/process' => sub {
   pass();
 };
 
+post '/post/preview' => sub {
+  my $_current_lang=_load_lang();
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new(); 
+  my %res;
+  $res{status}=1;  
+  my $auth = &taracot::_auth();
+  # Not authorized?
+  if (!$auth->{id}) {
+    $res{status}=0; 
+    push @errors, $lang->{error_unauth}; 
+    $res{errors}=\@errors; 
+    return $json_xs->encode(\%res);   
+  }
+  # Check if user is currently banned
+  if ($auth->{banned} && time < $auth->{banned}) {
+    $res{status}=0; 
+    push @errors, $lang->{user_restricted}; 
+    $res{errors}=\@errors; 
+    return $json_xs->encode(\%res);   
+  }
+  my $blog_title = params->{blog_title} || '';  
+  $blog_title =~ s/[\<\>\\\/\"\']+//g;
+  $blog_title =~ s/^\s+//;
+  $blog_title =~ s/\s+$//;
+  $blog_title =~ tr/ //s;
+  if (!$blog_title || length($blog_title) > 250) {
+    $res{status}=0; 
+    push @errors, $lang->{error_title}; 
+    push @fields, 'blog_title';    
+  }
+  my $blog_tags = params->{blog_tags} || '';
+  my @tags = split(/,/, $blog_tags);
+  $blog_tags = '';
+  foreach my $item (@tags) {
+    $item =~ s/^\s+//;
+    $item =~ s/\s+$//;
+    $item =~ tr/ //s;
+    $item =~ s/[^\w\nА-Яа-я ]//g;
+    if (length($item) > 0) {
+      $blog_tags.=", $item";
+    }
+  }
+  $blog_tags =~ s/, //;
+  if (!$blog_tags || length($blog_tags) > 250) {
+    $res{status}=0; 
+    push @errors, $lang->{error_tags}; 
+    push @fields, 'blog_tags';
+  }
+  my $blog_hub = params->{blog_hub} || '';
+  my $page_data= &taracot::_load_settings('site_title,keywords,description,blog_hubs,blog_mode', $_current_lang);
+  my %hub_data;
+  if ($page_data->{blog_hubs}) {
+    foreach my $item (split(/;/, $page_data->{blog_hubs})) {
+      my ($par,$val) = split(/,/, $item);
+      $par =~ s/^\s+//;
+      $par =~ s/\s+$//;
+      $val =~ s/^\s+//;
+      $val =~ s/\s+$//;
+      $hub_data{$par}=$val;
+    }
+  }
+  if (!$hub_data{$blog_hub}) {
+    $res{status}=0; 
+    push @errors, $lang->{error_hub}; 
+    push @fields, 'blog_hub';    
+  }
+  my $blog_state = int(params->{blog_state}) || 0;
+  if ($blog_state < 0 || $blog_state > 1) {
+    $res{status}=0; 
+    push @errors, $lang->{error_state}; 
+    push @fields, 'blog_state';    
+  }
+  my $blog_data = params->{blog_data} || '';  
+  # Calculate post hash
+  my $phash = md5_hex(encode_utf8($blog_data));
+  # Errors? return
+  if (!$res{status}) {
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;     
+    return $json_xs->encode(\%res);
+  }  
+  # End if errors  
+  my $aubbc = taracot::AUBBC->new();
+  my $blog_data_html = $aubbc->do_all_ubbc($blog_data);
+  $blog_data_html =~s/\[cut\]/ /igm;
+  # Process typography
+  $blog_data_html = $typo->process($blog_data_html);
+  $res{content} = &taracot::_process_template( template 'blog_post_preview', { post_title => $blog_title, blog_hub => $hub_data{$blog_hub}, blog_text => $blog_data_html, blog_tags => $blog_tags }, { layout => undef } );
+  return $json_xs->encode(\%res);
+  pass();
+};
+
 # Comment-related subroutines
 
 post '/comment/put' => sub {

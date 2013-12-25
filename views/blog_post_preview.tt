@@ -1,0 +1,2 @@
+<h1 style="margin-top:0px">[== $post_title =]</h1>
+<div style="height:14px"></div>[== $blog_text =]<div style="height:14px"></div><div style="height:14px"><?pl if ($blog_tags) { ?>&nbsp;<span  class="label label-inverse blog-label-bottom label-inv"><i class="glyphicon glyphicon-tags"></i>&nbsp;&nbsp;[== $blog_tags =]</span><?pl } ?>

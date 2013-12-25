@@ -107,3 +107,21 @@ user_new_password: New password
 user_realname_hint: Example&#58;&nbsp;John Doe
 user_cellphone_hint: Country code + phone, example&#58;&nbsp;1 (921) 123-4567
 email_revert_success: You e-mail address change procedure has been cancelled. Your account has been locked, you need to change your password now. Please follow the instructions sent you by mail.
+user_account_tab_posts: Posts
+posts_title: Posts in blog
+posts_hint: Your blog posts are listed below. You can view, edit and perform other actions on your posts from this tab.
+post_id: ID
+post_title: Title
+post_lang: Language
+post_status: Status
+post_date: Date
+sLengthMenu: Display _MENU_ records per item
+sZeroRecords: Nothing found - sorry
+sInfo: Showing _START_ to _END_ of _TOTAL_ records
+sInfoEmpty: Showing 0 to 0 of 0 records
+sInfoFiltered: (filtered from _MAX_ total records)     
+sPrevious: Previous page
+sNext: Next page
+sSearch: Search
+post_status_list: Draft,Published,Auth. only
+post_datetime_template: YYYY/\MM/\DD hh:mm A

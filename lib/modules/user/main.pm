@@ -12,6 +12,7 @@ use Encode;
 # Configuration
 
 my $defroute = '/user';
+my @columns = ('id','ptitle','plang', 'pdate','pstate');
 
 # Module core settings 
 
@@ -562,7 +563,28 @@ get '/account' => sub {
     $avatar = config->{files_url}.'/avatars/'.$auth->{username}.'.jpg';
   }
   database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { last_lang => $_current_lang, lastchanged => time });
-  my $render_template = &taracot::_process_template( template 'user_account', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $langs=config->{lang_available};
+  $langs=~s/ //gm;
+  my @a_langs=split(/,/, $langs);
+  my $langs_long=config->{lang_available_long};
+  $langs_long=~s/ //gm;
+  my @a_langs_long=split(/,/, $langs_long);
+  my $_cnt;
+  my $hash_langs;
+  foreach my $item (@a_langs) {
+   $hash_langs.=qq~, $item: "$a_langs_long[$_cnt]"~;
+   $_cnt++;
+  }  
+  $hash_langs=~s/, //; 
+  my $hash_status;
+  my @statuses = split(/,/, $lang->{post_status_list});
+  my $_sc = 0;
+  foreach my $item (@statuses) {
+   $hash_status.=qq~, $_sc: "$item"~;
+   $_sc++;
+  }  
+  $hash_status=~s/, //; 
+  my $render_template = &taracot::_process_template( template 'user_account', { hash_langs => $hash_langs, hash_status => $hash_status, detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($render_template) {
     return $render_template;
   }
@@ -918,6 +940,89 @@ get '/logout' => sub {
     return $render_template;
   }
   pass();
+};
+
+get '/posts/data/list' => sub {
+  my $auth = &taracot::_auth();
+  if (!$auth) { return redirect '/user/authorize' } 
+  _load_lang();
+  content_type 'application/json';
+  my $sEcho = param('sEcho') || 0;
+  $sEcho=int($sEcho);
+  my $iDisplayStart = param('iDisplayStart') || 0;
+  $iDisplayStart=int($iDisplayStart);
+  my $iDisplayLength = param('iDisplayLength') || 0;
+  $iDisplayLength=int($iDisplayLength);
+  my $iColumns = param('iColumns') || @columns;
+  $iColumns=int($iColumns);
+  my $sSearch = param('sSearch') || '';
+  $sSearch=~s/^\s+//;
+  $sSearch=~s/\s+$//;
+  my $iSortingCols = param('iSortingCols') || 0;
+  $iSortingCols=int($iSortingCols);
+  my $iSortCol_0 = param('iSortCol_0') || 0;
+  $iSortCol_0=int($iSortCol_0);
+  my $sSortCol = $columns[$iSortCol_0] || 'id';
+  my $sSortDir = param('sSortDir_0') || '';
+  if ($sSortDir ne "asc" && $sSortDir ne "desc") {
+   $sSortDir="asc";
+  }
+  my $where='';
+  if (length($sSearch) > 2 && length($sSearch) < 250) {
+   $sSearch=database->quote('*'.$sSearch.'*');
+   $where='(
+    (MATCH (ptitle) AGAINST ('.$sSearch.' IN BOOLEAN MODE)) OR 
+    (MATCH (ptags) AGAINST ('.$sSearch.' IN BOOLEAN MODE)) OR 
+    (MATCH (ptext) AGAINST ('.$sSearch.' IN BOOLEAN MODE))) AND ';   
+  }
+  $where.='pusername = '.database->quote($auth->{username});
+  my $total=0;
+  my $sth = database->prepare(
+   'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_posts WHERE pusername = '.database->quote($auth->{username})
+  );
+  if ($sth->execute()) {
+   ($total) = $sth -> fetchrow_array;
+  }
+  $sth->finish();
+  my $total_filtered=0;  
+  if ($where ne 'pusername = '.database->quote($auth->{username}) && $total > 0) {
+   my $sth = database->prepare(    
+    'SELECT COUNT(*) AS cnt FROM `'.config->{db_table_prefix}.'_blog_posts` WHERE '.$where
+   );
+'SELECT COUNT(*) AS cnt FROM `'.config->{db_table_prefix}.'_blog_posts` WHERE '.$where;
+   if ($sth->execute()) {
+    ($total_filtered) = $sth -> fetchrow_array;
+   }
+   $sth->finish();
+  } else {
+   $total_filtered=$total;
+  }
+  my $sortorder=' ';  
+  my @data;
+  if ($sSortCol) {
+   $sortorder=" ORDER BY $sSortCol $sSortDir";
+  }
+  my $columns=join(',',@columns);
+  $columns=~s/,$//;
+  $sth = database->prepare(
+   'SELECT '.$columns.' FROM `'.config->{db_table_prefix}.'_blog_posts` WHERE '.$where.' '.$sortorder.' LIMIT '.$iDisplayStart.', '.$iDisplayLength
+  );
+  if ($sth->execute()) {
+   while(my (@ary) = $sth -> fetchrow_array) {
+    push(@ary, '');
+    push(@data, \@ary);
+   }
+  }
+  $sth->finish();
+  my $json_xs = JSON::XS->new();
+  my $json = $json_xs->encode(\@data);
+  # Begin: return JSON data
+  return qq~{
+    "sEcho": $sEcho,
+    "iTotalRecords": "$total",
+    "iTotalDisplayRecords": "$total_filtered",
+    "aaData": $json   
+  }~;
 };
 
 # End

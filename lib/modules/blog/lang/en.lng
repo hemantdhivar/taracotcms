@@ -77,3 +77,4 @@ deleted: Post deleted
 delete_post: Delete post (administrators only)
 mod_panel: Moderation panel
 user_restricted: Your account is currently restricted, you can't create new posts or write comments
+blog_post_preview: Post preview

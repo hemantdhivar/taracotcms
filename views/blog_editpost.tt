@@ -5,6 +5,24 @@
  foreach my $key (keys %$hub_data) { 
   $hub_html.=qq~<option value="$key">$$hub_data{$key}</option>~;
  }?>
+<div class="modal fade" id="blog_post_preview">
+  <div class="modal-dialog" style="width:90%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="blog_post_preview_title">[== $lang->{blog_post_preview} =]</h4>
+      </div>
+      <div class="modal-body" id="blog_post_preview_body">        
+      </div>
+      <div class="modal-body" id="blog_post_preview_ajax" style="display:none">
+        <img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{blog_processing} =]
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">[== $lang->{comment_error_close} =]</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div class="alert alert-danger" style="display:none" id="form_error_msg">
 <span id="form_error_msg_text"></span>
 </div>

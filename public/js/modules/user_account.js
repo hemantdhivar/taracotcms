@@ -1,4 +1,75 @@
+var dtable;
 $(document).ready(function () {
+    dtable = $('#posts_table').dataTable({
+            "sDom": "frtip",
+            "bLengthChange": false,
+            "bServerSide": true,
+            "bProcessing": true,
+            "sPaginationType": "bootstrap",
+            "iDisplayLength": 30,
+            "bAutoWidth": false,
+            "sAjaxSource": "/user/posts/data/list",
+            "fnServerData": function ( sSource, aoData, fnCallback ) {
+                $.ajax( {
+                    "dataType": 'json',
+                    "type": "GET",
+                    "url": sSource,
+                    "data": aoData,
+                    "success": fnCallback,
+                    "timeout": 15000,
+                    "error": handleDTAjaxError
+                } );
+            },
+            "oLanguage": {
+                "oPaginate": {
+                    "sPrevious": js_lang_sPrevious,
+                    "sNext": js_lang_sNext
+                },
+                "sLengthMenu": js_lang_sLengthMenu,
+                "sZeroRecords": js_lang_sZeroRecords,
+                "sInfo": js_lang_sInfo,
+                "sInfoEmpty": js_lang_sInfoEmpty,
+                "sInfoFiltered": js_lang_sInfoFiltered,
+                "sSearch": js_lang_sSearch + ":&nbsp;",
+            },
+            "aoColumnDefs": [{
+                "fnRender": function (oObj, sVal) {
+                    row_id = sVal;
+                    return sVal;
+                },
+                "aTargets": [0]
+            }, {
+                "fnRender": function (oObj, sVal) {
+                    return sVal;
+                },
+                "aTargets": [1]
+            }, {
+                "fnRender": function (oObj, sVal) {
+                    return '<img src="/images/flags/' + sVal + '.png" width="16" height="11" alt="" />&nbsp;' + langs.getItem(sVal);
+                },
+                "aTargets": [2]
+            }, {
+                "fnRender": function (oObj, sVal) {
+                    var _dt = sVal * 1000;
+                    var _sv = moment.unix(sVal).format(js_lang_datetime_format);
+                    return '<div style="text-align:center">'+_sv+'</div>';
+                },
+                "aTargets": [3]
+            }, {
+                "fnRender": function (oObj, sVal) {
+                    return statuses.getItem(sVal);
+                },
+                "aTargets": [4]
+            }],
+            "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+                $(nRow).on('click', function() {
+                    // alert(aData[0]);
+                });    
+                nRow.className = 'blog-posts-table-tr';                            
+                return nRow;
+            }
+
+    }); // dtable desktop
     $('#account_tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
@@ -385,4 +456,14 @@ $(document).ready(function () {
     $('#emc_new_email_verify').bind('copy paste', function (e) {
        e.preventDefault();
     });
+    function handleDTAjaxError( xhr, textStatus, error ) {
+        //$.jmessage(js_lang_error, js_lang_error_ajax, 2500, 'jm_message_error');   
+        dtable.fnProcessingIndicator( false );
+    }      
 }); // document.ready
+jQuery.fn.dataTableExt.oApi.fnProcessingIndicator = function ( oSettings, onoff ) {
+        if ( typeof( onoff ) == 'undefined' ) {
+            onoff = true;
+        }
+        this.oApi._fnProcessingDisplay( oSettings, onoff );
+};
