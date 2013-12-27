@@ -989,7 +989,6 @@ get '/posts/data/list' => sub {
    my $sth = database->prepare(    
     'SELECT COUNT(*) AS cnt FROM `'.config->{db_table_prefix}.'_blog_posts` WHERE '.$where
    );
-'SELECT COUNT(*) AS cnt FROM `'.config->{db_table_prefix}.'_blog_posts` WHERE '.$where;
    if ($sth->execute()) {
     ($total_filtered) = $sth -> fetchrow_array;
    }
@@ -1001,6 +1000,8 @@ get '/posts/data/list' => sub {
   my @data;
   if ($sSortCol) {
    $sortorder=" ORDER BY $sSortCol $sSortDir";
+  } else {
+   $sortorder=" ORDER BY pdate DESC";
   }
   my $columns=join(',',@columns);
   $columns=~s/,$//;

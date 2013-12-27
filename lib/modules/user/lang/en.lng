@@ -109,7 +109,7 @@ user_cellphone_hint: Country code + phone, example&#58;&nbsp;1 (921) 123-4567
 email_revert_success: You e-mail address change procedure has been cancelled. Your account has been locked, you need to change your password now. Please follow the instructions sent you by mail.
 user_account_tab_posts: Posts
 posts_title: Posts in blog
-posts_hint: Your blog posts are listed below. You can view, edit and perform other actions on your posts from this tab.
+posts_hint: Your blog posts are listed below. You can quickly jump to any post by clicking on the corresponding table row.
 post_id: ID
 post_title: Title
 post_lang: Language

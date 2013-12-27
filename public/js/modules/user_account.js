@@ -64,6 +64,7 @@ $(document).ready(function () {
             "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
                 $(nRow).on('click', function() {
                     // alert(aData[0]);
+                    location.href = '/blog/post/' + aData[0];
                 });    
                 nRow.className = 'blog-posts-table-tr';                            
                 return nRow;
