@@ -1,6 +1,7 @@
 if (post_id) {
     $('#editpost_title').html(js_lang_edit_post);
-    $('#editpost_hint').html(js_lang_edit_post_hint);
+    $('#editpost_hint').html(js_lang_edit_post_hint);   
+
 }
 
 var validate_form = function() {
@@ -75,7 +76,7 @@ $('#btn_preview').click(function() {
     }
 });
 $('#btn_submit').click(function() {
-	var form_errors =  validate_form();
+	var form_errors = validate_form();
     if (form_errors) {
             $('#form_error_msg').fadeIn(400);
             $('#form_error_msg').alert();
@@ -147,6 +148,7 @@ function loadData(wbbOpt) {
         success: function (data) {
             $('#blog_form_ajax').hide();
             if (data.status == 1) {
+                $('#blog_form').show();
                 if (data.ptitle) {
                     $('#blog_title').val(data.ptitle);
                 }
@@ -170,13 +172,12 @@ function loadData(wbbOpt) {
                 } else {
                   $('#comments_allowed').prop('checked', false); 
                 }
-                $('#wbbeditor').wysibb(wbbOpt);
-                $('#blog_form').show();
+                $('#wbbeditor').wysibb(wbbOpt);                
             } else {
                 $('#blog_form_error').show();
             }
         },
-        error: function () {
+        error: function () {            
             $('#blog_form_ajax').hide();
             $('#blog_form_error').show();
         }

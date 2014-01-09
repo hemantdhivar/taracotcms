@@ -28,7 +28,6 @@
             <p>[== $lang->{moderator_dialog_info} =]</p>
             <fieldset>
             <label class="checkbox"><input type="checkbox" id="modreq">[== $lang->{mod_required} =]</label>
-            <label class="checkbox"><input type="checkbox" id="editpost">[== $lang->{edit_post} =]</label>
             <label class="checkbox"><input type="checkbox" id="ban72">[== $lang->{delete_comment_ban_72} =]</label>
             <label class="checkbox"><input type="checkbox" id="banperm">[== $lang->{delete_comment_ban_perm} =]</label>
             <label class="checkbox"><input type="checkbox" id="delpost">[== $lang->{delete_post} =]</label>
@@ -40,7 +39,7 @@
     </div>
 </div>
 <?pl } ?>
-<h1>[== $post_title =]</h1>
+<h1>[== $post_title =]<?pl if ($auth_data->{username} eq $blog_user || $moderator) { ?>&nbsp;<a href="/blog/post/edit/[== $post_id =]"><i class="glyphicon glyphicon-pencil" style="font-size:80%"></i></a><?pl } ?></h1>
 <?pl if ($blog_hub_url) { ?><i class="glyphicon glyphicon-briefcase"></i>&nbsp;<a href="[== $blog_hub_url =]">[== $blog_hub =]</a>&nbsp;<?pl if ($mod_require) { ?><span class="badge badge-important">[== $lang->{mod_required} =]</span><?pl } ?>&nbsp;<?pl if ($deleted) { ?><span class="badge badge-inverse">[== $lang->{deleted} =]</span><?pl } ?><div style="height:14px"></div><?pl } ?>[== $blog_text =]<div style="height:14px"></div><div style="height:14px"><span class="label label-inverse blog-label-bottom label-inv"><i class="glyphicon glyphicon-user"></i>&nbsp;<a href="/user/profile/[== $blog_user =]">[== $blog_user =]</a></span><?pl if ($blog_tags) { ?>&nbsp;<span  class="label label-inverse blog-label-bottom label-inv"><i class="glyphicon glyphicon-tags"></i>&nbsp;&nbsp;[== $blog_tags =]</span><?pl } ?><?pl if ($blog_views) { ?>&nbsp;<span class="label label-inverse blog-label-bottom label-inv"><i class="glyphicon glyphicon-eye-open"></i>&nbsp;[== $blog_views =]</span><?pl } ?><?pl if ($moderator) { ?>&nbsp;<span class="label label-important blog-label-bottom label-inv" id="moderator_wrench" style="cursor:pointer"><i class="glyphicon glyphicon-wrench"></i>&nbsp;[== $lang->{mod_panel} =]</span><?pl } ?></div>
 <div style="height:24px"></div>
 <script src="/js/modules/blog_post.js"></script>

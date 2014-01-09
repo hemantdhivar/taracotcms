@@ -28,7 +28,7 @@
 </div>
 <div class="hide" id="form_success_msg">
 </div>
-<form class="form-horizontal hide" id="blog_form">
+<form class="form-horizontal" id="blog_form" style="display:none">
 	<div class="form-group" id="cg_blog_title">
     	<label class="control-label col-lg-2" for="blog_title">[== $lang->{edit_form_post_title} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
     	<div class="col-lg-4">
