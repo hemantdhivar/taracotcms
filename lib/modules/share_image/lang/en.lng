@@ -1,0 +1,8 @@
+module_name: Share image
+share_unauthorized_title: Unauthorized
+share_unauthorized: Sorry, but you're not authorized to share images on this website.
+share_hint: You can share any images and get the link for posting in blog etc.
+file_upload_hint: Please choose some files to upload. When supported by your browser, you can also select multiple files and drag/drop files to the area below.
+upload_add: Select files
+upload_start: Start upload
+upload_clear: Clear list
