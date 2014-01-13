@@ -3,17 +3,19 @@
 <div id="files_upload">
    <div id="upload_container">
     <div id="filelist"></div>
-    <div class="progress progress-striped active">
-	  <div class="progress-bar" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-	  </div>
-	</div>
-    <div id="uploading" style="display:none"><img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;[== $lang->{file_uploading} =]</div>
-    <div class="btn-toolbar">
-        <button type="button" class="btn btn-default" id="btn_upload_select">[== $lang->{upload_add} =]</button>
-        <button type="button" class="btn btn-success disabled" id="btn_upload_start" style="display:none">[== $lang->{upload_start} =]</button>
+    <div class="row" id="result_gallery_row">
+      <div class="col-lg-12 col-md-12 col-sm-12" id="result_gallery_col">
+        <div class="thumbnail">
+          <div style="width:100%;height:100%;text-align:center"><img src="/files/share/images/.d25af33330c1876975c53e30ec126ada.jpg" alt=""></div><div class="caption"><input type="text" style="width:100%"></div>
+        </div>
+        <div class="thumbnail" style="width:150px">
+          <div style="height:100%;text-align:center"><img src="/files/share/images/.d25af33330c1876975c53e30ec126ada.jpg" alt=""></div><div class="caption"><input type="text" style="width:100%"></div>
+        </div>
       </div>
+    </div>
+    <button type="button" class="btn btn-default" id="btn_upload_select">[== $lang->{upload_add} =]</button>
     </div>
    </div>
  </div>
- <script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
- <script type="text/javascript" src="/js/modules/share_image.js"></script>
+<script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
+<script type="text/javascript" src="/js/modules/share_image.js"></script>

@@ -92,15 +92,12 @@ post '/upload' => sub {
    } else {
     $ratio = $x / $y;
    }
-   open(DATA, ">C:/XTreme/log.txt");
    if ($img->getwidth() > 1000) {
     $img = $img->scale(xpixels => 1000);
    }
    if ($img->getheight() > 1000) {
     $img = $img->scale(ypixels => 1000);
    }   
-   print DATA "Width: ".$img->getwidth().", height: ".$img->getheight();
-   close(DATA);
    $img->write(file => config->{files_dir}."share/images/".md5_hex($fn).'.jpg');
    if ($x ne $y) {
     my $cb = undef;
@@ -120,7 +117,7 @@ post '/upload' => sub {
    $img->write(file => config->{files_dir}."share/images/.".md5_hex($fn).'.jpg');
    removeFile($fp);
   }
-  return '{"filename":"'.$fn.'","dir":"'.param('dir').'"}';
+  return '{"tn":"'.config->{files_url}."/share/images/.".md5_hex($fn).'.jpg'.'","fn":"'.config->{files_url}."/share/images/".md5_hex($fn).'.jpg'.'"}';
 }; 
 
 1;
