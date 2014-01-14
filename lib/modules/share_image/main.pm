@@ -44,7 +44,7 @@ get '/' => sub {
   }
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  if (config->{share_image_mode} ne 'everyone' && !$auth_data->{groups_hash}->{'share_image'}) {
+  if (config->{share_image_mode} ne 'everyone' && !$auth_data->{groups_hash}->{'share_image'} && $auth_data->{status} < 2) {
     return &taracot::_process_template( template 'share_error', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{share_unauthorized_title}.' | '.$lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   return &taracot::_process_template( template 'share_image', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang } );  
@@ -57,12 +57,12 @@ post '/upload' => sub {
   }
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  if (config->{share_image_mode} ne 'everyone' && !$auth_data->{groups_hash}->{'share_image'}) {
+  if (config->{share_image_mode} ne 'everyone' && !$auth_data->{groups_hash}->{'share_image'} && $auth_data->{status} < 2) {
     return &taracot::_process_template( template 'share_error', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{share_unauthorized_title}.' | '.$lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang } );
   }
   content_type 'application/json';
   my $file=upload('file');
-  my $maxsize=config->{upload_limit_bytes} || 3145728; # 3 MB by default
+  my $maxsize=config->{upload_limit_bytes} || 20971520; # 20 MB by default
   if (defined $file && $file->size > $maxsize) {
     return '{"error":"1","reason":"bad_upload"}'; 
   }
@@ -99,21 +99,12 @@ post '/upload' => sub {
     $img = $img->scale(ypixels => 1000);
    }   
    $img->write(file => config->{files_dir}."share/images/".md5_hex($fn).'.jpg');
-   if ($x ne $y) {
-    my $cb = undef;
-    if ($x > $y) {
-      $cb = $y;
-      $x =int(($x - $cb )/2);
-      $y =0;
-    }
-    else {
-      $cb = $x ;
-      $y =int(($y - $cb )/2);
-      $x = 0;
-    }
-    $img = $img->crop( width=>$cb, height=>$cb );
-   }
-   $img = $img->scale(xpixels=>100, ypixels=>100);
+   if ($x > $y) {
+    $img = $img->scale(xpixels=>100);
+   } else {
+    $img = $img->scale(ypixels=>100);
+   }   
+   $img = $img->crop( width=>100, height=>100 );
    $img->write(file => config->{files_dir}."share/images/.".md5_hex($fn).'.jpg');
    removeFile($fp);
   }

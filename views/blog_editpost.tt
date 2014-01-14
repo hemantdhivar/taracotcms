@@ -114,7 +114,7 @@ $(document).ready(function() {
     $('#blog_form_ajax').show();
     loadData(wbbOpt);
   } else {
-    $('#blog_form').removeClass('hide');
+    $('#blog_form').show();
     $('#wbbeditor').wysibb(wbbOpt);
   }
 })

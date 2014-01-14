@@ -3,17 +3,8 @@
 <div id="files_upload">
    <div id="upload_container">
     <div id="filelist"></div>
-    <div class="row" id="result_gallery_row">
-      <div class="col-lg-12 col-md-12 col-sm-12" id="result_gallery_col">
-        <div class="thumbnail">
-          <div style="width:100%;height:100%;text-align:center"><img src="/files/share/images/.d25af33330c1876975c53e30ec126ada.jpg" alt=""></div><div class="caption"><input type="text" style="width:100%"></div>
-        </div>
-        <div class="thumbnail" style="width:150px">
-          <div style="height:100%;text-align:center"><img src="/files/share/images/.d25af33330c1876975c53e30ec126ada.jpg" alt=""></div><div class="caption"><input type="text" style="width:100%"></div>
-        </div>
-      </div>
-    </div>
-    <button type="button" class="btn btn-default" id="btn_upload_select">[== $lang->{upload_add} =]</button>
+    <div class="row" id="result_gallery_row"></div>
+    <button type="button" class="btn btn-default" id="btn_upload_select">[== $lang->{upload_add} =]</button>&nbsp;<button type="button" class="btn btn-danger" id="btn_clear_res">[== $lang->{clear_res} =]</button>
     </div>
    </div>
  </div>
