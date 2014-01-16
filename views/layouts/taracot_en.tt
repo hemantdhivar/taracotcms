@@ -15,46 +15,45 @@
     <!-- module css --> [== $head_html =]  
   </head>
   <body>
-    <div class="navbar navbar-fixed-top" style="background:#444;height:80px">
+    <div class="container">
+      <div id="taracot_logo_header">
       <div class="container">
-        <a href="/"><img src="/taracot/logo_white_235.png" width="235" height="51" alt="Taracot CMS" style="margin-top:7px" /></a>
+        <a href="/"><img src="/taracot/logo_white_235.png" alt="Taracot CMS" style="margin:8px 0 0 -27px" /></a>
       </div>
     </div>
-    <div class="navbar navbar-default navbar-fixed-top" style="margin-top:70px">      
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            [% menu %]
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <?pl if ($auth_data->{id}) { ?>
-            <li class="visible-xs"><a href="/user/account">Profile: [== $auth_data->{username} =]</a></li>
-            <li class="visible-xs"><a href="/user/logout">Log out</a></li>
-            <li class="hidden-xs">
-              <div style="margin-top:15px"><a href="/user/account" class="taracot_top_badge_link"><span class="label label-default">Profile: [== $auth_data->{username} =]</span></a>&nbsp;<a href="/user/logout" class="taracot_top_badge_link" style="margin-right:5px"><span class="label label-warning">Log out</span></a></div>
-            </li>
-            <?pl } else { ?>
-            <li class="visible-xs"><a href="/user/authorize">Log in</a></li>
-            <li class="visible-xs"><a href="/user/register">Sign up</a></li>
-            <li class="hidden-xs">
-              <div style="margin-top:15px"><a href="/user/authorize" class="taracot_top_badge_link"><span class="label label-success">Log in</span></a>&nbsp;<a href="/user/register" class="taracot_top_badge_link" style="margin-right:5px"><span class="label label-primary">Sign up</span></a></div>
-            </li>            
-            <?pl } ?>
-            <li><a data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a><ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left"></ul></li>
-          </ul>
-        </div><!--/.nav-collapse -->
+    </div>
+    <div class="container">
+      <div class="navbar navbar-inverse navbar-static-top">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+          </div>
+          <div class="navbar-collapse navbar-inverse collapse">            
+            <ul class="nav navbar-nav">
+              <li class="hidden-xs"><img src="/images/blank.gif" width="10" height="1" alt=""></li>        
+              [% menu %]
+            </ul>
+            <ul class="nav navbar-nav navbar-right" style="margin-right:10px">                  
+              <?pl if ($auth_data->{id}) { ?>
+              <li id="__tc_acnt"><a href="/user/account"><i class="glyphicon glyphicon-user"></i>&nbsp;Profile: [== $auth_data->{username} =]</a></li>
+              <li id="__tc_logout"><a href="/user/logout"><i class="glyphicon glyphicon-log-out"></i>&nbsp;Log out</a></li>
+              <?pl } else { ?>
+              <li id="__tc_login"><a href="/user/authorize"><i class="glyphicon glyphicon-log-in"></i>&nbsp;Log in</a></li>
+              <li id="__tc_signup"><a href="/user/register"><i class="glyphicon glyphicon-check"></i>&nbsp;Sign up</a></li>
+              <?pl } ?>
+              <li><a data-toggle="dropdown" href="#"><img src="/images/flags/[== $detect_lang->{lng} =].png" width="14" height="11" alt="" />&nbsp;Language&nbsp;<span class="caret"></span></a><ul class="dropdown-menu" id="taracot_ui_lang_select" style="text-align:left"></ul></li>
+            </ul>
+          </div><!--/.nav-collapse -->
       </div>
     </div>
     <div class="wrapper">
       <div class="container">
-        [== $content =]
+        <div id="taracot_site_content">
+          [== $content =]
+        </div>
       </div> <!-- /container -->
     </div> <!-- /wrapper -->
     <div class="footer">
@@ -67,5 +66,6 @@
      var taracot_lang_current = "[== $detect_lang->{lng} =]";
     </script>    
     <script src="/js/taracot.frontend.min.js"></script>
+    <script type="text/javascript">var wlp=window.location.pathname;if(wlp.match('^/user/authorize')){$('#__tc_login').addClass('active');}if(wlp.match('^/user/register')){$('#__tc_signup').addClass('active');}if(wlp.match('^/agreement')){$('#__tc_signup').addClass('active');}if(wlp.match('^/user/password')){$('#__tc_login').addClass('active');}if(wlp.match('^/$')){$('#_taracot_bar__').addClass('active');}if(wlp.match('^/user/account')){$('#__tc_acnt').addClass('active');}</script>    
   </body>
 </html>
