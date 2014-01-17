@@ -16,11 +16,9 @@
   </head>
   <body>
     <div class="container">
-      <div id="taracot_logo_header">
-      <div class="container">
-        <a href="/"><img src="/taracot/logo_white_235.png" alt="Taracot CMS" style="margin:8px 0 0 -27px" /></a>
+      <div class="container">        
+        <a href="/"><img src="/taracot/logo_white_235.png" alt="Taracot CMS" id="taracot_logo"></a>
       </div>
-    </div>
     </div>
     <div class="container">
       <div class="navbar navbar-inverse navbar-static-top">
@@ -49,21 +47,22 @@
           </div><!--/.nav-collapse -->
       </div>
     </div>
-    <div class="wrapper">
+    <div class="container" id="taracot_content_container_wrap">
+      <div id="taracot_content_container">
+        [== $content =]
+      </div>
+    </div> <!-- /container -->
+    <div class="footer" id="taracot_content_footer">
       <div class="container">
-        <div id="taracot_site_content">
-          [== $content =]
-        </div>
-      </div> <!-- /container -->
-    </div> <!-- /wrapper -->
-    <div class="footer">
-      <div class="container">
-        <p class="text-muted credit">Taracot CMS designed by <a href="http://martinbean.co.uk">Michael A. Matveev</a>.</p>
+        <p class="text-muted credit">Taracot CMS designed by <a href="https://re-hash.ru" class="text-muted">Michael A. Matveev</a>.</p>
       </div>
     </div>       
     <script type="text/javascript">
      var taracot_langs_available = jQuery.parseJSON('[== $detect_lang->{list} =]');
      var taracot_lang_current = "[== $detect_lang->{lng} =]";
+     var __cx = $('#taracot_content_container').offset().top + $('#taracot_content_container').height();
+     var __cz = $('#taracot_content_footer').offset().top;
+     //if (__cx < __cz) { $('#taracot_site_content').height($('#taracot_content_footer').offset().top - $('#taracot_content_container').offset().top); }
     </script>    
     <script src="/js/taracot.frontend.min.js"></script>
     <script type="text/javascript">var wlp=window.location.pathname;if(wlp.match('^/user/authorize')){$('#__tc_login').addClass('active');}if(wlp.match('^/user/register')){$('#__tc_signup').addClass('active');}if(wlp.match('^/agreement')){$('#__tc_signup').addClass('active');}if(wlp.match('^/user/password')){$('#__tc_login').addClass('active');}if(wlp.match('^/$')){$('#_taracot_bar__').addClass('active');}if(wlp.match('^/user/account')){$('#__tc_acnt').addClass('active');}</script>    

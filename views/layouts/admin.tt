@@ -16,6 +16,7 @@
   <meta name="keywords" content="[== $page_data->{site_keywords} =]">
   <meta name="description" content="[== $page_data->{site_description} =]"> 
   <link rel="stylesheet" href="/css/bootstrap3.min.css">
+  <link href="/css/bootstrap3-theme.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="/css/admin.css">
   <script src="/js/jquery.min.js"></script>
   <script src="/js/bootstrap3.min.js"></script>  
