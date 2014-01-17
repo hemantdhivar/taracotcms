@@ -85,7 +85,7 @@ sub data() {
        $url=$child->{url};
       }
       my $idbu = lc $url;
-      $idbu=~s/\//_/;
+      $idbu=~s/\//_/gm;
       $res.=qq~<li id="_taracot_bar_$idbu"><a href="$url">~.encode_entities($child->{title}).qq~</a></li>~;
      }
     } 
@@ -97,7 +97,7 @@ sub data() {
     $url=$item->{url};
    }
    my $idbu = lc $url;
-   $idbu=~s/\//_/;
+   $idbu=~s/\//_/gm;
    $res.=qq~<li id="_taracot_bar_$idbu"><a href="$url">~.encode_entities($item->{title}).qq~</a></li>~;
   }
  }

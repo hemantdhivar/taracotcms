@@ -21,6 +21,12 @@ prefix $defroute;
 my $detect_lang;
 my $typo = taracot::typo->new();
 
+# Load search plugin
+
+require 'modules/search/'.config->{search_plugin}.'.pm';
+my $sp = 'modules::search::'.config->{search_plugin};
+my $search_plugin = "$sp"->new();
+
 sub _name() {
  &_load_lang();
   return $lang->{module_name};
