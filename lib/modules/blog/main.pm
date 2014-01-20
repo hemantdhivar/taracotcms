@@ -112,7 +112,7 @@ sub flow() {
   my $total=0;
   my $sth = database->prepare(
    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where
-  );
+  );  
   if ($sth->execute()) {
    ($total) = $sth -> fetchrow_array;
   }
@@ -439,7 +439,7 @@ get '/post' => sub {
     if (!$let) {
       return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_private_long} }, { layout => config->{layout}.'_'.$_current_lang } );        
     }
-  }
+  }  
   my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($edit_template) {
     return $edit_template;
@@ -477,7 +477,11 @@ get '/post/edit/:post_id' => sub {
       $hub_data{$par}=$val;
     }
   }
-  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data, post => $pst, post_id => $post_id }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $share_image_access = '0';
+  if (config->{share_image_mode} eq 'everyone' || $auth->{groups_hash}->{'share_image'} || $auth->{status} eq 2) {
+    $share_image_access = '1';
+  }
+  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data, post => $pst, post_id => $post_id, share_image_access => $share_image_access }, { layout => config->{layout}.'_'.$_current_lang } );
   if ($edit_template) {
     return $edit_template;
   }

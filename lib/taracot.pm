@@ -98,7 +98,10 @@ sub _auth() {
    $authdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id });
    my %grpdata;
    if ($authdata && $authdata->{groups}) {
-      my @groups=split(/,/, $authdata->{groups});   
+      $authdata->{groups} =~ s/^\s+//;
+      $authdata->{groups} =~ s/\s+$//;
+      $authdata->{groups} =~ tr/ //s;
+      my @groups=split(/ /, $authdata->{groups});   
       my @groups_arr;  
       foreach my $item(@groups) {
         $item =~ s/^\s+//;

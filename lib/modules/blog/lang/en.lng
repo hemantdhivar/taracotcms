@@ -78,3 +78,10 @@ delete_post: Delete post (administrators only)
 mod_panel: Moderation panel
 user_restricted: Your account is currently restricted, you can't create new posts or write comments
 blog_post_preview: Post preview
+share_image: Upload and share images
+share_unauthorized: Sorry, but you're not authorized to share images on this website.
+share_hint: You can upload any images and immediately post them to the blog.
+file_upload_hint: Please choose some files to upload. When supported by your browser, you can also select multiple files and drag/drop files to the area below.
+upload_add: Select files
+post_to_editor: Post to editor
+clear_res: Clear results

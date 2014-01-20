@@ -215,7 +215,7 @@ my ($align,$src,$width,$height,$alt) = @_;
  my $img = "<img$align src=\"$src\"";
  $img .= " width=\"$width\"" if $width;
  $img .= " height=\"$height\"" if $height;
- return $img." alt=\"$alt\" border=\"$AUBBC{image_border}\"$AUBBC{html_type}>";
+ return $img." class=\"img-responsive\" alt=\"$alt\" border=\"$AUBBC{image_border}\"$AUBBC{html_type}>";
 }
 
 sub make_link {

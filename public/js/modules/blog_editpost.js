@@ -1,7 +1,6 @@
 if (post_id) {
     $('#editpost_title').html(js_lang_edit_post);
     $('#editpost_hint').html(js_lang_edit_post_hint);   
-
 }
 
 var validate_form = function() {

@@ -23,6 +23,30 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<div class="modal fade" id="share_image">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">[== $lang->{share_image} =]</h4>
+      </div>
+      <div class="modal-body" id="share_image_body">
+        [== $lang->{share_hint} =]<br/><br/>
+        <div id="files_upload">
+           <div id="upload_container">
+            <div id="filelist"></div>
+            <div class="row" id="result_gallery_row"></div>
+            <button type="button" class="btn btn-default" id="btn_upload_select">[== $lang->{upload_add} =]</button>&nbsp;<button type="button" class="btn btn-danger" id="btn_clear_res">[== $lang->{clear_res} =]</button>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="share_image_push" data-dismiss="modal">[== $lang->{post_to_editor} =]</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">[== $lang->{comment_error_close} =]</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <div class="alert alert-danger" style="display:none" id="form_error_msg">
 <span id="form_error_msg_text"></span>
 </div>
@@ -102,12 +126,23 @@
 <script src="/js/wysibb/jquery.wysibb.min.js" charset="utf-8"></script>
 <script src="/js/wysibb/lang/en.js"></script>
 <script src="/js/wysibb/lang/de.js"></script>
+<script type="text/javascript" src="/js/plupload/plupload.full.js"></script>
+<script type="text/javascript" src="/js/modules/blog_share_image.js"></script>
 <script>
 $(document).ready(function() {
   var lng = '[== $detect_lang->{lng} =]';
   var wbbOpt={
-    imgupload:false,buttons:"bold,italic,underline,strike,sup,sub,|,img,video,link,|,bullist,numlist,|,fontcolor,fontsize,fontfamily,|,justifyleft,justifycenter,justifyright,|,quote,code,offtop,table,removeFormat,cutpage",
-  allButtons:{cutpage:{title:'[== $lang->{btn_cut} =]',buttonText:'CUT',transform: {'<div class="blog-post-cut"></div>':'[cut]'}}}
+    imgupload:false,buttons:"bold,italic,underline,strike,sup,sub,|,img,upimg,video,link,|,bullist,numlist,|,fontcolor,fontsize,fontfamily,|,justifyleft,justifycenter,justifyright,|,quote,code,offtop,table,removeFormat,cutpage",
+  allButtons:{cutpage:{title:'[== $lang->{btn_cut} =]',buttonText:'CUT',transform: {'<div class="blog-post-cut"></div>':'[cut]'}},
+    upimg: {
+      title: "[== $lang->{share_image} =]",
+      buttonHTML: '<i class="glyphicon glyphicon-open" style="padding: 4px 0 0 4px"></i>',
+      modal: share_image_dialog,
+      transform: {
+        '<img src="{SRC}">':'[img]{SRC}[/img]'
+      }
+    }
+  }
   };
   if (lng != 'ru'){wbbOpt['lang']=lng}  
   if (post_id) {
@@ -116,6 +151,11 @@ $(document).ready(function() {
   } else {
     $('#blog_form').show();
     $('#wbbeditor').wysibb(wbbOpt);
+  }  
+  var share_image_access = "[== $share_image_access =]";
+  if (share_image_access != '1') {
+    $('#share_image_body').html("[== $lang->{share_unauthorized} =]");
+    $('#share_image_push').hide();
   }
 })
 </script>
