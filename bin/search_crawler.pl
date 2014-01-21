@@ -62,6 +62,18 @@ $sth->finish();
 
 # END: Crawl data for module: pages
 
+# BEGIN: Crawl data for module: blog
+
+$sth = database->prepare('SELECT id, ptitle, ptext_html, plang FROM '.config->{db_table_prefix}.'_blog_posts WHERE pstate=1 AND mod_require=0 AND deleted=0');
+if ($sth->execute()) {
+	while(my ($id, $ptitle, $ptext_html, $plang) = $sth -> fetchrow_array) {
+ 		$search_plugin->updateSearchIndex($plang, $ptitle, $ptext_html, '/blog/post/'.$id, $id, 'blog');
+	}
+}
+$sth->finish();
+
+# END: Crawl data for module: pages
+
 # BEGIN: Crawl data for module: portfolio
 
 my $portfolio_id = 0;

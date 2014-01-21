@@ -44,4 +44,5 @@
 <div style="height:24px"></div>
 <script src="/js/modules/blog_post.js"></script>
 <script type="text/javascript">var mod_require='[== $mod_require =]';if (mod_require == '1') { $('#modreq').attr('checked', true); }var post_id='[== $id =]';</script>
+<a name="comments"></a>
 [== $comments =]

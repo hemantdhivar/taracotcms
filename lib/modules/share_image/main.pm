@@ -79,9 +79,14 @@ post '/upload' => sub {
   $fn=~s/ /_/gm;
   $fn=unidecode($fn);
   $fn=~s/[^a-zA-Z0-9\-_\.]//gm;
-  my $fp=config->{files_dir}."share/images/".$fn;
+  my $fp=config->{files_dir}."share/images/".$auth_data->{id}.'_'.time.'_'.$fn;
   $fp=~s/\/\//\//gm;
   $file->copy_to($fp);
+  open(DATA, $fp);
+  my $_fh5 = Digest::MD5->new;
+  $_fh5->addfile(*DATA);
+  my $_image_md5 = $_fh5->hexdigest;
+  close(DATA);
   if (-e $fp) {
    my $img = Imager->new(file=>$fp) || die Imager->errstr();
    my $x = $img->getwidth();
@@ -98,17 +103,17 @@ post '/upload' => sub {
    if ($img->getheight() > 1000) {
     $img = $img->scale(ypixels => 1000);
    }   
-   $img->write(file => config->{files_dir}."share/images/".md5_hex($fn).'.jpg');
+   $img->write(file => config->{files_dir}."share/images/".$_image_md5.'.jpg');
    if ($x > $y) {
     $img = $img->scale(xpixels=>100);
    } else {
     $img = $img->scale(ypixels=>100);
    }   
    $img = $img->crop( width=>100, height=>100 );
-   $img->write(file => config->{files_dir}."share/images/.".md5_hex($fn).'.jpg');
+   $img->write(file => config->{files_dir}."share/images/.".$_image_md5.'.jpg');
    removeFile($fp);
   }
-  return '{"tn":"'.config->{files_url}."/share/images/.".md5_hex($fn).'.jpg'.'","fn":"'.config->{files_url}."/share/images/".md5_hex($fn).'.jpg'.'"}';
+  return '{"tn":"'.config->{files_url}."/share/images/.".$_image_md5.'.jpg'.'","fn":"'.config->{files_url}."/share/images/".$_image_md5.'.jpg'.'"}';
 }; 
 
 1;

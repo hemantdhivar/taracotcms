@@ -673,6 +673,11 @@ post '/post/process' => sub {
     database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require, phash => $phash }); 
     $pid = database->{q{mysql_insertid}};
   }
+  if ($blog_state) {
+    $search_plugin->updateSearchIndex($_current_lang, $blog_title, $blog_data_html, "/blog/post/$pid", $pid, 'blog');
+  } else {
+    $search_plugin->removeFromSearchIndex($_current_lang, "/blog/post/$pid", 'blog');
+  }
   if ($pid) {    
     $res{pid}=$pid; 
     return $json_xs->encode(\%res); 
@@ -1018,6 +1023,7 @@ post '/moderate/process' => sub {
   }
   if ($delpost) {
   	database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { deleted => 1 });
+    $search_plugin->removeFromSearchIndex($_current_lang, "/blog/post/$pid", 'blog');
   }
   if ($editpost) {
   	$res{redirect}='/blog/post/edit/'.$pid

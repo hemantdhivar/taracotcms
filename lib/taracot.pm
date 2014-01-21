@@ -23,17 +23,20 @@ if (config->{environment} eq 'production') {
 # Default route
 
 prefix "/";
+
 get '/*' => sub { 
  pass();
 };
 
 my $lang;
 
-# Load modules
+# Load admin modules
 
 use taracot::admin;
 
 prefix "/";
+
+# Load the rest of modules
 
 my $load_modules = config->{load_modules_frontend};
 $load_modules=~s/ //gm;
@@ -42,6 +45,8 @@ foreach my $module (@modules) {
   my $taracot_module_load="modules::".lc($module)."::main";
   load $taracot_module_load;
 }
+
+# Load blocks
 
 prefix "/";
 
@@ -54,6 +59,13 @@ foreach my $block (@blocks) {
 }
 
 hook before => sub {
+  # Load the start page if defined
+  if (config->{start_page}) {  
+    if (request->path_info eq '/' && request->method eq 'GET') {
+      #request->path_info(config->{start_page});
+      redirect config->{start_page};
+    }
+  }
   # Firewall-related routines
   if (config->{firewall_mode} eq 'blacklist' || config->{firewall_mode} eq 'whitelist') {    
     my $remote_ip = request->env->{'HTTP_X_REAL_IP'};

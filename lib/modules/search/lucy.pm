@@ -28,6 +28,7 @@ sub updateSearchIndex {
   my $surl = $_[3];
   my $sid = $_[4];
   my $mid = $_[5];
+  my $no_add = $_[6];
   $stext =~ s/<h1[^>]*>.*?<\/h1>//is;
   $stext =~ s/<script[^>]*>.*?<\/script>//igs;
   $stitle = decode_entities($stitle);
@@ -61,18 +62,27 @@ sub updateSearchIndex {
   );
   #$indexer->delete_by_term( 'field' => 'id', 'term' => $sid, 'field' => 'module', 'term' => $mid );
   $indexer->delete_by_term( 'field' => 'url', 'term' => $surl );
-  print "Adding URL: $surl\n";
-  $indexer->add_doc({
-   title  => $stitle,
-   text => $data,
-   url => $surl,
-   id => $sid,
-   module => $mid,
-   lang => $slang
-  });
-  print "Comitting\n";
+  if (!$no_add) {
+    $indexer->add_doc({
+     title  => $stitle,
+     text => $data,
+     url => $surl,
+     id => $sid,
+     module => $mid,
+     lang => $slang
+    });
+  }
   $indexer->commit();
 }
+
+sub removeFromSearchIndex {
+  my $self=shift;
+  my $slang = $_[0];
+  my $surl = $_[1];
+  my $module_id = $_[2];
+  $self->updateSearchIndex($slang, '', '', $surl, 0, $module_id, 1);
+}
+
 
 sub performSearch {
  my $self=shift;
