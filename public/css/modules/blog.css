@@ -46,3 +46,33 @@
 .label-inv {
 	background:#222;
 }
+.label-dark {
+	color: #fff;	
+	font-size: 90%;
+	font-weight: normal;
+}
+.label-dark-link { 
+	text-decoration: none;
+	color:#fff;
+}
+.label-dark-link:hover {
+	text-decoration: none;
+	color:#fff;	
+}
+.label-smaller {
+	font-weight: normal;
+}
+.label-hub {
+	background: #fff;
+	border: 1px solid #ccc;
+	color: #111;
+	font-size: 90%;
+	font-weight: normal;
+}
+.label-hub-link {
+	background: #fff;
+	color: #111;
+}
+.label-hub-link:hover {
+	color: #111;
+}

@@ -269,7 +269,7 @@ $2<\/blockquote>$AUBBC{quote_extra}/g;
  $msg =~ s/\[tr\](?s)(.+?)\[\/tr\]/<tr>$1<\/tr>/g;
  $msg =~ s/\[td\](?s)(.+?)\[\/td\]/<td>$1<\/td>/g;
  $msg =~ s/\[th\](?s)(.+?)\[\/th\]/<th>$1<\/th>/g;
- $msg =~ s/\[video\](?s)(.+?)\[\/video\]/<iframe id="ytplayer" type="text\/html" width="640" height="390" src="http:\/\/www.youtube.com\/embed\/$1?autoplay=0" frameborder="0"\/><\/iframe>/g;
+ $msg =~ s/\[video\](?s)(.+?)\[\/video\]/<iframe type="text\/html" class="taracot-youtube-embed" width="640" height="390" src="http:\/\/www.youtube.com\/embed\/$1?autoplay=0" frameborder="0"\/><\/iframe>/g;
 
  # Strange size notation used by WysiBB
  $msg =~ s/\[size=(\d+)\](?s)(.+?)\[\/size\]/<span style="font-size: $1%;">$2<\/span>/g; 

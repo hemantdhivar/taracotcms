@@ -1,5 +1,5 @@
 <h1 id="editpost_title">[== $lang->{add_post} =]</h1>
-<span id="editpost_hint">[== $lang->{add_post_hint} =]</span><br/><?pl if ($page_data->{blog_mode} eq 'moderate') { ?><br/>[== $lang->{post_hint_premod} =]<?pl } ?><div style="height:25px"></div>
+<span id="editpost_hint">[== $lang->{add_post_hint} =]</span><br/><?pl if ($page_data->{blog_mode} eq 'moderate') { ?><br><div class="alert alert-warning">[== $lang->{post_hint_premod} =]</div><?pl } ?><div style="height:25px"></div>
 <?pl
  my $hub_html='';
  foreach my $key (keys %$hub_data) { 
