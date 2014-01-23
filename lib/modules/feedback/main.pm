@@ -44,7 +44,7 @@ get '/' => sub {
   my $auth = &taracot::_auth(); 
   my $_current_lang=_load_lang();
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  return &taracot::_process_template( template 'feedback_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'feedback.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang } ); 
+  return &taracot::_process_template( template ('feedback_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'feedback.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth }, { layout => config->{layout}.'_'.$_current_lang }), $auth ); 
 };
 
 post '/process' => sub {

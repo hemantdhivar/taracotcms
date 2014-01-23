@@ -99,14 +99,19 @@ get '/user/authorize/facebook/' => sub {
     $realname=~s/\'//gm;
     $realname=~s/\<//gm;
     $realname=~s/\>//gm;
-    database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, password_unset => 1, email => $email, phone => $phone, realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
+    #database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, username_unset => 1, password_unset => 1, email => $email, phone => $phone, realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
+    my $sth = database->prepare(
+      'INSERT INTO '.config->{db_table_prefix}.'_users SET username = '.database->quote($username).', username_social = '.database->quote($username).', password = '.database->quote($password).', username_unset = 1, password_unset = 1, email = '.database->quote($email).', phone = '.database->quote($phone).', realname = '.database->quote($realname).', status = 1, verification = \'\', regdate = '.time.', lastchanged = '.time
+    );
+    $sth->execute();
+    $sth->finish();
     my $id = database->{q{mysql_insertid}}; 
     if ($id) {
      session user => $id;
      database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
-     return redirect $auth_uri_base.$auth_comeback;
+     redirect $auth_uri_base.$auth_comeback;
     } else {
-     return redirect $auth_uri_base.'/user/authorize'; 
+     redirect $auth_uri_base.'/user/authorize'; 
     }
   }
 

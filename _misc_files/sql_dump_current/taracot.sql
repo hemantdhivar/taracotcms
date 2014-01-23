@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Хост: localhost
--- Время создания: Янв 09 2014 г., 16:40
+-- Время создания: Янв 23 2014 г., 19:01
 -- Версия сервера: 5.0.45
 -- Версия PHP: 5.2.4
 -- 
@@ -30,13 +30,14 @@ CREATE TABLE `taracot_blog_comments` (
   `ipaddr` varchar(45) default NULL,
   PRIMARY KEY  (`id`),
   KEY `left_key` (`left_key`,`right_key`,`level`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=3 ;
 
 -- 
 -- Дамп данных таблицы `taracot_blog_comments`
 -- 
 
 INSERT INTO `taracot_blog_comments` VALUES (1, 1, 1, 'xtreme', 'phuck', 1388052290, 'f705393301e2b6f31b13ffb706f0dcd9', 1, 4, 1, '127.0.0.1');
+INSERT INTO `taracot_blog_comments` VALUES (2, 2, 0, 'xtreme', 'Test comment', 1390386163, '1fdcde040c470c71fe4f5c1dba34ec42', 1, 4, 1, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -68,13 +69,14 @@ CREATE TABLE `taracot_blog_posts` (
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`),
   FULLTEXT KEY `ptitle` (`ptitle`,`ptext`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=3 ;
 
 -- 
 -- Дамп данных таблицы `taracot_blog_posts`
 -- 
 
 INSERT INTO `taracot_blog_posts` VALUES (1, 'en', 'xtreme', 'test', 0, 'Test post', 'test, record', 1387972464, 'de2b69e2d3962cf2a33917ede62cd095', 'По его словам, решение возобновить производство по делу связано с постановлением Европейского суда по правам человека, который указал на многочисленные нарушения прав подсудимых, допущенных в ходе процесса. С юридической точки зрения решение ЕСПЧ считается вновь открывшимися обстоятельствами, [b]на основании[/b] которых решение по делу может быть пересмотрено.\nКроме того, глава Верховного суда отменил решение судьи, отказавшего Ходорковскому и его деловому партнеру в рассмотрении надзорных жалоб на приговор по второму делу в их отношении. Теперь эти жалобы поступят на рассмотрение президиума Верховного суда. Адвокаты осужденных выразили удовлетворение решением Вячеслава Лебедева, но не стали оценивать перспективы дела.', 'По его словам, решение возобновить производство по&nbsp;делу связано с&nbsp;постановлением Европейского суда по&nbsp;правам человека, который указал на&nbsp;многочисленные нарушения прав подсудимых, допущенных в&nbsp;ходе процесса. С юридической точки зрения решение ЕСПЧ считается вновь открывшимися обстоятельствами, <b>на&nbsp;основании</b> которых решение по&nbsp;делу может быть пересмотрено.<br />\nКроме того, глава Верховного суда отменил решение судьи, отказавшего Ходорковскому и&nbsp;его деловому партнеру в&nbsp;рассмотрении надзорных жалоб на&nbsp;приговор по&nbsp;второму делу в&nbsp;их отношении. Теперь эти жалобы поступят на&nbsp;рассмотрение президиума Верховного суда. Адвокаты осужденных выразили удовлетворение решением Вячеслава Лебедева, но&nbsp;не стали оценивать перспективы дела.', 0, 'По его словам, решение возобновить производство по&nbsp;делу связано с&nbsp;постановлением Европейского суда по&nbsp;правам человека, который указал на&nbsp;многочисленные нарушения прав подсудимых, допущенных в&nbsp;ходе процесса. С юридической точки зрения решение ЕСПЧ считается вновь открывшимися обстоятельствами, <b>на&nbsp;основании</b> которых решение по&nbsp;делу может быть пересмотрено.<br />\nКроме того, глава Верховного суда отменил решение судьи, отказавшего Ходорковскому и&nbsp;его деловому партнеру в&nbsp;рассмотрении надзорных жалоб на&nbsp;приговор по&nbsp;второму делу в&nbsp;их отношении. Теперь эти жалобы поступят на&nbsp;рассмотрение президиума Верховного суда. Адвокаты осужденных выразили удовлетворение решением Вячеслава Лебедева, но&nbsp;не стали оценивать перспективы дела.', 83, 1, '127.0.0.1', 0, 0, 1, 1389268053);
+INSERT INTO `taracot_blog_posts` VALUES (2, 'en', 'xtreme', 'test', 1, 'Test post', 'test', 1390382891, 'd5d99aa0dd06f3454750c57dfef29e9a', 'В следующих статьях мы расскажем про то, как поднять Elliptics в домашних условиях и примеры его использования, подробнее про устройство Eblob’а [cut](поверьте, нам есть что о нем интересного рассказать), стриминг данных, вторичные индексы и многое другое.', 'В следующих статьях мы расскажем про то, как поднять Elliptics в домашних условиях и примеры его использования, подробнее про устройство Eblob’а ', 1, 'В следующих статьях мы расскажем про&nbsp;то, как&nbsp;поднять Elliptics в&nbsp;домашних условиях и&nbsp;примеры его использования, подробнее про&nbsp;устройство Eblob’а &#40;поверьте, нам есть что о&nbsp;нем интересного рассказать&#41;, стриминг данных, вторичные индексы и&nbsp;многое другое.', 161, 1, '127.0.0.1', 0, 0, 1, 1390385924);
 
 -- --------------------------------------------------------
 
@@ -175,6 +177,7 @@ CREATE TABLE `taracot_search_db` (
 -- 
 
 INSERT INTO `taracot_search_db` VALUES ('pages', 1, 'en', 'Home page', 'As you can read this text, the installation seems to be sucessful.', 'sucessful the you page seems installation can to as be text read home this', '/', 1381929585);
+INSERT INTO `taracot_search_db` VALUES ('blog', 2, 'en', 'Test post', 'В следующих статьях мы расскажем про то, как поднять Elliptics в домашних условиях и примеры его использования, подробнее про устройство Eblob’а (поверьте, нам есть что о&...', 'elliptics как поднять другое eblobа рассказать test в домашних нам есть использования что поверьте post в индексы следующих и примеры стриминг и многое данных условиях подробнее вторичные статьях его про то интересного мы о нем про устройство расскажем', '/blog/post/2', 1390385924);
 
 -- --------------------------------------------------------
 
@@ -259,6 +262,8 @@ CREATE TABLE `taracot_support_ans` (
 CREATE TABLE `taracot_users` (
   `id` int(11) NOT NULL auto_increment,
   `username` varchar(100) NOT NULL,
+  `username_social` varchar(100) default NULL,
+  `username_unset` tinyint(1) default '0',
   `password` varchar(32) default NULL,
   `password_unset` tinyint(1) NOT NULL default '0',
   `realname` varchar(100) NOT NULL,
@@ -282,5 +287,5 @@ CREATE TABLE `taracot_users` (
 -- Дамп данных таблицы `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'xtreme', '0f5559ee359fba749e7e6638fcfdbbfb', 0, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1389268201);
-INSERT INTO `taracot_users` VALUES (2, 'user', '1d88c84caa93404ecf250399bc1be5a0', 1, 'John Doe', '', NULL, NULL, '79217998111', '', 1, NULL, NULL, 'en', 1376731887, 0, 1379770337);
+INSERT INTO `taracot_users` VALUES (1, 'xtreme', NULL, 1, '0f5559ee359fba749e7e6638fcfdbbfb', 1, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1390481259);
+INSERT INTO `taracot_users` VALUES (2, 'user', NULL, 0, '1d88c84caa93404ecf250399bc1be5a0', 1, 'John Doe', '', NULL, NULL, '79217998111', '', 1, NULL, NULL, 'en', 1376731887, 0, 1379770337);

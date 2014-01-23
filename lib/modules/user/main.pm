@@ -35,12 +35,17 @@ sub _load_lang {
   if ($lng ne 'en') {
    $lang_adm_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/user/lang/'.$lng.'.lng') || {};
   } 
+  my $lang_auth = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/auth/lang/en.lng') || {};
+  my $lang_auth_cnt={};
+  if ($lng ne 'en') {
+   $lang_auth_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/modules/auth/lang/'.$lng.'.lng') || {};
+  } 
   my $lang_mod = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/en.lng') || {};
   my $lang_mod_cnt={};
   if ($lng ne 'en') {
    $lang_mod_cnt = YAML::XS::LoadFile(config->{root_dir}.'lib/taracot/lang/'.$lng.'.lng') || {};
   }
-  $lang = { %$lang_adm, %$lang_mod, %$lang_adm_cnt, %$lang_mod_cnt };
+  $lang = { %$lang_adm, %$lang_mod, %$lang_auth, %$lang_adm_cnt, %$lang_mod_cnt, %$lang_auth_cnt };
   return $lng;
 }
 # Routes
@@ -50,7 +55,7 @@ get '/register' => sub {
   if ($auth_data) { return redirect '/user/account' } 
   my $_current_lang=_load_lang();
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
-  my $render_template = &taracot::_process_template( template 'user_register', { detect_lang => $detect_lang, config => config, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template ('user_register', { detect_lang => $detect_lang, config => config, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, agreement_url => config->{agreement}, page_data => $page_data, pagetitle => $lang->{user_register}, authdata => $auth_data }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
   if ($render_template) {
     return $render_template;
   }
@@ -155,6 +160,53 @@ post '/register/process' => sub {
   return $json_xs->encode(\%res);
 };
 
+post '/register/finish' => sub {
+  content_type 'application/json';
+  my $_current_lang=_load_lang();
+  my %res; 
+  $res{status}=1; 
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new();
+  my $auth = &taracot::_auth();
+  if (!$auth || !$auth->{username_unset}) {
+    $res{status}=0;
+    push @errors, $lang->{authdlg_error_auth};
+    push @fields, 'username';
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  my $username=param('auth_username') || '';
+  if ($username !~ /^[A-Za-z0-9_\-]{3,100}$/) { 
+    $res{status}=0; 
+    push @errors, $lang->{authdlg_invalid_username};
+    push @fields, 'username';  
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }  
+  $username=lc($username);
+  my $db_data=database->quick_select(config->{db_table_prefix}.'_users', { username => $username });
+  if ($db_data->{id}) {
+    $res{status}=0; 
+    push @errors, $lang->{authdlg_duplicate_username};
+    push @fields, 'username';  
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { username => $username, username_unset => 0, lastchanged => time });  
+  my $res_data = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id} });
+  if ($username ne $res_data->{username}) {
+    $res{status}=0; 
+    push @errors, $lang->{authdlg_error_save};
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+  }
+  return $json_xs->encode(\%res);
+};
+
 get '/authorize' => sub {
   my $auth_data = &taracot::_auth();
   if ($auth_data) { return redirect '/user/account'; return; } 
@@ -176,7 +228,7 @@ get '/authorize' => sub {
   session auth_comeback => $comeback;
   my %db_data;
   my $page_data= &taracot::_load_settings('site_title,keywords,description', $_current_lang);
-  my $render_template = &taracot::_process_template( $taracot::taracot_render_template = template 'user_authorize', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, current_lang => $_current_lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data, comeback => $comeback, config => config }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template ('user_authorize', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, current_lang => $_current_lang, page_data => $page_data, pagetitle => $lang->{user_authorize}, authdata => $auth_data, comeback => $comeback, config => config }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
   if ($render_template) {
     return $render_template;
   }
@@ -584,7 +636,7 @@ get '/account' => sub {
    $_sc++;
   }  
   $hash_status=~s/, //; 
-  my $render_template = &taracot::_process_template( template 'user_account', { hash_langs => $hash_langs, hash_status => $hash_status, detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $render_template = &taracot::_process_template( template ('user_account', { hash_langs => $hash_langs, hash_status => $hash_status, detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'user.css" rel="stylesheet" />', lang => $lang, avatar => $avatar, page_data => $page_data, auth_data => $auth, pagetitle => $lang->{user_account} }, { layout => config->{layout}.'_'.$_current_lang }), $auth );
   if ($render_template) {
     return $render_template;
   }
@@ -749,7 +801,7 @@ post '/account/email/process' => sub {
     $password = md5_hex(config->{salt}.$new_password);  
   }
   my $verification = md5_hex(config->{salt}.$password.time.rand);  
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'eml_'.$verification, password => $password, password_unset => 0, lastchanged => time });
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { email => $email, status => 0, verification => 'eml_'.$verification, password => $password, username_unset => 0, lastchanged => time });
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/email/'.$auth->{username}.'/'.$verification;  
   if (config->{https_connection}) {
@@ -807,7 +859,7 @@ post '/account/password/process' => sub {
   # first wave validations
   my $password=param('pwd_password') || '';
   my $password_old=param('pwd_old_password') || '';
-  if ($auth->{password_unset} ne 1 && $password_old !~ /^.{5,100}$/) { 
+  if ($auth->{username_unset} ne 1 && $password_old !~ /^.{5,100}$/) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_single};
     push @fields, 'old_password';  
@@ -817,7 +869,7 @@ post '/account/password/process' => sub {
     push @errors, $lang->{user_register_error_password_multi};
     push @fields, 'password';  
   }
-  if (!$auth->{password_unset} ne 1 && $password eq $password_old) { 
+  if (!$auth->{username_unset} ne 1 && $password eq $password_old) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_equals};
     push @fields, 'password';  
@@ -839,7 +891,7 @@ post '/account/password/process' => sub {
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
   }
-  if ($auth->{password_unset} ne 1 && $db_data_1->{password} ne $password_old) { 
+  if ($auth->{username_unset} ne 1 && $db_data_1->{password} ne $password_old) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_password_bad};
     push @fields, 'old_password';  
@@ -849,7 +901,7 @@ post '/account/password/process' => sub {
   }
   # success  
   $password = md5_hex(encode_utf8(config->{salt}.$password));
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { password => $password, password_unset => 0, lastchanged => time });   
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { password => $password, username_unset => 0, lastchanged => time });   
   return $json_xs->encode(\%res);
 };
 

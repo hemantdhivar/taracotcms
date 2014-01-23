@@ -68,7 +68,7 @@ get '/' => sub {
     $tc{title} = $tt;
     push @topics, \%tc;
   }  
-  return &taracot::_process_template( template 'support_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, topics => \@topics  }, { layout => config->{layout}.'_'.$_current_lang } );
+  return &taracot::_process_template( template ('support_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, topics => \@topics  }, { layout => config->{layout}.'_'.$_current_lang }), $auth );
   pass();
 };
 
@@ -91,7 +91,7 @@ get '/specialist' => sub {
     push @topics, \%tc;
   }
   if (!$auth->{id}) {
-    return &taracot::_process_template( template 'support_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang } );
+    return &taracot::_process_template( template ('support_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang }), $auth );
   }
   my $allow = undef;
   $allow = 1 if ($auth->{status} eq 2);
@@ -102,9 +102,9 @@ get '/specialist' => sub {
     }
   }
   if (!$allow) {
-    return &taracot::_process_template( template 'support_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_perm_long} }, { layout => config->{layout}.'_'.$_current_lang } );    
+    return &taracot::_process_template( template ('support_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_perm_long} }, { layout => config->{layout}.'_'.$_current_lang }), $auth );    
   }
-  return &taracot::_process_template( template 'support_specialist', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{specialist}, auth_data => $auth, topics => \@topics  }, { layout => config->{layout}.'_'.$_current_lang } );
+  return &taracot::_process_template( template ('support_specialist', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'support.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{specialist}, auth_data => $auth, topics => \@topics  }, { layout => config->{layout}.'_'.$_current_lang }), $auth );
   pass();
 };
 
@@ -390,7 +390,7 @@ post '/ticket/specialist/load' => sub {
 
 post '/answer/save' => sub {
   my $auth = &taracot::_auth();
-  if (!$auth) { 
+  if (!$auth || $auth->{username_unset}) { 
     return '{"status":"0"}'; 
   }
   my $ans = param('ans');
@@ -474,7 +474,7 @@ post '/answer/save' => sub {
 
 post '/answer/specialist/save' => sub {
   my $auth = &taracot::_auth();
-  if (!$auth) { 
+  if (!$auth || $auth->{username_unset}) { 
     return '{"status":"0"}'; 
   }
   my $ans = param('ans');
@@ -559,7 +559,7 @@ post '/answer/specialist/save' => sub {
 
 post '/answer/specialist/solved' => sub {
   my $auth = &taracot::_auth();
-  if (!$auth) { 
+  if (!$auth || $auth->{username_unset}) { 
     return '{"status":"0"}'; 
   }
   my $_current_lang=_load_lang();
@@ -612,7 +612,7 @@ post '/answer/specialist/solved' => sub {
 
 post '/ticket/save' => sub {
   my $auth = &taracot::_auth();
-  if (!$auth) { 
+  if (!$auth || $auth->{username_unset}) { 
     return '{"status":"0","errmsg":"'.$lang->{error_unauth_long}.'"}'; 
   }
   my $msg = param('msg');

@@ -10,7 +10,7 @@ use Dancer::Plugin::Database;
 my $agent=LWP::UserAgent->new;
 $agent->timeout(10);
 $agent->env_proxy;
-$agent->default_header('Content-Length' => "0 ");
+$agent->default_header('Content-Length' => "0");
 
 prefix '/';
 
@@ -33,22 +33,22 @@ get '/user/authorize/vk/' => sub {
   my $code = param('code');
   my $response = $agent->post("https://oauth.vk.com/token", { code => $code, redirect_uri => config->{auth_vk_redirect_uri}, client_id => config->{auth_vk_client_id}, client_secret => config->{auth_vk_client_secret} });
   if (!$response->is_success) {
-    redirect $auth_uri_base.'/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';    
     return;
   }
   my $data;  
   eval { $data = decode_json $response->content; }; 
   if (!$data->{access_token}) {
-    redirect $auth_uri_base.'/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';    
     return;
   }
   if (!$data->{user_id}) {
-    redirect $auth_uri_base.'/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';    
     return;
   }
   $response = $agent->get("https://api.vk.com/method/users.get?access_token=".$data->{access_token}."&uids=".$data->{user_id}."&fields=uid,first_name,last_name,screen_name");
   if (!$response->is_success) {
-    redirect $auth_uri_base.'/user/authorize';
+    redirect $auth_uri_base.'/user/authorize';    
     return;
   }
   my $json;
@@ -71,7 +71,7 @@ get '/user/authorize/vk/' => sub {
   my $username = 'vk.'.lc($json->{uid});
   my ($id, $db_email);
   my $sth = database->prepare(
-    'SELECT id, email FROM `'.config->{db_table_prefix}.'_users` WHERE username='.database->quote($username)
+    'SELECT id, email FROM `'.config->{db_table_prefix}.'_users` WHERE username_social='.database->quote($username)
   );
   if ($sth->execute()) {
     ($id, $db_email) = $sth->fetchrow_array();
@@ -93,16 +93,19 @@ get '/user/authorize/vk/' => sub {
     $realname=~s/\'//gm;
     $realname=~s/\<//gm;
     $realname=~s/\>//gm;
-    database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, password_unset => 1, email => '', phone => '', realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
-    my $id = database->{q{mysql_insertid}}; 
+    #database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, username_social => $username, password => $password, username_unset => 1, password_unset => 1, email => '', phone => '', realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
+    my $sth = database->prepare(
+      'INSERT INTO '.config->{db_table_prefix}.'_users SET username = '.database->quote($username).', username_social = '.database->quote($username).', password = '.database->quote($password).', username_unset = 1, password_unset = 1, email = \'\', phone = \'\', realname = '.database->quote($realname).', status = 1, verification = \'\', regdate = '.time.', lastchanged = '.time
+    );
+    $sth->execute();
+    $sth->finish();
+    my $id = database->{q{mysql_insertid}};
     if ($id) {
      session user => $id;
      database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
      redirect $auth_uri_base.$auth_comeback; 
-     return;
     } else {
      redirect $auth_uri_base.'/user/authorize'; 
-     return;
     }
   }
 

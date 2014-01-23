@@ -45,9 +45,9 @@ get '/' => sub {
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);
   if (config->{share_image_mode} ne 'everyone' && !$auth_data->{groups_hash}->{'share_image'} && $auth_data->{status} < 2) {
-    return &taracot::_process_template( template 'share_error', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{share_unauthorized_title}.' | '.$lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang } );
+    return &taracot::_process_template( template ('share_error', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{share_unauthorized_title}.' | '.$lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
   }
-  return &taracot::_process_template( template 'share_image', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang } );  
+  return &taracot::_process_template( template ('share_image', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );  
 };
 
 post '/upload' => sub {
@@ -58,7 +58,7 @@ post '/upload' => sub {
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);
   if (config->{share_image_mode} ne 'everyone' && !$auth_data->{groups_hash}->{'share_image'} && $auth_data->{status} < 2) {
-    return &taracot::_process_template( template 'share_error', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{share_unauthorized_title}.' | '.$lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang } );
+    return &taracot::_process_template( template ('share_error', { detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{share_unauthorized_title}.' | '.$lang->{module_name}, auth_data => $auth_data  }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
   }
   content_type 'application/json';
   my $file=upload('file');

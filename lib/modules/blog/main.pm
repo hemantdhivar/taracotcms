@@ -205,7 +205,8 @@ sub flow() {
    }
   }
   $sth->finish();  
-  return &taracot::_process_template( template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow, paginator => $paginator, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $__rt = template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow, paginator => $paginator, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang };
+  return &taracot::_process_template( $__rt, $auth );
 }
 
 get '/' => sub {
@@ -320,13 +321,15 @@ get '/post/:post_id' => sub {
    if ($pstate eq 2 && !$auth->{id}) {
     $sth->finish(); 
     &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
-    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_unauth}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
+    my $__rt1 = template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_unauth}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang };
+    return &taracot::_process_template( $__rt1, $auth );
    }
 
    if (($pstate eq 0 || $mod_require eq 1) && $auth->{status} ne 2 && !$auth->{groups_hash}->{'blog_moderator'} && !$auth->{groups_hash}->{'blog_moderator_'.$phub} && $pusername ne $auth->{username}) {
       $sth->finish(); 
-      &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
-      return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang } )
+      &taracot::_load_settings('site_title,keywords,description', $_current_lang);  
+      my $__rt2 = template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, errmsg => $lang->{error_draft}, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang };
+      return &taracot::_process_template( $__rt2, $auth );
    }   
    my $phub_url;
    if ($phub) {
@@ -387,8 +390,9 @@ get '/post/:post_id' => sub {
   my $moderator = undef;
   if ($auth->{status} eq 2 || $auth->{groups_hash}->{'blog_moderator'} || $auth->{groups_hash}->{'blog_moderator_'.$phub}) {
     $moderator = 1;
-  }
-  $item_template = &taracot::_process_template( template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator, mod_require => $mod_require, deleted => $deleted, post_id => $id }, { layout => config->{layout}.'_'.$_current_lang } );
+  } 
+  my $__rt3 = template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator, mod_require => $mod_require, deleted => $deleted, post_id => $id }, { layout => config->{layout}.'_'.$_current_lang };
+  $item_template = &taracot::_process_template( $__rt3, $auth );
   }
   $sth->finish(); 
   $sth = database->prepare(
@@ -411,7 +415,8 @@ get '/post' => sub {
   my $_current_lang=_load_lang(); 
   my $page_data = &taracot::_load_settings('site_title,keywords,description,blog_hubs,blog_mode', $_current_lang);
   if (!$auth->{id}) {
-    return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang } );
+    my $__rt1 = template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_unauth_long} }, { layout => config->{layout}.'_'.$_current_lang };
+    return &taracot::_process_template( $__rt1, $auth );
   }  
   my %hub_data;
   my @hubs_arr;
@@ -437,14 +442,16 @@ get '/post' => sub {
       } 
     }    
     if (!$let) {
-      return &taracot::_process_template( template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_private_long} }, { layout => config->{layout}.'_'.$_current_lang } );        
+      my $__rt2 = template 'blog_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, errmsg => $lang->{error_private_long} }, { layout => config->{layout}.'_'.$_current_lang };
+      return &taracot::_process_template( $__rt2, $auth );
     }
   }  
   my $share_image_access = '0';
   if (config->{share_image_mode} eq 'everyone' || $auth->{groups_hash}->{'share_image'} || $auth->{status} eq 2) {
     $share_image_access = '1';
   }
-  my $edit_template = &taracot::_process_template( template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data, share_image_access => $share_image_access }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $__rt3 = template 'blog_editpost', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" /><link href="'.config->{modules_css_url}.'wbbtheme.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth, hub_data => \%hub_data, share_image_access => $share_image_access }, { layout => config->{layout}.'_'.$_current_lang };
+  my $edit_template = &taracot::_process_template( $__rt3, $auth );
   if ($edit_template) {
     return $edit_template;
   }
@@ -525,12 +532,12 @@ post '/post/process' => sub {
   $res{status}=1;  
   my $auth = &taracot::_auth();
   # Not authorized?
-  if (!$auth->{id}) {
+  if (!$auth->{id} || $auth->{username_unset}) {
     $res{status}=0; 
     push @errors, $lang->{error_unauth}; 
     $res{errors}=\@errors; 
     return $json_xs->encode(\%res);   
-  }
+  }  
   # Check if user is currently banned
   if ($auth->{banned} && time < $auth->{banned}) {
     $res{status}=0; 
@@ -795,7 +802,7 @@ post '/comment/put' => sub {
   my $auth = &taracot::_auth();
   my %res;
   my $json_xs = JSON::XS->new(); 
-  if (!$auth->{id}) {
+  if (!$auth->{id} || $auth->{username_unset}) {
     $res{'status'} = 0;
     $res{'errmsg'} = $lang->{comment_error_unauth};
     return $json_xs->encode(\%res); 

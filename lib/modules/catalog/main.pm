@@ -111,7 +111,7 @@ get qr{(.*)} => sub {
    $hcd = &hash_children($uids{$url}, $json);
   }
   
-  my $auth_data = &taracot::admin::_auth();  
+  my $auth_data = &taracot::_auth();  
   my $page_data = &taracot::_load_settings('site_title,site_keywords,site_description', $_current_lang);
 
   my $db_data  = database->quick_select(config->{db_table_prefix}.'_catalog', { filename => '/'.$filename, category => $uids{$path}, lang => $_current_lang });
@@ -184,7 +184,7 @@ get qr{(.*)} => sub {
     @parent_ids = reverse @parent_ids;   
     my $html_parents = '';
     if (@parent_ids) {
-      $html_parents .= &taracot::_process_template( template 'catalog_parents', { parents => \@parent_ids, children => $hcd, urls => \%urls, ttls => \%ttls, lang => $lang }, { layout => undef } );
+      $html_parents .= &taracot::_process_template( template ('catalog_parents', { parents => \@parent_ids, children => $hcd, urls => \%urls, ttls => \%ttls, lang => $lang }, { layout => undef }), $auth_data );
     }
     my $output_layout = '';
     if ($total > 0) {
@@ -202,10 +202,10 @@ get qr{(.*)} => sub {
       }
       $sth->finish();
       my $html_items = '';
-      $html_items .= &taracot::_process_template( template 'catalog_items', { items => $output, lang => $lang }, { layout => undef } );
-      return &taracot::_process_template( template 'catalog_list', { head_html => '<link href="'.config->{modules_css_url}.'catalog.css" rel="stylesheet" />', cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_items => $html_items, html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => $output_layout.'_'.$_current_lang } );
+      $html_items .= &taracot::_process_template( template ('catalog_items', { items => $output, lang => $lang }, { layout => undef }), $auth_data );
+      return &taracot::_process_template( template ('catalog_list', { head_html => '<link href="'.config->{modules_css_url}.'catalog.css" rel="stylesheet" />', cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_items => $html_items, html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => $output_layout.'_'.$_current_lang }), $auth_data );
     } else {
-      return &taracot::_process_template( template 'catalog_list', { head_html => '<link href="'.config->{modules_css_url}.'catalog.css" rel="stylesheet" />', cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_items => '', html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang } );
+      return &taracot::_process_template( template ('catalog_list', { head_html => '<link href="'.config->{modules_css_url}.'catalog.css" rel="stylesheet" />', cat => $ttls{$uids{$url}}, html_parents => $html_parents, html_items => '', html_paginator => $html_paginator, pagetitle => $ttls{$uids{$url}}.' | '.$lang->{module_name}, page_data => $page_data, db_data => $db_data, detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
     }
   }
   if (!session('user')) {
@@ -227,16 +227,16 @@ get qr{(.*)} => sub {
   if (defined $db_data && $db_data->{id}) {
    my $render_template;
    if ($db_data->{status} eq 1) {
-    $render_template = &taracot::_process_template( template 'catalog_view', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template ('catalog_view', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data }, { layout => $db_data->{layout}.'_'.$db_data->{lang} }), $auth_data );
     if (!session('user')) {
       $cache_plugin->set_data(request->uri_base().$url, $render_template);
     }
    }
    if ($db_data->{status} eq 0) {
-    $render_template = &taracot::_process_template( template 'catalog_status', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template ('catalog_status', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "disabled_32.png", status_header => $lang->{disabled_header}, status_text => $lang->{disabled_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} }), $auth_data );
    }
    if ($db_data->{status} eq 2) {
-    $render_template = &taracot::_process_template( template 'catalog_status', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} } );
+    $render_template = &taracot::_process_template( template ('catalog_status', { detect_lang => $detect_lang, lang => $lang, auth_data => $auth_data, pagetitle => $db_data->{pagetitle}, page_data => $page_data, db_data => $db_data, status_icon => "under_construction_32.png", status_header => $lang->{construction_header}, status_text => $lang->{construction_text} }, { layout => $db_data->{layout}.'_'.$db_data->{lang} }), $auth_data );
    }   
    if ($render_template) {
     return $render_template;

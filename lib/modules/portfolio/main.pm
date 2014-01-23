@@ -57,7 +57,7 @@ get '/' => sub {
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);
   my $lf = loadFile(config->{root_dir}.'/'.config->{portfolio_path}.'/portfolio_'.$_current_lang.'.json');
   if (!$lf) {
-    return &taracot::_process_template( template 'portfolio_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data, err_msg => $lang->{id_error} }, { layout => config->{layout}.'_'.$_current_lang } );;
+    return &taracot::_process_template( template ('portfolio_error', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data, err_msg => $lang->{id_error} }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
   }
   my $pf=from_json $$lf;
   my $data_items='';  
@@ -65,11 +65,11 @@ get '/' => sub {
     my $works = $item->{works};
     my $index_items='';
     foreach my $key (keys %{ $works }) {
-      $index_items = &taracot::_process_template( template 'portfolio_index_item', { lang => $lang, id => $key, title => $works->{$key}, images_url => config->{portfolio_images_url} }, { layout => undef } ) . $index_items;
+      $index_items = &taracot::_process_template( template ('portfolio_index_item', { lang => $lang, id => $key, title => $works->{$key}, images_url => config->{portfolio_images_url} }, { layout => undef }), $auth_data ) . $index_items;
     }
-    $data_items .= &taracot::_process_template( template 'portfolio_index_cat', { lang => $lang, id => $item->{id}, title => $item->{desc}, images_url => config->{portfolio_images_url}, items => $index_items, default => $item->{default} }, { layout => undef } );
+    $data_items .= &taracot::_process_template( template ('portfolio_index_cat', { lang => $lang, id => $item->{id}, title => $item->{desc}, images_url => config->{portfolio_images_url}, items => $index_items, default => $item->{default} }, { layout => undef }), $auth_data );
   }  
-  my $_out = &taracot::_process_template( template 'portfolio_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data, index_items => $data_items, desc => $pf->{desc} }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $_out = &taracot::_process_template( template ('portfolio_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, auth_data => $auth_data, index_items => $data_items, desc => $pf->{desc} }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
   if (!$_auth_su) {
     $cache_plugin->set_data(request->uri_base().'/portfolio', $_out);
   }
@@ -89,6 +89,7 @@ get '/:id' => sub {
     }
   }
   my $auth_data = &taracot::_auth();
+  redirect '/user/register/finish' if ($auth_data->{username_unset});
   my $_current_lang=_load_lang();
   my $page_data = &taracot::_load_settings('site_title,keywords,description', $_current_lang);    
   my $lf = loadFile(config->{root_dir}.'/'.config->{portfolio_path}.'/'.$id.'_'.$_current_lang.'.json');
@@ -97,7 +98,7 @@ get '/:id' => sub {
   }
   my $pf=from_json $$lf;
   my $works = $pf->{works};  
-  my $_out = &taracot::_process_template( template 'portfolio_item', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $pf->{title}." | ".$lang->{module_name}, auth_data => $auth_data, pf => $pf, images_url => config->{portfolio_images_url} }, { layout => config->{layout}.'_'.$_current_lang } );
+  my $_out = &taracot::_process_template( template ('portfolio_item', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'portfolio.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $pf->{title}." | ".$lang->{module_name}, auth_data => $auth_data, pf => $pf, images_url => config->{portfolio_images_url} }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );
   if (!$_auth_su) {
     $cache_plugin->set_data(request->uri_base().'/portfolio/'.$id, $_out);
   }

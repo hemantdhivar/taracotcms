@@ -142,7 +142,7 @@ sub _auth() {
   if ($authdata->{status}) {
    if ($authdata->{status} > 0) {
     return $authdata;
-   } 
+   }   
   }
   return undef;
 };
@@ -220,8 +220,15 @@ sub _load_lang {
 
 sub _process_template {
  my $taracot_render_template=$_[0];
+ my $auth=$_[1];
  my $_current_lang=_load_lang();
  if ($taracot_render_template) {
+   if ($auth->{username_unset}) {  
+    use modules::auth::finish;  
+    my $pun = modules::auth::finish->new();
+    my $punhtml = $pun->username_unset_html($auth);
+    $taracot_render_template =~ s/\<\/body\>/$punhtml\n\<\/body\>/i;
+   }
    my %blocks;
    my $load_blocks = config->{load_blocks_frontend};
    $load_blocks=~s/ //gm;
