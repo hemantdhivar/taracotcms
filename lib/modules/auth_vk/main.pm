@@ -12,6 +12,8 @@ $agent->timeout(10);
 $agent->env_proxy;
 $agent->default_header('Content-Length' => "0");
 
+my $_debug = 1;
+
 prefix '/';
 
 get '/user/authorize/vk/' => sub { 
@@ -99,16 +101,20 @@ get '/user/authorize/vk/' => sub {
     );
     $sth->execute();
     $sth->finish();
-    my $id = database->{q{mysql_insertid}};
-    if ($id) {
-     session user => $id;
-     database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
+    my $sql_id = database->{q{mysql_insertid}};
+    if ($sql_id) {     
+     database->quick_update(config->{db_table_prefix}.'_users', { id => $sql_id }, { last_lang => $_current_lang, lastchanged => time });
+     session user => 0;
+     session user => $sql_id;
+     session email => '';
+     session email => 'NULL';
+     #session('user');
      redirect $auth_uri_base.$auth_comeback; 
     } else {
-     redirect $auth_uri_base.'/user/authorize'; 
+      redirect $auth_uri_base.'/user/authorize#error=no_id'; 
     }
   }
-
+  return;
 };
 
 # End

@@ -107,7 +107,10 @@ get '/user/authorize/facebook/' => sub {
     $sth->finish();
     my $id = database->{q{mysql_insertid}}; 
     if ($id) {
+     session user => 0;
      session user => $id;
+     session email => '';
+     session email => $email;
      database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { last_lang => $_current_lang, lastchanged => time });
      redirect $auth_uri_base.$auth_comeback;
     } else {
