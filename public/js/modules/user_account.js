@@ -45,7 +45,7 @@ $(document).ready(function () {
                 "aTargets": [1]
             }, {
                 "fnRender": function (oObj, sVal) {
-                    return '<img src="/images/flags/' + sVal + '.png" width="16" height="11" alt="" />&nbsp;' + langs.getItem(sVal);
+                    return '<div style="text-align:center"><img src="/images/flags/' + sVal + '.png" width="16" height="11" alt="" />&nbsp;' + langs.getItem(sVal) + '</div>';
                 },
                 "aTargets": [2]
             }, {

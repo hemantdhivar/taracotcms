@@ -104,3 +104,21 @@ user_new_password: Новый пароль
 user_realname_hint: Пример&#58;&nbsp;Василий Пупкин
 user_cellphone_hint: Код страны + телефон, например&#58;&nbsp;7 (921) 123-4567
 email_revert_success: Процедура смены Вашего адреса электронной почты была отменена. Ваш аккаунт был заблокирован, ссылка для восстановления пароля была отправлена на Ваш адрес электронной почты.
+user_account_tab_posts: Посты
+posts_title: Записи в блоге
+posts_hint: Ваши записи в блоге отражены в таблице, расположенной ниже. Для перехода к записи щелкните по соответствующей строке таблицы.
+post_id: ID
+post_title: Заголовок
+post_lang: Язык
+post_status: Статус
+post_date: Дата
+sLengthMenu: Отображение записей на страницу&#058; _MENU_
+sZeroRecords: Записи не найдены
+sInfo: Отображаются записи с _START_ по _END_ из _TOTAL_
+sInfoEmpty: Записи не отображаются
+sInfoFiltered: (всего записей&#058; _MAX_)
+sPrevious: Пред. страница
+sNext: След. страница
+sSearch: Поиск
+post_status_list: Черновик,Опубликован,Для пользователей
+post_datetime_template: DD/\MM/\YYYY HH:mm

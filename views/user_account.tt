@@ -218,9 +218,9 @@
         <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-hover" id="posts_table">
         <thead>
             <tr>
-                <th style="width:80px">[== $lang->{post_id} =]</th>
+                <th style="width:10px">[== $lang->{post_id} =]</th>
                 <th>[== $lang->{post_title} =]</th>
-                <th style="width:80px;text-align:center">[== $lang->{post_lang} =]</th>
+                <th style="width:120px;text-align:center">[== $lang->{post_lang} =]</th>
                 <th style="width:100px;text-align:center">[== $lang->{post_date} =]</th>
                 <th style="width:80px;text-align:center">[== $lang->{post_status} =]</th>
             </tr>

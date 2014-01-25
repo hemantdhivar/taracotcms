@@ -1,8 +1,10 @@
 authdlg_title: Finish registration
 authdlg_info: Thank you for your registration. The only one step is required&#58; now you need to set your username. Please fill in the form below to continue.
+authdlg_warn: If you don't wish to set your username, click &quot;Cancel&quot;, the default auto-generted username will be used instead (and yes, it looks pretty ugly ;)) and you won't be able to change your username in the future.
 authdlg_username: Username
 authdlg_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot; only (3-100) 
 authdlg_submit: Submit
+authdlg_cancel: Cancel
 authdlg_invalid_username: Invalid username, please check the syntax
 authdlg_duplicate_username: Username has been already taken by someone, please choose another one
 authdlg_error_ajax: Error while loading data from server, please try again in a few moments

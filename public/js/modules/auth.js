@@ -89,7 +89,53 @@ $('#authdlg_btn_submit').bind('click', function () {
                 $('#authdlg_username').focus();              
                 $('#authdlg_username').select();                
             }
-        });
-
+        })
     }
+});
+$('#authdlg_btn_cancel').bind('click', function () {
+    $('#authdlg_cg_username').removeClass('has-error');
+    $('#authdlg_form_error_msg').hide();
+    $('#authdlg_form_error_msg_text').html('');
+    $('#authdlg_authdlg_body').hide();
+    $('#authdlg_authdlg_progress').show();
+    $('#auth_finish_dlg_footer').hide();
+    $.ajax({
+        type: 'POST',
+        url: '/user/register/finish/default',
+        dataType: "json",
+        success: function (data) {
+            if (data.status == 1) {
+                location.href="/user/account?" + Math.random();
+            } else { 
+                $('#authdlg_authdlg_body').show();
+                $('#authdlg_authdlg_progress').hide();
+                $('#auth_finish_dlg_footer').show();
+                if (data.errors) {
+                    for (var i = 0; i < data.errors.length; i++) {
+                        $('#authdlg_form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + data.errors[i] + "<br/>");
+                    }
+                }
+                $('#authdlg_form_error_msg').fadeIn(400);
+                $('#authdlg_form_error_msg').alert();                    
+                if (data.fields) {
+                    for (var i = 0; i < data.fields.length; i++) {
+                        $('#authdlg_cg_' + data.fields[i]).addClass('has-error');
+                        if (i == 1) {
+                            $('#authdlg_' + data.fields[i]).focus();                                
+                        }
+                    }
+                }
+            }
+        },
+        error: function () {
+            $('#authdlg_authdlg_body').show();
+            $('#authdlg_authdlg_progress').hide();
+            $('#auth_finish_dlg_footer').show();
+            $('#authdlg_form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_error_ajax + "<br/>");
+            $('#authdlg_form_error_msg').fadeIn(400);
+            $('#authdlg_form_error_msg').alert();  
+            $('#authdlg_username').focus();              
+            $('#authdlg_username').select();                
+        }
+    })
 });

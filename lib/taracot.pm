@@ -126,6 +126,8 @@ sub _auth() {
       $authdata->{groups_hash} = \%grpdata;
       $authdata->{groups_arr} = \@groups_arr;
    }
+   error "Got email: ".$authdata->{email};
+   error "Session email: ".$email;
    if ($authdata && $authdata->{email} ne $email) {
     session user => '';
     $authdata->{id} = 0;

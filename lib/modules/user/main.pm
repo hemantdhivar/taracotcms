@@ -207,6 +207,27 @@ post '/register/finish' => sub {
   return $json_xs->encode(\%res);
 };
 
+post '/register/finish/default' => sub {
+  content_type 'application/json';
+  my $_current_lang=_load_lang();
+  my %res; 
+  $res{status}=1; 
+  my @errors;
+  my @fields;
+  my $json_xs = JSON::XS->new();
+  my $auth = &taracot::_auth();
+  if (!$auth || !$auth->{username_unset}) {
+    $res{status}=0;
+    push @errors, $lang->{authdlg_error_auth};
+    push @fields, 'username';
+    $res{errors}=\@errors;
+    $res{fields}=\@fields;
+    return $json_xs->encode(\%res);
+  }  
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { username_unset => 0, lastchanged => time });  
+  return $json_xs->encode(\%res);
+};
+
 get '/authorize' => sub {
   my $auth_data = &taracot::_auth();
   if ($auth_data) { return redirect '/user/account'; return; } 
