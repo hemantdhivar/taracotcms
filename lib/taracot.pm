@@ -128,7 +128,7 @@ sub _auth() {
    }
    error "Got email: ".$authdata->{email};
    error "Session email: ".$email;
-   if ($authdata && $authdata->{email} ne $email) {
+   if ($authdata && $authdata->{email} && $authdata->{email} ne $email) {
     session user => '';
     $authdata->{id} = 0;
     $authdata->{status} = 0;

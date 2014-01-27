@@ -1,5 +1,4 @@
 $('#auth_finish_dlg').modal({keyboard:false,backdrop:'static'});
-$('#authdlg_username').focus();
 function submitOnEnter(e) {
     var keycode;
     if (window.event) keycode = window.event.keyCode;
@@ -26,6 +25,14 @@ $('#authdlg_username,#authdlg_password,#authdlg_password_repeat').bind('keypress
         $('#authdlg_btn_submit').click();
         e.preventDefault();
     }
+});
+$('#authdlg_btn_change_username').bind('click', function () {
+    $('#authdlg_btn_change_username').hide();
+    $('#authdlg_btn_cancel').hide();
+    $('#authdlg_hint').hide();
+    $('#authdlg_authdlg_form').show();
+    $('#authdlg_btn_submit').show();
+    $('#authdlg_username').focus();
 });
 $('#authdlg_btn_submit').bind('click', function () {
     $('#authdlg_cg_username').removeClass('has-error');

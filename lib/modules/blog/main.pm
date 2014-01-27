@@ -89,10 +89,12 @@ sub flow() {
       $mr = 1;
     }
   }
+  my $mod_req_where = undef;
   if (!$mr) {
     $where.=' AND mod_require=0';
   } else {
-    if ($modreq) {
+    $mod_req_where = ' AND mod_require=1';
+    if ($modreq) {      
       $where.=' AND mod_require=1';
     } else {
       $where.=' AND mod_require=0';
@@ -112,7 +114,7 @@ sub flow() {
   my $total=0;
   my $sth = database->prepare(
    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_posts WHERE '.$where
-  );  
+  );
   if ($sth->execute()) {
    ($total) = $sth -> fetchrow_array;
   }
@@ -204,8 +206,18 @@ sub flow() {
     $flow .= $item_template;    
    }
   }
-  $sth->finish();  
-  my $__rt = template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow, paginator => $paginator, auth_data => $auth  }, { layout => config->{layout}.'_'.$_current_lang };
+  $sth->finish();
+  my $total_moderate = 0;  
+  if ($mod_req_where) {
+    $sth = database->prepare(
+     'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_posts WHERE deleted=0 AND plang='.database->quote($_current_lang).$mod_req_where
+    );
+    if ($sth->execute()) {
+     ($total_moderate) = $sth -> fetchrow_array;
+    }
+    $sth->finish();
+  }
+  my $__rt = template 'blog_index', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $lang->{module_name}, news_feed => $flow, paginator => $paginator, auth_data => $auth, total_moderate => $total_moderate  }, { layout => config->{layout}.'_'.$_current_lang };
   return &taracot::_process_template( $__rt, $auth );
 }
 
@@ -391,7 +403,17 @@ get '/post/:post_id' => sub {
   if ($auth->{status} eq 2 || $auth->{groups_hash}->{'blog_moderator'} || $auth->{groups_hash}->{'blog_moderator_'.$phub}) {
     $moderator = 1;
   } 
-  my $__rt3 = template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator, mod_require => $mod_require, deleted => $deleted, post_id => $id }, { layout => config->{layout}.'_'.$_current_lang };
+  my $total_moderate = 0;  
+  if ($moderator) {
+    $sth = database->prepare(
+     'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_blog_posts WHERE deleted=0 AND plang='.database->quote($_current_lang).'AND mod_require = 1'
+    );
+    if ($sth->execute()) {
+     ($total_moderate) = $sth -> fetchrow_array;
+    }
+    $sth->finish();
+  }  
+  my $__rt3 = template 'blog_post', { detect_lang => $detect_lang, head_html => '<link href="'.config->{modules_css_url}.'blog.css" rel="stylesheet" />', lang => $lang, page_data => $page_data, pagetitle => $ptitle.' | '.$lang->{module_name}, post_title => $ptitle, blog_hub => $phub, blog_hub_url => $phub_url, blog_text => $ptext_html, blog_user => $pusername, blog_views => $pviews, blog_tags => $ptags, auth_data => $auth, comments => $comments, moderator => $moderator, mod_require => $mod_require, deleted => $deleted, post_id => $id, total_moderate => $total_moderate }, { layout => config->{layout}.'_'.$_current_lang };
   $item_template = &taracot::_process_template( $__rt3, $auth );
   }
   $sth->finish(); 
@@ -580,7 +602,8 @@ post '/post/process' => sub {
   }
   # End: post owner check
   my $blog_title = params->{blog_title} || '';  
-  $blog_title =~ s/[\<\>\\\/\"\']+//g;
+  $blog_title =~ s/\</&lt;/g;
+  $blog_title =~ s/\>/&gt;/g;
   $blog_title =~ s/^\s+//;
   $blog_title =~ s/\s+$//;
   $blog_title =~ tr/ //s;
@@ -670,8 +693,13 @@ post '/post/process' => sub {
   $blog_data_html =~s/\[cut\]/ /igm;
   $blog_data_html_cut = $aubbc->do_all_ubbc($blog_data_html_cut);
   # Process typography
-  $blog_data_html = $typo->process($blog_data_html);
-  $blog_data_html_cut = $typo->process($blog_data_html_cut);
+  my $_force = undef;
+  if ($_current_lang eq 'ru') {
+    $_force = 1;
+  }
+  $blog_title = $typo->process($blog_title, $_force);
+  $blog_data_html = $typo->process($blog_data_html, $_force);
+  $blog_data_html_cut = $typo->process($blog_data_html_cut, $_force);
   $blog_data =~ s/\</&lt;/gm;
   $blog_data =~ s/\>/&gt;/gm;
   my $remote_ip = request->env->{'HTTP_X_REAL_IP'};

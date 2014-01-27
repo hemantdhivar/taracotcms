@@ -70,6 +70,7 @@ delete_comment_continue: Продолжить
 delete_comment_cancel: Отмена
 comment_delete_error: Ошибка во время удаления комментария, пожалуйста, повторите попытку позже
 moderator_dialog: Панель модератора
+moderate: Модерация
 moderator_dialog_info: Вы являетесь модератором данного блога и можете выполнять ряд действий административного характера.
 mod_required: Пост требует модерации
 deleted: Пост удален

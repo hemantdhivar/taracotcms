@@ -16,7 +16,8 @@ sub new {
 sub process {
 	my $self = shift;
 	my $_text = $_[0];
-	if (langof($_text) ne 'ru') {
+  my $_force = $_[1];
+	if (langof($_text) ne 'ru' && !$_force) {
 		return $_text;
 	}
 	my $conf = {

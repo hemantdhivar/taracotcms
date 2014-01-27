@@ -71,6 +71,7 @@ delete_comment_continue: Continue
 delete_comment_cancel: Cancel
 comment_delete_error: Error while deleting comment, please try again later
 moderator_dialog: Post moderation panel
+moderate: Moderate
 moderator_dialog_info: As a moderator you can perform some tasks with the current post.
 mod_required: Moderation required
 deleted: Post deleted

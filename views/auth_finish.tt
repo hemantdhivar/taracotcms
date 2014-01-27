@@ -10,12 +10,9 @@
         </div>
       </div>
       <div class="modal-body" id="authdlg_authdlg_body">
-        <form class="form-horizontal" id="authdlg_authdlg_form" role="form">
-          <p>[== $lang->{authdlg_info} =]</p>
-          <div class="alert alert-warning">[== $lang->{authdlg_warn} =]</div>
-          <div class="alert alert-danger" id="authdlg_form_error_msg" style="display:none;margin-top:20px">
-              <span id="authdlg_form_error_msg_text"></span>
-          </div> 
+        <div style="margin-top:15px" id="authdlg_hint">[== $lang->{authdlg_info} =]&nbsp;<b>[== $auth->{username} =]</b>.&nbsp;[== $lang->{authdlg_info2} =]</div>
+        <div class="alert alert-danger" id="authdlg_form_error_msg" style="display:none;margin-top:20px"><span id="authdlg_form_error_msg_text"></span></div>
+        <form class="form-horizontal" id="authdlg_authdlg_form" role="form" style="display:none">           
           <div class="form-group" id="authdlg_cg_username" style="margin-top:30px">
               <label class="control-label col-lg-3 col-md-3 col-sm-3" for="authdlg_username">[== $lang->{authdlg_username} =]&nbsp;<span style="color:red;font-weight:bold">*</span></label>
               <div class="col-lg-7 col-md-7 col-sm-7">
@@ -26,8 +23,9 @@
         </form>
       </div>
       <div class="modal-footer" id="auth_finish_dlg_footer">
-        <button type="button" class="btn btn-primary" id="authdlg_btn_submit">[== $lang->{authdlg_submit} =]</button>
-        <button type="button" class="btn btn-danger" id="authdlg_btn_cancel">[== $lang->{authdlg_cancel} =]</button>
+        <button type="button" class="btn btn-primary" id="authdlg_btn_change_username">[== $lang->{authdlg_change_username} =]</button>
+        <button type="button" class="btn btn-primary" id="authdlg_btn_submit" style="display:none">[== $lang->{authdlg_submit} =]</button>
+        <button type="button" class="btn btn-success" id="authdlg_btn_cancel">[== $lang->{authdlg_cancel} =]</button>
       </div>
     </div>
   </div>

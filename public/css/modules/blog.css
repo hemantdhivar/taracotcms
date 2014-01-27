@@ -76,3 +76,8 @@
 .label-hub-link:hover {
 	color: #111;
 }
+.taracot_blog_link_h1, .taracot_blog_link_h1:hover, .taracot_blog_link_h1:active, .taracot_blog_link_h1:focus {
+	color: #444;
+	outline: 0;
+	text-decoration: none;
+}
