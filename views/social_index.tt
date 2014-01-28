@@ -1,0 +1,17 @@
+<h1>[== $lang->{social_network} =]</h1>
+<div class="row">
+	<div class="col-lg-3 col-md-3 col-sm-3">
+		<ul class="nav nav-pills nav-stacked">
+		  <li class="active"><a href="#">[== $lang->{page} =]</a></li>
+		  <li><a href="#">[== $lang->{friends} =]</a></li>
+		  <li><a href="#">[== $lang->{search} =]</a></li>
+		  <li><a href="#">[== $lang->{invitations} =]</a></li>
+		  <li><a href="#">[== $lang->{messaging} =]</a></li>
+		  <li><a href="#">[== $lang->{settings} =]</a></li>
+		</ul>
+	</div>
+	<div class="col-lg-9 col-md-9 col-sm-9">
+		Здесь сам юзер и другие юзеры (в зависимости от настроек) смогут размещать сообщения и картинки, а может, еще какой-нибудь контент, кто его знает, как карта ляжет.<br>
+		Ну а пока что тут совсем ничего нет.
+	</div>
+</div>
