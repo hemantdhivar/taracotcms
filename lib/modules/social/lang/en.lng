@@ -5,3 +5,11 @@ search: Search for people
 invitations: Invitations
 messaging: Messaging
 settings: Settings
+search_label: Search for an user (username/real name/e-mail etc)&#58;
+search_btn: Go
+user_account_date_template: \%Y/\%m/\%d
+ajax_processing: Processing your request, please wait...
+search_error: Error while performing the search, please try again in several moments
+search_nothing_found: Nothing found. Please try another query.
+no_phone: No cell phone
+page_error: Error while loading the user profile, please try again in several moments

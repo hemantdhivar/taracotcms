@@ -1,0 +1,20 @@
+.social_menu, .social_menu_link {
+	border: 0;
+	outline: none;
+}
+.social_menu_hr {
+	border-top: 1px solid #ccc;
+	padding-bottom: 10px;
+	margin-top: 10px;
+}
+.social-search-item:hover {
+	background: #52616D;
+	color: #fafafa;
+	cursor: pointer;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+};
+.social_menu_link {
+	cursor: pointer;
+}
