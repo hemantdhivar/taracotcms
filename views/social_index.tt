@@ -1,22 +1,24 @@
 <div class="row" style="margin-top:20px">
 	<div class="col-lg-3 col-md-3 col-sm-3">
 		<ul class="nav nav-pills nav-stacked">
-		  <li class="social_menu active" id="social_menu_page_li"><a href="#my_page" class="social_menu_link" id="social_menu_page">[== $lang->{page} =]</a></li>
-		  <li class="social_menu"><a href="#friends" class="social_menu_link">[== $lang->{friends} =]</a></li>
-		  <li class="social_menu"><a href="#search" class="social_menu_link" id="social_menu_search">[== $lang->{search} =]</a></li>
-		  <li class="social_menu"><a href="#invitations" class="social_menu_link">[== $lang->{invitations} =]</a></li>
-		  <li class="social_menu"><a href="#messaging" class="social_menu_link">[== $lang->{messaging} =]</a></li>
-		  <li class="social_menu"><a href="#settings" class="social_menu_link">[== $lang->{settings} =]</a></li>
+		  <li class="social_menu active" id="social_menu_page_li"><a href="#view=page" class="social_menu_link" id="social_menu_page">[== $lang->{page} =]</a></li>
+		  <li class="social_menu" id="social_menu_friends_li"><a href="#view=friends" class="social_menu_link" id="social_menu_friends">[== $lang->{friends} =]</a></li>
+		  <li class="social_menu" id="social_menu_search_li"><a href="#view=search" class="social_menu_link" id="social_menu_search">[== $lang->{search} =]</a></li>
+		  <li class="social_menu" id="social_menu_invitations_li"><a href="#view=invitations" class="social_menu_link" id="social_menu_invitations">[== $lang->{invitations} =]</a></li>
+		  <li class="social_menu" id="social_menu_messaging_li"><a href="#view=messaging" class="social_menu_link" id="social_menu_messaging">[== $lang->{messaging} =]</a></li>
+		  <li class="social_menu" id="social_menu_settings_li"><a href="#view=settings" class="social_menu_link" id="social_menu_settings">[== $lang->{settings} =]</a></li>
 		</ul>
 	</div>
 	<div class="col-lg-9 col-md-9 col-sm-9">
 		<div class="social_menu_hr visible-xs"></div>
-		<div id="social_tab_page" class="social_tab">
+		<div id="social_tab_page" id="social_tab_page" class="social_tab">
 			<div id="social_page_results"></div>
 			<div id="social_page_ajax" style="display:none;padding-top:20px">
 				<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
-			</div>
+			</div>			
 		</div>		
+		<div class="social_tab" id="social_tab_friends" style="display:none">
+		</div>
 		<div class="social_tab" id="social_tab_search" style="display:none">
 			<form role="form" id="social_search_form">
 			  <div class="form-group" id="social_cg_search">
@@ -34,6 +36,12 @@
 				<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
 			</div>
 		</div>
+		<div class="social_tab" id="social_tab_invitations" style="display:none">
+		</div>
+		<div class="social_tab" id="social_tab_messaging" style="display:none">
+		</div>
+		<div class="social_tab" id="social_tab_settings" style="display:none">
+		</div>
 	</div>
 </div>
 <script type="text/javascript">
@@ -41,5 +49,7 @@
     var js_lang_page_error = "[== $lang->{page_error} =]";
     var js_lang_search_nothing_found = "[== $lang->{search_nothing_found} =]";
     var js_lang_no_phone = "[== $lang->{no_phone} =]";
+    var js_lang_add_friend = "[== $lang->{add_friend} =]"
+    var current_user_id = "[== $auth_data->{id} =]";
 </script>
 <script src="/js/modules/social_index.js"></script>

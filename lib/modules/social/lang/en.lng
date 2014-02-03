@@ -13,3 +13,4 @@ search_error: Error while performing the search, please try again in several mom
 search_nothing_found: Nothing found. Please try another query.
 no_phone: No cell phone
 page_error: Error while loading the user profile, please try again in several moments
+add_friend: Add as a friend
