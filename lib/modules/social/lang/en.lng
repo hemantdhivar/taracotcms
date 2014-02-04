@@ -9,8 +9,17 @@ search_label: Search for an user (username/real name/e-mail etc)&#58;
 search_btn: Go
 user_account_date_template: \%Y/\%m/\%d
 ajax_processing: Processing your request, please wait...
+ajax_error: Error while processing your request, please try again in several moments
 search_error: Error while performing the search, please try again in several moments
+loading_error: Error while loading data, please try again in several moments
 search_nothing_found: Nothing found. Please try another query.
 no_phone: No cell phone
 page_error: Error while loading the user profile, please try again in several moments
 add_friend: Add as a friend
+friend_request_already_sent: You've already sent a frendship request to this user
+friend_request_already_received: You've already received a frendship request from this user
+friend_already_established: Friendship is already established
+friend_status_established: Your friend
+friend_status_request_sent: Friendship request sent
+friend_status_request_recieved: Friendship request received
+friend_accept_request: Accept friend request
