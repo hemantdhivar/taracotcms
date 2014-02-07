@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Хост: localhost
--- Время создания: Янв 31 2014 г., 18:12
+-- Время создания: Фев 07 2014 г., 18:01
 -- Версия сервера: 5.0.45
 -- Версия PHP: 5.2.4
 -- 
@@ -220,10 +220,133 @@ CREATE TABLE `taracot_social_friends` (
   `user2` int(11) NOT NULL,
   `status` tinyint(1) NOT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8 AUTO_INCREMENT=103 ;
 
 -- 
 -- Дамп данных таблицы `taracot_social_friends`
+-- 
+
+INSERT INTO `taracot_social_friends` VALUES (1, 1, 2, 1);
+INSERT INTO `taracot_social_friends` VALUES (2, 1, 3, 1);
+INSERT INTO `taracot_social_friends` VALUES (3, 1, 4, 1);
+INSERT INTO `taracot_social_friends` VALUES (4, 1, 5, 1);
+INSERT INTO `taracot_social_friends` VALUES (5, 1, 6, 1);
+INSERT INTO `taracot_social_friends` VALUES (6, 1, 7, 1);
+INSERT INTO `taracot_social_friends` VALUES (7, 1, 8, 1);
+INSERT INTO `taracot_social_friends` VALUES (8, 1, 9, 1);
+INSERT INTO `taracot_social_friends` VALUES (9, 1, 10, 1);
+INSERT INTO `taracot_social_friends` VALUES (10, 1, 11, 1);
+INSERT INTO `taracot_social_friends` VALUES (11, 1, 12, 1);
+INSERT INTO `taracot_social_friends` VALUES (12, 1, 13, 1);
+INSERT INTO `taracot_social_friends` VALUES (13, 1, 14, 1);
+INSERT INTO `taracot_social_friends` VALUES (14, 1, 15, 1);
+INSERT INTO `taracot_social_friends` VALUES (15, 1, 16, 1);
+INSERT INTO `taracot_social_friends` VALUES (16, 1, 17, 1);
+INSERT INTO `taracot_social_friends` VALUES (17, 1, 18, 1);
+INSERT INTO `taracot_social_friends` VALUES (18, 1, 19, 1);
+INSERT INTO `taracot_social_friends` VALUES (19, 1, 20, 1);
+INSERT INTO `taracot_social_friends` VALUES (20, 1, 21, 1);
+INSERT INTO `taracot_social_friends` VALUES (21, 1, 22, 1);
+INSERT INTO `taracot_social_friends` VALUES (22, 1, 23, 1);
+INSERT INTO `taracot_social_friends` VALUES (23, 1, 24, 1);
+INSERT INTO `taracot_social_friends` VALUES (24, 1, 25, 1);
+INSERT INTO `taracot_social_friends` VALUES (25, 1, 26, 1);
+INSERT INTO `taracot_social_friends` VALUES (26, 1, 27, 1);
+INSERT INTO `taracot_social_friends` VALUES (27, 1, 28, 1);
+INSERT INTO `taracot_social_friends` VALUES (28, 1, 29, 1);
+INSERT INTO `taracot_social_friends` VALUES (29, 1, 30, 1);
+INSERT INTO `taracot_social_friends` VALUES (30, 1, 31, 1);
+INSERT INTO `taracot_social_friends` VALUES (31, 1, 32, 1);
+INSERT INTO `taracot_social_friends` VALUES (32, 1, 33, 1);
+INSERT INTO `taracot_social_friends` VALUES (33, 1, 34, 1);
+INSERT INTO `taracot_social_friends` VALUES (34, 1, 35, 1);
+INSERT INTO `taracot_social_friends` VALUES (35, 1, 36, 1);
+INSERT INTO `taracot_social_friends` VALUES (36, 1, 37, 1);
+INSERT INTO `taracot_social_friends` VALUES (37, 1, 38, 1);
+INSERT INTO `taracot_social_friends` VALUES (38, 1, 39, 1);
+INSERT INTO `taracot_social_friends` VALUES (39, 1, 40, 1);
+INSERT INTO `taracot_social_friends` VALUES (40, 1, 41, 1);
+INSERT INTO `taracot_social_friends` VALUES (41, 1, 42, 1);
+INSERT INTO `taracot_social_friends` VALUES (42, 1, 43, 1);
+INSERT INTO `taracot_social_friends` VALUES (43, 1, 44, 1);
+INSERT INTO `taracot_social_friends` VALUES (44, 1, 45, 1);
+INSERT INTO `taracot_social_friends` VALUES (45, 1, 46, 1);
+INSERT INTO `taracot_social_friends` VALUES (46, 1, 47, 1);
+INSERT INTO `taracot_social_friends` VALUES (47, 1, 48, 1);
+INSERT INTO `taracot_social_friends` VALUES (48, 1, 49, 1);
+INSERT INTO `taracot_social_friends` VALUES (49, 1, 50, 1);
+INSERT INTO `taracot_social_friends` VALUES (50, 1, 51, 1);
+INSERT INTO `taracot_social_friends` VALUES (51, 1, 52, 1);
+INSERT INTO `taracot_social_friends` VALUES (52, 1, 53, 1);
+INSERT INTO `taracot_social_friends` VALUES (53, 1, 54, 1);
+INSERT INTO `taracot_social_friends` VALUES (54, 1, 55, 1);
+INSERT INTO `taracot_social_friends` VALUES (55, 1, 56, 1);
+INSERT INTO `taracot_social_friends` VALUES (56, 1, 57, 1);
+INSERT INTO `taracot_social_friends` VALUES (57, 1, 58, 1);
+INSERT INTO `taracot_social_friends` VALUES (58, 1, 59, 1);
+INSERT INTO `taracot_social_friends` VALUES (59, 1, 60, 1);
+INSERT INTO `taracot_social_friends` VALUES (60, 1, 61, 1);
+INSERT INTO `taracot_social_friends` VALUES (61, 1, 62, 1);
+INSERT INTO `taracot_social_friends` VALUES (62, 1, 63, 1);
+INSERT INTO `taracot_social_friends` VALUES (63, 1, 64, 1);
+INSERT INTO `taracot_social_friends` VALUES (64, 1, 65, 1);
+INSERT INTO `taracot_social_friends` VALUES (65, 1, 66, 1);
+INSERT INTO `taracot_social_friends` VALUES (66, 1, 67, 1);
+INSERT INTO `taracot_social_friends` VALUES (67, 1, 68, 1);
+INSERT INTO `taracot_social_friends` VALUES (68, 1, 69, 1);
+INSERT INTO `taracot_social_friends` VALUES (69, 1, 70, 1);
+INSERT INTO `taracot_social_friends` VALUES (70, 1, 71, 1);
+INSERT INTO `taracot_social_friends` VALUES (71, 1, 72, 1);
+INSERT INTO `taracot_social_friends` VALUES (72, 1, 73, 1);
+INSERT INTO `taracot_social_friends` VALUES (73, 1, 74, 1);
+INSERT INTO `taracot_social_friends` VALUES (74, 1, 75, 1);
+INSERT INTO `taracot_social_friends` VALUES (75, 1, 76, 1);
+INSERT INTO `taracot_social_friends` VALUES (76, 1, 77, 1);
+INSERT INTO `taracot_social_friends` VALUES (77, 1, 78, 1);
+INSERT INTO `taracot_social_friends` VALUES (78, 1, 79, 1);
+INSERT INTO `taracot_social_friends` VALUES (79, 1, 80, 1);
+INSERT INTO `taracot_social_friends` VALUES (80, 1, 81, 1);
+INSERT INTO `taracot_social_friends` VALUES (81, 1, 82, 1);
+INSERT INTO `taracot_social_friends` VALUES (82, 1, 83, 1);
+INSERT INTO `taracot_social_friends` VALUES (83, 1, 84, 1);
+INSERT INTO `taracot_social_friends` VALUES (84, 1, 85, 1);
+INSERT INTO `taracot_social_friends` VALUES (85, 1, 86, 1);
+INSERT INTO `taracot_social_friends` VALUES (86, 1, 87, 1);
+INSERT INTO `taracot_social_friends` VALUES (87, 1, 88, 1);
+INSERT INTO `taracot_social_friends` VALUES (88, 1, 89, 1);
+INSERT INTO `taracot_social_friends` VALUES (89, 1, 90, 1);
+INSERT INTO `taracot_social_friends` VALUES (90, 1, 91, 1);
+INSERT INTO `taracot_social_friends` VALUES (91, 1, 92, 1);
+INSERT INTO `taracot_social_friends` VALUES (92, 1, 93, 1);
+INSERT INTO `taracot_social_friends` VALUES (93, 1, 94, 1);
+INSERT INTO `taracot_social_friends` VALUES (94, 1, 95, 1);
+INSERT INTO `taracot_social_friends` VALUES (95, 1, 96, 1);
+INSERT INTO `taracot_social_friends` VALUES (96, 1, 97, 1);
+INSERT INTO `taracot_social_friends` VALUES (97, 1, 98, 1);
+INSERT INTO `taracot_social_friends` VALUES (98, 1, 99, 1);
+INSERT INTO `taracot_social_friends` VALUES (99, 399, 1, 1);
+INSERT INTO `taracot_social_friends` VALUES (100, 245, 1, 1);
+INSERT INTO `taracot_social_friends` VALUES (101, 1, 375, 0);
+INSERT INTO `taracot_social_friends` VALUES (102, 234, 1, 0);
+
+-- --------------------------------------------------------
+
+-- 
+-- Структура таблицы `taracot_social_messaging`
+-- 
+
+CREATE TABLE `taracot_social_messaging` (
+  `id` int(11) NOT NULL auto_increment,
+  `ufrom` int(11) NOT NULL,
+  `uto` int(11) NOT NULL,
+  `mtime` int(11) default NULL,
+  `msg` text,
+  `unread` tinyint(1) default '1',
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- 
+-- Дамп данных таблицы `taracot_social_messaging`
 -- 
 
 

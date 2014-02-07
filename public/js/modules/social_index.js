@@ -294,7 +294,7 @@ var json_send_friendship_request = function() {
             $('#btn_add_friend_' + uid).popover('show');
             $('#prg_add_friend_' + uid).hide();  
           } else {
-            $('#btn_add_friend_' + uid).replaceWith('<div class="label label-warning" style="font-size:100%;font-weight:normal">' + js_lang_friend_status_request_sent + '</div>');
+            $('#btn_add_friend_' + uid).replaceWith('<button class="btn btn-warning btn-sm disabled">' + js_lang_friend_status_request_sent + '</button>');
           }
         },
         error: function () {
@@ -336,7 +336,7 @@ var json_accept_friendship_request = function() {
             $('#btn_accept_friend_' + uid).popover('show');
             $('#prg_accept_friend_' + uid).hide();  
           } else {
-            $('#btn_accept_friend_' + uid).replaceWith('<div class="label label-primary" style="font-size:100%;font-weight:normal">' + js_lang_friend_status_established + '</div>');
+            $('#btn_accept_friend_' + uid).replaceWith('<button class="btn btn-primary btn-sm disabled">' + js_lang_friend_status_established + '</button>');
             friends_count++;
             social_update_counters();
           }
@@ -362,7 +362,7 @@ var json_render_user_data = function(data, uid, where) {
           $('.btn-social-accept_friend').unbind();
           $('.btn-social-accept_friend').click(json_accept_friendship_request);
         } else {
-          $(where).append('<span class="label label-warning" style="font-size:100%;font-weight:normal">' + data.friendship_details + '</span>');
+          $(where).append('<button class="btn btn-warning btn-sm disabled">' + data.friendship_details + '</button>');
         }
       } else {
         $(where).append('<button class="btn btn-sm btn-success btn-social-add_friend" id="btn_add_friend_' + uid + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + js_lang_add_friend + '</button>&nbsp;&nbsp;<img src="/images/white_loading.gif" style="width:16px;height:16px;display:none" id="prg_add_friend_' + uid + '">');
@@ -370,10 +370,38 @@ var json_render_user_data = function(data, uid, where) {
         $('.btn-social-add_friend').click(json_send_friendship_request);
       }      
     } else {
-      $(where).append('<div class="label label-primary" style="font-size:100%;font-weight:normal">' + js_lang_friend_status_established + '</div>');      
+      $(where).append('<button class="btn btn-primary btn-sm disabled">' + js_lang_friend_status_established + '</button>');
     }
+    $(where).append('&nbsp;<button class="btn btn-info btn-sm btn-social-message" id="btn_sendmessage_' + uid + '"><i class="glyphicon glyphicon-envelope"></i>&nbsp;' + js_lang_send_message + '</button>');
+    $('.btn-social-message').unbind();
+    $('.btn-social-message').click(ajax_social_message_click_handler);
   }
 };
+
+
+var ajax_social_message_click_handler = function(uid) {
+  var id = jQuery(this).attr("id");
+  if (id) {
+    id = id.replace('btn_sendmessage_','');  
+  } else {
+    id = uid;
+  }
+  $.history.push("view=message&id=" + id );
+  $('.social_menu').removeClass('active');
+  $('.social_tab').hide();
+  $('#social_menu_messaging_li').addClass('active');  
+  $('#social_tab_messaging').show();
+  $('#social_messaging_chat').show();
+  $('#social_messaging_chat').empty();
+  $('#social_messaging_talks').hide();  
+  $('#social_messaging_ajax').show();
+};
+
+
+$('.social_menu_link').click(function(e) {
+  $.history.push($(this).attr('href'));
+  e.preventDefault();
+});
 
 
 var ajax_load_user_data = function(uid) {
@@ -493,6 +521,10 @@ $.history.on('load change', function(event, url, type) {
     $('.social_tab').hide();
     $('#social_tab_messaging').show();
     $('#social_menu_messaging_li').addClass('active');
+    return;
+  }
+  if (ph['view'] == 'message' && ph['id'] && ph['id'] > 0) {    
+    ajax_social_message_click_handler(ph['id']);
     return;
   }
   if (ph['view'] == 'settings') {

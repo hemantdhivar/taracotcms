@@ -56,7 +56,7 @@ get '/' => sub {
   } 
   $sth->finish();
   $sth = database->prepare(
-    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).') AND status = 0'
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE user2 = '.database->quote($auth_data->{id}).' AND status = 0'
   );
   my $inv_count = '0';
   if ($sth->execute()) {
@@ -282,7 +282,7 @@ post '/friend/accept' => sub {
   return '{"status":"1"}';
 };
 
-any '/friends' => sub {
+post '/friends' => sub {
   my $auth_data = &taracot::_auth();
   if (!$auth_data) {
     return '{"status":"0"}'; 
@@ -299,9 +299,12 @@ any '/friends' => sub {
   if (!$uid || $uid < 1) {
     $uid = $auth_data->{id};
   } 
-  my $req_status = 1;
+  my $req_status = 1;  
+  my $inv_sql = '';
   if (param('invitations')) {
     $req_status = 0;
+  } else {
+    $inv_sql = ' OR f.user1 = '.$auth_data->{id}
   }
   if (param('invitations') && $auth_data->{id} ne $uid) {
     return '{"status":"0"}';
@@ -320,7 +323,7 @@ any '/friends' => sub {
   my $limx = $page*$ipp-$ipp;
   if ($total) {
     my $sth = database->prepare(
-     'SELECT u.id, u.username, u.realname, u.phone, u.regdate FROM '.config->{db_table_prefix}.'_users u LEFT JOIN '.config->{db_table_prefix}.'_social_friends f ON (f.user1 = u.id OR f.user2 = u.id) WHERE (f.user1 = '.$auth_data->{id}.' OR f.user2 = '.$auth_data->{id}.') AND f.status='.$req_status.' AND u.status > 0 AND u.id != '.$auth_data->{id}.' ORDER BY u.realname, u.username LIMIT '.$limx.', '.$ipp
+     'SELECT u.id, u.username, u.realname, u.phone, u.regdate FROM '.config->{db_table_prefix}.'_users u LEFT JOIN '.config->{db_table_prefix}.'_social_friends f ON (f.user1 = u.id OR f.user2 = u.id) WHERE (f.user2 = '.$auth_data->{id}.$inv_sql.') AND f.status='.$req_status.' AND u.status > 0 AND u.id != '.$auth_data->{id}.' ORDER BY u.realname, u.username LIMIT '.$limx.', '.$ipp
     );        
     my @res_arr;
     if ($sth->execute()) {
@@ -343,6 +346,60 @@ any '/friends' => sub {
     }
     $res{items} = \@res_arr;
   }  
+  my $json_xs = JSON::XS->new();
+  return $json_xs->encode(\%res);
+};
+
+any '/messages/load' => sub {
+  my $auth_data = &taracot::_auth();
+  if (!$auth_data) {
+    return '{"status":"0"}'; 
+  }
+  my %res;
+  $res{'status'} = 1;
+  my $_current_lang=_load_lang(); 
+  my $uid = param('uid');
+  if (!$uid || $uid < 1) {
+    return '{"status":"0"}';
+  } 
+  my $sth = database->prepare(
+    'SELECT id, ufrom, uto, mtime, msg, unread FROM '.config->{db_table_prefix}.'_social_messaging WHERE ((ufrom = '.$auth_data->{id}.' AND uto = '.$uid.') OR (uto = '.$auth_data->{id}.' AND ufrom = '.$uid.')) ORDER BY utime ASC LIMIT 50'
+  );        
+  my @res_arr;
+  if ($sth->execute()) {
+    while (my ($id, $ufrom, $uto, $mtime, $msg, $unread) = $sth->fetchrow_array) {
+      my %item;
+      $item{'id'} = $id;
+      $item{'ufrom'} = $ufrom;
+      $item{'uto'} = $uto;
+      $item{'mtime'} = $mtime;
+      $item{'msg'} = $msg;
+      $item{'unread'} = $unread;
+      push @res_arr, \%item;
+    }
+  }
+  $sth->finish();
+  $res{messages} = \@res_arr;
+  $sth = database->prepare(
+    'SELECT id, username, realname FROM '.config->{db_table_prefix}.'_users WHERE id = '.$auth_data->{id}.' OR id = '.$uid
+  );
+  if ($sth->execute()) {
+    my %users;
+    while (my ($id, $username, $realname) = $sth->fetchrow_array) {
+      my %user;
+      $user{'id'} = $id;
+      $user{'username'} = $username;
+      $user{'realname'} = $realname;
+      my $avatar = '/images/default_avatar.png';
+      if (-e config->{files_dir}.'/avatars/'.$username.'.jpg') {
+        $avatar = config->{files_url}.'/avatars/'.$username.'.jpg';
+      } 
+      $user{'avatar'} = $avatar;
+      $users{$id} = \%user;
+    }
+    $res{'users'} = \%users;
+  }
+  $sth->finish();
   my $json_xs = JSON::XS->new();
   return $json_xs->encode(\%res);
 };

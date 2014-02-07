@@ -48,6 +48,11 @@
 			</div>
 		</div>
 		<div class="social_tab" id="social_tab_messaging" style="display:none">
+			<div class="social_messaging_talks"></div>
+			<div class="social_messaging_chat"></div>
+			<div id="social_messaging_ajax" style="display:none;padding-top:20px">
+				<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
+			</div>
 		</div>
 		<div class="social_tab" id="social_tab_settings" style="display:none">
 		</div>
@@ -64,6 +69,7 @@
     var js_lang_friend_status_request_sent = "[== $lang->{friend_status_request_sent} =]";
     var js_lang_friend_accept_request = "[== $lang->{friend_accept_request} =]";
     var js_lang_loading_error = "[== $lang->{loading_error} =]";
+    var js_lang_send_message = "[== $lang->{send_message} =]";
     var current_user_id = "[== $auth_data->{id} =]";
     var friends_count = "[== $friends_count =]";
     var invitations_count = "[== $invitations_count =]";

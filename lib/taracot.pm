@@ -126,16 +126,18 @@ sub _auth() {
       $authdata->{groups_hash} = \%grpdata;
       $authdata->{groups_arr} = \@groups_arr;
    }
-   error "Got email: ".$authdata->{email};
-   error "Session email: ".$email;
+   #error "Got email: ".$authdata->{email};
+   #error "Session email: ".$email;
+   #error "Session user: ".$id;
    if ($authdata && $authdata->{email} && $authdata->{email} ne $email) {
+    #error "Killing session";
     session user => '';
     $authdata->{id} = 0;
     $authdata->{status} = 0;
     $authdata->{username} = '';
     $authdata->{password} = '';    
-   }
-  } else {
+   } # if session (user) is set
+  } else { # if session (user) is NOT set
    $authdata->{id} = 0;
    $authdata->{status} = 0;
    $authdata->{username} = '';
