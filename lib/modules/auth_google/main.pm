@@ -104,7 +104,15 @@ get '/user/authorize/google/' => sub {
     $realname=~s/\<//gm;
     $realname=~s/\>//gm;
     database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, username_unset => 1, password_unset => 1, email => $email, phone => $phone, realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
-    my $sql_id = database->{q{mysql_insertid}}; 
+    #my $sql_id = database->{q{mysql_insertid}}; 
+    my $sql_id;
+    my $sth = database->prepare(
+      'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE username='.database->quote($username)
+    );
+    if ($sth->execute()) {
+      ($sql_id) = $sth->fetchrow_array();
+    }
+    $sth->finish();
     if ($sql_id) {
      session user => $sql_id;
      session email => $email;

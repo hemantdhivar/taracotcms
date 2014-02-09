@@ -423,9 +423,18 @@ post '/answer/save' => sub {
     $status = 1;
   }
   $ans_html = $typo->process($ans_html);
-  database->quick_insert(config->{db_table_prefix}.'_support_ans', { susername => $auth->{username}, tid => $tid, sdate => time, smsg => $ans_html, smsg_hash => $ans_html_hash }); 
+  my $sdate = time;
+  database->quick_insert(config->{db_table_prefix}.'_support_ans', { susername => $auth->{username}, tid => $tid, sdate => $sdate, smsg => $ans_html, smsg_hash => $ans_html_hash }); 
   database->quick_update(config->{db_table_prefix}.'_support', { id => $tid }, { susername_last => $auth->{username}, sdate => time, sstatus => $status, lastmodified => time });  
-  my $aid = database->{q{mysql_insertid}};
+  #my $aid = database->{q{mysql_insertid}};
+  my $aid;
+  my $sth = database->prepare(
+   'SELECT id FROM `'.config->{db_table_prefix}.'_support_ans` WHERE susername='.database->quote($auth->{username}).' AND sdate='.$sdate
+  );
+  if ($sth->execute()) {
+   ($aid) = $sth->fetchrow_array();
+  }
+  $sth->finish();
   my %res;
   my $json_xs = JSON::XS->new();
   $res{status} = 1;
@@ -527,9 +536,18 @@ post '/answer/specialist/save' => sub {
     $status = 1;
   }
   $ans_html = $typo->process($ans_html);
-  database->quick_insert(config->{db_table_prefix}.'_support_ans', { susername => $auth->{username}, tid => $tid, sdate => time, smsg => $ans_html, smsg_hash => $ans_html_hash }); 
+  my $sdate = time;
+  database->quick_insert(config->{db_table_prefix}.'_support_ans', { susername => $auth->{username}, tid => $tid, sdate => $sdate, smsg => $ans_html, smsg_hash => $ans_html_hash }); 
   database->quick_update(config->{db_table_prefix}.'_support', { id => $tid }, { susername_last => $auth->{username}, sdate => time, sstatus => $status, unread => 1, lastmodified => time });  
-  my $aid = database->{q{mysql_insertid}};
+  #my $aid = database->{q{mysql_insertid}};
+  my $aid;
+  my $sth = database->prepare(
+   'SELECT id FROM `'.config->{db_table_prefix}.'_support_ans` WHERE susername='.database->quote($auth->{username}).' AND sdate='.$sdate
+  );
+  if ($sth->execute()) {
+   ($aid) = $sth->fetchrow_array();
+  }
+  $sth->finish();
   my %res;
   my $json_xs = JSON::XS->new();
   $res{status} = 1;

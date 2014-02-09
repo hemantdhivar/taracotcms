@@ -341,8 +341,17 @@ post '/data/save' => sub {
     $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
    }
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_pages', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => time });
-   my $id = database->{q{mysql_insertid}}; 
+   my $lc = time;
+   database->quick_insert(config->{db_table_prefix}.'_pages', { pagetitle => $pagetitle, filename => $filename, keywords => $keywords, description => $description, status => $status, content => $content, lang => $plang, layout => $layout, lastchanged => $lc });
+   #my $id = database->{q{mysql_insertid}}; 
+   my $id;
+   my $sth = database->prepare(
+    'SELECT id FROM `'.config->{db_table_prefix}.'_pages` WHERE filename='.database->quote($filename).' AND lang='.database->quote($plang).' AND lastchanged='.$lc
+   );
+   if ($sth->execute()) {
+    ($id) = $sth->fetchrow_array();
+   }
+   $sth->finish();
    if ($status eq 1) {
     $search_plugin->updateSearchIndex($plang, $pagetitle, $content, "$filename", $id, 'pages');
    }

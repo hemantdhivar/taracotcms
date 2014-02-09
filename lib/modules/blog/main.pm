@@ -709,8 +709,16 @@ post '/post/process' => sub {
   if ($pid) {
     database->quick_update(config->{db_table_prefix}.'_blog_posts', { id => $pid }, { phub => $blog_hub, ptitle => $blog_title, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut,  pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require, phash => $phash }); 
   } else {
-    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => time, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require, phash => $phash }); 
-    $pid = database->{q{mysql_insertid}};
+    my $pdate = time;
+    database->quick_insert(config->{db_table_prefix}.'_blog_posts', { pusername => $auth->{username}, phub => $blog_hub, ptitle => $blog_title, pdate => $pdate, ptags => $blog_tags, ptext => $blog_data, ptext_html => $blog_data_html, pcut => $cut, ptext_html_cut => $blog_data_html_cut, pviews => 0, plang => $_current_lang, pstate => $blog_state, lastchanged => time, ipaddr => $remote_ip, comments_allowed => $comments_allowed, mod_require => $mod_require, phash => $phash }); 
+    #$pid = database->{q{mysql_insertid}};
+    my $sth = database->prepare(
+      'SELECT id FROM `'.config->{db_table_prefix}.'_blog_posts` WHERE pusername='.database->quote($auth->{username}).' AND pdate='.$pdate
+    );
+    if ($sth->execute()) {
+      ($pid) = $sth->fetchrow_array();
+    }
+    $sth->finish();
   }
   if ($blog_state) {
     $search_plugin->updateSearchIndex($_current_lang, $blog_title, $blog_data_html, "/blog/post/$pid", $pid, 'blog');
@@ -952,12 +960,21 @@ post '/comment/put' => sub {
     $remote_ip = request->env->{REMOTE_ADDR} || request->env->{REMOTE_HOST} || 'unknown';
   }  
   # Insert  
+  my $cdate = time;
   $sth = database->prepare(
-   'INSERT INTO '.config->{db_table_prefix}.'_blog_comments SET left_key = '.$right_key.', right_key = '.($right_key+1).', level = '.($level+1).', cusername='.database->quote($auth->{username}).', deleted=0, post_id='.$cpid.', ctext='.database->quote($ctext).', chash='.database->quote($chash).', cdate='.time.', ipaddr='.database->quote($remote_ip)
+   'INSERT INTO '.config->{db_table_prefix}.'_blog_comments SET left_key = '.$right_key.', right_key = '.($right_key+1).', level = '.($level+1).', cusername='.database->quote($auth->{username}).', deleted=0, post_id='.$cpid.', ctext='.database->quote($ctext).', chash='.database->quote($chash).', cdate='.$cdate.', ipaddr='.database->quote($remote_ip)
   );
   $sth->execute();
   $sth->finish();
-  my $cid = database->{q{mysql_insertid}};
+  #my $cid = database->{q{mysql_insertid}};
+  my $cid;
+  my $sth = database->prepare(
+    'SELECT id FROM `'.config->{db_table_prefix}.'_blog_comments` WHERE cusername='.database->quote($auth->{username}).' AND cdate='.$cdate
+  );
+  if ($sth->execute()) {
+    ($cid) = $sth->fetchrow_array();
+  }
+  $sth->finish();
   # Check
   $sth = database->prepare(
    'UPDATE '.config->{db_table_prefix}.'_blog_comments SET right_key = right_key + 2, left_key = IF(left_key > '.$right_key.', left_key + 2, left_key) WHERE right_key >= '.$right_key.' AND post_id='.$cpid

@@ -77,7 +77,15 @@ get '/user/authorize/vk/' => sub {
     $realname=~s/\<//gm;
     $realname=~s/\>//gm;
     database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, username_social => $username, password => $password, username_unset => 1, password_unset => 1, email => '', phone => '', realname => $realname, status => 1, verification => '', regdate => time, lastchanged => time });
-    my $sql_id = database->{q{mysql_insertid}};
+    #my $sql_id = database->{q{mysql_insertid}};
+    my $sql_id;
+    my $sth = database->prepare(
+      'SELECT id FROM `'.config->{db_table_prefix}.'_users` WHERE username='.database->quote($username)
+    );
+    if ($sth->execute()) {
+      ($sql_id) = $sth->fetchrow_array();
+    }
+    $sth->finish();
     if ($sql_id) {     
      database->quick_update(config->{db_table_prefix}.'_users', { id => $sql_id }, { last_lang => $_current_lang, lastchanged => time });
      session user => $sql_id;
