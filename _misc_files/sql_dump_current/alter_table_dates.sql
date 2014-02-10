@@ -1,0 +1,15 @@
+ALTER TABLE `taracot_users` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_users` CHANGE `banned` `banned` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_users` CHANGE `regdate` `regdate` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_support_ans` CHANGE `sdate` `sdate` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_support` CHANGE `sdate` `sdate` DOUBLE;
+ALTER TABLE `taracot_support` CHANGE `lastmodified` `lastmodified` DOUBLE;
+ALTER TABLE `taracot_social_messaging` CHANGE `mtime` `mtime` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_settings` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT '0';
+ALTER TABLE `taracot_search_db` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_pages` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT '0';
+ALTER TABLE `taracot_firewall` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_catalog` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT '0';
+ALTER TABLE `taracot_blog_posts` CHANGE `pdate` `pdate` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_blog_posts` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_blog_comments` CHANGE `cdate` `cdate` DOUBLE DEFAULT NULL;

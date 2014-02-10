@@ -674,7 +674,7 @@ post '/account/avatar/upload' => sub {
   if (!defined $file) {
    return '{"error":"1"}';
   }
-  my $maxsize=config->{upload_limit_bytes} || 3145728; # 3 MB by default
+  my $maxsize=config->{upload_limit_bytes} || 5242880; # 5 MB by default
   if ($file->size > $maxsize) {
     return '{"error":"1"}'; 
   }  

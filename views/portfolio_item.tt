@@ -12,7 +12,7 @@
 		my $items_html = '';
 		my $items_large_html = '';
 		foreach my $key (keys %{ $pf->{screenshots} }) {
-			$items_html.=qq~<div class="col-lg-3 col-md-5 col-sm-5 thumbnail" style="margin:5px;text-align:center"><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive img-rounded" /><div class="caption"><small><i>~.$pf->{screenshots}->{$key}.qq~</i></small></div></div>~;
+			$items_html.=qq~<div class="col-lg-3 col-md-5 col-sm-5 thumbnail" style="margin:5px;text-align:center;border:0"><a href="~.$images_url.qq~/~.$key.qq~" rel="lightbox-tns" title="$pf->{screenshots}->{$key}"><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive img-rounded" /></a><div class="caption"><small><i>~.$pf->{screenshots}->{$key}.qq~</i></small></div></div>~;
 		}
 		foreach my $key (keys %{ $pf->{screenshots_large} }) {
 			$items_large_html.=qq~<div style="text-align:right"><i>~.$pf->{screenshots_large}->{$key}.qq~</i></div><center><img src="~.$images_url.qq~/~.$key.qq~" class="img-responsive" /></center><div style="height:10px"></div>~;
@@ -32,3 +32,4 @@
 	<b>[== $lang->{price} =]</b>:<br/>[== $pf->{price} =]
 </div>
 </div>
+<script src="/js/slimbox/slimbox2.js"></script>

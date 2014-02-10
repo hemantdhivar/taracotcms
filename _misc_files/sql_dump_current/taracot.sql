@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Хост: localhost
--- Время создания: Фев 07 2014 г., 18:01
+-- Время создания: Фев 10 2014 г., 18:36
 -- Версия сервера: 5.0.45
 -- Версия PHP: 5.2.4
 -- 
@@ -22,7 +22,7 @@ CREATE TABLE `taracot_blog_comments` (
   `deleted` tinyint(1) default '0',
   `cusername` varchar(255) NOT NULL,
   `ctext` text,
-  `cdate` int(11) default NULL,
+  `cdate` double default NULL,
   `chash` varchar(32) default NULL,
   `left_key` int(10) NOT NULL,
   `right_key` int(10) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE `taracot_blog_posts` (
   `pstate` tinyint(3) default '1',
   `ptitle` varchar(255) NOT NULL,
   `ptags` varchar(255) default NULL,
-  `pdate` int(11) default NULL,
+  `pdate` double default NULL,
   `phash` varchar(255) default NULL,
   `ptext` text,
   `ptext_html_cut` text,
@@ -65,7 +65,7 @@ CREATE TABLE `taracot_blog_posts` (
   `mod_require` tinyint(1) default '0',
   `deleted` tinyint(1) default '0',
   `comments_allowed` tinyint(1) default '1',
-  `lastchanged` int(11) default NULL,
+  `lastchanged` double default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ptags` (`ptags`),
   FULLTEXT KEY `ptitle` (`ptitle`,`ptext`)
@@ -97,7 +97,7 @@ CREATE TABLE `taracot_catalog` (
   `category` bigint(12) default '0',
   `lang` varchar(5) default 'en',
   `layout` varchar(40) NOT NULL default 'taracot',
-  `lastchanged` int(11) default '0',
+  `lastchanged` double default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `filter` (`pagetitle`,`filename`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -117,7 +117,7 @@ CREATE TABLE `taracot_firewall` (
   `id` int(11) NOT NULL auto_increment,
   `ipaddr` varchar(45) default NULL,
   `status` tinyint(4) NOT NULL default '0',
-  `lastchanged` int(11) default NULL,
+  `lastchanged` double default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ftdata` (`ipaddr`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251 AUTO_INCREMENT=1 ;
@@ -143,7 +143,7 @@ CREATE TABLE `taracot_pages` (
   `filename` varchar(255) NOT NULL,
   `lang` varchar(5) default 'en',
   `layout` varchar(40) NOT NULL default 'taracot',
-  `lastchanged` int(11) default '0',
+  `lastchanged` double default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `filter` (`pagetitle`,`filename`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=2 ;
@@ -168,7 +168,7 @@ CREATE TABLE `taracot_search_db` (
   `stext` text,
   `swords` text,
   `surl` varchar(255) default NULL,
-  `lastchanged` int(11) default NULL,
+  `lastchanged` double default NULL,
   PRIMARY KEY  (`ref_id`,`module_id`),
   FULLTEXT KEY `swords` (`swords`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -193,7 +193,7 @@ CREATE TABLE `taracot_settings` (
   `s_value` mediumtext,
   `s_value_html` text,
   `lang` varchar(5) NOT NULL default 'en',
-  `lastchanged` int(11) default '0',
+  `lastchanged` double default '0',
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `s_name` (`s_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=6 ;
@@ -339,7 +339,7 @@ CREATE TABLE `taracot_social_messaging` (
   `id` int(11) NOT NULL auto_increment,
   `ufrom` int(11) NOT NULL,
   `uto` int(11) NOT NULL,
-  `mtime` int(11) default NULL,
+  `mtime` double default NULL,
   `msg` text,
   `unread` tinyint(1) default '1',
   UNIQUE KEY `id` (`id`)
@@ -359,7 +359,7 @@ CREATE TABLE `taracot_social_messaging` (
 CREATE TABLE `taracot_support` (
   `id` int(11) NOT NULL auto_increment,
   `susername` varchar(255) NOT NULL,
-  `sdate` int(11) NOT NULL,
+  `sdate` double default NULL,
   `stopic_id` varchar(255) default NULL,
   `stopic` varchar(255) default NULL,
   `smsg` text,
@@ -367,7 +367,7 @@ CREATE TABLE `taracot_support` (
   `sstatus` tinyint(2) NOT NULL default '0',
   `susername_last` varchar(255) default NULL,
   `smsg_hash` varchar(32) default NULL,
-  `lastmodified` int(11) default NULL,
+  `lastmodified` double default NULL,
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -386,7 +386,7 @@ CREATE TABLE `taracot_support_ans` (
   `id` int(11) NOT NULL auto_increment,
   `tid` int(11) NOT NULL,
   `susername` varchar(255) default NULL,
-  `sdate` int(11) default NULL,
+  `sdate` double default NULL,
   `smsg` text,
   `smsg_hash` varchar(32) default '',
   UNIQUE KEY `id` (`id`)
@@ -418,11 +418,11 @@ CREATE TABLE `taracot_users` (
   `groups` varchar(255) default NULL,
   `status` tinyint(4) NOT NULL default '0',
   `verification` varchar(36) default NULL,
-  `regdate` int(11) default NULL,
+  `regdate` double default NULL,
   `last_lang` varchar(2) default NULL,
-  `banned` int(11) default '0',
+  `banned` double default NULL,
   `captcha` tinyint(1) default '0',
-  `lastchanged` int(11) default NULL,
+  `lastchanged` double default NULL,
   UNIQUE KEY `id` (`id`),
   FULLTEXT KEY `ftdata` (`username`,`realname`,`email`,`phone`)
 ) ENGINE=MyISAM AUTO_INCREMENT=403 DEFAULT CHARSET=cp1251 AUTO_INCREMENT=403 ;
@@ -431,7 +431,7 @@ CREATE TABLE `taracot_users` (
 -- Дамп данных таблицы `taracot_users`
 -- 
 
-INSERT INTO `taracot_users` VALUES (1, 'xtreme', NULL, 0, '0f5559ee359fba749e7e6638fcfdbbfb', 1, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1391083752);
+INSERT INTO `taracot_users` VALUES (1, 'xtreme', NULL, 0, '0f5559ee359fba749e7e6638fcfdbbfb', 1, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1392018219);
 INSERT INTO `taracot_users` VALUES (2, 'user', NULL, 0, '1d88c84caa93404ecf250399bc1be5a0', 1, 'John Doe', '', NULL, NULL, '79217998111', '', 1, NULL, NULL, 'en', 1376731887, 0, 1379770337);
 INSERT INTO `taracot_users` VALUES (3, 'martin0', NULL, 0, NULL, 0, 'Johanne Martin', 'johanne0@trashymail.com', NULL, NULL, '9719243985', NULL, 1, NULL, 1391000238, NULL, 0, 0, NULL);
 INSERT INTO `taracot_users` VALUES (4, 'sturm1', NULL, 0, NULL, 0, 'Max Sturm', 'max1@trashymail.com', NULL, NULL, '6616839919', NULL, 1, NULL, 1391000238, NULL, 0, 0, NULL);
