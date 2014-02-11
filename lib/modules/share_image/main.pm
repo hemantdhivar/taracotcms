@@ -1,6 +1,7 @@
 package modules::share_image::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 use taracot::fs;
 use JSON::XS();
 use Text::Unidecode;

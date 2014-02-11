@@ -1,6 +1,7 @@
 package modules::blog::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use Date::Format;
@@ -968,7 +969,7 @@ post '/comment/put' => sub {
   $sth->finish();
   #my $cid = database->{q{mysql_insertid}};
   my $cid;
-  my $sth = database->prepare(
+  $sth = database->prepare(
     'SELECT id FROM `'.config->{db_table_prefix}.'_blog_comments` WHERE cusername='.database->quote($auth->{username}).' AND cdate='.$cdate
   );
   if ($sth->execute()) {
@@ -989,7 +990,7 @@ post '/comment/put' => sub {
   $sth->finish();
   # Return data
   $res{'status'} = 1;
-  my $cdate = time2str($lang->{comment_date_template}, time);
+  $cdate = time2str($lang->{comment_date_template}, time);
   $cdate =~ s/\\//gm;
   my $avatar = '/images/default_avatar.png';
   if (-e config->{files_dir}.'/avatars/'.$auth->{username}.'.jpg') {

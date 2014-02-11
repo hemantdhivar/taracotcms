@@ -1,6 +1,7 @@
 package modules::auth_facebook::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 use LWP::UserAgent;
 use URL::Encode qw(url_encode);
 use JSON::XS("decode_json");

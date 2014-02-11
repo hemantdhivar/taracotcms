@@ -1,6 +1,7 @@
 var social_search_page = 1;
 var social_friends_page = 1;
 var social_invitations_page = 1;
+var social_message_uid = undefined;
 
 var social_update_counters = function() {
   if (friends_count > 0) {
@@ -379,6 +380,42 @@ var json_render_user_data = function(data, uid, where) {
 };
 
 
+var ajax_load_message_history = function(id) {
+  $('#social_messaging_ajax').show();
+  $('#social_messaging_chat').empty();
+  $.ajax({
+        type: 'POST',
+        url: '/social/messages/load',
+        data: {
+            uid: id
+        },
+        dataType: "json",
+        success: function (data) {
+          $('#social_messaging_ajax').hide();
+          $('#social_messaging_chat').html('');
+          if (data.status == 1) {    
+            for (var i=0; i<data.messages.length; i++) {
+              var style_addon = '';
+              if (i == data.messages.length-1) {
+                style_addon = ' style="padding-bottom:20px"';
+              }
+              $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.users[data.messages[i].ufrom].avatar  + '"></span><span class="pull-right"><small>' + data.messages[i].mtime  + '</small></span><div class="media-body"' + style_addon + '><b>' + data.users[data.messages[i].ufrom].username  + '</b><div style="height:3px"></div>' + data.messages[i].msg  + '</div></div>');
+            }
+            $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
+            $("#social_messaging_answer_area").val('');
+            $("#social_messaging_answer_area").focus();
+          } else {
+            $('#social_messaging_chat').html('<div class="alert alert-danger">'+js_lang_load_messages_error+'</div>');
+          }
+        },
+        error: function () {
+          $('#social_messaging_ajax').hide();
+          $('#social_messaging_chat').html('<div class="alert alert-danger">'+js_lang_load_messages_error+'</div>');
+        }
+    });
+};
+
+
 var ajax_social_message_click_handler = function(uid) {
   var id = jQuery(this).attr("id");
   if (id) {
@@ -393,9 +430,20 @@ var ajax_social_message_click_handler = function(uid) {
   $('#social_tab_messaging').show();
   $('#social_messaging_chat').show();
   $('#social_messaging_chat').empty();
-  $('#social_messaging_talks').hide();  
-  $('#social_messaging_ajax').show();
+  $('#social_messaging_talks').hide(); 
+  social_message_uid = uid; 
+  ajax_load_message_history(uid);
 };
+
+
+var social_messaging_answer_btn_click_handler = function() {
+  if (!$('#social_messaging_answer_area').val().match(/^.{1,4096}$/)) {
+    
+  }
+};
+
+
+$('#social_messaging_answer_btn').click(social_messaging_answer_btn_click_handler);
 
 
 $('.social_menu_link').click(function(e) {

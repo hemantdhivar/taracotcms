@@ -1,5 +1,5 @@
 package modules::cache::memcached;
-
+use Time::HiRes qw ( time );
 use Dancer ':syntax';
 use Cache::Memcached::Fast;
 

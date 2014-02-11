@@ -2,6 +2,7 @@ package modules::social::main;
 use Dancer ':syntax';
 use Date::Format;
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 
 # Configuration
 
@@ -363,7 +364,7 @@ any '/messages/load' => sub {
     return '{"status":"0"}';
   } 
   my $sth = database->prepare(
-    'SELECT id, ufrom, uto, mtime, msg, unread FROM '.config->{db_table_prefix}.'_social_messaging WHERE ((ufrom = '.$auth_data->{id}.' AND uto = '.$uid.') OR (uto = '.$auth_data->{id}.' AND ufrom = '.$uid.')) ORDER BY utime ASC LIMIT 50'
+    'SELECT id, ufrom, uto, mtime, msg, unread FROM '.config->{db_table_prefix}.'_social_messaging WHERE ((ufrom = '.$auth_data->{id}.' AND uto = '.$uid.') OR (uto = '.$auth_data->{id}.' AND ufrom = '.$uid.')) ORDER BY mtime ASC LIMIT 50'
   );        
   my @res_arr;
   if ($sth->execute()) {
@@ -372,7 +373,8 @@ any '/messages/load' => sub {
       $item{'id'} = $id;
       $item{'ufrom'} = $ufrom;
       $item{'uto'} = $uto;
-      $item{'mtime'} = $mtime;
+      $item{'mtime'} = time2str($lang->{chat_time_template}, $item{'mtime'});;
+      $item{'mtime'} =~ s/\\//gm; 
       $item{'msg'} = $msg;
       $item{'unread'} = $unread;
       push @res_arr, \%item;

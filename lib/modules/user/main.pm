@@ -2,6 +2,7 @@ package modules::user::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
 use Dancer::Plugin::Email;
+use Time::HiRes qw ( time );
 use HTML::Entities qw(encode_entities_numeric);
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);

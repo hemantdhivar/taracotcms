@@ -47,12 +47,26 @@
 				<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
 			</div>
 		</div>
-		<div class="social_tab" id="social_tab_messaging" style="display:none">
-			<div class="social_messaging_talks"></div>
-			<div class="social_messaging_chat"></div>
-			<div id="social_messaging_ajax" style="display:none;padding-top:20px">
-				<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
-			</div>
+		<div class="social_tab" id="social_tab_messaging" style="display:none">			
+			<div id="social_messaging_talks"></div>
+			<div id="social_messaging_chatbox">
+				<div id="social_messaging_chat_wrap" class="panel panel-default">
+					<div id="social_messaging_ajax" style="display:none;padding-top:20px">
+						<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
+					</div>
+					<div id="social_messaging_chat" class="panel-body" style="overflow:auto;height:400px;padding-bottom:10px"></div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-sm-8">
+						<textarea class="form-control" rows="2" id="social_messaging_answer_area"></textarea>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-8 col-md-8 col-sm-8" style="margin-top:5px">
+						<button class="btn btn-primary btn-sm" id="social_messaging_answer_btn">[== $lang->{social_messaging_answer_btn} =]</button>&nbsp;<span id="social_messaging_answer_error"></span>
+					</div>
+				</div>
+			</div>			
 		</div>
 		<div class="social_tab" id="social_tab_settings" style="display:none">
 		</div>
@@ -70,6 +84,7 @@
     var js_lang_friend_accept_request = "[== $lang->{friend_accept_request} =]";
     var js_lang_loading_error = "[== $lang->{loading_error} =]";
     var js_lang_send_message = "[== $lang->{send_message} =]";
+    var js_lang_load_messages_error = "[== $lang->{load_messages_error} =]";
     var current_user_id = "[== $auth_data->{id} =]";
     var friends_count = "[== $friends_count =]";
     var invitations_count = "[== $invitations_count =]";

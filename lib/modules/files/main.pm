@@ -4,6 +4,7 @@ use JSON::XS qw();
 use taracot::fs;
 use Text::Unidecode;
 use Digest::MD5 qw(md5_hex);
+use Time::HiRes qw ( time );
 
 # Configuration
 

@@ -1,6 +1,7 @@
 package modules::imgbrowser::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 #use taracot::loadpm;

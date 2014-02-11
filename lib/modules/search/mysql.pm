@@ -1,7 +1,7 @@
 package modules::search::mysql;
-
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 use Lingua::Stem::Any;
 use HTML::Restrict;
 use Encode;

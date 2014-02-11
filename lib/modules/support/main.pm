@@ -1,6 +1,7 @@
 package modules::support::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 use Date::Format;
 use taracot::AUBBC;
 use Digest::MD5 qw(md5_hex);

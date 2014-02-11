@@ -1,6 +1,7 @@
 package modules::sitemap::main;
 use Dancer ':syntax';
 use Dancer::Plugin::Database;
+use Time::HiRes qw ( time );
 use JSON::XS qw();
 use taracot::fs;
 use Fcntl qw(:flock SEEK_END); # import LOCK_* and SEEK_END constants
