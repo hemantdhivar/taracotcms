@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Хост: localhost
--- Время создания: Фев 10 2014 г., 18:36
+-- Время создания: Фев 14 2014 г., 16:06
 -- Версия сервера: 5.0.45
 -- Версия PHP: 5.2.4
 -- 
@@ -220,7 +220,7 @@ CREATE TABLE `taracot_social_friends` (
   `user2` int(11) NOT NULL,
   `status` tinyint(1) NOT NULL,
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=103 DEFAULT CHARSET=utf8 AUTO_INCREMENT=103 ;
+) ENGINE=MyISAM AUTO_INCREMENT=104 DEFAULT CHARSET=utf8 AUTO_INCREMENT=104 ;
 
 -- 
 -- Дамп данных таблицы `taracot_social_friends`
@@ -327,7 +327,8 @@ INSERT INTO `taracot_social_friends` VALUES (98, 1, 99, 1);
 INSERT INTO `taracot_social_friends` VALUES (99, 399, 1, 1);
 INSERT INTO `taracot_social_friends` VALUES (100, 245, 1, 1);
 INSERT INTO `taracot_social_friends` VALUES (101, 1, 375, 0);
-INSERT INTO `taracot_social_friends` VALUES (102, 234, 1, 0);
+INSERT INTO `taracot_social_friends` VALUES (102, 234, 1, 1);
+INSERT INTO `taracot_social_friends` VALUES (103, 1, 210, 0);
 
 -- --------------------------------------------------------
 
@@ -341,14 +342,60 @@ CREATE TABLE `taracot_social_messaging` (
   `uto` int(11) NOT NULL,
   `mtime` double default NULL,
   `msg` text,
-  `unread` tinyint(1) default '1',
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
 
 -- 
 -- Дамп данных таблицы `taracot_social_messaging`
 -- 
 
+INSERT INTO `taracot_social_messaging` VALUES (1, 1, 11, 1392372244.17381, 'Hellow');
+INSERT INTO `taracot_social_messaging` VALUES (2, 1, 11, 1392372251.34812, 'Test');
+INSERT INTO `taracot_social_messaging` VALUES (3, 2, 1, 1392372487.45213, 'Hello Michael');
+INSERT INTO `taracot_social_messaging` VALUES (4, 2, 1, 1392372529.80154, 'It should be unread now');
+INSERT INTO `taracot_social_messaging` VALUES (5, 1, 2, 1392372552.55313, 'OK Computer');
+INSERT INTO `taracot_social_messaging` VALUES (6, 1, 50, 1392374267.63797, 'Hi Erwin');
+INSERT INTO `taracot_social_messaging` VALUES (7, 1, 11, 1392374565.27061, 'Европейский суд отказался приравнять распространение в Сети ссылок на открытый и общедоступный контент к интернет-пиратству. Решение суда 13 февраля было опубликовано на официальном сайте Евросоюза.<br><br>Как говорится в тексте документа, публикация ссылки на контент, который уже находится в бесплатном доступе на том или ином сайте, не может считаться его незаконным распространением, даже если текст, фото или видео по ссылке охраняются авторским правом.<br><br>«При размещении такой ссылки аудитория поста, охраняемого копирайтом, может увеличиваться. Однако при этом ссылка на открытый контент не приводит к тому, что доступ к нему получают те, кто раньше его получить не мог», — отмечается в судебном решении. Таким образом, заключил суд, дополнительного разрешения от правообладателей на распространение контента не требуется.');
+INSERT INTO `taracot_social_messaging` VALUES (8, 1, 2, 1392377152.88346, 'Hello world');
+INSERT INTO `taracot_social_messaging` VALUES (9, 1, 50, 1392377160.97485, 'OK');
+INSERT INTO `taracot_social_messaging` VALUES (10, 1, 2, 1392377166.56224, 'Hey');
+INSERT INTO `taracot_social_messaging` VALUES (11, 1, 68, 1392377222.26859, 'Hello');
+INSERT INTO `taracot_social_messaging` VALUES (12, 2, 1, 1392377247.62048, 'OK!');
+INSERT INTO `taracot_social_messaging` VALUES (13, 1, 68, 1392377409.31335, 'Hey');
+INSERT INTO `taracot_social_messaging` VALUES (14, 2, 1, 1392377537.42097, 'Hey');
+INSERT INTO `taracot_social_messaging` VALUES (15, 1, 11, 1392377624.04711, 'OK');
+INSERT INTO `taracot_social_messaging` VALUES (16, 1, 68, 1392377632.15829, 'OK');
+INSERT INTO `taracot_social_messaging` VALUES (17, 2, 1, 1392378186.9096, 'Test');
+INSERT INTO `taracot_social_messaging` VALUES (18, 1, 84, 1392378244.1936, 'Hey Frank');
+INSERT INTO `taracot_social_messaging` VALUES (19, 2, 1, 1392378264.1974, 'Another test');
+
+-- --------------------------------------------------------
+
+-- 
+-- Структура таблицы `taracot_social_messaging_stat`
+-- 
+
+CREATE TABLE `taracot_social_messaging_stat` (
+  `id` int(11) NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `ref_id` int(11) NOT NULL,
+  `flag_unread` smallint(1) default '0',
+  `count_msg` int(11) NOT NULL default '0',
+  `last_msg` text,
+  `last_msg_date` double default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
+-- 
+-- Дамп данных таблицы `taracot_social_messaging_stat`
+-- 
+
+INSERT INTO `taracot_social_messaging_stat` VALUES (1, 1, 11, 1, 4, 'OK', 1392377624.04711);
+INSERT INTO `taracot_social_messaging_stat` VALUES (2, 2, 1, 1, 6, 'Another test', 1392378264.1974);
+INSERT INTO `taracot_social_messaging_stat` VALUES (3, 1, 2, 0, 3, 'Hey', 1392377166.56224);
+INSERT INTO `taracot_social_messaging_stat` VALUES (4, 1, 50, 1, 2, 'OK', 1392377160.97485);
+INSERT INTO `taracot_social_messaging_stat` VALUES (6, 1, 84, 1, 1, 'Hey Frank', 1392378244.1936);
+INSERT INTO `taracot_social_messaging_stat` VALUES (5, 1, 68, 1, 3, 'OK', 1392377632.15829);
 
 -- --------------------------------------------------------
 
@@ -432,7 +479,7 @@ CREATE TABLE `taracot_users` (
 -- 
 
 INSERT INTO `taracot_users` VALUES (1, 'xtreme', NULL, 0, '0f5559ee359fba749e7e6638fcfdbbfb', 1, 'Michael Matveev', '', NULL, NULL, '79217998111', 'blog_post, blog_moderator, blog_moderator_test1', 2, NULL, 1376300791, 'en', 0, 0, 1392018219);
-INSERT INTO `taracot_users` VALUES (2, 'user', NULL, 0, '1d88c84caa93404ecf250399bc1be5a0', 1, 'John Doe', '', NULL, NULL, '79217998111', '', 1, NULL, NULL, 'en', 1376731887, 0, 1379770337);
+INSERT INTO `taracot_users` VALUES (2, 'user', NULL, 0, 'c26a9cefee6fb3e9ec63e63c2d6d5e4d', 1, 'John Doe', '', NULL, NULL, '79217998111', '', 1, NULL, NULL, 'en', 1376731887, 0, 1392372475.67217);
 INSERT INTO `taracot_users` VALUES (3, 'martin0', NULL, 0, NULL, 0, 'Johanne Martin', 'johanne0@trashymail.com', NULL, NULL, '9719243985', NULL, 1, NULL, 1391000238, NULL, 0, 0, NULL);
 INSERT INTO `taracot_users` VALUES (4, 'sturm1', NULL, 0, NULL, 0, 'Max Sturm', 'max1@trashymail.com', NULL, NULL, '6616839919', NULL, 1, NULL, 1391000238, NULL, 0, 0, NULL);
 INSERT INTO `taracot_users` VALUES (5, 'gonzales2', NULL, 0, NULL, 0, 'Alonzo Gonzales', 'alonzo2@trashymail.com', NULL, NULL, '5049265458', NULL, 1, NULL, 1391000238, NULL, 0, 0, NULL);

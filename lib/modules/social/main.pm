@@ -3,6 +3,7 @@ use Dancer ':syntax';
 use Date::Format;
 use Dancer::Plugin::Database;
 use Time::HiRes qw ( time );
+use HTML::Restrict;
 
 # Configuration
 
@@ -64,6 +65,15 @@ get '/' => sub {
     ($inv_count) = $sth -> fetchrow_array;
   } 
   $sth->finish();
+  $sth = database->prepare(
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_messaging_stat WHERE ref_id = '.database->quote($auth_data->{id}).' AND flag_unread = 1'
+  );
+  my $unread_flag = '0';
+  if ($sth->execute()) {
+    ($unread_flag) = $sth -> fetchrow_array;
+    $unread_flag = 1 if ($unread_flag);
+  } 
+  $sth->finish();
   $user_data->{'regdate'} = time2str($lang->{user_account_date_template}, $user_data->{'regdate'});
   $user_data->{'regdate'} =~ s/\\//gm;  
   $user_data->{'avatar'} = '/images/default_avatar.png';
@@ -71,7 +81,7 @@ get '/' => sub {
     $user_data->{'avatar'} = config->{files_url}.'/avatars/'.$auth_data->{username}.'.jpg';
   } 
   my $json_xs = JSON::XS->new();
-  return &taracot::_process_template( template ('social_index', { head_html => '<link href="'.config->{modules_css_url}.'social.css" rel="stylesheet" />', detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{social_network}, auth_data => $auth_data, user_data => $json_xs->encode($user_data), friends_count => $friends_count, invitations_count => $inv_count, messages_count => 0 }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );  
+  return &taracot::_process_template( template ('social_index', { head_html => '<link href="'.config->{modules_css_url}.'social.css" rel="stylesheet" />', detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{social_network}, auth_data => $auth_data, user_data => $json_xs->encode($user_data), friends_count => $friends_count, invitations_count => $inv_count, messages_flag => $unread_flag }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );  
 };
 
 post '/search' => sub {
@@ -296,7 +306,7 @@ post '/friends' => sub {
   if ($page < 1) {
     return '{"status":"0"}'; 
   }  
-  my $uid = param('uid') || 1;
+  my $uid = param('uid') || 0;
   if (!$uid || $uid < 1) {
     $uid = $auth_data->{id};
   } 
@@ -311,7 +321,7 @@ post '/friends' => sub {
     return '{"status":"0"}';
   }
   my $sth = database->prepare(
-      'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).') AND status='.$req_status
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).' AND status='.$req_status
   );
   my $total = 0;
   if ($sth->execute()) {
@@ -351,7 +361,7 @@ post '/friends' => sub {
   return $json_xs->encode(\%res);
 };
 
-any '/messages/load' => sub {
+post '/messages/load' => sub {
   my $auth_data = &taracot::_auth();
   if (!$auth_data) {
     return '{"status":"0"}'; 
@@ -364,19 +374,18 @@ any '/messages/load' => sub {
     return '{"status":"0"}';
   } 
   my $sth = database->prepare(
-    'SELECT id, ufrom, uto, mtime, msg, unread FROM '.config->{db_table_prefix}.'_social_messaging WHERE ((ufrom = '.$auth_data->{id}.' AND uto = '.$uid.') OR (uto = '.$auth_data->{id}.' AND ufrom = '.$uid.')) ORDER BY mtime ASC LIMIT 50'
+    'SELECT id, ufrom, uto, mtime, msg FROM '.config->{db_table_prefix}.'_social_messaging WHERE ((ufrom = '.$auth_data->{id}.' AND uto = '.$uid.') OR (uto = '.$auth_data->{id}.' AND ufrom = '.$uid.')) ORDER BY mtime ASC LIMIT 50'
   );        
   my @res_arr;
   if ($sth->execute()) {
-    while (my ($id, $ufrom, $uto, $mtime, $msg, $unread) = $sth->fetchrow_array) {
+    while (my ($id, $ufrom, $uto, $mtime, $msg) = $sth->fetchrow_array) {
       my %item;
       $item{'id'} = $id;
       $item{'ufrom'} = $ufrom;
       $item{'uto'} = $uto;
-      $item{'mtime'} = time2str($lang->{chat_time_template}, $item{'mtime'});;
+      $item{'mtime'} = time2str($lang->{chat_time_template}, int($mtime));
       $item{'mtime'} =~ s/\\//gm; 
       $item{'msg'} = $msg;
-      $item{'unread'} = $unread;
       push @res_arr, \%item;
     }
   }
@@ -402,8 +411,173 @@ any '/messages/load' => sub {
     $res{'users'} = \%users;
   }
   $sth->finish();
+  $sth = database->prepare(
+    'UPDATE '.config->{db_table_prefix}.'_social_messaging_stat SET flag_unread=0 WHERE ref_id='.database->quote($auth_data->{id}).' AND user_id='.database->quote($uid)
+  );  
+  $sth->execute();
+  $sth->finish();
+  $sth = database->prepare(
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_messaging_stat WHERE ref_id = '.database->quote($auth_data->{id}).' AND flag_unread = 1'
+  );
+  my $unread_flag = '0';
+  if ($sth->execute()) {
+    ($unread_flag) = $sth -> fetchrow_array;
+    $unread_flag = 1 if ($unread_flag);
+  } 
+  $sth->finish();
+  $res{'unread_flag'} = $unread_flag;
   my $json_xs = JSON::XS->new();
   return $json_xs->encode(\%res);
 };
+
+post '/messages/save' => sub {
+  my $auth_data = &taracot::_auth();
+  if (!$auth_data) {
+    return '{"status":"0"}'; 
+  }
+  my %res;
+  $res{'status'} = 1;
+  my $_current_lang=_load_lang(); 
+  my $uid = param('uid');
+  if (!$uid || $uid < 1) {
+    return '{"status":"0"}';
+  }
+  my $json_xs = JSON::XS->new();
+  my $msg = param('msg');
+  my $hr = HTML::Restrict->new();
+  $msg = $hr->process($msg);
+  $msg =~ s/\n/<br>/gm;
+  if (!$msg || length($msg) > 4096) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{incorrect_msg};
+    return $json_xs->encode(\%res);
+  }
+  my $sth = database->prepare(
+    'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE id = '.$uid.' AND status > 0'
+  );  
+  my $check_id;  
+  if ($sth->execute()) {
+    ($check_id) = $sth->fetchrow_array();
+  }
+  $sth->finish();
+  if (!$check_id) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{incorrect_user};
+    return $json_xs->encode(\%res);
+  }
+  my $last_time;
+  $sth = database->prepare(
+    'SELECT mtime FROM '.config->{db_table_prefix}.'_social_messaging WHERE uto = '.$uid.' AND ufrom = '.$auth_data->{id}.' ORDER BY mtime DESC LIMIT 1'
+  );  
+  if ($sth->execute()) {
+    ($last_time) = $sth->fetchrow_array();
+  }
+  $sth->finish();
+  if (time-$last_time < 5) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{too_frequent_msg};
+    return $json_xs->encode(\%res);
+  }
+  my $mtime = time;
+  database->quick_insert(config->{db_table_prefix}.'_social_messaging', { ufrom => $auth_data->{id}, uto => $uid, mtime => $mtime, msg => $msg }); 
+  my $mid = database->last_insert_id(undef,undef,undef,undef);
+  if (!$mid) {
+    $sth = database->prepare(
+      'SELECT id FROM `'.config->{db_table_prefix}.'_social_messaging` WHERE mtime = '.$mtime.' AND uto = '.$uid.' AND ufrom = '.$auth_data->{id}
+    );
+    if ($sth->execute()) {
+      ($mid) = $sth->fetchrow_array();
+    }
+    $sth->finish();
+  }
+  if (!$mid) {
+    $res{'status'} = 0;
+    $res{'errmsg'} = $lang->{ajax_error};
+    return $json_xs->encode(\%res);  
+  }
+  my $dbdata  = database->quick_select(config->{db_table_prefix}.'_social_messaging_stat', { user_id => $auth_data->{id}, ref_id => $uid }); 
+  if ($dbdata->{id}) {
+    $sth = database->prepare(
+      'UPDATE '.config->{db_table_prefix}.'_social_messaging_stat SET flag_unread=1, count_msg=count_msg+1, last_msg='.database->quote($msg).', last_msg_date='.database->quote($mtime).' WHERE id='.database->quote($dbdata->{id})
+    );  
+    $sth->execute();
+    $sth->finish();
+  } else {
+    database->quick_insert(config->{db_table_prefix}.'_social_messaging_stat', { user_id => $auth_data->{id}, ref_id => $uid, flag_unread => 1, count_msg => 1, last_msg => $msg, last_msg_date => $mtime }); 
+  }
+  my $username = $auth_data->{username};
+  my $avatar = '/images/default_avatar.png';
+  if (-e config->{files_dir}.'/avatars/'.$username.'.jpg') {
+    $avatar = config->{files_url}.'/avatars/'.$username.'.jpg';
+  } 
+  $res{'id'} = $mid;
+  $res{'username'} = $username;
+  $res{'avatar'} = $avatar;
+  $res{'ufrom'} = $auth_data->{id};
+  $res{'uto'} = $uid;
+  $res{'mtime'} = time2str($lang->{chat_time_template}, int($mtime));
+  $res{'mtime'} =~ s/\\//gm; 
+  $res{'msg'} = $msg;
+  return $json_xs->encode(\%res);
+};
+
+post '/messages/list' => sub {
+  my $auth_data = &taracot::_auth();
+  if (!$auth_data) {
+    return '{"status":"0"}'; 
+  }
+  my $json_xs = JSON::XS->new();
+  my %res;
+  $res{'status'} = 1;
+  my $_current_lang=_load_lang(); 
+  my $sth = database->prepare(
+   'SELECT DISTINCT u.id, u.username, u.realname, s.flag_unread, s.count_msg, t.count_msg, s.last_msg, s.last_msg_date, t.last_msg, t.last_msg_date FROM taracot_users u JOIN (SELECT IF (uto='.database->quote($auth_data->{id}).', ufrom, uto) as uid, mtime FROM taracot_social_messaging WHERE uto='.database->quote($auth_data->{id}).' OR ufrom='.database->quote($auth_data->{id}).') m ON u.id = m.uid LEFT JOIN taracot_social_messaging_stat s ON (s.user_id = m.uid AND s.ref_id = '.database->quote($auth_data->{id}).') LEFT JOIN taracot_social_messaging_stat t ON (t.ref_id = m.uid AND t.user_id = '.database->quote($auth_data->{id}).') ORDER BY IF (s.last_msg_date > t.last_msg_date, s.last_msg_date, t.last_msg_date) DESC'
+  );  
+  my @items;
+  if ($sth->execute()) {
+   while (my ($id, $username, $realname, $unread, $cnt, $cnt2, $last_msg, $last_msg_date, $last_msg2, $last_msg_date2) = $sth->fetchrow_array()) {
+    my %item;
+    my $avatar = '/images/default_avatar.png';
+    if (-e config->{files_dir}.'/avatars/'.$username.'.jpg') {
+      $avatar = config->{files_url}.'/avatars/'.$username.'.jpg';
+    } 
+    $item{'avatar'} = $avatar;
+    $item{id} = $id;
+    $item{username} = $username;    
+    $item{realname} = $realname;
+    $item{unread} = $unread || 0;
+    $item{total} = $cnt || 0;
+    if ($cnt2) {
+      $item{total} += $cnt2;
+    }
+    if ($last_msg_date2 > $last_msg_date) {
+      $item{last_msg} = truncate_string($last_msg2, 256);
+      $item{last_msg_date} = $last_msg_date2;
+    } else {
+      $item{last_msg} = truncate_string($last_msg, 256);
+      $item{last_msg_date} = $last_msg_date;
+    }    
+    $item{last_msg_date} = time2str($lang->{chat_time_template}, $item{last_msg_date});
+    $item{last_msg_date} =~ s/\\//gm;  
+    push @items, \%item;
+   }
+  }
+  $res{'items'} = \@items;
+  $sth->finish();
+  return $json_xs->encode(\%res);
+};
+
+sub truncate_string($$) {
+  my ( $string, $max ) = @_;
+  $string =~ s/<br>/ /igm;
+  $string =~ tr/ +/ /;
+  ( length( $string ) <= $max ) and return $string;
+  if ( $string =~ /\s/ ) {
+    return substr( $string, 0, $max ).'...';
+  }
+  $string =~ /^(.*)\s+$/ and return $1.'...';
+  $string =~ s/\S+$// and return $string.'...';
+  return $string;
+}
 
 1;

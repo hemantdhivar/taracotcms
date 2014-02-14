@@ -5,21 +5,21 @@ var social_message_uid = undefined;
 
 var social_update_counters = function() {
   if (friends_count > 0) {
+    $('#social_friends_count').show();
     $('#social_friends_count').html(friends_count)
   } else {
     $('#social_friends_count').hide();
   }
-
   if (invitations_count > 0) {
+    $('#social_invitations_count').show();
     $('#social_invitations_count').html(invitations_count)
   } else {
     $('#social_invitations_count').hide();
   }
-
-  if (messages_count > 0) {
-    $('#social_messages_count').html(messages_count)
+  if (messages_flag == 1) {
+    $('#social_messages_flag').show();
   } else {
-    $('#social_messages_count').hide();
+    $('#social_messages_flag').hide();
   }
 };
 
@@ -57,6 +57,7 @@ $('#social_menu_search').click(function() {
 
 var ajax_load_search_data = function(query, page) {
 	$('#social_search_ajax').show();
+  $('#social_search_results').empty();
 	$.ajax({
         type: 'POST',
         url: '/social/search',
@@ -92,7 +93,7 @@ var ajax_load_search_data = function(query, page) {
                          }
                          h2t += js_lang_no_phone;
                        }
-                       $('#social_search_results').append('<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
+                       $('#social_search_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
                     }
                     $('#social_search_results').append('</div>');
                     $('.social-search-item').unbind();
@@ -128,7 +129,7 @@ var ajax_load_friends_data = function(page) {
         success: function (data) {
           $('#social_friends_ajax').hide();
             if (data.status == 1) {    
-              if (data.total == 0) {
+              if (data.total && data.total == 0) {
                 $('#social_friends_results').html('<div class="alert alert-warning">'+js_lang_friends_nothing_found+'</div>');
               }
                 if (data.items && data.items.length > 0) {
@@ -152,7 +153,7 @@ var ajax_load_friends_data = function(page) {
                          }
                          h2t += js_lang_no_phone;
                        }
-                       $('#social_friends_results').append('<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
+                       $('#social_friends_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
                     }
                     $('#social_friends_results').append('</div>');
                     $('.social-search-item').unbind();
@@ -189,8 +190,8 @@ var ajax_load_invitations_data = function(page) {
         success: function (data) {
           $('#social_invitations_ajax').hide();
             if (data.status == 1) {    
-              if (data.total == 0) {
-                $('#social_invitations_results').html('<div class="alert alert-warning">'+js_lang_invitations_nothing_found+'</div>');
+              if ((data.items && data.items.length == 0) || data.total == 0) {
+                $('#social_invitations_results').html('<div class="alert alert-warning">'+js_lang_inv_nothing_found+'</div>');
               }
                 if (data.items && data.items.length > 0) {
                   $('#social_invitations_results').append('<div class="row">');
@@ -213,7 +214,7 @@ var ajax_load_invitations_data = function(page) {
                          }
                          h2t += js_lang_no_phone;
                        }
-                       $('#social_invitations_results').append('<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
+                       $('#social_invitations_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
                     }
                     $('#social_invitations_results').append('</div>');
                     $('.social-search-item').unbind();
@@ -339,6 +340,7 @@ var json_accept_friendship_request = function() {
           } else {
             $('#btn_accept_friend_' + uid).replaceWith('<button class="btn btn-primary btn-sm disabled">' + js_lang_friend_status_established + '</button>');
             friends_count++;
+            invitations_count--;
             social_update_counters();
           }
         },
@@ -395,15 +397,15 @@ var ajax_load_message_history = function(id) {
           $('#social_messaging_chat').html('');
           if (data.status == 1) {    
             for (var i=0; i<data.messages.length; i++) {
-              var style_addon = '';
-              if (i == data.messages.length-1) {
-                style_addon = ' style="padding-bottom:20px"';
-              }
-              $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.users[data.messages[i].ufrom].avatar  + '"></span><span class="pull-right"><small>' + data.messages[i].mtime  + '</small></span><div class="media-body"' + style_addon + '><b>' + data.users[data.messages[i].ufrom].username  + '</b><div style="height:3px"></div>' + data.messages[i].msg  + '</div></div>');
+              $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.users[data.messages[i].ufrom].avatar  + '"></span><span class="pull-right"><small>' + data.messages[i].mtime  + '</small></span><div class="media-body"><b>' + data.users[data.messages[i].ufrom].username  + '</b><div style="height:3px"></div>' + data.messages[i].msg  + '</div></div>');
             }
+            $('#social_messaging_chat_with').html(data.users[social_message_uid].realname || namedata.users[social_message_uid].username);
+            $('#social_messaging_chatbox_title').show();
             $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
             $("#social_messaging_answer_area").val('');
             $("#social_messaging_answer_area").focus();
+            messages_flag = data.unread_flag;
+            social_update_counters();
           } else {
             $('#social_messaging_chat').html('<div class="alert alert-danger">'+js_lang_load_messages_error+'</div>');
           }
@@ -417,6 +419,8 @@ var ajax_load_message_history = function(id) {
 
 
 var ajax_social_message_click_handler = function(uid) {
+  $('#social_messaging_chatbox').show();
+  $('#social_messaging_talks').hide();
   var id = jQuery(this).attr("id");
   if (id) {
     id = id.replace('btn_sendmessage_','');  
@@ -426,24 +430,78 @@ var ajax_social_message_click_handler = function(uid) {
   $.history.push("view=message&id=" + id );
   $('.social_menu').removeClass('active');
   $('.social_tab').hide();
+  $('#social_messaging_chatbox_title').hide();
   $('#social_menu_messaging_li').addClass('active');  
   $('#social_tab_messaging').show();
   $('#social_messaging_chat').show();
   $('#social_messaging_chat').empty();
   $('#social_messaging_talks').hide(); 
-  social_message_uid = uid; 
-  ajax_load_message_history(uid);
+  social_message_uid = id; 
+  ajax_load_message_history(id);
+  $('#social_messaging_answer_error').hide();
+  $('#social_messaging_answer_area').focus();
 };
 
 
 var social_messaging_answer_btn_click_handler = function() {
-  if (!$('#social_messaging_answer_area').val().match(/^.{1,4096}$/)) {
-    
+  if ($('#social_messaging_answer_btn').hasClass('disabled')) {
+    return;
   }
+  $('#social_messaging_answer_error').hide();
+  if ($('#social_messaging_answer_area').val().length < 1 || $('#social_messaging_answer_area').val().length > 4096) {
+    $('#social_messaging_answer_error_msg').html(js_lang_incorrect_msg);
+    $('#social_messaging_answer_error').show();
+    $('#social_messaging_answer_area').focus();
+    return;
+  }
+  $('#social_messaging_answer_btn').addClass('disabled');
+  $('#social_messaging_answer_ajax').show();
+  $.ajax({
+        type: 'POST',
+        url: '/social/messages/save',
+        data: {
+            uid: social_message_uid,
+            msg: $('#social_messaging_answer_area').val()
+        },
+        dataType: "json",
+        success: function (data) {
+          $('#social_messaging_answer_btn').removeClass('disabled');
+          $('#social_messaging_answer_ajax').hide();
+          if (data.status == 1) {    
+            $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.avatar  + '"></span><span class="pull-right"><small>' + data.mtime  + '</small></span><div class="media-body" style="padding-bottom:20px"><b>' + data.username  + '</b><div style="height:3px"></div>' + data.msg  + '</div></div>');
+            $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
+            $('#social_messaging_answer_area').val('');
+          } else {
+            if (data.errmsg) {
+              $('#social_messaging_answer_error_msg').html(data.errmsg);
+              $('#social_messaging_answer_error').show();
+              $('#social_messaging_answer_area').focus();
+            } else {
+              $('#social_messaging_answer_error_msg').html(js_lang_ajax_error);
+              $('#social_messaging_answer_error').show();
+              $('#social_messaging_answer_area').focus();
+            }
+          }
+        },
+        error: function () {
+          $('#social_messaging_answer_ajax').hide();
+          $('#social_messaging_answer_btn').removeClass('disabled');                                
+          $('#social_messaging_answer_error_msg').html(js_lang_ajax_error);
+          $('#social_messaging_answer_error').show();
+          $('#social_messaging_answer_area').focus();
+        }
+    });
 };
 
 
 $('#social_messaging_answer_btn').click(social_messaging_answer_btn_click_handler);
+
+
+$('#social_messaging_answer_area').keydown(function (e) {
+  if (e.ctrlKey && e.keyCode == 13) {
+    social_messaging_answer_btn_click_handler();
+  }
+});
 
 
 $('.social_menu_link').click(function(e) {
@@ -473,6 +531,44 @@ var ajax_load_user_data = function(uid) {
         error: function () {
         	$('#social_page_ajax').hide();
             $('#social_page_results').html('<div class="alert alert-danger">'+js_lang_page_error+'</div>');
+        }
+    });
+};
+
+
+var ajax_load_talks_data = function(uid) {
+  $('#social_messaging_talks_ajax').show();
+  $('#social_messaging_talks_data').empty();
+  $.ajax({
+        type: 'POST',
+        url: '/social/messages/list',
+        dataType: "json",
+        success: function (data) {
+          $('#social_messaging_talks_ajax').hide();
+          if (data.status == 1) {    
+            if (data.items.length == 0) {
+              $('#social_messaging_talks_data').html('<div class="alert alert-warning">'+js_lang_messages_nothing_found+'</div>')
+            }
+            for (var i=0; i<data.items.length; i++) {
+              var count_msg = data.items[i].total || 0;
+              var last_msg = data.items[i].last_msg || '';
+              var last_date = data.items[i].last_msg_date || '';
+              var unread_icon = '';
+              if (data.items[i].unread) {
+               unread_icon = '&nbsp;<span class="badge" style="background:#ff6666;color:#fff;font-size:80%"><i class="glyphicon glyphicon-envelope"></i></span>';
+              }
+              $('#social_messaging_talks_data').append('<div class="media" onclick="location.href=\'#view=message&id=' + data.items[i].id + '\'" style="cursor:pointer"><span class="pull-left"><img class="media-object" style="width:64px;height:64px" src="' + data.items[i].avatar + '"></span><div class="media-body"><span class="media-heading" style="font-size:110%;font-weight:bold">' + data.items[i].realname  + '</span>&nbsp;&nbsp;<span class="badge" data-toggle="tooltip" data-placement="top" title="' + js_lang_messages_total + '">' + count_msg + '</span>' + unread_icon + '<span class="pull-right"><small>' + last_date + '</small></span><div style="height:10px"></div>' + last_msg  + '</div></div>');
+              if (i != data.items.length-1) {
+                $('#social_messaging_talks_data').append('<hr>');
+              }
+            }
+          } else {
+            $('#social_messaging_talks_data').html('<div class="alert alert-danger">' + js_lang_load_message_list_error + '</div>');
+          }
+        },
+        error: function () {
+          $('#social_messaging_talks_ajax').hide();
+          $('#social_messaging_talks_data').html('<div class="alert alert-danger">' + js_lang_load_message_list_error + '</div>');
         }
     });
 };
@@ -568,11 +664,16 @@ $.history.on('load change', function(event, url, type) {
     $('.social_menu').removeClass('active');
     $('.social_tab').hide();
     $('#social_tab_messaging').show();
+    $('#social_messaging_chatbox').hide();
+    $('#social_messaging_talks').show();
     $('#social_menu_messaging_li').addClass('active');
+    ajax_load_talks_data();
     return;
   }
-  if (ph['view'] == 'message' && ph['id'] && ph['id'] > 0) {    
-    ajax_social_message_click_handler(ph['id']);
+  if (ph['view'] == 'message' && ph['id'] && ph['id'] > 0) {        
+    $('#social_messaging_chatbox').show();
+    $('#social_messaging_talks').hide();
+    ajax_social_message_click_handler(ph['id']);    
     return;
   }
   if (ph['view'] == 'settings') {

@@ -14,9 +14,13 @@ ajax_error: Error while processing your request, please try again in several mom
 search_error: Error while performing the search, please try again in several moments
 loading_error: Error while loading data, please try again in several moments
 search_nothing_found: Nothing found. Please try another query.
+friends_nothing_found: You currently have no friends on this website
+inv_nothing_found: You currently have no invitations on this website
+messages_nothing_found: You currently have no dialogs
 no_phone: No cell phone
 page_error: Error while loading the user profile, please try again in several moments
 load_messages_error: Error while loading message history, please try again in several moments
+load_message_list_error: Error while loading message list data, please try again in several moments
 add_friend: Add as a friend
 friend_request_already_sent: You've already sent a frendship request to this user
 friend_request_already_received: You've already received a frendship request from this user
@@ -26,4 +30,9 @@ friend_status_request_sent: Friendship request sent
 friend_status_request_recieved: Friendship request received
 friend_accept_request: Accept friend request
 send_message: Send message
-social_messaging_answer_btn: Post message
+social_messaging_answer_btn: Post message (Ctrl+Enter)
+incorrect_user: Currently it's not possible to send messages to this user
+incorrect_msg: Incorrect message (it's too short either too long)
+chat_with: Chat with
+too_frequent_msg: Please wait some seconds before you send the next message
+messages_total: Total messages&#58;
