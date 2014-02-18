@@ -104,5 +104,7 @@
     var invitations_count = "[== $invitations_count =]";
     var messages_flag = "[== $messages_flag =]";
     var user_data = [== $user_data =];    
+    var session_id = "[== $session_id =]";
 </script>
+<script src="/js/socket.io.min.js"></script>
 <script src="/js/modules/social_index.js"></script>

@@ -4,10 +4,14 @@ use Date::Format;
 use Dancer::Plugin::Database;
 use Time::HiRes qw ( time );
 use HTML::Restrict;
+use Digest::MD5 qw(md5_hex);
+use LWP::UserAgent; 
+use HTTP::Request::Common qw{ POST };
 
 # Configuration
 
 my $defroute = '/social';
+my $sq_url = 'http://127.0.0.1:3000/data';
 
 # Module core settings 
 
@@ -81,7 +85,8 @@ get '/' => sub {
     $user_data->{'avatar'} = config->{files_url}.'/avatars/'.$auth_data->{username}.'.jpg';
   } 
   my $json_xs = JSON::XS->new();
-  return &taracot::_process_template( template ('social_index', { head_html => '<link href="'.config->{modules_css_url}.'social.css" rel="stylesheet" />', detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{social_network}, auth_data => $auth_data, user_data => $json_xs->encode($user_data), friends_count => $friends_count, invitations_count => $inv_count, messages_flag => $unread_flag }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );  
+  my $session_id = md5_hex($auth_data->{id}.'-'.config->{salt}).md5_hex($auth_data->{username}.'-'.config->{salt});
+  return &taracot::_process_template( template ('social_index', { head_html => '<link href="'.config->{modules_css_url}.'social.css" rel="stylesheet" />', detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{social_network}, auth_data => $auth_data, user_data => $json_xs->encode($user_data), friends_count => $friends_count, invitations_count => $inv_count, messages_flag => $unread_flag, session_id => $session_id }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );  
 };
 
 post '/search' => sub {
@@ -453,11 +458,12 @@ post '/messages/save' => sub {
     return $json_xs->encode(\%res);
   }
   my $sth = database->prepare(
-    'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE id = '.$uid.' AND status > 0'
+    'SELECT id, username FROM '.config->{db_table_prefix}.'_users WHERE id = '.$uid.' AND status > 0'
   );  
   my $check_id;  
+  my $dest_username;
   if ($sth->execute()) {
-    ($check_id) = $sth->fetchrow_array();
+    ($check_id, $dest_username) = $sth->fetchrow_array();
   }
   $sth->finish();
   if (!$check_id) {
@@ -518,6 +524,12 @@ post '/messages/save' => sub {
   $res{'mtime'} = time2str($lang->{chat_time_template}, int($mtime));
   $res{'mtime'} =~ s/\\//gm; 
   $res{'msg'} = $msg;
+
+  my $session_id = md5_hex($uid.'-'.config->{salt}).md5_hex($dest_username.'-'.config->{salt});
+  my $ua = LWP::UserAgent->new();
+  my $request = POST( $sq_url, [ 'session' => $session_id, 'update' => 'Oops! I did it again ;)' ] );
+  $ua->request($request)->as_string();
+
   return $json_xs->encode(\%res);
 };
 

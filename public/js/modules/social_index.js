@@ -3,6 +3,13 @@ var social_friends_page = 1;
 var social_invitations_page = 1;
 var social_message_uid = undefined;
 
+socket = io.connect("http://localhost:3000");
+socket.emit('set_session_id', {"session": session_id});
+
+socket.on('got_update', function (data) {
+  alert("Update: "+data.update);
+});
+
 var social_update_counters = function() {
   if (friends_count > 0) {
     $('#social_friends_count').show();
