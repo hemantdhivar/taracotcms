@@ -4,11 +4,58 @@ var social_invitations_page = 1;
 var social_message_uid = undefined;
 
 socket = io.connect("http://localhost:3000");
-socket.emit('set_session_id', {"session": session_id});
-
-socket.on('got_update', function (data) {
-  alert("Update: "+data.update);
+socket.on( 'connect', function() {
+  socket.emit('set_session_id', {"session": session_id});
 });
+socket.on('got_update', function (data) {
+  var pl = $.unparam(document.URL.substr(document.URL.indexOf('#')+1));
+  var up = $.parseJSON(data.update);
+  if (up) {
+    // New message arrived
+    if (up.reason && up.reason == "message") {
+      if (pl['view'] == "message" && up.ufrom && up.ufrom == pl['id']) {
+        $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + up.avatar  + '"></span><span class="pull-right"><small>' +up.mtime  + '</small></span><div class="media-body"><b>' + up.username  + '</b><div style="height:3px"></div>' + up.msg  + '</div></div>');
+        $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
+      } else {
+        messages_flag = 1;
+        social_update_counters();
+      }
+      if (pl['view'] == "messaging") {
+        ajax_load_talks_data();
+      }
+    }
+    // New friendship request
+    if (up.reason && up.reason == "friend_request") {
+      invitations_count++;
+      social_update_counters();
+      if (pl['view'] == "invitations") {
+        $('#social_invitations_results').empty();
+        social_invitations_page = 1;
+        ajax_load_invitations_data(1);
+      }      
+    }
+    // Friendship request accepted
+    if (up.reason && up.reason == "friend_request_accepted") {
+      friends_count++;
+      social_update_counters();
+      if (pl['view'] == "friends") {
+        $('#social_friends_results').empty();
+        social_friends_page = 1;
+        ajax_load_friends_data(1);
+      }
+      if (up.id && pl['page'] == "page" && pl['id'] == up.id) {
+        $('#social_page_results').show();
+        $('#social_page_user').hide();
+        ajax_load_user_data(ph['id']);  
+      }
+    }
+  }
+});
+var timerId = setInterval(function() {
+  if (socket.connected) {
+    socket.emit('set_session_id', {"session": session_id}); 
+  }
+}, 30000)
 
 var social_update_counters = function() {
   if (friends_count > 0) {
@@ -136,7 +183,7 @@ var ajax_load_friends_data = function(page) {
         success: function (data) {
           $('#social_friends_ajax').hide();
             if (data.status == 1) {    
-              if (data.total && data.total == 0) {
+              if ((data.total && data.total == 0) || (data.items && data.items.length == 0)) {
                 $('#social_friends_results').html('<div class="alert alert-warning">'+js_lang_friends_nothing_found+'</div>');
               }
                 if (data.items && data.items.length > 0) {
@@ -475,7 +522,7 @@ var social_messaging_answer_btn_click_handler = function() {
           $('#social_messaging_answer_btn').removeClass('disabled');
           $('#social_messaging_answer_ajax').hide();
           if (data.status == 1) {    
-            $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.avatar  + '"></span><span class="pull-right"><small>' + data.mtime  + '</small></span><div class="media-body" style="padding-bottom:20px"><b>' + data.username  + '</b><div style="height:3px"></div>' + data.msg  + '</div></div>');
+            $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.avatar  + '"></span><span class="pull-right"><small>' + data.mtime  + '</small></span><div class="media-body"><b>' + data.username  + '</b><div style="height:3px"></div>' + data.msg  + '</div></div>');
             $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
             $('#social_messaging_answer_area').val('');
           } else {

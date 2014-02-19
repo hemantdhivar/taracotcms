@@ -11,7 +11,7 @@ use HTTP::Request::Common qw{ POST };
 # Configuration
 
 my $defroute = '/social';
-my $sq_url = 'http://127.0.0.1:3000/data';
+my $taracot_ns_url = 'http://127.0.0.1:3101/data';
 
 # Module core settings 
 
@@ -224,6 +224,10 @@ post '/friend/request' => sub {
   if ($id < 1) {
     return '{"status":"0"}';
   }
+  my $dbdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id }); 
+  if (!$dbdata->{id}) {
+    return '{"status":"0"}';
+  }
   my $sth = database->prepare(
     'SELECT id, user1, user2, status FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.database->quote($auth_data->{id}).' AND user2 = '.database->quote($id).') OR (user1 = '.database->quote($id).' AND user2 = '.database->quote($auth_data->{id}).')'
   );
@@ -257,7 +261,16 @@ post '/friend/request' => sub {
     'INSERT INTO '.config->{db_table_prefix}.'_social_friends SET user1 = '.database->quote($auth_data->{id}).', user2 = '.database->quote($id).', status = 0'
   );
   $sth->execute();
-  $sth->finish();
+  $sth->finish();  
+  # BEGIN: Send message to taracot_ns
+  my $session_id = md5_hex($id.'-'.config->{salt}).md5_hex($dbdata->{username}.'-'.config->{salt});
+  my $ua = LWP::UserAgent->new();
+  my %upmsg;
+  $upmsg{'reason'} = "friend_request";
+  $upmsg{'uid'} = $id;
+  my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'update' => $json_xs->encode(\%upmsg) ] );
+  $ua->request($request);
+  # END: Send message to taracot_ns
   return '{"status":"1"}';
 };
 
@@ -268,6 +281,10 @@ post '/friend/accept' => sub {
   }
   my $id = int(param('id'));
   if ($id < 1) {
+    return '{"status":"0"}';
+  }
+  my $dbdata  = database->quick_select(config->{db_table_prefix}.'_users', { id => $id }); 
+  if (!$dbdata->{id}) {
     return '{"status":"0"}';
   }
   my $sth = database->prepare(
@@ -295,6 +312,15 @@ post '/friend/accept' => sub {
   );
   $sth->execute();
   $sth->finish();
+  # BEGIN: Send message to taracot_ns
+  my $session_id = md5_hex($id.'-'.config->{salt}).md5_hex($dbdata->{username}.'-'.config->{salt});
+  my $ua = LWP::UserAgent->new();
+  my %upmsg;
+  $upmsg{'reason'} = "friend_request_accepted";
+  $upmsg{'uid'} = $id;
+  my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'update' => $json_xs->encode(\%upmsg) ] );
+  $ua->request($request);
+  # END: Send message to taracot_ns
   return '{"status":"1"}';
 };
 
@@ -524,12 +550,14 @@ post '/messages/save' => sub {
   $res{'mtime'} = time2str($lang->{chat_time_template}, int($mtime));
   $res{'mtime'} =~ s/\\//gm; 
   $res{'msg'} = $msg;
-
+  # BEGIN: Send message to taracot_ns
   my $session_id = md5_hex($uid.'-'.config->{salt}).md5_hex($dest_username.'-'.config->{salt});
   my $ua = LWP::UserAgent->new();
-  my $request = POST( $sq_url, [ 'session' => $session_id, 'update' => 'Oops! I did it again ;)' ] );
-  $ua->request($request)->as_string();
-
+  my %upmsg = %res;
+  $upmsg{'reason'} = "message";
+  my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'update' => $json_xs->encode(\%upmsg) ] );
+  $ua->request($request);
+  # END: Send message to taracot_ns
   return $json_xs->encode(\%res);
 };
 
