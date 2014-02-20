@@ -3,7 +3,7 @@ var social_friends_page = 1;
 var social_invitations_page = 1;
 var social_message_uid = undefined;
 
-socket = io.connect("http://localhost:3000");
+socket = io.connect("http://ns.ahu.li");
 socket.on( 'connect', function() {
   socket.emit('set_session_id', {"session": session_id});
 });
@@ -16,6 +16,7 @@ socket.on('got_update', function (data) {
       if (pl['view'] == "message" && up.ufrom && up.ufrom == pl['id']) {
         $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + up.avatar  + '"></span><span class="pull-right"><small>' +up.mtime  + '</small></span><div class="media-body"><b>' + up.username  + '</b><div style="height:3px"></div>' + up.msg  + '</div></div>');
         $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
+        $.ajax({ type: 'POST', url: '/social/messages/read', data: { uid: up.ufrom }, dataType: "json" });
       } else {
         messages_flag = 1;
         social_update_counters();
@@ -35,13 +36,14 @@ socket.on('got_update', function (data) {
       }      
     }
     // Friendship request accepted
-    if (up.reason && up.reason == "friend_request_accepted") {
-      friends_count++;
-      social_update_counters();
+    if (up.reason && up.reason == "friend_request_accepted") {      
       if (pl['view'] == "friends") {
         $('#social_friends_results').empty();
         social_friends_page = 1;
         ajax_load_friends_data(1);
+      } else {
+        friends_flag=1;
+        social_update_counters();
       }
       if (up.id && pl['page'] == "page" && pl['id'] == up.id) {
         $('#social_page_results').show();
@@ -58,11 +60,10 @@ var timerId = setInterval(function() {
 }, 30000)
 
 var social_update_counters = function() {
-  if (friends_count > 0) {
-    $('#social_friends_count').show();
-    $('#social_friends_count').html(friends_count)
+  if (friends_flag == 1) {
+    $('#social_friends_flag').show();
   } else {
-    $('#social_friends_count').hide();
+    $('#social_friends_flag').hide();
   }
   if (invitations_count > 0) {
     $('#social_invitations_count').show();
@@ -122,43 +123,44 @@ var ajax_load_search_data = function(query, page) {
         dataType: "json",
         success: function (data) {
         	$('#social_search_ajax').hide();
-            if (data.status == 1) {    
-            	if (data.total == 0) {
-            		$('#social_search_results').html('<div class="alert alert-warning">'+js_lang_search_nothing_found+'</div>');
-            	}
-                if (data.items && data.items.length > 0) {
-                	$('#social_search_results').append('<div class="row" style="padding-top:20px">');
-                    for (var i = 0; i < data.items.length; i++) {
-                       var h1t = '';
-                       var h2t = '';
-                       if (data.items[i].realname) {
-                       	h1t = data.items[i].realname + '&nbsp;<small>'+data.items[i].username+'</small>';
-                       } else {
-                       	h21 = data.items[i].username;
-                       }
-                       if (data.items[i].phone) {
-                         if (h2t) {
-                           h2t += '<br>';
-                         }
-                         h2t += '<span><i class="glyphicon glyphicon-earphone" style="font-size:80%"></i>&nbsp;+' + data.items[i].phone + '</span>';
-                       } else {
-  						           if (h2t) {
-                         	 h2t += '<br>';
-                         }
-                         h2t += js_lang_no_phone;
-                       }
-                       $('#social_search_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
+            if (data.status == 1) {                	
+              if (!data.items) {
+                $('#social_search_results').html('<div class="alert alert-warning">'+js_lang_search_nothing_found+'</div>');
+              } else {
+                  if (data.items.length > 0) {
+                    	$('#social_search_results').append('<div class="row" style="padding-top:20px">');
+                        for (var i = 0; i < data.items.length; i++) {
+                           var h1t = '';
+                           var h2t = '';
+                           if (data.items[i].realname) {
+                           	h1t = data.items[i].realname + '&nbsp;<small>'+data.items[i].username+'</small>';
+                           } else {
+                           	h21 = data.items[i].username;
+                           }
+                           if (data.items[i].phone) {
+                             if (h2t) {
+                               h2t += '<br>';
+                             }
+                             h2t += '<span><i class="glyphicon glyphicon-earphone" style="font-size:80%"></i>&nbsp;+' + data.items[i].phone + '</span>';
+                           } else {
+      						           if (h2t) {
+                             	 h2t += '<br>';
+                             }
+                             h2t += js_lang_no_phone;
+                           }
+                           $('#social_search_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
+                        }
+                        $('#social_search_results').append('</div>');
+                        $('.social-search-item').unbind();
+                        $('.social-search-item').click(social_search_click_event);
+                    }                
+                    if (social_search_page == 1) {
+                    	$("html, body").animate({ scrollTop: 0 }, "slow");
                     }
-                    $('#social_search_results').append('</div>');
-                    $('.social-search-item').unbind();
-                    $('.social-search-item').click(social_search_click_event);
-                }
-                if (social_search_page == 1) {
-                	$("html, body").animate({ scrollTop: 0 }, "slow");
-                }
-                if (social_search_page > data.pages) {
-                	social_search_page = -1;
-                }
+                    if (social_search_page > data.pages) {
+                    	social_search_page = -1;
+                    }
+              }
             } else {
                 $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'</div>');
             }
@@ -183,42 +185,43 @@ var ajax_load_friends_data = function(page) {
         success: function (data) {
           $('#social_friends_ajax').hide();
             if (data.status == 1) {    
-              if ((data.total && data.total == 0) || (data.items && data.items.length == 0)) {
+              if (!data.items) {
                 $('#social_friends_results').html('<div class="alert alert-warning">'+js_lang_friends_nothing_found+'</div>');
+              } else {
+                if (data.items.length > 0) {
+                    $('#social_friends_results').append('<div class="row">');
+                      for (var i = 0; i < data.items.length; i++) {
+                         var h1t = '';
+                         var h2t = '';
+                         if (data.items[i].realname) {
+                          h1t = data.items[i].realname + '&nbsp;<small>'+data.items[i].username+'</small>';
+                         } else {
+                          h21 = data.items[i].username;
+                         }
+                         if (data.items[i].phone) {
+                           if (h2t) {
+                             h2t += '<br>';
+                           }
+                           h2t += '<span><i class="glyphicon glyphicon-earphone" style="font-size:80%"></i>&nbsp;+' + data.items[i].phone + '</span>';
+                         } else {
+                           if (h2t) {
+                             h2t += '<br>';
+                           }
+                           h2t += js_lang_no_phone;
+                         }
+                         $('#social_friends_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
+                      }
+                      $('#social_friends_results').append('</div>');
+                      $('.social-search-item').unbind();
+                      $('.social-search-item').click(social_search_click_event);
+                  }
+                  if (social_friends_page == 1) {
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                  }
+                  if (social_friends_page > data.pages) {
+                    social_friends_page = -1;
+                  }
               }
-                if (data.items && data.items.length > 0) {
-                  $('#social_friends_results').append('<div class="row">');
-                    for (var i = 0; i < data.items.length; i++) {
-                       var h1t = '';
-                       var h2t = '';
-                       if (data.items[i].realname) {
-                        h1t = data.items[i].realname + '&nbsp;<small>'+data.items[i].username+'</small>';
-                       } else {
-                        h21 = data.items[i].username;
-                       }
-                       if (data.items[i].phone) {
-                         if (h2t) {
-                           h2t += '<br>';
-                         }
-                         h2t += '<span><i class="glyphicon glyphicon-earphone" style="font-size:80%"></i>&nbsp;+' + data.items[i].phone + '</span>';
-                       } else {
-                         if (h2t) {
-                           h2t += '<br>';
-                         }
-                         h2t += js_lang_no_phone;
-                       }
-                       $('#social_friends_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
-                    }
-                    $('#social_friends_results').append('</div>');
-                    $('.social-search-item').unbind();
-                    $('.social-search-item').click(social_search_click_event);
-                }
-                if (social_friends_page == 1) {
-                  $("html, body").animate({ scrollTop: 0 }, "slow");
-                }
-                if (social_friends_page > data.pages) {
-                  social_friends_page = -1;
-                }
             } else {
                 $('#social_friends_results').html('<div class="alert alert-danger">'+js_lang_loading_error+'</div>');
             }
@@ -244,10 +247,10 @@ var ajax_load_invitations_data = function(page) {
         success: function (data) {
           $('#social_invitations_ajax').hide();
             if (data.status == 1) {    
-              if ((data.items && data.items.length == 0) || data.total == 0) {
+              if (!data.items) {
                 $('#social_invitations_results').html('<div class="alert alert-warning">'+js_lang_inv_nothing_found+'</div>');
-              }
-                if (data.items && data.items.length > 0) {
+              } else {
+                if (data.items.length > 0) {
                   $('#social_invitations_results').append('<div class="row">');
                     for (var i = 0; i < data.items.length; i++) {
                        var h1t = '';
@@ -280,6 +283,7 @@ var ajax_load_invitations_data = function(page) {
                 if (social_invitations_page > data.pages) {
                   social_invitations_page = -1;
                 }
+              }
             } else {
                 $('#social_invitations_results').html('<div class="alert alert-danger">'+js_lang_loading_error+'</div>');
             }
@@ -393,7 +397,7 @@ var json_accept_friendship_request = function() {
             $('#prg_accept_friend_' + uid).hide();  
           } else {
             $('#btn_accept_friend_' + uid).replaceWith('<button class="btn btn-primary btn-sm disabled">' + js_lang_friend_status_established + '</button>');
-            friends_count++;
+            friends_flag=1;
             invitations_count--;
             social_update_counters();
           }
@@ -689,6 +693,8 @@ $.history.on('load change', function(event, url, type) {
     $('#social_friends_results').empty();
     social_friends_page = 1;
     ajax_load_friends_data(1);
+    friends_flag = 0;
+    social_update_counters();
     return;
   }
   if (ph['view'] == 'search') {

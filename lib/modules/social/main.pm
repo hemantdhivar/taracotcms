@@ -54,13 +54,8 @@ get '/' => sub {
   }
   $sth->finish();
   $sth = database->prepare(
-    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).') AND status = 1'
+    'SELECT id FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).') AND status = 1 LIMIT 1'
   );
-  my $friends_count = '0';
-  if ($sth->execute()) {
-    ($friends_count) = $sth -> fetchrow_array;
-  } 
-  $sth->finish();
   $sth = database->prepare(
     'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE user2 = '.database->quote($auth_data->{id}).' AND status = 0'
   );
@@ -86,7 +81,7 @@ get '/' => sub {
   } 
   my $json_xs = JSON::XS->new();
   my $session_id = md5_hex($auth_data->{id}.'-'.config->{salt}).md5_hex($auth_data->{username}.'-'.config->{salt});
-  return &taracot::_process_template( template ('social_index', { head_html => '<link href="'.config->{modules_css_url}.'social.css" rel="stylesheet" />', detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{social_network}, auth_data => $auth_data, user_data => $json_xs->encode($user_data), friends_count => $friends_count, invitations_count => $inv_count, messages_flag => $unread_flag, session_id => $session_id }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );  
+  return &taracot::_process_template( template ('social_index', { head_html => '<link href="'.config->{modules_css_url}.'social.css" rel="stylesheet" />', detect_lang => $detect_lang, lang => $lang, page_data => $page_data, pagetitle => $lang->{social_network}, auth_data => $auth_data, user_data => $json_xs->encode($user_data), invitations_count => $inv_count, messages_flag => $unread_flag, session_id => $session_id }, { layout => config->{layout}.'_'.$_current_lang }), $auth_data );  
 };
 
 post '/search' => sub {
@@ -122,7 +117,6 @@ post '/search' => sub {
   } 
   $sth->finish();
   my $pc = $total / $ipp;  
-  $res{'total'} = $total;
   $res{'pages'} = $pc;
   my $limx = $page*$ipp-$ipp;
   if ($total) {
@@ -352,7 +346,7 @@ post '/friends' => sub {
     return '{"status":"0"}';
   }
   my $sth = database->prepare(
-    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).' AND status='.$req_status
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).') AND status='.$req_status
   );
   my $total = 0;
   if ($sth->execute()) {
@@ -360,7 +354,6 @@ post '/friends' => sub {
   } 
   $sth->finish();
   my $pc = $total / $ipp;  
-  $res{'total'} = $total;
   $res{'pages'} = $pc;
   my $limx = $page*$ipp-$ipp;
   if ($total) {
@@ -461,6 +454,27 @@ post '/messages/load' => sub {
   return $json_xs->encode(\%res);
 };
 
+post '/messages/read' => sub {
+  my $auth_data = &taracot::_auth();
+  if (!$auth_data) {
+    return '{"status":"0"}'; 
+  }
+  my %res;
+  $res{'status'} = 1;
+  my $_current_lang=_load_lang(); 
+  my $uid = param('uid');
+  if (!$uid || $uid < 1) {
+    return '{"status":"0"}';
+  } 
+  my $sth = database->prepare(
+    'UPDATE '.config->{db_table_prefix}.'_social_messaging_stat SET flag_unread=0 WHERE ref_id='.database->quote($auth_data->{id}).' AND user_id='.database->quote($uid)
+  );  
+  $sth->execute();
+  $sth->finish();
+  my $json_xs = JSON::XS->new();
+  return $json_xs->encode(\%res);
+};
+
 post '/messages/save' => sub {
   my $auth_data = &taracot::_auth();
   if (!$auth_data) {
@@ -505,7 +519,7 @@ post '/messages/save' => sub {
     ($last_time) = $sth->fetchrow_array();
   }
   $sth->finish();
-  if (time-$last_time < 5) {
+  if (time-$last_time < 2) {
     $res{'status'} = 0;
     $res{'errmsg'} = $lang->{too_frequent_msg};
     return $json_xs->encode(\%res);
