@@ -61,7 +61,10 @@
 					<div id="social_messaging_ajax" style="display:none;padding-top:20px">
 						&nbsp;&nbsp;&nbsp;&nbsp;<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
 					</div>
-					<div id="social_messaging_chat" class="panel-body" style="overflow:auto;height:400px;padding-bottom:10px"></div>
+					<div id="social_messaging_chat" class="panel-body" style="overflow:auto;height:400px">
+						<div id="social_messaging_chat_inner" style="padding-bottom:15px">
+						</div>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-lg-8 col-md-8 col-sm-8">

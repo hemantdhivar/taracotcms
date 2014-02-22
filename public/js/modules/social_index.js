@@ -14,7 +14,7 @@ socket.on('got_update', function (data) {
     // New message arrived
     if (up.reason && up.reason == "message") {
       if (pl['view'] == "message" && up.ufrom && up.ufrom == pl['id']) {
-        $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + up.avatar  + '"></span><span class="pull-right"><small>' +up.mtime  + '</small></span><div class="media-body"><b>' + up.username  + '</b><div style="height:3px"></div>' + up.msg  + '</div></div>');
+        $('#social_messaging_chat_inner').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + up.avatar  + '"></span><span class="pull-right"><small>' +up.mtime  + '</small></span><div class="media-body"><b>' + up.username  + '</b><div style="height:3px"></div>' + up.msg  + '</div></div>');
         $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
         $.ajax({ type: 'POST', url: '/social/messages/read', data: { uid: up.ufrom }, dataType: "json" });
       } else {
@@ -29,9 +29,7 @@ socket.on('got_update', function (data) {
     if (up.reason && up.reason == "friend_request") {
       invitations_count++;
       social_update_counters();
-      if (pl['view'] == "invitations") {
-        $('#social_invitations_results').empty();
-        social_invitations_page = 1;
+      if (pl['view'] == "invitations") {                
         ajax_load_invitations_data(1);
       }      
     }
@@ -106,16 +104,22 @@ $('#social_menu_search').click(function() {
 	$('#social_tab_search').show();
 	$('#social_search_input').val('');
 	$('#social_search_input').focus();
-	$('#social_search_results').empty();  
+	$('#social_search_results').empty();
 });
 
 
 var ajax_load_search_data = function(query, page) {
+  if ($('#social_search_btn').hasClass('disabled')) {
+    return;
+  }
+  $('#social_search_btn').addClass('disabled');
 	$('#social_search_ajax').show();
   $('#social_search_results').empty();
+  social_search_page = 1;
 	$.ajax({
         type: 'POST',
         url: '/social/search',
+        async: true,
         data: {
             search_query: query,
             page: page
@@ -162,12 +166,15 @@ var ajax_load_search_data = function(query, page) {
                     }
               }
             } else {
-                $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'</div>');
+                $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'1</div>');
             }
         },
         error: function () {
         	$('#social_search_ajax').hide();
-            $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'</div>');
+            $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'2</div>');
+        },
+        complete: function() {
+          $('#social_search_btn').removeClass('disabled');
         }
     });
 };
@@ -236,6 +243,8 @@ var ajax_load_friends_data = function(page) {
 
 var ajax_load_invitations_data = function(page) {
   $('#social_invitations_ajax').show();
+  $('#social_invitations_results').empty();
+  social_invitations_page = 1;
   $.ajax({
         type: 'POST',
         url: '/social/friends',
@@ -296,14 +305,13 @@ var ajax_load_invitations_data = function(page) {
 };
 
 
-$('#social_search_btn').click(function () {		
-	$('#social_search_results').empty();
-	social_search_page = 1;
+$('#social_search_btn').click(function (e) {			
+  e.preventDefault();
 	$('#social_cg_search').removeClass('has-error');
 	if ($('#social_search_input').val().length < 3 && $('#social_search_input').val().length > 0) {
 		$('#social_cg_search').addClass('has-error');
 		return;
-	}
+	}  
   ajax_load_search_data($('#social_search_input').val(), 1);
   $.history.push("view=search&query=" + $('#social_search_input').val() );
 });
@@ -442,7 +450,7 @@ var json_render_user_data = function(data, uid, where) {
 
 var ajax_load_message_history = function(id) {
   $('#social_messaging_ajax').show();
-  $('#social_messaging_chat').empty();
+  $('#social_messaging_chat_inner').empty();
   $.ajax({
         type: 'POST',
         url: '/social/messages/load',
@@ -452,10 +460,9 @@ var ajax_load_message_history = function(id) {
         dataType: "json",
         success: function (data) {
           $('#social_messaging_ajax').hide();
-          $('#social_messaging_chat').html('');
           if (data.status == 1) {    
             for (var i=0; i<data.messages.length; i++) {
-              $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.users[data.messages[i].ufrom].avatar  + '"></span><span class="pull-right"><small>' + data.messages[i].mtime  + '</small></span><div class="media-body"><b>' + data.users[data.messages[i].ufrom].username  + '</b><div style="height:3px"></div>' + data.messages[i].msg  + '</div></div>');
+              $('#social_messaging_chat_inner').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.users[data.messages[i].ufrom].avatar  + '"></span><span class="pull-right"><small>' + data.messages[i].mtime  + '</small></span>    <div class="media-body"><b>' + data.users[data.messages[i].ufrom].username  + '</b><div style="height:3px"></div>' + data.messages[i].msg  + '</div></div>');
             }
             $('#social_messaging_chat_with').html(data.users[social_message_uid].realname || namedata.users[social_message_uid].username);
             $('#social_messaging_chatbox_title').show();
@@ -465,12 +472,12 @@ var ajax_load_message_history = function(id) {
             messages_flag = data.unread_flag;
             social_update_counters();
           } else {
-            $('#social_messaging_chat').html('<div class="alert alert-danger">'+js_lang_load_messages_error+'</div>');
+            $('#social_messaging_chat_inner').html('<div class="alert alert-danger">'+js_lang_load_messages_error+'</div>');
           }
         },
         error: function () {
           $('#social_messaging_ajax').hide();
-          $('#social_messaging_chat').html('<div class="alert alert-danger">'+js_lang_load_messages_error+'</div>');
+          $('#social_messaging_chat_inner').html('<div class="alert alert-danger">'+js_lang_load_messages_error+'</div>');
         }
     });
 };
@@ -492,7 +499,7 @@ var ajax_social_message_click_handler = function(uid) {
   $('#social_menu_messaging_li').addClass('active');  
   $('#social_tab_messaging').show();
   $('#social_messaging_chat').show();
-  $('#social_messaging_chat').empty();
+  $('#social_messaging_chat_inner').empty();
   $('#social_messaging_talks').hide(); 
   social_message_uid = id; 
   ajax_load_message_history(id);
@@ -522,11 +529,10 @@ var social_messaging_answer_btn_click_handler = function() {
             msg: $('#social_messaging_answer_area').val()
         },
         dataType: "json",
-        success: function (data) {
-          $('#social_messaging_answer_btn').removeClass('disabled');
+        success: function (data) {          
           $('#social_messaging_answer_ajax').hide();
           if (data.status == 1) {    
-            $('#social_messaging_chat').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.avatar  + '"></span><span class="pull-right"><small>' + data.mtime  + '</small></span><div class="media-body"><b>' + data.username  + '</b><div style="height:3px"></div>' + data.msg  + '</div></div>');
+            $('#social_messaging_chat_inner').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.avatar  + '"></span><span class="pull-right"><small>' + data.mtime  + '</small></span><div class="media-body"><b>' + data.username  + '</b><div style="height:3px"></div>' + data.msg  + '</div></div>');
             $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
             $('#social_messaging_answer_area').val('');
           } else {
@@ -540,13 +546,14 @@ var social_messaging_answer_btn_click_handler = function() {
               $('#social_messaging_answer_area').focus();
             }
           }
+          $('#social_messaging_answer_btn').removeClass('disabled');
         },
         error: function () {
-          $('#social_messaging_answer_ajax').hide();
-          $('#social_messaging_answer_btn').removeClass('disabled');                                
+          $('#social_messaging_answer_ajax').hide();          
           $('#social_messaging_answer_error_msg').html(js_lang_ajax_error);
           $('#social_messaging_answer_error').show();
           $('#social_messaging_answer_area').focus();
+          $('#social_messaging_answer_btn').removeClass('disabled');
         }
     });
 };
@@ -557,6 +564,7 @@ $('#social_messaging_answer_btn').click(social_messaging_answer_btn_click_handle
 
 $('#social_messaging_answer_area').keydown(function (e) {
   if (e.ctrlKey && e.keyCode == 13) {
+    e.preventDefault();
     social_messaging_answer_btn_click_handler();
   }
 });
@@ -715,8 +723,6 @@ $.history.on('load change', function(event, url, type) {
     $('.social_tab').hide();
     $('#social_tab_invitations').show();
     $('#social_menu_invitations_li').addClass('active');
-    $('#social_invitations_results').empty();
-    social_invitations_page = 1;
     ajax_load_invitations_data(1);
     return;
   }
