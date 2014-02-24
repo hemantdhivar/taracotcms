@@ -22,7 +22,7 @@ error_ajax: Error while connecting to server. Please try again later.
 user_register_error_username: Username is not valid
 user_register_error_login: Username (or e-mail) is not valid
 user_register_error_user_not_exists: User with the combination of username and e-mail is disabled or not found
-user_register_error_realname: Real name is too long (should be less than 80 characters)
+user_register_error_realname: Real name is wrong (should be&#58 First Last, less than 80 characters)
 user_register_error_email: E-mail is not valid
 user_register_error_phone: Cell phone is not valid
 user_register_error_password: Invalid password syntax or passwords do not match
@@ -125,3 +125,6 @@ sNext: Next page
 sSearch: Search
 post_status_list: Draft,Published,Auth. only
 post_datetime_template: YYYY/\MM/\DD hh:mm A
+user_sex: Sex
+user_sex_male: male
+user_sex_female: female

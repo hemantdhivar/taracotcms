@@ -67,7 +67,7 @@ get '/user/authorize/google/' => sub {
     redirect $auth_uri_base.'/user/authorize';
     return;
   }
-  $username='google.'.$username;
+  $username='google_'.$username;
 
   my ($id, $db_email);
   my $sth = database->prepare(

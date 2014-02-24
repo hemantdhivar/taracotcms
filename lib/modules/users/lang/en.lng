@@ -68,3 +68,6 @@ error_ajax: Error while connecting to server. Please try again later.
 groups: Groups (use space as a delimiter)
 banned: Temporarily banned
 datetime_template: \%Y/\%m/\%d %l&#58;%M %p
+user_sex: Sex
+user_sex_male: male
+user_sex_female: female

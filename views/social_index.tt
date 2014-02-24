@@ -102,12 +102,19 @@
     var js_lang_load_message_list_error = "[== $lang->{load_message_list_error} =]";
     var js_lang_incorrect_msg = "[== $lang->{incorrect_msg} =]";
     var js_lang_messages_total = "[== $lang->{messages_total} =]";
+    var js_lang_users_friends = "[== $lang->{users_friends} =]";
+    var js_lang_friends = "[== $lang->{friends} =]";
+    var js_lang_my_messages = "[== $lang->{my_messaging} =]";
     var current_user_id = "[== $auth_data->{id} =]";
     var friends_flag = "0";
     var invitations_count = "[== $invitations_count =]";
     var messages_flag = "[== $messages_flag =]";
     var user_data = [== $user_data =];    
     var session_id = "[== $session_id =]";
+    var taracot_lang = "[== $detect_lang->{lng} =]";
+    var user_sex = "[== $auth_data->{sex} =]";
 </script>
 <script src="/js/socket.io.min.js"></script>
+<script src="/js/petrovich.js"></script>
+<script src="/js/petrovich.rules.js"></script>
 <script src="/js/modules/social_index.js"></script>

@@ -67,7 +67,7 @@ get '/user/authorize/yandex/' => sub {
     redirect $auth_uri_base.'/user/authorize';
     return;
   }
-  $username='yandex.'.$username;
+  $username='yandex_'.$username;
 
   my ($id, $db_email);
   my $sth = database->prepare(

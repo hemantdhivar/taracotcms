@@ -65,7 +65,7 @@ get '/user/authorize/facebook/' => sub {
   if (!$username) {
     return redirect $auth_uri_base.'/user/authorize';
   }  
-  $username='facebook.'.$username;
+  $username='facebook_'.$username;
 
   my ($id, $db_email);
   my $sth = database->prepare(

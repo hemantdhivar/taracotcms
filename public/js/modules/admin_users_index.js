@@ -379,6 +379,10 @@ $('#btn_edit_save').click(function () {
         $('#data_edit_form_buttons').hide();
         $('#ajax_loading_msg').html(js_lang_ajax_saving);
         $('#ajax_loading').show();
+        var _sex = 0;
+        if ($("#sex_female").prop("checked") == true) {
+            _sex = 1;
+        }
         $.ajax({
             type: 'POST',
             url: '/admin/users/data/save',
@@ -391,7 +395,8 @@ $('#btn_edit_save').click(function () {
                 realname: $('#realname').val(),
                 groups: $('#groups').val(),
                 banned: $('#banned').is(':checked'),
-                status: $("input[name='status']:checked").val()
+                status: $("input[name='status']:checked").val(),
+                sex: _sex
             },
             dataType: "json",
             success: function (data) {
@@ -498,6 +503,11 @@ function editData(id) {
                 }
                 if (data.realname) {
                     $('#realname').val(data.realname);
+                }
+                if (data.sex && data.sex == 1) {
+                    $("#sex_female").prop("checked", true);
+                } else {
+                    $("#sex_male").prop("checked", true);
                 }
                 if (data.groups) {
                     $('#groups').val(data.groups);

@@ -55,7 +55,7 @@ get '/user/authorize/vk/' => sub {
     return redirect $auth_uri_base.'/user/authorize';
   }
   # Check if user is registered
-  my $username = 'vk.'.lc($json->{uid});
+  my $username = 'vk_'.lc($json->{uid});
   my ($id, $db_email);
   my $sth = database->prepare(
     'SELECT id, email FROM `'.config->{db_table_prefix}.'_users` WHERE username_social='.database->quote($username)

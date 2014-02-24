@@ -5,6 +5,7 @@ use Time::HiRes qw ( time );
 use JSON::XS();
 use Digest::MD5 qw(md5_hex);
 use Date::Format;
+use Fcntl qw(:flock SEEK_END);
 
 # Configuration
 
@@ -140,7 +141,8 @@ get '/data/list' => sub {
 };
 
 post '/data/save' => sub {
-  if (!&taracot::admin::_auth()) { redirect '/admin?'.md5_hex(time); return true }
+  my $auth = &taracot::admin::_auth();
+  if (!$auth) { redirect '/admin?'.md5_hex(time); return true }
   _load_lang();  
   content_type 'application/json';
   my $username=param('username') || '';
@@ -151,6 +153,10 @@ post '/data/save' => sub {
   my $groups=param('groups') || '';
   my $status=param('status') || 0;
   my $banned=param('banned');
+  my $sex=param('sex') || 0;
+  if ($sex) {
+    $sex = 1;
+  }
   if ($banned eq 'false') {
     $banned = 0;
   } else {
@@ -159,8 +165,7 @@ post '/data/save' => sub {
   $status=int($status);
   my $id=param('id') || 0;
   $id=int($id);
-  if ($id<0) { $id = 0; }
-  
+  if ($id<0) { $id = 0; }  
   if ($username !~ /^[A-Za-z0-9_\-\.]{1,100}$/) {
    return qq~{"result":"0","field":"username","error":"~.$lang->{form_error_invalid_username}.qq~"}~;
   }
@@ -191,12 +196,10 @@ post '/data/save' => sub {
   my $dupesql='';
   if ($id > 0) {
    $dupesql=' AND id != '.$id;
-  }
-  
-  if ($taracot::admin::authdata->{username} eq $username && $taracot::admin::authdata->{status} eq 2) {
+  }  
+  if ($auth->{id} eq $id && $auth->{status} eq 2) {
    $status=2;
-  }
-  
+  }  
   my $sth = database->prepare(
    'SELECT id FROM '.config->{db_table_prefix}.'_users WHERE username='.database->quote($username).$dupesql
   );
@@ -230,12 +233,13 @@ post '/data/save' => sub {
    }
    if ($password) {    
     $password = md5_hex(config->{salt}.$password);
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, banned => $banned, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, sex => $sex, status => $status, banned => $banned, lastchanged => time });
    } else {
-    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, email => $email, phone => $phone, realname => $realname, status => $status, banned => $banned, lastchanged => time });
+    database->quick_update(config->{db_table_prefix}.'_users', { id => $id }, { username => $username, groups => $groups, email => $email, phone => $phone, realname => $realname, sex => $sex, status => $status, banned => $banned, lastchanged => time });
    }
   } else {   
-   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, status => $status, banned => $banned, lastchanged => time });
+    $password = md5_hex(config->{salt}.$password);
+   database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, groups => $groups, password => $password, email => $email, phone => $phone, realname => $realname, sex => $sex, status => $status, banned => $banned, lastchanged => time });
   }
       
   return qq~{"result":"1"}~;
@@ -385,11 +389,13 @@ post '/data/delete' => sub {
   }
 
   my $del_sql;
+  my @pid;
   if(ref($id) eq 'ARRAY'){
    foreach my $item (@$id) {
     $item=int($item);
-    if ($item ne $$taracot::admin::authdata->{id}) {
+    if ($item ne $taracot::admin::authdata->{id}) {
      $del_sql.=' OR id='.$item;
+     push @pid, $item;
     }
    }
    if ($del_sql) {
@@ -398,9 +404,32 @@ post '/data/delete' => sub {
   } else {
     if ($id ne $taracot::admin::authdata->{id}) {
      $del_sql='id='.int($id);
+     push @pid, $id;
     }
   }
   if ($del_sql) {
+    opendir(SD, config->{root_dir}.'/lib/modules/users/sql') || die $1;
+    while (my $file = readdir(SD)) {
+     next if ($file =~ m/^\./);
+     if ($file =~ /^delete_/) {
+      my $data = YAML::XS::LoadFile(config->{root_dir}.'/lib/modules/users/sql/'.$file) || {};      
+      foreach my $pi (@pid) {
+        foreach my $sq (@{$data}) {
+          my $query = $sq->{query};
+          $query =~s /\[id\]/$pi/gm;
+          my $prefix = config->{db_table_prefix};
+          $query =~s /\[prefix\]/$prefix/gm;
+          my $sth = database->prepare( $query );
+          $sth->execute();
+          $sth->finish();
+          open(DATA, '>>C:/XTreme/log.txt');
+          print DATA "$query\n";
+          close(DATA);
+        }
+      }
+     }
+    }
+    closedir(SD);
     my $sth = database->prepare(
      'DELETE FROM '.config->{db_table_prefix}.'_users WHERE '.$del_sql
     );
@@ -411,6 +440,7 @@ post '/data/delete' => sub {
      $res=qq~{"result":"0"}~;
     }
     $sth->finish();
+
     return $res;
   } else {
     return qq~{"result":"0"}~;

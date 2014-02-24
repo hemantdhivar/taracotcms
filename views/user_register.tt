@@ -28,11 +28,28 @@
     		<input type="text" class="form-control" id="reg_username">
             <span class="help-block">[== $lang->{user_register_username_hint} =]</span>
     	</div>
-    </div>
+    </div>    
     <div class="form-group" id="cg_reg_realname">
         <label class="control-label col-lg-2" for="reg_realname">[== $lang->{user_register_realname} =]</label>
         <div class="col-lg-4">
             <input type="text" class="form-control" id="reg_realname">
+        </div>
+    </div>
+    <div class="form-group" id="cg_reg_sex" style="padding-bottom:10px">
+        <label for="reg_sex" class="col-lg-2 control-label">[== $lang->{user_sex} =]</label>
+        <div class="col-lg-4 col-md-4">
+          <div class="radio">
+              <label>
+                <input type="radio" name="reg_sex" id="reg_sex_male" value="0" checked>
+                [== $lang->{user_sex_male} =]
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="reg_sex" id="reg_sex_female" value="1">
+                [== $lang->{user_sex_female} =]
+              </label>
+            </div>
         </div>
     </div>
     <div class="form-group" id="cg_reg_email">

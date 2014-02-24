@@ -4,6 +4,7 @@ friends: My friends
 search: Search for people
 invitations: Invitations
 messaging: Messaging
+my_messaging: My messages
 settings: Settings
 search_label: Search for an user (username/real name/e-mail etc)&#58;
 search_btn: Go
@@ -36,3 +37,4 @@ incorrect_msg: Incorrect message (it's too short either too long)
 chat_with: Chat with
 too_frequent_msg: Please wait some seconds before you send the next message
 messages_total: Total messages&#58;
+users_friends: Friends

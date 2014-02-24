@@ -1,0 +1,5 @@
+[
+ { "query": "DELETE FROM `[prefix]_social_friends` WHERE user1=[id] OR user2=[id]" },
+ { "query": "DELETE FROM `[prefix]_social_messaging` WHERE ufrom=[id] OR uto=[id]" },
+ { "query": "DELETE FROM `[prefix]_social_messaging_stat` WHERE user_id=[id] OR ref_id=[id]" }
+]

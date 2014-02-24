@@ -50,7 +50,7 @@ $('#btn_submit').bind('click', function () {
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_password + "<br/>");
         form_errors = true;
     }
-    if (!$('#reg_realname').val().match(/^.{0,80}$/)) {
+    if (!$('#reg_realname').val().match(/^(([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])\s([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])+){0,80}$/)) {
         $('#cg_reg_realname').addClass('has-error');
         $('#form_error_msg_text').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_realname + "<br/>");
         form_errors = true;
@@ -84,6 +84,10 @@ $('#btn_submit').bind('click', function () {
         $('#reg_form').hide();
         $('#reg_form_hint').hide();
         $('#reg_form_ajax').show();
+        var _sex = 0;
+        if ($("#reg_sex_female").prop("checked") == true) {
+            _sex = 1;
+        }
         $.ajax({
             type: 'POST',
             url: '/user/register/process',
@@ -93,7 +97,8 @@ $('#btn_submit').bind('click', function () {
                 reg_email: $('#reg_email').val(),
                 reg_phone: $('#reg_phone').val(),
                 reg_password: $('#reg_password').val(),
-                reg_captcha: $('#reg_captcha').val()
+                reg_captcha: $('#reg_captcha').val(),
+                reg_sex: _sex
             },
             dataType: "json",
             success: function (data) {

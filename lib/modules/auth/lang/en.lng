@@ -1,6 +1,5 @@
 authdlg_title: Thanks for registering!
-authdlg_info: You've successfully registered and authorized. Currenlty you're using the auto-generated username based on your social network data&#58;
-authdlg_info2: This username will be shown in your posts and comments.
+authdlg_info: The username below will be used as your primary username and will be displayed in profile, blog posts, comments etc.
 authdlg_username: Username
 authdlg_username_hint: Latin characters, numbers and following characters&#58; &quot;_&quot;, &quot;-&quot; only (3-100) 
 authdlg_change_username: Change username
@@ -11,3 +10,6 @@ authdlg_duplicate_username: Username has been already taken by someone, please c
 authdlg_error_ajax: Error while loading data from server, please try again in a few moments
 authdlg_error_save: Error while saving data, please try again in a few moments
 authdlg_error_auth: You are not authorized to change your username
+user_sex: Sex
+user_sex_male: male
+user_sex_female: female

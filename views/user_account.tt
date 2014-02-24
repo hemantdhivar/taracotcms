@@ -65,6 +65,23 @@
                           <span class="help-block">[== $lang->{user_realname_hint} =]</span>
                         </div>
                       </div>
+                      <div class="form-group" id="cg_pro_sex" style="padding-bottom:10px">
+                        <label for="pro_sex" class="col-lg-2 control-label">[== $lang->{user_sex} =]</label>
+                        <div class="col-lg-4 col-md-4">
+                          <div class="radio">
+                              <label>
+                                <input type="radio" name="pro_sex" id="pro_sex_male" value="0" checked>
+                                [== $lang->{user_sex_male} =]
+                              </label>
+                            </div>
+                            <div class="radio">
+                              <label>
+                                <input type="radio" name="pro_sex" id="pro_sex_female" value="1">
+                                [== $lang->{user_sex_female} =]
+                              </label>
+                            </div>
+                        </div>
+                      </div>
                       <div class="form-group" id="cg_pro_phone">
                         <label for="pro_phone" class="col-lg-2 control-label">[== $lang->{user_register_phone} =]</label>
                         <div class="col-lg-3 col-md-3">
@@ -287,5 +304,6 @@ var js_lang_sSearch = "[== $lang->{sSearch} =]";
 var js_lang_datetime_format = "[== $lang->{post_datetime_template} =]";
 var langs = new HashTable({[== $hash_langs =]});
 var statuses = new HashTable({[== $hash_status =]});
+var user_sex = "[== $auth_data->{sex} =]";
 </script>
 <script src="/js/modules/user_account.js"></script>

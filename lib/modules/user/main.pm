@@ -88,6 +88,10 @@ post '/register/process' => sub {
   my $password=param('reg_password') || '';
   my $email=param('reg_email') || '';
   my $phone=param('reg_phone') || '';
+  my $sex=param('reg_sex') || 0;
+  if ($sex) {
+   $sex = 1;
+  }
   my $realname=param('reg_realname') || '';   
   if ($username !~ /^[A-Za-z0-9_\-]{1,100}$/) { 
     $res{status}=0; 
@@ -106,8 +110,8 @@ post '/register/process' => sub {
     push @fields, 'email';  
   }
   $email=lc($email);
-  $realname=~s/[\<\>\"\'\n\r\\\/]//gm; 
-  if ($realname !~ /^.{0,80}$/) { 
+  #$realname=~s/[\<\>\"\'\n\r\\\/]//gm; 
+  if ($realname !~ /^(([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])\s([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])+){0,80}$/) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_realname};
     push @fields, 'realname';  
@@ -144,7 +148,7 @@ post '/register/process' => sub {
   # perform the registration
   $password = md5_hex(config->{salt}.$password);
   my $verification = md5_hex(config->{salt}.$password.time.rand);
-  database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, status => 0, verification => 'act_'.$verification, regdate => time, lastchanged => time });
+  database->quick_insert(config->{db_table_prefix}.'_users', { username => $username, password => $password, email => $email, phone => $phone, realname => $realname, sex => $sex, status => 0, verification => 'act_'.$verification, regdate => time, lastchanged => time });
   my $db_data= &taracot::_load_settings('site_title', $_current_lang);  
   my $activation_url = request->uri_base().'/user/activate/user/'.$username.'/'.$verification;
   if (config->{https_connection}) {
@@ -188,8 +192,12 @@ post '/register/finish' => sub {
     return $json_xs->encode(\%res);
   }  
   $username=lc($username);
+  my $sex = param('sex') || 0;
+  if ($sex) {
+    $sex = 1;
+  }
   my $db_data=database->quick_select(config->{db_table_prefix}.'_users', { username => $username });
-  if ($db_data->{id}) {
+  if ($db_data->{id} && $db_data->{username} ne $auth->{username}) {
     $res{status}=0; 
     push @errors, $lang->{authdlg_duplicate_username};
     push @fields, 'username';  
@@ -197,7 +205,7 @@ post '/register/finish' => sub {
     $res{fields}=\@fields;
     return $json_xs->encode(\%res);
   }
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { username => $username, username_unset => 0, lastchanged => time });  
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { username => $username, sex => $sex, username_unset => 0, lastchanged => time });  
   my $res_data = database->quick_select(config->{db_table_prefix}.'_users', { id => $auth->{id} });
   if ($username ne $res_data->{username}) {
     $res{status}=0; 
@@ -208,26 +216,26 @@ post '/register/finish' => sub {
   return $json_xs->encode(\%res);
 };
 
-post '/register/finish/default' => sub {
-  content_type 'application/json';
-  my $_current_lang=_load_lang();
-  my %res; 
-  $res{status}=1; 
-  my @errors;
-  my @fields;
-  my $json_xs = JSON::XS->new();
-  my $auth = &taracot::_auth();
-  if (!$auth || !$auth->{username_unset}) {
-    $res{status}=0;
-    push @errors, $lang->{authdlg_error_auth};
-    push @fields, 'username';
-    $res{errors}=\@errors;
-    $res{fields}=\@fields;
-    return $json_xs->encode(\%res);
-  }  
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { username_unset => 0, lastchanged => time });  
-  return $json_xs->encode(\%res);
-};
+# post '/register/finish/default' => sub {
+#   content_type 'application/json';
+#   my $_current_lang=_load_lang();
+#   my %res; 
+#   $res{status}=1; 
+#   my @errors;
+#   my @fields;
+#   my $json_xs = JSON::XS->new();
+#   my $auth = &taracot::_auth();
+#   if (!$auth || !$auth->{username_unset}) {
+#     $res{status}=0;
+#     push @errors, $lang->{authdlg_error_auth};
+#     push @fields, 'username';
+#     $res{errors}=\@errors;
+#     $res{fields}=\@fields;
+#     return $json_xs->encode(\%res);
+#   }  
+#   database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { username_unset => 0, lastchanged => time });  
+#   return $json_xs->encode(\%res);
+# };
 
 get '/authorize' => sub {
   my $auth_data = &taracot::_auth();
@@ -715,6 +723,10 @@ post '/account/profile/process' => sub {
   }
   # first wave validations
   my $password=param('pro_password') || '';
+  my $sex=param('pro_sex') || 0;
+  if ($sex) {
+    $sex = 1;
+  }
   my $phone=param('pro_phone') || '';
   my $realname=param('pro_realname') || '';   
   if ($password !~ /^[A-Za-z0-9_\-\$\!\@\#\%\^\&\[\]\{\}\*\+\=\.\,\'\"\|\<\>\?]{5,100}$/) { 
@@ -723,7 +735,7 @@ post '/account/profile/process' => sub {
     push @fields, 'password';  
   }
   $realname=~s/[\<\>\"\'\n\r\\\/]//gm; 
-  if ($realname !~ /^.{0,80}$/) { 
+  if ($realname !~ /^(([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])\s([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])+){0,80}$/) { 
     $res{status}=0; 
     push @errors, $lang->{user_register_error_realname};
     push @fields, 'realname';  
@@ -757,7 +769,7 @@ post '/account/profile/process' => sub {
     moveFile(config->{files_dir}."/avatars/".$auth->{username}.'.tmp.jpg', config->{files_dir}."/avatars/".$auth->{username}.'.jpg');
     $res{avatar_changed} = 1;
   }
-  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { realname => $realname, phone => $phone, lastchanged => time }); 
+  database->quick_update(config->{db_table_prefix}.'_users', { id => $auth->{id} }, { realname => $realname, phone => $phone, sex => $sex, lastchanged => time }); 
   return $json_xs->encode(\%res);
 };
 
@@ -837,10 +849,6 @@ post '/account/email/process' => sub {
       type    => 'html',
       headers => { "X-Accept-Language" => $_current_lang }
   };
-  open(DATA,">>/var/www/re-hash/data/site/logs/mail.log");
-  binmode(DATA);
-  print DATA "(1) Sending to: $email\n";
-  close(DATA);
   if ($db_data_1->{email}) {
     my $verification_undo = md5_hex(config->{salt}.$password.time.rand().$verification);
     my $activation_url_undo = request->uri_base().'/user/revert/email/'.$auth->{username}.'/'.$verification_undo;
@@ -855,11 +863,7 @@ post '/account/email/process' => sub {
         body    => $body,
         type    => 'html',
         headers => { "X-Accept-Language" => $_current_lang }
-    };
-    open(DATA,">>/var/www/re-hash/data/site/logs/mail.log");
-    binmode(DATA);
-    print DATA "(2) Sending to: ".$db_data_1->{email}."\n";
-    close(DATA);
+    };    
   }
   session user => '';
   return $json_xs->encode(\%res);

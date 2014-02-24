@@ -158,7 +158,7 @@ post '/user' => sub {
     return '{"status":"0"}';
   }
   my $sth = database->prepare(
-    'SELECT id, username, realname, phone, regdate FROM '.config->{db_table_prefix}.'_users WHERE id='.$id.' AND status > 0'
+    'SELECT id, username, realname, phone, regdate FROM '.config->{db_table_prefix}.'_users WHERE id='.$id
   );
   my ($dbid, $username, $realname, $phone, $regdate) = undef;
   if ($sth->execute()) {
@@ -342,11 +342,12 @@ post '/friends' => sub {
   } else {
     $inv_sql = ' OR f.user1 = '.$auth_data->{id}
   }
+  my $userid = $uid || $auth_data->{id};
   if (param('invitations') && $auth_data->{id} ne $uid) {
     return '{"status":"0"}';
   }
   my $sth = database->prepare(
-    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.database->quote($auth_data->{id}).' OR user2 = '.database->quote($auth_data->{id}).') AND status='.$req_status
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.$userid.' OR user2 = '.$userid.') AND status='.$req_status
   );
   my $total = 0;
   if ($sth->execute()) {
@@ -358,7 +359,7 @@ post '/friends' => sub {
   my $limx = $page*$ipp-$ipp;
   if ($total) {
     my $sth = database->prepare(
-     'SELECT u.id, u.username, u.realname, u.phone, u.regdate FROM '.config->{db_table_prefix}.'_users u LEFT JOIN '.config->{db_table_prefix}.'_social_friends f ON (f.user1 = u.id OR f.user2 = u.id) WHERE (f.user2 = '.$auth_data->{id}.$inv_sql.') AND f.status='.$req_status.' AND u.status > 0 AND u.id != '.$auth_data->{id}.' ORDER BY u.realname, u.username LIMIT '.$limx.', '.$ipp
+     'SELECT u.id, u.username, u.realname, u.phone, u.regdate FROM '.config->{db_table_prefix}.'_users u LEFT JOIN '.config->{db_table_prefix}.'_social_friends f ON (f.user1 = u.id OR f.user2 = u.id) WHERE (f.user2 = '.$userid.$inv_sql.') AND f.status='.$req_status.' AND u.id != '.$userid.' ORDER BY u.realname, u.username LIMIT '.$limx.', '.$ipp
     );        
     my @res_arr;
     if ($sth->execute()) {

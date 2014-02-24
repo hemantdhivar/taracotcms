@@ -1,5 +1,10 @@
 var dtable;
 $(document).ready(function () {
+    if (user_sex == 1) {
+        $("#pro_sex_female").prop("checked", true);
+    } else {
+        $("#pro_sex_male").prop("checked", true);
+    }
     dtable = $('#posts_table').dataTable({
             "sDom": "frtip",
             "bLengthChange": false,
@@ -154,7 +159,7 @@ $(document).ready(function () {
             form_errors = true;
             $('#pro_password').focus();
         }
-        if (!$('#pro_realname').val().match(/^.{0,80}$/)) {
+        if (!$('#pro_realname').val().match(/^(([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])\s([\wА-Яа-я])+([\wА-Яа-я\-\']{0,1})([\wА-Яа-я])+){0,80}$/)) {
             $('#cg_pro_realname').addClass('has-error');
             $('#form_profile_errors').append("&nbsp;&#9632;&nbsp;&nbsp;" + js_lang_user_register_error_realname + "<br/>");
             if (!form_errors) {
@@ -177,13 +182,18 @@ $(document).ready(function () {
         } else {
             $('#tab_profile_form').hide();
             $('#tab_profile_ajax').show();
+            var _sex = 0;
+            if ($("#pro_sex_female").prop("checked") == true) {
+                _sex = 1;
+            }
             $.ajax({
                 type: 'POST',
                 url: '/user/account/profile/process',
                 data: {
                     pro_realname: $('#pro_realname').val(),
                     pro_phone: $('#pro_phone').val(),
-                    pro_password: $('#pro_password').val()
+                    pro_password: $('#pro_password').val(),
+                    pro_sex: _sex
                 },
                 dataType: "json",
                 success: function (data) {

@@ -13,3 +13,4 @@ ALTER TABLE `taracot_catalog` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT 
 ALTER TABLE `taracot_blog_posts` CHANGE `pdate` `pdate` DOUBLE DEFAULT NULL;
 ALTER TABLE `taracot_blog_posts` CHANGE `lastchanged` `lastchanged` DOUBLE DEFAULT NULL;
 ALTER TABLE `taracot_blog_comments` CHANGE `cdate` `cdate` DOUBLE DEFAULT NULL;
+ALTER TABLE `taracot_users` ADD `sex` TINYINT( 1 ) DEFAULT '0' NOT NULL AFTER `realname` ;

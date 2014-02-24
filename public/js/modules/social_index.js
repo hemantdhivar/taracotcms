@@ -166,12 +166,12 @@ var ajax_load_search_data = function(query, page) {
                     }
               }
             } else {
-                $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'1</div>');
+                $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'</div>');
             }
         },
         error: function () {
         	$('#social_search_ajax').hide();
-            $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'2</div>');
+            $('#social_search_results').html('<div class="alert alert-danger">'+js_lang_search_error+'</div>');
         },
         complete: function() {
           $('#social_search_btn').removeClass('disabled');
@@ -362,7 +362,8 @@ var json_send_friendship_request = function() {
             $('#btn_add_friend_' + uid).popover('show');
             $('#prg_add_friend_' + uid).hide();  
           } else {
-            $('#btn_add_friend_' + uid).replaceWith('<button class="btn btn-warning btn-sm disabled">' + js_lang_friend_status_request_sent + '</button>');
+            $('#btn_add_friend_' + uid).replaceWith('');
+            $('#social_page_friendship_status').html(js_lang_friend_status_request_sent);
           }
         },
         error: function () {
@@ -404,7 +405,8 @@ var json_accept_friendship_request = function() {
             $('#btn_accept_friend_' + uid).popover('show');
             $('#prg_accept_friend_' + uid).hide();  
           } else {
-            $('#btn_accept_friend_' + uid).replaceWith('<button class="btn btn-primary btn-sm disabled">' + js_lang_friend_status_established + '</button>');
+            $('#social_page_friendship_status').html(js_lang_friend_status_established);
+            $('#btn_accept_friend_' + uid).replaceWith('');
             friends_flag=1;
             invitations_count--;
             social_update_counters();
@@ -422,28 +424,47 @@ var json_accept_friendship_request = function() {
 
 
 var json_render_user_data = function(data, uid, where) {
-  $(where).append('<h1 class="social_page_header">' + data.realname + '<img src="' + data.avatar +'" class="pull-right" alt="' + data.realname + '"></h1>');
-  if (uid != current_user_id) {
+  $(where).append('<div class="row"><div class="col-lg-2 col-md-3 col-sm-3" style="width:100px"><img style="width:85px" src="' + data.avatar +'" alt="' + data.realname + '"></div><div class="col-lg-10 col-md-9 col-sm-9"><h1 class="social_page_header">' + data.realname + '&nbsp;<span id="social_page_friendship_status"></span></h1><div id="taracot_social_page_top_buttons"</div></div>');    
+  var _s_lang_users_friends = js_lang_users_friends;
+  if (taracot_lang == 'en') {
+      _s_lang_users_friends = data.realname + "'s " + js_lang_users_friends;
+  }
+  if (taracot_lang == 'ru') {
+      var _sex = Petrovich.MALE;
+      if (user_sex == 1) {
+        _sex = Petrovich.FEMALE;
+      }
+      var _first = data.realname.split(' ')[0];
+      var p = new Petrovich("", _first, "", _sex);
+      _s_lang_users_friends = js_lang_users_friends + ' ' + p.firstName(Petrovich.GENITIVE);
+  }
+  if (uid != current_user_id) {    
+    $('#taracot_social_page_top_buttons').append('<button class="btn btn-default btn-sm btn-social-friends" id="btn_friends_' + uid + '"><i class="glyphicon glyphicon-user"></i>&nbsp;' + _s_lang_users_friends + '</button>&nbsp;');
+    $('#taracot_social_page_top_buttons').append('&nbsp;<button class="btn btn-default btn-sm btn-social-message" id="btn_sendmessage_' + uid + '"><i class="glyphicon glyphicon-envelope"></i>&nbsp;' + js_lang_send_message + '</button>');
     if (data.friendship_status == 0) {
       if (data.friendship_details && data.friendship_details.length > 0) {        
         if (data.friendship_unaccepted) {
-          $(where).append('&nbsp;&nbsp;<button class="btn btn-sm btn-success btn-social-accept_friend" id="btn_accept_friend_' + uid + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + js_lang_friend_accept_request + '</button>&nbsp;&nbsp;<img src="/images/white_loading.gif" style="width:16px;height:16px;display:none" id="prg_accept_friend_' + uid + '">');
+          $('#taracot_social_page_top_buttons').append('&nbsp;&nbsp;<button class="btn btn-sm btn-success btn-social-accept_friend" id="btn_accept_friend_' + uid + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + js_lang_friend_accept_request + '</button>&nbsp;&nbsp;<img src="/images/white_loading.gif" style="width:16px;height:16px;display:none" id="prg_accept_friend_' + uid + '">');
           $('.btn-social-accept_friend').unbind();
           $('.btn-social-accept_friend').click(json_accept_friendship_request);
         } else {
-          $(where).append('<button class="btn btn-warning btn-sm disabled">' + data.friendship_details + '</button>');
+          //$('#taracot_social_page_top_buttons').append('<button class="btn btn-warning btn-sm disabled">' + data.friendship_details + '</button>');
+          $('#social_page_friendship_status').html(data.friendship_details);
         }
       } else {
-        $(where).append('<button class="btn btn-sm btn-success btn-social-add_friend" id="btn_add_friend_' + uid + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + js_lang_add_friend + '</button>&nbsp;&nbsp;<img src="/images/white_loading.gif" style="width:16px;height:16px;display:none" id="prg_add_friend_' + uid + '">');
+        $('#taracot_social_page_top_buttons').append('&nbsp;&nbsp;<button class="btn btn-sm btn-success btn-social-add_friend" id="btn_add_friend_' + uid + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + js_lang_add_friend + '</button>&nbsp;&nbsp;<img src="/images/white_loading.gif" style="width:16px;height:16px;display:none" id="prg_add_friend_' + uid + '">');
         $('.btn-social-add_friend').unbind();
         $('.btn-social-add_friend').click(json_send_friendship_request);
       }      
     } else {
-      $(where).append('<button class="btn btn-primary btn-sm disabled">' + js_lang_friend_status_established + '</button>');
-    }
-    $(where).append('&nbsp;<button class="btn btn-info btn-sm btn-social-message" id="btn_sendmessage_' + uid + '"><i class="glyphicon glyphicon-envelope"></i>&nbsp;' + js_lang_send_message + '</button>');
+      //$('#taracot_social_page_top_buttons').append('<button class="btn btn-primary btn-sm disabled">' + js_lang_friend_status_established + '</button>');
+      $('#social_page_friendship_status').html(data.friendship_details);
+    }    
     $('.btn-social-message').unbind();
     $('.btn-social-message').click(ajax_social_message_click_handler);
+  } else {
+    $('#taracot_social_page_top_buttons').append('<button class="btn btn-default btn-sm" onclick="location.href=\'#view=friends\'"><i class="glyphicon glyphicon-user"></i>&nbsp;' + js_lang_friends + '</button>&nbsp;');
+    $('#taracot_social_page_top_buttons').append('&nbsp;<button class="btn btn-default btn-sm" onclick="location.href=\'#view=messaging\'"><i class="glyphicon glyphicon-envelope"></i>&nbsp;' + js_lang_my_messages + '</button>');
   }
 };
 
@@ -750,3 +771,7 @@ $.history.on('load change', function(event, url, type) {
     return;
   }  
 }).listen('hash');
+// Show the user's page
+$('#social_tab_page').show();
+$('#social_page_results').hide();
+$('#social_page_user').show();
