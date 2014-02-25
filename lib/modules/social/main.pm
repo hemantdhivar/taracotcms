@@ -93,7 +93,7 @@ post '/search' => sub {
   my %res;
   $res{'status'} = 1;
   my $_current_lang=_load_lang(); 
-  my $page = param('page') || 1;
+  my $page = int(param('page')) || 1;
   if ($page < 1) {
     return '{"status":"0"}'; 
   }
@@ -256,16 +256,23 @@ post '/friend/request' => sub {
   );
   $sth->execute();
   $sth->finish();  
+  my $timestamp = time;
   # BEGIN: Send message to taracot_ns
-  my $session_id = md5_hex($id.'-'.config->{salt}).md5_hex($dbdata->{username}.'-'.config->{salt});
-  my $ua = LWP::UserAgent->new();
-  my %upmsg;
-  $upmsg{'reason'} = "friend_request";
-  $upmsg{'uid'} = $id;
-  my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'update' => $json_xs->encode(\%upmsg) ] );
-  $ua->request($request);
+  if ($taracot_ns_url) {
+    my $session_id = md5_hex($id.'-'.config->{salt}).md5_hex($dbdata->{username}.'-'.config->{salt});
+    my $session_id_sender = md5_hex($auth_data->{id}.'-'.config->{salt}).md5_hex($auth_data->{username}.'-'.config->{salt});    
+    my $ua = LWP::UserAgent->new();
+    my %upmsg;
+    $upmsg{'reason'} = "friend_request";
+    $upmsg{'uid'} = $id;    
+    my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'sender' => $session_id_sender, timestamp => $timestamp, 'update' => $json_xs->encode(\%upmsg) ] );
+    $ua->request($request);
+  }
   # END: Send message to taracot_ns
-  return '{"status":"1"}';
+  my %res;
+  $res{'status'} = 1;
+  $res{'timestamp'} = $timestamp;
+  return $json_xs->encode(\%res);
 };
 
 post '/friend/accept' => sub {
@@ -306,16 +313,23 @@ post '/friend/accept' => sub {
   );
   $sth->execute();
   $sth->finish();
+  my $timestamp = time;
   # BEGIN: Send message to taracot_ns
-  my $session_id = md5_hex($id.'-'.config->{salt}).md5_hex($dbdata->{username}.'-'.config->{salt});
-  my $ua = LWP::UserAgent->new();
-  my %upmsg;
-  $upmsg{'reason'} = "friend_request_accepted";
-  $upmsg{'uid'} = $id;
-  my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'update' => $json_xs->encode(\%upmsg) ] );
-  $ua->request($request);
+  if ($taracot_ns_url) {
+    my $session_id = md5_hex($id.'-'.config->{salt}).md5_hex($dbdata->{username}.'-'.config->{salt});
+    my $session_id_sender = md5_hex($auth_data->{id}.'-'.config->{salt}).md5_hex($auth_data->{username}.'-'.config->{salt});
+    my $ua = LWP::UserAgent->new();
+    my %upmsg;
+    $upmsg{'reason'} = "friend_request_accepted";
+    $upmsg{'uid'} = $id;    
+    my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'sender' => $session_id_sender, timestamp => $timestamp, 'update' => $json_xs->encode(\%upmsg) ] );
+    $ua->request($request);
+  }
   # END: Send message to taracot_ns
-  return '{"status":"1"}';
+  my %res;
+  $res{'status'} = 1;
+  $res{'timestamp'} = $timestamp;
+  return $json_xs->encode(\%res);
 };
 
 post '/friends' => sub {
@@ -327,11 +341,11 @@ post '/friends' => sub {
   my %res;
   $res{'status'} = 1;
   my $_current_lang=_load_lang(); 
-  my $page = param('page') || 1;
+  my $page = int(param('page')) || 1;
   if ($page < 1) {
     return '{"status":"0"}'; 
   }  
-  my $uid = param('uid') || 0;
+  my $uid = int(param('uid')) || 0;
   if (!$uid || $uid < 1) {
     $uid = $auth_data->{id};
   } 
@@ -394,12 +408,12 @@ post '/messages/load' => sub {
   my %res;
   $res{'status'} = 1;
   my $_current_lang=_load_lang(); 
-  my $uid = param('uid');
+  my $uid = int(param('uid'));
   if (!$uid || $uid < 1) {
     return '{"status":"0"}';
   } 
   my $sth = database->prepare(
-    'SELECT id, ufrom, uto, mtime, msg FROM '.config->{db_table_prefix}.'_social_messaging WHERE ((ufrom = '.$auth_data->{id}.' AND uto = '.$uid.') OR (uto = '.$auth_data->{id}.' AND ufrom = '.$uid.')) ORDER BY mtime ASC LIMIT 50'
+    'SELECT m.id, m.ufrom, m.uto, m.mtime, m.msg FROM (SELECT * FROM '.config->{db_table_prefix}.'_social_messaging WHERE ((ufrom = '.$auth_data->{id}.' AND uto = '.$uid.') OR (uto = '.$auth_data->{id}.' AND ufrom = '.$uid.')) ORDER BY mtime DESC LIMIT 50) m ORDER BY m.mtime ASC'
   );        
   my @res_arr;
   if ($sth->execute()) {
@@ -463,7 +477,7 @@ post '/messages/read' => sub {
   my %res;
   $res{'status'} = 1;
   my $_current_lang=_load_lang(); 
-  my $uid = param('uid');
+  my $uid = int(param('uid'));
   if (!$uid || $uid < 1) {
     return '{"status":"0"}';
   } 
@@ -484,8 +498,12 @@ post '/messages/save' => sub {
   my %res;
   $res{'status'} = 1;
   my $_current_lang=_load_lang(); 
-  my $uid = param('uid');
+  my $uid = int(param('uid'));
   if (!$uid || $uid < 1) {
+    return '{"status":"0"}';
+  }
+  my $midval = param('mid');
+  if ($midval !~ /^[0-9]{1,100}$/) {
     return '{"status":"0"}';
   }
   my $json_xs = JSON::XS->new();
@@ -499,7 +517,7 @@ post '/messages/save' => sub {
     return $json_xs->encode(\%res);
   }
   my $sth = database->prepare(
-    'SELECT id, username FROM '.config->{db_table_prefix}.'_users WHERE id = '.$uid.' AND status > 0'
+    'SELECT id, username FROM '.config->{db_table_prefix}.'_users WHERE id = '.database->quote($uid).' AND status > 0'
   );  
   my $check_id;  
   my $dest_username;
@@ -514,7 +532,7 @@ post '/messages/save' => sub {
   }
   my $last_time;
   $sth = database->prepare(
-    'SELECT mtime FROM '.config->{db_table_prefix}.'_social_messaging WHERE uto = '.$uid.' AND ufrom = '.$auth_data->{id}.' ORDER BY mtime DESC LIMIT 1'
+    'SELECT mtime FROM '.config->{db_table_prefix}.'_social_messaging WHERE uto = '.database->quote($uid).' AND ufrom = '.$auth_data->{id}.' ORDER BY mtime DESC LIMIT 1'
   );  
   if ($sth->execute()) {
     ($last_time) = $sth->fetchrow_array();
@@ -530,7 +548,7 @@ post '/messages/save' => sub {
   my $mid = database->last_insert_id(undef,undef,undef,undef);
   if (!$mid) {
     $sth = database->prepare(
-      'SELECT id FROM `'.config->{db_table_prefix}.'_social_messaging` WHERE mtime = '.$mtime.' AND uto = '.$uid.' AND ufrom = '.$auth_data->{id}
+      'SELECT id FROM `'.config->{db_table_prefix}.'_social_messaging` WHERE mtime = '.$mtime.' AND uto = '.database->quote($uid).' AND ufrom = '.$auth_data->{id}
     );
     if ($sth->execute()) {
       ($mid) = $sth->fetchrow_array();
@@ -565,14 +583,19 @@ post '/messages/save' => sub {
   $res{'mtime'} = time2str($lang->{chat_time_template}, int($mtime));
   $res{'mtime'} =~ s/\\//gm; 
   $res{'msg'} = $msg;
-  # BEGIN: Send message to taracot_ns
-  my $session_id = md5_hex($uid.'-'.config->{salt}).md5_hex($dest_username.'-'.config->{salt});
-  my $ua = LWP::UserAgent->new();
-  my %upmsg = %res;
-  $upmsg{'reason'} = "message";
-  my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'update' => $json_xs->encode(\%upmsg) ] );
-  $ua->request($request);
+  my $timestamp = time;
+  # BEGIN: Send message to taracot_ns  
+  if ($taracot_ns_url) {
+    my $session_id = md5_hex($uid.'-'.config->{salt}).md5_hex($dest_username.'-'.config->{salt});
+    my $session_id_sender = md5_hex($auth_data->{id}.'-'.config->{salt}).md5_hex($auth_data->{username}.'-'.config->{salt});
+    my $ua = LWP::UserAgent->new();
+    my %upmsg = %res;
+    $upmsg{'reason'} = "message";    
+    my $request = POST( $taracot_ns_url, [ 'session' => $session_id, 'sender' => $session_id_sender, timestamp => $timestamp, 'update' => $json_xs->encode(\%upmsg), 'mid' => $midval ] );
+    $ua->request($request);
+  }
   # END: Send message to taracot_ns
+  $res{'timestamp'} = $timestamp;
   return $json_xs->encode(\%res);
 };
 
@@ -586,11 +609,11 @@ post '/messages/list' => sub {
   $res{'status'} = 1;
   my $_current_lang=_load_lang(); 
   my $sth = database->prepare(
-   'SELECT DISTINCT u.id, u.username, u.realname, s.flag_unread, s.count_msg, t.count_msg, s.last_msg, s.last_msg_date, t.last_msg, t.last_msg_date FROM taracot_users u JOIN (SELECT IF (uto='.database->quote($auth_data->{id}).', ufrom, uto) as uid, mtime FROM taracot_social_messaging WHERE uto='.database->quote($auth_data->{id}).' OR ufrom='.database->quote($auth_data->{id}).') m ON u.id = m.uid LEFT JOIN taracot_social_messaging_stat s ON (s.user_id = m.uid AND s.ref_id = '.database->quote($auth_data->{id}).') LEFT JOIN taracot_social_messaging_stat t ON (t.ref_id = m.uid AND t.user_id = '.database->quote($auth_data->{id}).') ORDER BY IF (s.last_msg_date > t.last_msg_date, s.last_msg_date, t.last_msg_date) DESC'
+   'SELECT DISTINCT u.id, u.username, u.realname, s.flag_unread, s.count_msg, t.count_msg, s.last_msg, s.last_msg_date, t.last_msg, IF (s.last_msg_date > t.last_msg_date, s.last_msg_date, t.last_msg_date) AS msg_date FROM taracot_users u JOIN (SELECT IF (uto='.database->quote($auth_data->{id}).', ufrom, uto) as uid, mtime FROM taracot_social_messaging WHERE uto='.database->quote($auth_data->{id}).' OR ufrom='.database->quote($auth_data->{id}).') m ON u.id = m.uid LEFT JOIN taracot_social_messaging_stat s ON (s.user_id = m.uid AND s.ref_id = '.database->quote($auth_data->{id}).') LEFT JOIN taracot_social_messaging_stat t ON (t.ref_id = m.uid AND t.user_id = '.database->quote($auth_data->{id}).') ORDER BY msg_date DESC'
   );  
   my @items;
   if ($sth->execute()) {
-   while (my ($id, $username, $realname, $unread, $cnt, $cnt2, $last_msg, $last_msg_date, $last_msg2, $last_msg_date2) = $sth->fetchrow_array()) {
+   while (my ($id, $username, $realname, $unread, $cnt, $cnt2, $last_msg, $last_msg_date, $last_msg2, $last_msg_date2, $msg_date) = $sth->fetchrow_array()) {
     my %item;
     my $avatar = '/images/default_avatar.png';
     if (-e config->{files_dir}.'/avatars/'.$username.'.jpg') {

@@ -2,6 +2,7 @@ var social_search_page = 1;
 var social_friends_page = 1;
 var social_invitations_page = 1;
 var social_message_uid = undefined;
+var sent_message_ids = [];
 
 socket = io.connect("http://ns.ahu.li");
 socket.on( 'connect', function() {
@@ -9,15 +10,21 @@ socket.on( 'connect', function() {
 });
 socket.on('got_update', function (data) {
   var pl = $.unparam(document.URL.substr(document.URL.indexOf('#')+1));
-  var up = $.parseJSON(data.update);
+  var up = $.parseJSON(data.update);    
   if (up) {
     // New message arrived
-    if (up.reason && up.reason == "message") {
-      if (pl['view'] == "message" && up.ufrom && up.ufrom == pl['id']) {
+    if (up.reason && up.reason == "message") {      
+      if (pl['view'] == "message" && up.uto && up.uto == pl['id'] && data.session == session_id && data.mid && jQuery.inArray("_"+data.mid, sent_message_ids) == -1) {
+        $('#social_messaging_chat_inner').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + up.avatar  + '"></span><span class="pull-right"><small>' +up.mtime  + '</small></span><div class="media-body"><b>' + up.username  + '</b><div style="height:3px"></div>' + up.msg  + '</div></div>');
+        $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
+        sent_message_ids.push(data.mid);
+      }
+      if (pl['view'] == "message" && up.ufrom && up.ufrom == pl['id'] && !data.mid) {
         $('#social_messaging_chat_inner').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + up.avatar  + '"></span><span class="pull-right"><small>' +up.mtime  + '</small></span><div class="media-body"><b>' + up.username  + '</b><div style="height:3px"></div>' + up.msg  + '</div></div>');
         $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
         $.ajax({ type: 'POST', url: '/social/messages/read', data: { uid: up.ufrom }, dataType: "json" });
-      } else {
+      }
+      if (pl['view'] != "message") {
         messages_flag = 1;
         social_update_counters();
       }
@@ -26,7 +33,7 @@ socket.on('got_update', function (data) {
       }
     }
     // New friendship request
-    if (up.reason && up.reason == "friend_request") {
+    if (up.reason && up.reason == "friend_request" && !data.mid) {
       invitations_count++;
       social_update_counters();
       if (pl['view'] == "invitations") {                
@@ -34,7 +41,7 @@ socket.on('got_update', function (data) {
       }      
     }
     // Friendship request accepted
-    if (up.reason && up.reason == "friend_request_accepted") {      
+    if (up.reason && up.reason == "friend_request_accepted" && !data.mid) {      
       if (pl['view'] == "friends") {
         $('#social_friends_results').empty();
         social_friends_page = 1;
@@ -139,17 +146,11 @@ var ajax_load_search_data = function(query, page) {
                            if (data.items[i].realname) {
                            	h1t = data.items[i].realname + '&nbsp;<small>'+data.items[i].username+'</small>';
                            } else {
-                           	h21 = data.items[i].username;
+                           	h1t = data.items[i].username;
                            }
-                           if (data.items[i].phone) {
-                             if (h2t) {
-                               h2t += '<br>';
-                             }
+                           if (data.items[i].phone) {                             
                              h2t += '<span><i class="glyphicon glyphicon-earphone" style="font-size:80%"></i>&nbsp;+' + data.items[i].phone + '</span>';
-                           } else {
-      						           if (h2t) {
-                             	 h2t += '<br>';
-                             }
+                           } else {      						           
                              h2t += js_lang_no_phone;
                            }
                            $('#social_search_results').append('<div class="social-search-item" id="social_search_item_' + data.items[i].id + '"><div class="media social-search-media" style="margin:5px 0 5px 0"><span class="pull-left"><img class="media-object" src="'+data.items[i].avatar+'" alt="'+h1t+'" style="width:50px"></span><div class="media-body"><h4 class="media-heading">'+h1t+'</h4>'+h2t+'</div></div></div>');
@@ -424,6 +425,9 @@ var json_accept_friendship_request = function() {
 
 
 var json_render_user_data = function(data, uid, where) {
+  if (!data.realname) {
+    data.realname = data.username;
+  }
   $(where).append('<div class="row"><div class="col-lg-2 col-md-3 col-sm-3" style="width:100px"><img style="width:85px" src="' + data.avatar +'" alt="' + data.realname + '"></div><div class="col-lg-10 col-md-9 col-sm-9"><h1 class="social_page_header">' + data.realname + '&nbsp;<span id="social_page_friendship_status"></span></h1><div id="taracot_social_page_top_buttons"</div></div>');    
   var _s_lang_users_friends = js_lang_users_friends;
   if (taracot_lang == 'en') {
@@ -485,7 +489,7 @@ var ajax_load_message_history = function(id) {
             for (var i=0; i<data.messages.length; i++) {
               $('#social_messaging_chat_inner').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.users[data.messages[i].ufrom].avatar  + '"></span><span class="pull-right"><small>' + data.messages[i].mtime  + '</small></span>    <div class="media-body"><b>' + data.users[data.messages[i].ufrom].username  + '</b><div style="height:3px"></div>' + data.messages[i].msg  + '</div></div>');
             }
-            $('#social_messaging_chat_with').html(data.users[social_message_uid].realname || namedata.users[social_message_uid].username);
+            $('#social_messaging_chat_with').html(data.users[social_message_uid].realname || data.users[social_message_uid].username);
             $('#social_messaging_chatbox_title').show();
             $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
             $("#social_messaging_answer_area").val('');
@@ -542,12 +546,15 @@ var social_messaging_answer_btn_click_handler = function() {
   }
   $('#social_messaging_answer_btn').addClass('disabled');
   $('#social_messaging_answer_ajax').show();
+  var sent_message_id = new Date().getTime();  
+  sent_message_ids.push("_"+sent_message_id);  
   $.ajax({
         type: 'POST',
         url: '/social/messages/save',
         data: {
             uid: social_message_uid,
-            msg: $('#social_messaging_answer_area').val()
+            msg: $('#social_messaging_answer_area').val(),
+            mid: sent_message_id
         },
         dataType: "json",
         success: function (data) {          
@@ -555,7 +562,7 @@ var social_messaging_answer_btn_click_handler = function() {
           if (data.status == 1) {    
             $('#social_messaging_chat_inner').append('<div class="media"><span class="pull-left"><img class="media-object" style="width:50px;height:50px" src="' + data.avatar  + '"></span><span class="pull-right"><small>' + data.mtime  + '</small></span><div class="media-body"><b>' + data.username  + '</b><div style="height:3px"></div>' + data.msg  + '</div></div>');
             $("#social_messaging_chat").scrollTop($("#social_messaging_chat")[0].scrollHeight);
-            $('#social_messaging_answer_area').val('');
+            $('#social_messaging_answer_area').val('');            
           } else {
             if (data.errmsg) {
               $('#social_messaging_answer_error_msg').html(data.errmsg);
@@ -576,7 +583,7 @@ var social_messaging_answer_btn_click_handler = function() {
           $('#social_messaging_answer_area').focus();
           $('#social_messaging_answer_btn').removeClass('disabled');
         }
-    });
+    });    
 };
 
 
@@ -684,13 +691,11 @@ $('.social_menu_link').click(function(e) {
 
 // Render user page
 
-json_render_user_data(user_data, current_user_id, '#social_page_user');
-
 // History API
 
 $.history.on('load change', function(event, url, type) {
   var items = url.split('&');
-  var ph = $.unparam(url);  
+  var ph = $.unparam(url);    
   if (ph['view'] == 'search_results') {
     $('.social_tab').hide();    
     $('#social_tab_search').show();
@@ -708,6 +713,9 @@ $.history.on('load change', function(event, url, type) {
       $('#social_page_user').hide();
       ajax_load_user_data(ph['id']);
     } else {
+      if ($('#social_page_user').html() = '') {
+        json_render_user_data(user_data, current_user_id, '#social_page_user');
+      }
       $('#social_menu_page_li').addClass('active');
       $('#social_page_results').hide();
       $('#social_page_user').show();
@@ -769,8 +777,10 @@ $.history.on('load change', function(event, url, type) {
     $('#social_tab_settings').show();
     $('#social_menu_settings_li').addClass('active');
     return;
-  }  
+  }    
 }).listen('hash');
+
+
 // Show the user's page
 $('#social_tab_page').show();
 $('#social_page_results').hide();
