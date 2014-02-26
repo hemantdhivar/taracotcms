@@ -3,6 +3,7 @@ var social_friends_page = 1;
 var social_invitations_page = 1;
 var social_message_uid = undefined;
 var sent_message_ids = [];
+var social_friends_id = undefined;
 
 socket = io.connect("http://ns.ahu.li");
 socket.on( 'connect', function() {
@@ -45,7 +46,12 @@ socket.on('got_update', function (data) {
       if (pl['view'] == "friends") {
         $('#social_friends_results').empty();
         social_friends_page = 1;
-        ajax_load_friends_data(1);
+        if (pl['id'] && pl['id'].length > 0) {
+          social_friends_id = pl['id'];
+        } else {
+          social_friends_id = undefined;
+        }        
+        ajax_load_friends_data(1, social_friends_id);
       } else {
         friends_flag=1;
         social_update_counters();
@@ -135,7 +141,7 @@ var ajax_load_search_data = function(query, page) {
         success: function (data) {
         	$('#social_search_ajax').hide();
             if (data.status == 1) {                	
-              if (!data.items) {
+              if (((!data.items) || (data.items && data.items.length == 0)) && social_search_page == 1) {
                 $('#social_search_results').html('<div class="alert alert-warning">'+js_lang_search_nothing_found+'</div>');
               } else {
                   if (data.items.length > 0) {
@@ -181,22 +187,44 @@ var ajax_load_search_data = function(query, page) {
 };
 
 
-var ajax_load_friends_data = function(page) {
+var ajax_load_friends_data = function(page, user) {
   $('#social_friends_ajax').show();
+  $('#social_friends_header').html('');
   $.ajax({
         type: 'POST',
         url: '/social/friends',
         data: {
-            page: page
+            page: page,
+            uid: user
         },
         dataType: "json",
         success: function (data) {
           $('#social_friends_ajax').hide();
             if (data.status == 1) {    
-              if (!data.items) {
-                $('#social_friends_results').html('<div class="alert alert-warning">'+js_lang_friends_nothing_found+'</div>');
+              var _friends_title = js_lang_users_friends;
+              if (user) {
+                if (taracot_lang == 'en') {
+                  _friends_title = data.name + "'s " + js_lang_users_friends;
+                }
+                if (taracot_lang == 'ru') {
+                  var _sex = Petrovich.MALE;
+                  if (data.sex == 1) {
+                    _sex = Petrovich.FEMALE;
+                  }
+                  var _first = data.name.split(' ')[0];
+                  var p = new Petrovich("", _first, "", _sex);
+                  _friends_title = js_lang_users_friends + ' ' + p.firstName(Petrovich.GENITIVE);
+                }
+              }
+              $('#social_friends_header').html(_friends_title);              
+              if (((!data.items) || (data.items && data.items.length == 0)) && social_friends_page == 1) {
+                var _msg = js_lang_friends_nothing_found;
+                if (user && user > 0) {
+                  _msg = js_lang_friends_nothing_found_user;
+                }
+                $('#social_friends_results').html('<div class="alert alert-warning">'+_msg+'</div>');
               } else {
-                if (data.items.length > 0) {
+                if (data.items.length > 0) {                    
                     $('#social_friends_results').append('<div class="row">');
                       for (var i = 0; i < data.items.length; i++) {
                          var h1t = '';
@@ -204,7 +232,7 @@ var ajax_load_friends_data = function(page) {
                          if (data.items[i].realname) {
                           h1t = data.items[i].realname + '&nbsp;<small>'+data.items[i].username+'</small>';
                          } else {
-                          h21 = data.items[i].username;
+                          h1t = data.items[i].username;
                          }
                          if (data.items[i].phone) {
                            if (h2t) {
@@ -257,7 +285,7 @@ var ajax_load_invitations_data = function(page) {
         success: function (data) {
           $('#social_invitations_ajax').hide();
             if (data.status == 1) {    
-              if (!data.items) {
+              if (((!data.items) || (data.items && data.items.length == 0)) && social_invitations_page == 1) {
                 $('#social_invitations_results').html('<div class="alert alert-warning">'+js_lang_inv_nothing_found+'</div>');
               } else {
                 if (data.items.length > 0) {
@@ -268,7 +296,7 @@ var ajax_load_invitations_data = function(page) {
                        if (data.items[i].realname) {
                         h1t = data.items[i].realname + '&nbsp;<small>'+data.items[i].username+'</small>';
                        } else {
-                        h21 = data.items[i].username;
+                        h1t = data.items[i].username;
                        }
                        if (data.items[i].phone) {
                          if (h2t) {
@@ -326,7 +354,7 @@ $(window).scroll(function() {
        }
        if (social_friends_page > 0) {
          social_friends_page++;
-         ajax_load_friends_data(social_friends_page);
+         ajax_load_friends_data(social_friends_page, social_friends_id);
        }
        if (social_invitations_page > 0) {
          social_invitations_page++;
@@ -435,7 +463,7 @@ var json_render_user_data = function(data, uid, where) {
   }
   if (taracot_lang == 'ru') {
       var _sex = Petrovich.MALE;
-      if (user_sex == 1) {
+      if (data.sex == 1) {
         _sex = Petrovich.FEMALE;
       }
       var _first = data.realname.split(' ')[0];
@@ -466,6 +494,7 @@ var json_render_user_data = function(data, uid, where) {
     }    
     $('.btn-social-message').unbind();
     $('.btn-social-message').click(ajax_social_message_click_handler);
+    $('.btn-social-friends').click(ajax_friends_click_handler);
   } else {
     $('#taracot_social_page_top_buttons').append('<button class="btn btn-default btn-sm" onclick="location.href=\'#view=friends\'"><i class="glyphicon glyphicon-user"></i>&nbsp;' + js_lang_friends + '</button>&nbsp;');
     $('#taracot_social_page_top_buttons').append('&nbsp;<button class="btn btn-default btn-sm" onclick="location.href=\'#view=messaging\'"><i class="glyphicon glyphicon-envelope"></i>&nbsp;' + js_lang_my_messages + '</button>');
@@ -530,6 +559,23 @@ var ajax_social_message_click_handler = function(uid) {
   ajax_load_message_history(id);
   $('#social_messaging_answer_error').hide();
   $('#social_messaging_answer_area').focus();
+};
+
+var ajax_friends_click_handler = function(uid) {  
+  var id = jQuery(this).attr("id");
+  if (id) {
+    id = id.replace('btn_friends_','');  
+  } else {
+    id = uid;
+  }
+  $.history.push("view=friends&id=" + id );  
+  $('.social_menu').removeClass('active');
+  $('.social_tab').hide();
+  $('#social_tab_friends').show();
+  $('#social_friends_results').empty();
+  social_friends_page = 1;
+  social_friends_id = id;
+  ajax_load_friends_data(1, social_friends_id);
 };
 
 
@@ -640,7 +686,7 @@ var ajax_load_talks_data = function(uid) {
         success: function (data) {
           $('#social_messaging_talks_ajax').hide();
           if (data.status == 1) {    
-            if (data.items.length == 0) {
+            if ((!data.items) || (data.items && data.items.length == 0)) {
               $('#social_messaging_talks_data').html('<div class="alert alert-warning">'+js_lang_messages_nothing_found+'</div>')
             }
             for (var i=0; i<data.items.length; i++) {
@@ -651,7 +697,7 @@ var ajax_load_talks_data = function(uid) {
               if (data.items[i].unread) {
                unread_icon = '&nbsp;<span class="badge" style="background:#ff6666;color:#fff;font-size:80%"><i class="glyphicon glyphicon-envelope"></i></span>';
               }
-              $('#social_messaging_talks_data').append('<div class="media" onclick="location.href=\'#view=message&id=' + data.items[i].id + '\'" style="cursor:pointer"><span class="pull-left"><img class="media-object" style="width:64px;height:64px" src="' + data.items[i].avatar + '"></span><div class="media-body"><span class="media-heading" style="font-size:110%;font-weight:bold">' + data.items[i].realname  + '</span>&nbsp;&nbsp;<span class="badge" data-toggle="tooltip" data-placement="top" title="' + js_lang_messages_total + '">' + count_msg + '</span>' + unread_icon + '<span class="pull-right"><small>' + last_date + '</small></span><div style="height:10px"></div>' + last_msg  + '</div></div>');
+              $('#social_messaging_talks_data').append('<div class="media" onclick="location.href=\'#view=message&id=' + data.items[i].id + '\'" style="cursor:pointer"><span class="pull-left"><img class="media-object" style="width:64px;height:64px" src="' + data.items[i].avatar + '"></span><div class="media-body"><span class="media-heading" style="font-size:110%;font-weight:bold">' + (data.items[i].realname || data.items[i].username)  + '</span>&nbsp;&nbsp;<span class="badge" data-toggle="tooltip" data-placement="top" title="' + js_lang_messages_total + '">' + count_msg + '</span>' + unread_icon + '<span class="pull-right"><small>' + last_date + '</small></span><div style="height:10px"></div>' + last_msg  + '</div></div>');
               if (i != data.items.length-1) {
                 $('#social_messaging_talks_data').append('<hr>');
               }
@@ -691,6 +737,12 @@ $('.social_menu_link').click(function(e) {
 
 // Render user page
 
+json_render_user_data(user_data, current_user_id, '#social_page_user');
+var _cpl = $.unparam(document.URL.substr(document.URL.indexOf('#')+1));
+if (!_cpl['view']) {
+  $('#social_page_user').show();
+}
+
 // History API
 
 $.history.on('load change', function(event, url, type) {
@@ -704,18 +756,15 @@ $.history.on('load change', function(event, url, type) {
   social_search_page = -1;
   social_friends_page = -1;
   social_invitations_page = -1;
-  if (ph['view'] == 'page' || ph['view'] == '') {
+  if (ph['view'] == 'page') {
     $('.social_menu').removeClass('active');
     $('.social_tab').hide();
     $('#social_tab_page').show();    
     if (ph['id'] && ph['id'].length > 0) {
-      $('#social_page_results').show();
       $('#social_page_user').hide();
+      $('#social_page_results').show();
       ajax_load_user_data(ph['id']);
-    } else {
-      if ($('#social_page_user').html() = '') {
-        json_render_user_data(user_data, current_user_id, '#social_page_user');
-      }
+    } else {      
       $('#social_menu_page_li').addClass('active');
       $('#social_page_results').hide();
       $('#social_page_user').show();
@@ -725,11 +774,17 @@ $.history.on('load change', function(event, url, type) {
   if (ph['view'] == 'friends') {
     $('.social_menu').removeClass('active');
     $('.social_tab').hide();
-    $('#social_tab_friends').show();
-    $('#social_menu_friends_li').addClass('active');
+    $('#social_tab_friends').show();    
     $('#social_friends_results').empty();
     social_friends_page = 1;
-    ajax_load_friends_data(1);
+    if (ph['id'] && ph['id'].length > 0) {
+      social_friends_id = ph['id'];
+      ajax_load_friends_data(1, social_friends_id);
+    } else {
+      $('#social_menu_friends_li').addClass('active');
+      social_friends_id = undefined;
+      ajax_load_friends_data(1);      
+    }    
     friends_flag = 0;
     social_update_counters();
     return;
@@ -779,9 +834,3 @@ $.history.on('load change', function(event, url, type) {
     return;
   }    
 }).listen('hash');
-
-
-// Show the user's page
-$('#social_tab_page').show();
-$('#social_page_results').hide();
-$('#social_page_user').show();

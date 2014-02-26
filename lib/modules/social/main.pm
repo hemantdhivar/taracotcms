@@ -158,11 +158,11 @@ post '/user' => sub {
     return '{"status":"0"}';
   }
   my $sth = database->prepare(
-    'SELECT id, username, realname, phone, regdate FROM '.config->{db_table_prefix}.'_users WHERE id='.$id
+    'SELECT id, username, realname, phone, regdate, sex FROM '.config->{db_table_prefix}.'_users WHERE id='.$id
   );
-  my ($dbid, $username, $realname, $phone, $regdate) = undef;
+  my ($dbid, $username, $realname, $phone, $regdate, $sex) = undef;
   if ($sth->execute()) {
-    ($dbid, $username, $realname, $phone, $regdate) = $sth->fetchrow_array;
+    ($dbid, $username, $realname, $phone, $regdate, $sex) = $sth->fetchrow_array;
   }
   $sth->finish();
   if (!$dbid) {
@@ -202,6 +202,7 @@ post '/user' => sub {
   $item{'username'} = $username;
   $item{'realname'} = $realname;
   $item{'phone'} = $phone;
+  $item{'sex'} = $sex;
   $item{'avatar'} = $avatar;
   $item{'regdate'} = $regdate;
   $item{'status'} = 1;
@@ -345,23 +346,27 @@ post '/friends' => sub {
   if ($page < 1) {
     return '{"status":"0"}'; 
   }  
-  my $uid = int(param('uid')) || 0;
+  my $uid = int(param('uid')) || $auth_data->{id};
   if (!$uid || $uid < 1) {
     $uid = $auth_data->{id};
   } 
+  my $user_data = database->quick_select(config->{db_table_prefix}.'_users', { id => $uid }); 
+  if (!$user_data->{id}) {
+    return '{"status":"0"}';
+  }
+  $res{'name'} = $user_data->{realname} || $user_data->{username};
   my $req_status = 1;  
   my $inv_sql = '';
   if (param('invitations')) {
     $req_status = 0;
   } else {
-    $inv_sql = ' OR f.user1 = '.$auth_data->{id}
+    $inv_sql = ' OR f.user1 = '.$uid
   }
-  my $userid = $uid || $auth_data->{id};
-  if (param('invitations') && $auth_data->{id} ne $uid) {
+  if (param('invitations') && $uid ne $uid) {
     return '{"status":"0"}';
   }
   my $sth = database->prepare(
-    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.$userid.' OR user2 = '.$userid.') AND status='.$req_status
+    'SELECT COUNT(*) AS cnt FROM '.config->{db_table_prefix}.'_social_friends WHERE (user1 = '.$uid.' OR user2 = '.$uid.') AND status='.$req_status
   );
   my $total = 0;
   if ($sth->execute()) {
@@ -373,7 +378,7 @@ post '/friends' => sub {
   my $limx = $page*$ipp-$ipp;
   if ($total) {
     my $sth = database->prepare(
-     'SELECT u.id, u.username, u.realname, u.phone, u.regdate FROM '.config->{db_table_prefix}.'_users u LEFT JOIN '.config->{db_table_prefix}.'_social_friends f ON (f.user1 = u.id OR f.user2 = u.id) WHERE (f.user2 = '.$userid.$inv_sql.') AND f.status='.$req_status.' AND u.id != '.$userid.' ORDER BY u.realname, u.username LIMIT '.$limx.', '.$ipp
+     'SELECT u.id, u.username, u.realname, u.phone, u.regdate FROM '.config->{db_table_prefix}.'_users u LEFT JOIN '.config->{db_table_prefix}.'_social_friends f ON (f.user1 = u.id OR f.user2 = u.id) WHERE (f.user2 = '.$uid.$inv_sql.') AND f.status='.$req_status.' AND u.id != '.$uid.' ORDER BY u.realname, u.username LIMIT '.$limx.', '.$ipp
     );        
     my @res_arr;
     if ($sth->execute()) {
@@ -395,7 +400,7 @@ post '/friends' => sub {
       }
     }
     $res{items} = \@res_arr;
-  }  
+  }    
   my $json_xs = JSON::XS->new();
   return $json_xs->encode(\%res);
 };

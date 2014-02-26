@@ -16,6 +16,7 @@ search_error: Error while performing the search, please try again in several mom
 loading_error: Error while loading data, please try again in several moments
 search_nothing_found: Nothing found. Please try another query.
 friends_nothing_found: You currently have no friends on this website
+friends_nothing_found_user: User currently has no friends on this website
 inv_nothing_found: You currently have no invitations on this website
 messages_nothing_found: You currently have no dialogs
 no_phone: No cell phone

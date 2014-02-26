@@ -19,6 +19,7 @@
 			</div>			
 		</div>		
 		<div class="social_tab" id="social_tab_friends" style="display:none">
+			<h1 id="social_friends_header" style="margin-top:0px"></h1>
 			<div id="social_friends_results"></div>
 			<div id="social_friends_ajax" style="display:none;padding-top:20px">
 				<img src="/images/white_loading.gif" width="16" height="16" alt="" />&nbsp;&nbsp;[== $lang->{ajax_processing} =]
@@ -88,6 +89,7 @@
     var js_lang_page_error = "[== $lang->{page_error} =]";
     var js_lang_search_nothing_found = "[== $lang->{search_nothing_found} =]";
     var js_lang_friends_nothing_found = "[== $lang->{friends_nothing_found} =]";
+    var js_lang_friends_nothing_found_user = "[== $lang->{friends_nothing_found_user} =]";
     var js_lang_inv_nothing_found = "[== $lang->{inv_nothing_found} =]";
     var js_lang_messages_nothing_found = "[== $lang->{messages_nothing_found} =]";
     var js_lang_no_phone = "[== $lang->{no_phone} =]";
