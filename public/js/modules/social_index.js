@@ -38,6 +38,8 @@ socket.on('got_update', function (data) {
       invitations_count++;
       social_update_counters();
       if (pl['view'] == "invitations") {                
+        $('#social_invitations_results').empty();
+        social_invitations_page = 1;
         ajax_load_invitations_data(1);
       }      
     }
@@ -51,6 +53,8 @@ socket.on('got_update', function (data) {
         } else {
           social_friends_id = undefined;
         }        
+        $('#social_friends_results').empty();
+        social_friends_page = 1;
         ajax_load_friends_data(1, social_friends_id);
       } else {
         friends_flag=1;
@@ -126,9 +130,7 @@ var ajax_load_search_data = function(query, page) {
     return;
   }
   $('#social_search_btn').addClass('disabled');
-	$('#social_search_ajax').show();
-  $('#social_search_results').empty();
-  social_search_page = 1;
+	$('#social_search_ajax').show();  
 	$.ajax({
         type: 'POST',
         url: '/social/search',
@@ -140,7 +142,7 @@ var ajax_load_search_data = function(query, page) {
         dataType: "json",
         success: function (data) {
         	$('#social_search_ajax').hide();
-            if (data.status == 1) {                	
+            if (data.status == 1) {                  
               if (((!data.items) || (data.items && data.items.length == 0)) && social_search_page == 1) {
                 $('#social_search_results').html('<div class="alert alert-warning">'+js_lang_search_nothing_found+'</div>');
               } else {
@@ -217,7 +219,7 @@ var ajax_load_friends_data = function(page, user) {
                 }
               }
               $('#social_friends_header').html(_friends_title);              
-              if (((!data.items) || (data.items && data.items.length == 0)) && social_friends_page == 1) {
+              if (((!data.items) || (data.items && data.items.length == 0)) && $('#social_friends_results').html().length == 0) {
                 var _msg = js_lang_friends_nothing_found;
                 if (user && user > 0) {
                   _msg = js_lang_friends_nothing_found_user;
@@ -271,9 +273,7 @@ var ajax_load_friends_data = function(page, user) {
 
 
 var ajax_load_invitations_data = function(page) {
-  $('#social_invitations_ajax').show();
-  $('#social_invitations_results').empty();
-  social_invitations_page = 1;
+  $('#social_invitations_ajax').show();  
   $.ajax({
         type: 'POST',
         url: '/social/friends',
@@ -284,8 +284,8 @@ var ajax_load_invitations_data = function(page) {
         dataType: "json",
         success: function (data) {
           $('#social_invitations_ajax').hide();
-            if (data.status == 1) {    
-              if (((!data.items) || (data.items && data.items.length == 0)) && social_invitations_page == 1) {
+            if (data.status == 1) {                  
+              if (((!data.items) || (data.items && data.items.length == 0)) && $('#social_invitations_results').html().length == 0) {
                 $('#social_invitations_results').html('<div class="alert alert-warning">'+js_lang_inv_nothing_found+'</div>');
               } else {
                 if (data.items.length > 0) {
@@ -341,6 +341,8 @@ $('#social_search_btn').click(function (e) {
 		$('#social_cg_search').addClass('has-error');
 		return;
 	}  
+  $('#social_search_results').empty();
+  social_search_page = 1;
   ajax_load_search_data($('#social_search_input').val(), 1);
   $.history.push("view=search&query=" + $('#social_search_input').val() );
 });
@@ -357,8 +359,8 @@ $(window).scroll(function() {
          ajax_load_friends_data(social_friends_page, social_friends_id);
        }
        if (social_invitations_page > 0) {
-         social_invitations_page++;
-         ajax_load_invitatoins_data(social_invitations_page);
+         social_invitations_page++;         
+         ajax_load_invitations_data(social_invitations_page);
        }
    }
 });
@@ -796,6 +798,7 @@ $.history.on('load change', function(event, url, type) {
     $('#social_search_results').empty();
     $('#social_menu_search_li').addClass('active');
     if (ph['query'] && ph['query'].length > 0) {
+      social_search_page = 1;
       $('#social_search_input').val(ph['query']);
       $('#social_search_btn').click();      
     }    
@@ -807,6 +810,8 @@ $.history.on('load change', function(event, url, type) {
     $('.social_tab').hide();
     $('#social_tab_invitations').show();
     $('#social_menu_invitations_li').addClass('active');
+    $('#social_invitations_results').empty();
+    social_invitations_page = 1;
     ajax_load_invitations_data(1);
     return;
   }
